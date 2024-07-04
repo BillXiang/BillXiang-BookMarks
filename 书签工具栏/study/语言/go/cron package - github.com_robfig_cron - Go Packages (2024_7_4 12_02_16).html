@@ -1,0 +1,1421 @@
+<!DOCTYPE html> <html lang=en data-layout=responsive data-local style=--js-unit-header-height:8.8125rem;--js-sticky-header-height:3.5rem;--js-unit-header-top:-5.3125rem><!--
+ Page saved with SingleFile 
+ url: https://pkg.go.dev/github.com/robfig/cron 
+ saved date: Thu Jul 04 2024 12:02:16 GMT+0800 (中国标准时间)
+--><meta charset=utf-8>
+<meta http-equiv=X-UA-Compatible content="IE=edge">
+<meta name=viewport content="width=device-width, initial-scale=1.0">
+<meta name=Description content="Package cron implements a cron spec parser and job runner.">
+<meta class=js-gtmID data-gtmid=GTM-W8MVQXG>
+<link rel=canonical href=https://pkg.go.dev/github.com/robfig/cron>
+<style>/*!
+ * Copyright 2021 The Go Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ */html,body,button,div,span,h1,h2,h3,h4,input,p,pre,a,img,ol,ul,li,form,article,aside,details,footer,header,nav,section,summary{border:0;font:inherit;font-size:100%;margin:0;padding:0;vertical-align:baseline}article,aside,footer,header,nav,section{display:block}ol,ul{list-style:none}*,:before,:after{box-sizing:border-box}body{color:var(--color-text);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";font-size:1rem;line-height:normal}h1{font-size:1.5rem}h2{font-size:1.375rem}h3{font-size:1.25rem}h4{font-size:1.125rem}h1,h2,h3,h4{font-weight:600;line-height:1.25em;word-break:break-word}p{font-size:1rem;line-height:1.5rem;max-width:60rem}.go-textSubtle{color:var(--color-text-subtle)}.go-textLabel{font-size:.875rem;font-weight:600;line-height:1rem}pre{font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:.875rem;line-height:1.5em}pre{background-color:var(--color-background-accented);border:var(--border);border-radius:var(--border-radius);color:var(--color-text);overflow-x:auto;padding:.625rem;tab-size:4;white-space:pre}button,input{font:inherit}a,a:link,a:visited{color:var(--color-brand-primary);text-decoration:none}a:hover,a:focus{color:var(--color-brand-primary);text-decoration:underline}a:hover>*{text-decoration:underline}button:focus:not([disabled]){border-color:var(--color-brand-primary);box-shadow:var(--focus-box-shadow);outline:transparent}.go-Button{align-items:center;background-color:var(--color-button);border:.0625rem solid transparent;border-radius:var(--border-radius);color:var(--color-button-text);cursor:pointer;display:inline-flex;font-weight:500;gap:.25rem}.go-Button:not(.go-Button--inline){padding:.5rem}.go-Button--inverted,.go-Button--text,.go-Button--inline{background-color:var(--color-button-inverted);color:var(--color-button-inverted-text)}.go-Button--inline{background-color:transparent}.go-Button--inverted{border:var(--border)}.go-Button:hover{box-shadow:var(--focus-box-shadow);filter:contrast(.95)}.go-Button--inline:hover{box-shadow:none;text-decoration:underline var(--color-button-inverted-text)}.go-Button:focus{filter:contrast(.95)}.go-Button--inverted:focus{border-color:var(--color-button-inverted-text)}.go-Button:active{box-shadow:none;filter:contrast(.85)}.go-Button:disabled{background-color:var(--color-button-disabled);box-shadow:none;color:var(--color-button-text-disabled);cursor:initial;filter:none;text-decoration:none}.go-Button--inverted:disabled,.go-Button--text:disabled,.go-Button--inline:disabled{background-color:var(--color-button-inverted-disabled);color:var(--color-button-inverted-text-disabled)}.go-Button--inline:disabled{background-color:transparent}.go-Breadcrumb ol{line-height:1.5rem;white-space:initial}.go-Breadcrumb li{align-items:center;color:var(--color-text-subtle);display:inline-flex;font-size:.875rem}.go-Breadcrumb li:not(:last-child):after{content:">";padding:0 .5rem}.go-Breadcrumb li:last-child>a{color:var(--color-text-subtle)}.go-Breadcrumb li>.go-Clipboard{margin:0 .5rem}.go-Chip{background:var(--color-button);border:.0625rem solid var(--color-button);border-radius:1.25rem;color:var(--color-button-text);font-size:.75rem;padding:.125rem .625rem}.go-Chip--inverted{background:var(--color-button-inverted);border:var(--border);color:var(--color-text)}.go-Clipboard{position:relative}.go-Clipboard:before{background-color:var(--color-background-inverted);border-radius:var(--border-radius);color:var(--color-text-inverted);content:attr(data-tooltip);display:block;font-size:.9em;left:calc(100% + .125rem);padding:.25rem .3rem;position:absolute;text-transform:uppercase;top:.125rem;white-space:nowrap;z-index:1000}.go-Clipboard:after{border-bottom:.25rem solid transparent;border-left:0;border-right:.25rem solid var(--color-background-inverted);border-top:.25rem solid transparent;content:"";display:block;position:absolute;right:-.125rem;top:.5625rem;z-index:1000}.go-Clipboard:not([data-tooltip]):before,.go-Clipboard:not([data-tooltip]):after,.go-Clipboard[data-tooltip=""]:before,.go-Clipboard[data-tooltip=""]:after{display:none}:root{--gray-1:#202224;--gray-2:#3e4042;--gray-3:#555759;--gray-4:#6e7072;--gray-5:#848688;--gray-6:#aaacae;--gray-7:#c6c8ca;--gray-8:#dcdee0;--gray-9:#f0f1f2;--gray-10:#f8f8f8;--turq-light:#5dc9e2;--turq-med:#50b7e0;--turq-dark:#007d9c;--turq-bright:#00769c;--blue:#bfeaf4;--blue-light:#f2fafd;--black:#000;--green:#3a6e11;--green-light:#5fda64;--pink:#c85e7a;--pink-light:#fdecf1;--purple:#542c7d;--slate:#253443;--white:#fff;--yellow:#fceea5;--yellow-light:#fff8cc;--color-brand-primary:var(--turq-dark);--color-background:var(--white);--color-background-inverted:var(--slate);--color-background-accented:var(--gray-10);--color-background-highlighted:var(--blue);--color-background-highlighted-link:var(--blue-light);--color-background-info:var(--gray-9);--color-background-warning:var(--yellow-light);--color-background-alert:var(--pink-light);--color-border:var(--gray-7);--color-text:var(--gray-1);--color-text-subtle:var(--gray-4);--color-text-link:var(--turq-dark);--color-text-inverted:var(--white);--color-code-comment:var(--green);--color-bright-text-link:var(--turq-bright);--color-input:var(--color-background);--color-input-text:var(--color-text);--color-button:var(--turq-dark);--color-button-disabled:var(--gray-9);--color-button-text:var(--white);--color-button-text-disabled:var(--gray-3);--color-button-inverted:var(--color-background);--color-button-inverted-disabled:var(--color-background);--color-button-inverted-text:var(--color-brand-primary);--color-button-inverted-text-disabled:var(--color-text-subtle);--color-button-accented:var(--yellow);--color-button-accented-disabled:var(--gray-9);--color-button-accented-text:var(--gray-1);--color-button-accented-text-disabled:var(--gray-3)}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--color-brand-primary:var(--turq-med);--color-background:var(--gray-1);--color-background-accented:var(--gray-2);--color-background-highlighted:var(--gray-2);--color-background-highlighted-link:var(--gray-2);--color-background-info:var(--gray-3);--color-background-warning:var(--yellow);--color-background-alert:var(--pink);--color-border:var(--gray-4);--color-text:var(--gray-9);--color-text-link:var(--turq-med);--color-text-subtle:var(--gray-7);--color-code-comment:var(--green-light)}}.go-Footer{background-color:var(--color-background-inverted);color:var(--color-text-inverted);font-size:.875rem;width:100%}.go-Footer-links{display:flex;flex-wrap:wrap;justify-content:space-between;margin:auto;max-width:75.75rem;padding:2rem 1.5rem 2.625rem}.go-Footer-linkColumn{flex:0 0 9.5rem}.go-Footer .go-Footer-link{color:var(--color-text-inverted);display:flex;flex:1;font-size:.875rem;line-height:2rem}.go-Footer .go-Footer-link--primary{font-size:1.125rem;line-height:1.75rem;margin-bottom:.5rem;margin-top:.75rem}.go-Footer-listItem p{color:var(--color-text-inverted);font-size:.875rem}.go-Footer-bottom{align-items:center;border-top:var(--border);display:flex;margin:0 1.5rem;min-height:4.125rem}.go-Footer-gopher{align-self:flex-end;height:3.147rem;width:5rem}.go-Footer-listRow{display:flex;flex:1;flex-wrap:wrap;list-style:none;margin:0;padding:0;text-align:center}.go-Footer-listItem{align-items:center;display:flex;flex:1 100%;justify-content:center;margin:.4rem 0;padding:0 1rem}.go-Footer-listItem a:link,.go-Footer-listItem a:visited{color:var(--color-text-inverted)}.go-Footer-listItem .go-Button--text{background-color:transparent;font-size:1rem;margin:-.5rem 0}.go-Footer-listItem [data-value]{display:none}[data-theme=auto] .go-Footer-listItem [data-value=auto],:root:not([data-theme]) .go-Footer-listItem [data-value=auto]{display:initial}.go-Footer-googleLogo{align-self:flex-end;height:1.5rem;margin-bottom:1.3rem;text-align:right}.go-Footer-googleLogoImg{height:1.5rem;width:4.529rem}@media only screen and (min-width:52rem){.go-Footer-listItem{flex:initial}.go-Footer-listItem+.go-Footer-listItem{border-left:var(--border)}.go-Footer-toggleTheme{margin:0 0 0-.5rem}.go-Footer-keyboard{margin:0}}select:focus:not([disabled]),input:focus:not([disabled]){border-color:var(--color-brand-primary);box-shadow:var(--focus-box-shadow);outline:transparent;z-index:2}input::placeholder{color:var(--color-text-subtle)}.go-Input{background:var(--color-input);border:var(--border);border-radius:var(--border-radius);color:var(--color-input-text)}.go-Input{padding:.4063rem .5rem}.go-InputGroup .go-Input{flex:1}.go-InputGroup>:not(:first-child,:last-child){border-radius:0;margin-left:-.0625rem}.go-InputGroup>:first-child{border-bottom-right-radius:0;border-top-right-radius:0}.go-InputGroup>:last-child{border-bottom-left-radius:0;border-top-left-radius:0;margin-left:-.0625rem}.go-InputGroup>*:hover,.go-InputGroup>*:focus{z-index:1}.go-ShortcutKey{display:flex;position:relative}.go-ShortcutKey .go-Input{flex-grow:1}.go-ShortcutKey:after{align-self:center;background-color:var(--color-background-accented);border-radius:.5rem;color:var(--gray-6);content:attr(data-shortcut);content:attr(data-shortcut)/attr(data-shortcut-alt);display:none;font-size:.75rem;padding:.0625rem 0;position:absolute;right:.75rem;text-align:center;width:1.5rem;z-index:1}@media only screen and (min-width:52rem){.go-ShortcutKey:after{display:initial}}@media only screen and (min-width:52rem){}.go-Header{background:#007d9c;border-bottom:none;box-shadow:0 .0625rem .125rem #ababab4d;top:0;width:100%;z-index:20}.go-Header-inner{margin:0 auto;padding:0 var(--gutter)}.go-Header--full .go-Header-inner{max-width:initial}.go-Header-nav{align-items:center;display:flex;height:3.5rem;justify-content:space-between}.go-Header-rightContent{align-items:center;display:flex;height:100%;justify-content:flex-end;width:100%}.go-Header-rightContent form{flex-grow:1}.go-Header-inner--dark{border-bottom:none;color:var(--white)}.go-Header-logo{display:block;height:2rem;margin-right:2.25rem;width:5.125rem}.go-Header-menuItem{display:none;position:relative}.go-Header-menu{align-items:stretch;display:flex;height:100%;list-style:none;margin:0;padding:0}.go-Header-menuItem .go-Icon{filter:brightness(0%) saturate(100%) invert(100%);font-size:1.25rem}@media only screen and (min-width:65rem){.go-Header-menuItem{align-items:stretch;display:inline-flex;flex:none}.go-Header-menu{justify-content:flex-end}}.go-Header-menuItem .js-desktop-menu-hover img{pointer-events:none}.go-Header-menuItem a:link,.go-Header-menuItem a:visited{align-items:center;border-bottom:.1875rem solid transparent;border-top:.1875rem solid transparent;color:var(--color-text);display:inline-flex;padding:0 1.5rem;text-align:center;text-decoration:none;width:100%}.go-Header-menuItem--active a:link,.go-Header-menuItem--active a:visited{border-bottom-color:var(--turq-med);font-weight:700}.go-Header-menuItem a:hover{border-bottom-color:var(--white)}.go-Header-menuItem:hover>a:not(.forced-closed).js-desktop-menu-hover,.go-Header-menuItem:focus-within>a:not(.forced-closed).js-desktop-menu-hover{background:var(--white);border-color:var(--white);color:var(--color-text-link)}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .go-Header-menuItem:hover>a:not(.forced-closed).js-desktop-menu-hover .go-Icon,:root:not([data-theme="light"]) .go-Header-menuItem:focus-within>a:not(.forced-closed).js-desktop-menu-hover .go-Icon{filter:brightness(0) saturate(100%) invert(60%) sepia(97%) saturate(125%) hue-rotate(158deg) brightness(83%) contrast(157%)}}.go-Header-inner--dark .go-Header-menuItem a:link,.go-Header-inner--dark .go-Header-menuItem a:visited{color:var(--white)}.go-Header-inner--dark .go-Header-menuItem:hover>a:not(.forced-closed).js-desktop-menu-hover,.go-Header-inner--dark .go-Header-menuItem:focus-within>a:not(.forced-closed).js-desktop-menu-hover{background:var(--color-background);border-color:var(--color-background)}.go-SearchForm-form{display:none}.go-SearchForm-form:after{right:2.75rem}@media only screen and (min-width:32rem){.go-Header-rightContent{width:100%}.go-SearchForm{flex:1}.go-SearchForm-form{display:flex}}@media only screen and (min-width:65rem){}@media only screen and (max-width:57.7rem){@media (prefers-color-scheme:dark){}}.skip-to-content-link{background:var(--color-background);border-radius:.375rem;clip:rect(0 0 0 0);color:var(--color-text);font-weight:500;left:8%;margin:.313rem;overflow:hidden;position:absolute;top:.75rem}.skip-to-content-link:focus{clip:unset;z-index:1}.depsdev-Icon{height:1.125em;vertical-align:text-bottom;width:auto}.go-Icon{filter:none;height:1.125em;vertical-align:text-bottom;width:auto}.go-Icon--accented{filter:brightness(0) invert(45%) sepia(94%) saturate(6735%) hue-rotate(176deg) brightness(94%) contrast(101%)}.go-Icon--inverted{filter:brightness(0) saturate(100%) invert(100%) sepia(97%) saturate(13%) hue-rotate(245deg) brightness(103%) contrast(107%)}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .go-Icon:not(.go-Icon--accented){filter:brightness(0) saturate(100%) invert(100%) sepia(97%) saturate(13%) hue-rotate(245deg) brightness(103%) contrast(107%)}:root:not([data-theme="light"]) .go-Icon--accented{filter:brightness(0) invert(57%) sepia(63%) saturate(4864%) hue-rotate(160deg) brightness(100%) contrast(101%)}}.go-Message{color:var(--color-text);font-size:.875rem;line-height:1.5rem;padding:.25rem .5rem;width:100%}.go-Message--notice{background-color:var(--color-background-info)}.go-Message>.go-Icon{vertical-align:text-top}@media (prefers-color-scheme:dark){}.go-Tree{display:flex;flex-direction:column}.go-Tree ul{list-style:none;padding-left:0}.go-Tree li:last-of-type{padding-bottom:.25rem}.go-Tree a[aria-expanded=true]+ul[role=group]{display:block}.go-Tree a[aria-level="1"]+ul[role=group]{max-height:calc(100vh - var(--js-tree-height,0) - var(--js-sticky-header-height,3.5rem) - 5rem);overflow-y:auto;padding:.5rem .25rem 0}.go-Tree a{color:var(--color-text-subtle);display:block;line-height:1.5rem;overflow:hidden;padding:.125rem 0 .125rem 1.25rem;position:relative;text-overflow:ellipsis;user-select:none;white-space:nowrap}.go-Tree a[aria-level="1"]{display:block;font-size:1rem;font-weight:500;line-height:2.5rem;padding:0 1rem}.go-Tree a:focus,.go-Tree a:hover{text-decoration:underline;z-index:1}.go-Tree a[aria-selected=true]{color:var(--color-text);font-weight:500}.go-Tree a[aria-level="1"][aria-selected=true]{background-color:var(--color-background-accented)}.go-Tree a[aria-level="2"]{margin-bottom:.25rem;position:relative}.go-Tooltip{border-radius:var(--border-radius);cursor:pointer;display:inline-block;position:relative}.go-Tooltip>summary{list-style:none}.go-Tooltip>summary::-webkit-details-marker,.go-Tooltip>summary::marker{display:none}.go-Tooltip>summary>img{vertical-align:text-bottom}.go-Tooltip p{background:var(--color-background) 80%;border:var(--border);border-radius:var(--border-radius);color:var(--color-text);font-size:.75rem;letter-spacing:.0187rem;line-height:1rem;padding:.5rem;position:absolute;top:1.5rem;white-space:normal;width:12rem;z-index:100}:root{--gutter:1.5rem;--gap:1rem;--scroll-margin:calc(var(--js-sticky-header-height,3.5rem) + var(--js-sticky-nav-height,0) + 2rem);--border:.0625rem solid var(--color-border);--border-radius:.25rem;--box-shadow:0 0 .375rem 0 rgb(0 0 0/25%);--focus-box-shadow:0 0 .0625rem .0625rem rgb(0 112 210/60%)}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--box-shadow:0 .3125rem .9375rem rgb(0 0 0/45%)}}@media (min-width:50rem){:root{--gap:2rem;--scroll-margin:calc(var(--js-sticky-header-height,3.5rem) + var(--js-sticky-nav-height,0) + 1rem)}}*:target{scroll-margin-top:var(--scroll-margin)}body{background-color:var(--color-background);display:flex;flex-direction:column;min-height:100vh;min-width:20rem;-webkit-overflow-scrolling:touch}.Cookie-notice{align-items:center;background-color:var(--color-background);border-top:var(--border);bottom:0;color:var(--color-text);gap:1rem;justify-content:center;left:0;padding:1rem;position:fixed;right:0;z-index:100}.Cookie-notice--visible{display:flex}/*!
+ * http://meyerweb.com/eric/tools/css/reset/
+ * v2.0 | 20110126
+ * License: none (public domain)
+ *//*!
+ * Copyright 2020 The Go Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ *//*!
+* Copyright 2021 The Go Authors. All rights reserved.
+* Use of this source code is governed by a BSD-style
+* license that can be found in the LICENSE file.
+*//*!
+ * Copyright 2021 The Go Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ */</style>
+<link rel=search type=application/opensearchdescription+xml href=https://pkg.go.dev/opensearch.xml title="Go Packages">
+<title>cron package - github.com/robfig/cron - Go Packages</title>
+<style>/*!
+ * Copyright 2021 The Go Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ */.UnitHeader-titleHeading{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media screen and (min-width:80rem){}.UnitHeader-overflowImage{fill:var(--gray-3);height:100%;left:0;position:absolute;top:0;width:100%}.DetailsHeader-badge--latest{margin-left:.25rem}.go-Main{background-color:var(--color-background);color:var(--color-text);display:grid;flex-grow:1;grid-template:repeat(6,min-content)/100%;grid-template-areas:"banner""header""aside""nav""article""footer";min-height:32rem}.go-Main-banner{grid-area:banner;padding:1rem var(--gutter)0 var(--gutter)}.go-Main-header{background-color:var(--color-background);border-bottom:var(--border);font-size:.875rem;grid-area:header;min-height:var(--js-unit-header-height);padding:0 var(--gutter);transition:box-shadow .25s linear;z-index:10}.go-Main-nav{background-color:var(--color-background);border-bottom:var(--border);font-size:.875rem;grid-area:nav;padding:0 var(--gutter)}.go-Main-article{background-color:var(--color-background);grid-area:article;margin:var(--gap)0 5rem 0;min-height:32rem;padding:0 var(--gutter)}.go-Main-aside{background-color:var(--color-background-accented);border-bottom:var(--border);font-size:.875rem;grid-area:aside;padding:1rem var(--gutter)}.go-Main-footer{background-color:var(--color-background);grid-area:footer;padding:0 var(--gutter)}.go-Main>*:empty{border:none;margin:0;padding:0}.go-Main-headerBreadcrumb{margin-top:1rem}.go-Main-headerContent{margin-bottom:1rem;position:sticky;top:0}@media screen and (min-width:80rem){}.go-Main-headerTitle{align-items:center;display:flex;gap:.5rem;height:3.5rem;max-width:100%;padding-right:1.5rem}@media screen and (min-width:80rem){}.go-Main-headerDetails{display:flex;flex-flow:row wrap;gap:0 1rem;white-space:nowrap}@media screen and (min-width:80rem){}.go-Main-headerDetailItem{color:var(--color-text-subtle);display:inline;font-size:.875rem;height:1.75rem;line-height:1.75rem}.go-Main-headerDetailItem:not(:last-of-type):after{content:"|";padding-left:1rem}.go-Main-nav--sticky{position:sticky;top:var(--js-sticky-header-height,3.5rem);transition:box-shadow .25s linear;z-index:1}.go-Main-navDesktop{display:none;margin-top:var(--gap);overflow-y:auto;padding:.25rem;position:sticky;top:calc(var(--js-sticky-header-height,3.5rem) + 1rem)}@media screen and (min-width:80rem){:root[data-layout=responsive] .go-Main{grid-template:repeat(5,min-content)/21.5% minmax(0,auto);grid-template-areas:"banner  banner""header  header""aside   aside""nav     article""footer  footer"}:root[data-layout=responsive] .go-Main-nav{border-bottom:none;border-top:none;padding:0 0 0 var(--gutter)}:root[data-layout=responsive] .go-Main-article{border-bottom:none;border-top:none;margin:var(--gap)0 5rem var(--gap);padding:0 var(--gutter)0 0}:root[data-layout=responsive] .go-Main-aside{border-bottom:var(--border)}:root[data-layout=responsive] .go-Main-nav--sticky{position:initial}:root[data-layout=responsive] .go-Main-navDesktop{display:block}}@media screen and (min-width:112rem){:root[data-layout=responsive] .go-Main{grid-template:repeat(4,min-content)/minmax(17.5%,1fr) minmax(0,4fr) minmax(17.5%,1fr);grid-template-areas:"banner banner  banner""header header  header""nav    article aside""footer footer  footer"}:root[data-layout=responsive] .go-Main-article{margin:var(--gap) var(--gap) 5rem;padding:0}:root[data-layout=responsive] .go-Main-aside{background-color:var(--color-background);border-bottom:none;margin:var(--gap)0 0 0;padding:0 var(--gutter)0 0}}@media screen and (min-width:80rem){}/*!
+ * Copyright 2020-2021 The Go Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ *//*!
+ * Copyright 2021 The Go Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ */</style>
+<style>/*!
+ * Copyright 2021 The Go Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ */@media only screen and (min-width:30rem){}@media only screen and (max-width:52rem){}.UnitDoc{margin-bottom:2rem;word-break:break-word}.UnitDoc h2 a.UnitDoc-idLink{opacity:0}.UnitDoc h2:hover a,.UnitDoc summary:focus a,.UnitDoc h2 a.UnitDoc-idLink:focus{opacity:1}.UnitDoc-title{border-bottom:var(--border);padding-bottom:1rem}.UnitDoc-title img{margin:auto 1rem auto 0}.UnitDoc .Documentation h4{margin-top:1.5rem}.Documentation{display:block}.Documentation p{margin:1rem 0}.Documentation h3{margin-top:1.5rem}.Documentation a:hover{text-decoration:underline}.Documentation h3 a,.Documentation h4 a.Documentation-idLink{opacity:0}.Documentation a:focus{opacity:1}.Documentation h2:hover a,.Documentation h3:hover a,.Documentation h4:hover a,.Documentation summary:hover a,.Documentation summary:focus a,.Documentation h4 a.Documentation-idLink:focus{opacity:1}.Documentation ul{line-height:1.5rem;list-style:none;padding-left:0}.Documentation ul ul{padding-left:2em}.Documentation .Documentation-bulletList{list-style:disc;margin-bottom:1rem;padding-left:2rem}.Documentation pre .comment{color:var(--color-code-comment)}.Documentation-toc,.Documentation-overview,.Documentation-index{padding-bottom:0}.Documentation-empty{color:var(--color-text-subtle);margin-top:-.5rem}@media only screen and (min-width:64rem){.Documentation-toc{margin-left:2rem;white-space:nowrap}.Documentation-toc-columns{columns:2}}.Documentation-toc:empty{display:none}.Documentation-tocItem{overflow:hidden;text-overflow:ellipsis}.Documentation-overviewHeader,.Documentation-indexHeader,.Documentation-constantsHeader,.Documentation-variablesHeader,.Documentation-typeHeader,.Documentation-typeMethodHeader,.Documentation-typeFuncHeader{margin-bottom:.5rem}h4.Documentation-typeHeader,h4.Documentation-typeFuncHeader,h4.Documentation-typeMethodHeader{align-items:baseline;display:flex;justify-content:space-between}.Documentation-sinceVersion{color:var(--color-text-subtle);font-size:.9375rem;font-weight:400}.Documentation-declaration pre{scroll-padding-top:calc(var(--js-sticky-header-height,3.5rem) + 3.75rem)}@media only screen and (min-width:64rem){.Documentation-declaration pre{scroll-padding-top:calc(var(--js-sticky-header-height,3.5rem) + .75rem)}}.Documentation-typeFunc pre,.Documentation-typeMethod pre{white-space:pre-wrap;word-break:break-all;word-wrap:break-word}.UnitFiles{margin-bottom:2rem}.UnitFiles-titleLink{position:relative}.UnitFiles-titleLink a{bottom:1rem;font-size:.875rem;position:absolute;right:0}.UnitFiles-titleLink a:after{background-image:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI2LjQuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjQgMjQ7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDpub25lO30KCS5zdDF7ZmlsbDojNDU1QTY0O30KPC9zdHlsZT4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTAsMGgyNHYyNEgwVjB6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xOSwxOUg1VjVoN1YzSDVDMy45LDMsMywzLjksMyw1djE0YzAsMS4xLDAuOSwyLDIsMmgxNGMxLjEsMCwyLTAuOSwyLTJ2LTdoLTJWMTl6IE0xNCwzdjJoMy42bC05LjgsOS44CglsMS40LDEuNEwxOSw2LjRWMTBoMlYzSDE0eiIvPgo8L3N2Zz4K);background-repeat:no-repeat;background-size:.875rem 1.25rem;content:"";display:inline-block;height:1rem;left:.3125rem;position:relative;top:.125rem;width:1rem}.UnitFiles h2 a.UnitFiles-idLink{opacity:0}.UnitFiles h2:hover a,.UnitFiles summary:focus a,.UnitFiles h2 a.UnitFiles-idLink:focus{opacity:1}.UnitFiles-title{border-bottom:var(--border);font-size:1.375rem;margin:.5rem 0 0;padding-bottom:1rem}.UnitFiles-title img{margin:auto 1rem auto 0}.UnitFiles-fileList{columns:12.5rem 5;line-height:1.5rem;list-style:none;margin-top:1rem;padding-left:0;word-break:break-all}.UnitMeta{display:grid;gap:1rem 2rem;white-space:nowrap}.UnitMeta-details,.UnitMeta-links{display:flex;flex-flow:wrap;flex-direction:row;gap:1rem 2rem}.UnitMeta-repo{align-items:center;display:flex;overflow:hidden}.UnitMeta-repo a{overflow:hidden;text-overflow:ellipsis}@media (min-width:50rem){.UnitMeta{grid-template-columns:max-content auto}.UnitMeta-details,.UnitMeta-links{flex-direction:row}}@media (min-width:112rem){:root[data-layout=responsive] .UnitMeta{grid-template-columns:100%}:root[data-layout=responsive] .UnitMeta-details,:root[data-layout=responsive] .UnitMeta-links{flex-direction:column;white-space:nowrap}}.UnitMeta-detailsLearn{width:100%}@media (min-width:50rem){.UnitMeta-detailsLearn{width:initial}}.UnitOutline-jumpTo{display:flex;margin-bottom:1rem}.UnitOutline-jumpTo button{align-items:center;background-color:var(--color-background);border:var(--border);border-radius:.25rem;color:var(--color-text-subtle);cursor:pointer;height:2rem;padding-left:1rem;text-align:left;width:100%}.UnitOutline-jumpTo button:hover:not([disabled]){border-color:var(--color-border)}.UnitOutline-jumpToInput:disabled{background-color:var(--gray-9)}.Overview-readmeContent a{background-color:initial}.Overview-readmeContent a:active,.Overview-readmeContent a:hover{outline-width:0}.Overview-readmeContent h3{margin:.67em 0}.Overview-readmeContent img{border-style:none}.Overview-readmeContent *{box-sizing:border-box}.Overview-readmeContent a{color:var(--color-brand-primary);text-decoration:none}.Overview-readmeContent a:hover{text-decoration:underline}.Overview-readmeContent a:not([href]){color:inherit;text-decoration:none}.Overview-readmeContent p{margin-top:0;margin-bottom:1rem}.Overview-readmeContent h3{margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25}.Overview-readmeContent h3{font-size:2em}.Overview-readmeContent h3{padding-bottom:.3em;border-bottom:var(--border)}.Overview-readmeContent img{max-width:100%;box-sizing:initial;background-color:var(--color-background)}.UnitReadme{margin-bottom:2rem}.UnitReadme h2:hover a,.UnitReadme h2 a.UnitReadme-idLink{opacity:1}.UnitReadme-title{border-bottom:var(--border);font-size:1.375rem;padding-bottom:1rem}.UnitReadme-title img{margin:auto 1rem auto 0}.UnitReadme-content{-webkit-mask-image:linear-gradient(to bottom,black 75%,transparent 100%);position:relative}.UnitReadme--expanded .UnitReadme-content{-webkit-mask-image:none;mask-image:none;max-height:initial;overflow:initial}.Overview-readmeContent{overflow-wrap:break-word}.UnitDetails{column-gap:2rem;grid-template-columns:minmax(0,auto);margin:auto;min-height:32rem}@media only screen and (min-width:64rem){.UnitDetails{grid-template-columns:15.5rem minmax(30.5rem,43.125rem) minmax(10rem,15.5rem)}}@media only screen and (min-width:80rem){.UnitDetails{grid-template-columns:15.5rem minmax(43.125rem,60rem) 15.5rem;justify-content:center}}.UnitDetails :target{scroll-margin-top:calc(var(--js-sticky-header-height,3.5rem)*2.15)}@media only screen and (min-width:64rem){.UnitDetails :target{scroll-margin-top:calc(var(--js-sticky-header-height,3.5rem)*1.25)}}.UnitDetails :target:not(details,h2){background-color:var(--color-background-highlighted);padding:.25rem}@media only screen and (min-width:64rem){}/*!
+* Copyright 2019-2020 The Go Authors. All rights reserved.
+* Use of this source code is governed by a BSD-style
+* license that can be found in the LICENSE file.
+*//*!
+ * Copyright 2020 The Go Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file.
+ */</style>
+<meta name=referrer content=no-referrer><link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAIAICAAAAEAIACoEAAAJgAAABAQAAABAAgAaAUAAM4QAAAoAAAAIAAAAEAAAAABACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUTjj/VE44//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2/1ROOP9UTjj/AAAAAAAAAAAAAAAAAAAAAFROOP9UTjj//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb/VE44/1ROOP8AAAAAAAAAAAAAAAAAAAAAVE44/1ROOP/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv9UTjj/VE44/wAAAAAAAAAAAAAAAAAAAABUTjj/VE44//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2/1ROOP9UTjj/AAAAAAAAAAAAAAAAAAAAAFROOP9UTjj//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb/VE44/1ROOP8AAAAAAAAAAAAAAAAAAAAAVE44/1ROOP/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv9UTjj/VE44/wAAAAAAAAAAAAAAAAAAAABUTjj/VE44//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2/1ROOP9UTjj/AAAAAAAAAAAAAAAAAAAAAFROOP9UTjj//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb/VE44/1ROOP8AAAAAAAAAAAAAAAAAAAAAVE44/1ROOP/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv9UTjj/VE44/wAAAAAAAAAAAAAAAAAAAABUTjj/VE44//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2/1ROOP9UTjj/AAAAAAAAAAAAAAAAAAAAAFROOP9UTjj//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb/VE44/1ROOP8AAAAAAAAAAAAAAAAAAAAAVE44/1ROOP/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv9UTjj/VE44/wAAAAAAAAAAAAAAAAAAAABUTjj/VE44//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/awWX/xrBc/8awXP/fxmj//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2/1ROOP9UTjj/AAAAAAAAAAAAAAAAAAAAAFROOP9UTjj//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2/+bhzf/7/P//+/z//+LavP/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb/VE44/1ROOP8AAAAAAAAAAAAAAAAAAAAAVE44/1ROOP/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//jcc//mzGv/8fDq//v8///7/P//6eXX/+TKav/43HP//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv9UTjj/VE44/wAAAAAAAAAAAAAAAAAAAABUTjj/VE44//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/73nX/qZpg/5STfP+Un7f/mqbB/5unwv+TnLD/lpN6/7CfX//+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2/1ROOP9UTjj/AAAAAAAAAAAAAAAAAAAAAFROOP9UTjj//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//jcef92jcD/dIzD/3SMw/90jMP/dIzD/3SMw/90jMP/fI+3//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb/VE44/1ROOP8AAAAAAAAAAAAAAAAAAAAAVE44/1ROOP/+4Xb//uF2//7hdv/+4nv//u6x///32f//+eP///XP/6Cptf90jMP/U2KF/zM5Sf81PEz/WWqQ/3SMw/+wtLL///LD///zyf/+7q///uN///7hdv/+4Xb//uF2//7hdv9UTjj/VE44/wAAAAAAAAAAAAAAAAAAAABUTjj/VE44//7hdv/+4Xb//uSE///66P///////////////////////v///8zKvf8fICP/HyAj/x8gI/8nKCr/3d7X/////////////////////////fT//uiY//7hdv/+4Xb//uF2/1ROOP9UTjj/AAAAAAAAAAAAAAAAAAAAAFROOP9UTjj//uF2//7hdv//+N7//////////////////////////////////////6CXdv9MRzT/UUs1/7Otmv///////////////////////////////////ff//uSF//7hdv/+4Xb/VE44/1ROOP8AAAAAAAAAAAAAAAAAAAAAVE4481ROOP/43HT//uiV///////////////////////29vb/X2Fj/ygqLv97fX///vvv//7hd//+55H//////////////////////9TU1f9AQUT/MTI2/7O0tf//8cH//uF2//jcdP9UTjj/VE448wAAAAAAAAAAAAAAAAAAAABUTjjaVE44/+vQb//+7rP//////////////////////5eYmv8RExf/ERMX/xETF//BwsP//uWG//7usf//////////////////////UFFU/xETF/8RExf/HyEl//z13f/+4Xb/6tBv/1ROOP9TTjjZAAAAAAAAAAAAAAAAAAAAAFVPN69UTjj/yrVj//7vtP//////////////////////lpaY/xETF/8RExf/ERMX/8DAwf/+5Yf//u6x//////////////////////9PUFP/ERMX/xETF/8eICT/+/Tc//7hdv/Js2L/VE44/1ROOLEAAAAAAAAAAAAAAABUTjlVV1I59JCBTv/iyWz//uiX///////////////////////19fX/W1xf/yUmKv92d3n//vvx//7hd//+55P//////////////////////9HS0v87PUD/LC4x/7Cwsv//8sL//uF2/9jAaP94bUX/VE44+FRPOWcAAAAAVEw5Q1dQOf7Su2b/7dJw//zfdv/94Hb///jg///////////////////////////////////////+7rP//uF2//7hdv//99n///////////////////////////////////34//7lhv/+4Xb//uF2//fbc/+ikVT/VE44/1VPOFdVTji7gnZJ//PYc/+djVP/nY5S//bac//944T///rq//////////////////////////////TL//7hd//+4Xb//uF2//7jgf//+OD////////////////////////99v/+6Zr//uB2/9a+Z/+YiVH/sZ9Z//XZc/9UTjj/VU440FRPOOBrYkD/+t50//nddf/+4Xb/ybNi/5KDTv/123n//u+0///33f//+eX///XS//7qoP/+4Xb//uF2//7hdv/+4Xb//uF2//7hd//+66P///PH///0zP/+7rP//uOA//XZc/+hkVT/6c9u//fbc//t0nD/28Np/1ROOP9UTjj1VU43wVROOP9+ckf/sqBb/4x+Tf9UTjj/VE44/2hfP//ArF//+dx0//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//7hdv/+4Xb//uF2//jcdP/ArF//Z18//1ROOP9dVTv/o5JV/6qZV/9lXT7/VE44/1NNONZUTDlDVE44/FROOP9UTjj/VE44/1ROOP9UTzjjVE44/1ROOP9fVzv/koRP/7ShW//UvWf/581t//HWcf/63nT/+t50//HWcf/nzW3/1L1n/7ShW/+ShE//X1c7/1ROOP9UTjj/VU453FROOP9UTjj/VE44/1ROOP9UTjj+VU84VwAAAABUTzY9VE85uVROON5VTjjKVU44aQAAAAJTTTlZU04431ROOP9UTjj/VE44/1ROOP9UTjj/VE44/1ROOP9UTjj/VE44/1ROOP9UTjj/VE44/1ROOP9UTjj/U0443FNNOFYAAAABVE44W1ROOMNTTjjfVE44wFRNOEkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVVVUDUk43QVRPOJJUTzi8VE443lROOO5UTjjuVE44/1ROOP9UTjjxVE447lROOONUTzi8VE43j1RPNj2AgAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAPAAAADwAAAA8AAAAPAAAADwAAAA8AAAAPAAAADwAAAA8AAAAPAAAADwAAAA8AAAAPAAAADwAAAA8AAAAPAAAADwAAAA8AAAAPAAAADwAAAA8AAAAPAAAADgAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAf8AAP//////KAAAABAAAAAgAAAAAQAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABETFwAfICMALiwnAFdOMQBUTjgAdWU3AHhoNAB7c04AqpJIAKWSVAB0jMMAyKdOAI6ZpgCmo4kAyLNyAMKyegDPu3kAyr+PAMzBlgDz1XQA/913AP/fdwD/33gA/+F1AP/geQD+4XYA5+HSAPX2+wD3+v8A+/z/APv+/wD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgBBkZGRkZGRkZGRkZGQQgIAQZGRkZGRkZGRkZGRkEICAEGRkZGRkZGRkZGRkZBCAgBBkZGRkZGRkZGRkZGQQgIAQZGRkZGRkZGRkZGRkEICAEGRkZGRkZGRkZGRkZBCAgBBkZGRkZEA8ZFRQUGQQgIAQZGRkYCh0dChkUFBkEICAEGRUZGQ0KCgwZFxYZBCAgBBkTHx8OAQEOHx8TGQQgIAQZGh4AAhkZGh0AAhkEIAQGCxofAAIZGRofAAILBQQECwgOGxwOGRkOHx8OCAsEIAQHCAsLGRkZGRIRCQcEICAgICAHBwMEBAMHByAgICAgICAgICAgICAgICAgICAggAEAAIABAACAAQAAgAEAAIABAACAAQAAgAEAAIABAACAAQAAgAEAAIABAAAAAAAAAAAAAIABAADwDwAA//8AAA=="><style>.sf-hidden{display:none!important}</style><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"><style>img[src="data:,"],source[src="data:,"]{display:none!important}</style></head>
+ <body>
+ 
+ 
+ 
+ <header class="go-Header go-Header--full js-siteHeader"><div></div>
+ <div class="go-Header-inner go-Header-inner--dark">
+ <nav class=go-Header-nav>
+ <a href=https://go.dev/ class=js-headerLogo data-gtmc="nav link" data-test-id=go-header-logo-link role=heading aria-level=1>
+ <img class=go-Header-logo src="data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9Ijc4IiB2aWV3Qm94PSIwIDAgMjA3IDc4IiB3aWR0aD0iMjA3IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0ibTE2LjIgMjQuMWMtLjQgMC0uNS0uMi0uMy0uNWwyLjEtMi43Yy4yLS4zLjctLjUgMS4xLS41aDM1LjdjLjQgMCAuNS4zLjMuNmwtMS43IDIuNmMtLjIuMy0uNy42LTEgLjZ6Ii8+PHBhdGggZD0ibTEuMSAzMy4zYy0uNCAwLS41LS4yLS4zLS41bDIuMS0yLjdjLjItLjMuNy0uNSAxLjEtLjVoNDUuNmMuNCAwIC42LjMuNS42bC0uOCAyLjRjLS4xLjQtLjUuNi0uOS42eiIvPjxwYXRoIGQ9Im0yNS4zIDQyLjVjLS40IDAtLjUtLjMtLjMtLjZsMS40LTIuNWMuMi0uMy42LS42IDEtLjZoMjBjLjQgMCAuNi4zLjYuN2wtLjIgMi40YzAgLjQtLjQuNy0uNy43eiIvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDU1KSI+PHBhdGggZD0ibTc0LjEgMjIuM2MtNi4zIDEuNi0xMC42IDIuOC0xNi44IDQuNC0xLjUuNC0xLjYuNS0yLjktMS0xLjUtMS43LTIuNi0yLjgtNC43LTMuOC02LjMtMy4xLTEyLjQtMi4yLTE4LjEgMS41LTYuOCA0LjQtMTAuMyAxMC45LTEwLjIgMTkgLjEgOCA1LjYgMTQuNiAxMy41IDE1LjcgNi44LjkgMTIuNS0xLjUgMTctNi42LjktMS4xIDEuNy0yLjMgMi43LTMuNy0zLjYgMC04LjEgMC0xOS4zIDAtMi4xIDAtMi42LTEuMy0xLjktMyAxLjMtMy4xIDMuNy04LjMgNS4xLTEwLjkuMy0uNiAxLTEuNiAyLjUtMS42aDM2LjRjLS4yIDIuNy0uMiA1LjQtLjYgOC4xLTEuMSA3LjItMy44IDEzLjgtOC4yIDE5LjYtNy4yIDkuNS0xNi42IDE1LjQtMjguNSAxNy05LjggMS4zLTE4LjktLjYtMjYuOS02LjYtNy40LTUuNi0xMS42LTEzLTEyLjctMjIuMi0xLjMtMTAuOSAxLjktMjAuNyA4LjUtMjkuMyA3LjEtOS4zIDE2LjUtMTUuMiAyOC0xNy4zIDkuNC0xLjcgMTguNC0uNiAyNi41IDQuOSA1LjMgMy41IDkuMSA4LjMgMTEuNiAxNC4xLjYuOS4yIDEuNC0xIDEuN3oiLz48cGF0aCBkPSJtMTA3LjIgNzcuNmMtOS4xLS4yLTE3LjQtMi44LTI0LjQtOC44LTUuOS01LjEtOS42LTExLjYtMTAuOC0xOS4zLTEuOC0xMS4zIDEuMy0yMS4zIDguMS0zMC4yIDcuMy05LjYgMTYuMS0xNC42IDI4LTE2LjcgMTAuMi0xLjggMTkuOC0uOCAyOC41IDUuMSA3LjkgNS40IDEyLjggMTIuNyAxNC4xIDIyLjMgMS43IDEzLjUtMi4yIDI0LjUtMTEuNSAzMy45LTYuNiA2LjctMTQuNyAxMC45LTI0IDEyLjgtMi43LjUtNS40LjYtOCAuOXptMjMuOC00MC40Yy0uMS0xLjMtLjEtMi4zLS4zLTMuMy0xLjgtOS45LTEwLjktMTUuNS0yMC40LTEzLjMtOS4zIDIuMS0xNS4zIDgtMTcuNSAxNy40LTEuOCA3LjggMiAxNS43IDkuMiAxOC45IDUuNSAyLjQgMTEgMi4xIDE2LjMtLjYgNy45LTQuMSAxMi4yLTEwLjUgMTIuNy0xOS4xeiIgZmlsbC1ydWxlPSJub256ZXJvIi8+PC9nPjwvZz48L3N2Zz4=" alt=Go>
+ </a>
+ <div class=skip-navigation-wrapper>
+ <a class=skip-to-content-link aria-label="Skip to main content" href=#main-content> Skip to Main Content </a>
+ </div>
+ <div class=go-Header-rightContent>
+ 
+<div class="go-SearchForm js-searchForm">
+ <form class="go-InputGroup go-ShortcutKey go-SearchForm-form" action=/search data-shortcut=/ data-shortcut-alt=search data-gtmc="search form" aria-label="Search for a package" role=search>
+ <input name=q class="go-Input js-searchFocus" aria-label="Search for a package" type=search autocapitalize=none autocomplete=off autocorrect=off spellcheck=false placeholder="Search packages or symbols" value>
+ <input name=m value hidden class=sf-hidden>
+ <button class="go-Button go-Button--inverted" aria-label="Submit search">
+ <img class=go-Icon height=24 width=24 src=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTIwLjQ5IDE5bC01LjczLTUuNzNDMTUuNTMgMTIuMiAxNiAxMC45MSAxNiA5LjUgMTYgNS45MSAxMy4wOSAzIDkuNSAzUzMgNS45MSAzIDkuNSA1LjkxIDE2IDkuNSAxNmMxLjQxIDAgMi43LS40NyAzLjc3LTEuMjRMMTkgMjAuNDkgMjAuNDkgMTl6TTUgOS41QzUgNy4wMSA3LjAxIDUgOS41IDVTMTQgNy4wMSAxNCA5LjUgMTEuOTkgMTQgOS41IDE0IDUgMTEuOTkgNSA5LjV6Ii8+PC9zdmc+ alt>
+ </button>
+ </form>
+ <button class="go-SearchForm-expandSearch js-expandSearch sf-hidden" data-gtmc="nav button" aria-label="Open search" data-test-id=expand-search>
+ 
+ </button>
+</div>
+ <ul class=go-Header-menu>
+ <li class=go-Header-menuItem>
+ <a class=js-desktop-menu-hover href=# data-gtmc="nav link">
+ Why Go
+ <img class=go-Icon height=24 width=24 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTcgMTBsNSA1IDUtNUg3eiIvPjwvc3ZnPg==" alt="submenu dropdown icon">
+ </a>
+ <ul class="go-Header-submenu go-Header-submenu--why js-desktop-submenu-hover sf-hidden" aria-label=submenu>
+ 
+ 
+ 
+ </ul>
+ </li>
+ <li class=go-Header-menuItem>
+ <a href=https://go.dev/learn/ data-gtmc="nav link">Learn</a>
+ </li>
+ <li class=go-Header-menuItem>
+ <a class=js-desktop-menu-hover href=# data-gtmc="nav link">
+ Docs
+ <img class=go-Icon height=24 width=24 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTcgMTBsNSA1IDUtNUg3eiIvPjwvc3ZnPg==" alt="submenu dropdown icon">
+ </a>
+ <ul class="go-Header-submenu go-Header-submenu--docs js-desktop-submenu-hover sf-hidden" aria-label=submenu>
+ 
+ 
+ 
+ 
+ </ul>
+ </li>
+ <li class="go-Header-menuItem go-Header-menuItem--active">
+ <a href=https://pkg.go.dev/ data-gtmc="nav link">Packages</a>
+ </li>
+ <li class=go-Header-menuItem>
+ <a class=js-desktop-menu-hover href=# data-gtmc="nav link">
+ Community
+ <img class=go-Icon height=24 width=24 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTcgMTBsNSA1IDUtNUg3eiIvPjwvc3ZnPg==" alt="submenu dropdown icon">
+ </a>
+ <ul class="go-Header-submenu go-Header-submenu--community js-desktop-submenu-hover sf-hidden" aria-label=submenu>
+ 
+ 
+ 
+ 
+ 
+ 
+ </ul>
+ </li>
+ </ul>
+ <button class="go-Header-navOpen js-headerMenuButton go-Header-navOpen--white sf-hidden" data-gtmc="nav button" aria-label="Open navigation">
+ </button>
+ </div>
+ </nav>
+ </div>
+ </header>
+ <aside class="go-NavigationDrawer js-header sf-hidden">
+ 
+ </aside>
+ <div class="go-NavigationDrawer-scrim js-scrim sf-hidden" role=presentation></div>
+ 
+ <main class=go-Main id=main-content>
+ <div class=go-Main-banner role=alert><div class="go-Message go-Message--notice" data-test-id=UnitHeader-majorVersionBanner>
+ <img class=go-Icon height=24 width=24 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTExIDdoMnYyaC0yem0wIDRoMnY2aC0yem0xLTlDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4eiIvPjwvc3ZnPg==" alt=Notice>&nbsp; The highest tagged major version is
+ <a href=https://pkg.go.dev/github.com/robfig/cron/v3 data-gtmc="banner link" aria-label="Go to Latest Major Version">v3</a>.
+ </div></div>
+ <header class="go-Main-header js-mainHeader">
+ 
+ 
+ <nav class="go-Main-headerBreadcrumb go-Breadcrumb" aria-label=Breadcrumb data-test-id=UnitHeader-breadcrumb>
+ <ol>
+ 
+ 
+ <li data-test-id=UnitHeader-breadcrumbItem>
+ <a href=https://pkg.go.dev/ data-gtmc="breadcrumb link">Discover Packages</a>
+ </li>
+ 
+ <li>
+ <a href=https://pkg.go.dev/github.com/robfig/cron@v1.2.0 data-gtmc="breadcrumb link" aria-current=location data-test-id=UnitHeader-breadcrumbCurrent>
+ github.com/robfig/cron
+ </a>
+ 
+ <button class="go-Button go-Button--inline go-Clipboard js-clipboard" title="Copy path to clipboard.
+
+github.com/robfig/cron" aria-label="Copy Path to Clipboard" data-to-copy=github.com/robfig/cron data-gtmc="breadcrumbs button">
+ <img class="go-Icon go-Icon--accented" height=24 width=24 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE4IDIxSDRWN0gydjE0YzAgMS4xLjkgMiAyIDJoMTR2LTJ6bTMtNFYzYzAtMS4xLS45LTItMi0ySDhjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTFjMS4xIDAgMi0uOSAyLTJ6bS0yIDBIOFYzaDExdjE0eiIvPjwvc3ZnPg==" alt>
+ </button>
+ 
+ 
+ </li>
+ </ol>
+ </nav>
+ <div class=go-Main-headerContent>
+ 
+ <div class="go-Main-headerTitle js-stickyHeader">
+ <a class="go-Main-headerLogo sf-hidden" href=https://go.dev/ aria-hidden=true tabindex=-1 data-gtmc="header link" aria-label="Link to Go Homepage">
+ 
+ </a>
+ <h1 class=UnitHeader-titleHeading data-test-id=UnitHeader-title>cron</h1>
+ 
+ <span class="go-Chip go-Chip--inverted">package</span>
+ 
+ <span class="go-Chip go-Chip--inverted">module</span>
+ 
+ 
+ 
+ <button class="go-Button go-Button--inline go-Clipboard js-clipboard sf-hidden" title="Copy path to clipboard.
+
+github.com/robfig/cron" aria-label="Copy Path to Clipboard" data-to-copy=github.com/robfig/cron data-gtmc="title button" tabindex=-1>
+ 
+ </button>
+ 
+ 
+ </div>
+ 
+ <div class=go-Main-headerDetails>
+ 
+ 
+ <span class=go-Main-headerDetailItem data-test-id=UnitHeader-version>
+ <a href="https://pkg.go.dev/github.com/robfig/cron?tab=versions" aria-label="Version: v1.2.0" data-gtmc="header link" aria-describedby=version-description>
+ <span class=go-textSubtle aria-hidden=true>Version: </span>
+ v1.2.0
+ </a>
+ <div class="screen-reader-only sf-hidden" id=version-description hidden>
+ Opens a new window with list of versions in this module.
+ </div>
+ 
+ <span class=DetailsHeader-badge--latest data-test-id=UnitHeader-minorVersionBanner>
+ <span class="go-Chip DetailsHeader-span--latest">Latest</span>
+ <span class="go-Chip DetailsHeader-span--notAtLatest sf-hidden">
+ Latest
+ 
+ <details class="go-Tooltip js-tooltip" data-gtmc=tooltip><template shadowrootmode=closed><slot name=internal-main-summary><summary>详细信息</summary></slot><slot></slot></template>
+ <summary>
+ <img class="go-Icon go-Icon--inverted" height=24 width=24 src=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDI0IDI0IiBoZWlnaHQ9IjI0cHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0cHgiIGZpbGw9IiM0NTVBNjQiPjxnPjxyZWN0IGZpbGw9Im5vbmUiIGhlaWdodD0iMjQiIHdpZHRoPSIyNCIgeT0iMCIvPjwvZz48Zz48Zz48cGF0aCBkPSJNMjEuMjYsMThMMTMuNzMsNC45OWMtMC43Ny0xLjMzLTIuNjktMS4zMy0zLjQ2LDBMMi43NCwxOGMtMC43NywxLjMzLDAuMTksMywxLjczLDNoMTUuMDZDMjEuMDcsMjEsMjIuMDMsMTkuMzMsMjEuMjYsMTggeiBNNC40NywxOUwxMiw1Ljk5TDE5LjUzLDE5SDQuNDd6Ii8+PHBhdGggZD0iTTExLDExdjJjMCwwLjU1LDAuNDUsMSwxLDFjMC41NSwwLDEtMC40NSwxLTF2LTJjMC0wLjU1LTAuNDUtMS0xLTFDMTEuNDUsMTAsMTEsMTAuNDUsMTEsMTF6Ii8+PGNpcmNsZSBjeD0iMTIiIGN5PSIxNyIgcj0iMSIvPjwvZz48L2c+PC9zdmc+ alt=Warning>
+ </summary>
+ <p>This package is not in the latest version of its module.</p>
+ </details>
+ </span>
+ <a href=https://pkg.go.dev/github.com/robfig/cron aria-label="Go to Latest Version" data-gtmc="header link" class=sf-hidden>
+ 
+ </a>
+ </span>
+ </span>
+ 
+ <span class=go-Main-headerDetailItem data-test-id=UnitHeader-commitTime>
+ Published: May 5, 2018
+ </span>
+ 
+ <span class=go-Main-headerDetailItem data-test-id=UnitHeader-licenses>
+ License: <a href="https://pkg.go.dev/github.com/robfig/cron?tab=licenses" data-test-id=UnitHeader-license data-gtmc="header link" aria-describedby=license-description>MIT</a>
+ 
+ 
+ </span>
+ <div class="screen-reader-only sf-hidden" id=license-description hidden>
+ Opens a new window with license information.
+ </div>
+ 
+ 
+ <span class=go-Main-headerDetailItem data-test-id=UnitHeader-imports>
+ <a href="https://pkg.go.dev/github.com/robfig/cron?tab=imports" aria-label="Imports: 8" data-gtmc="header link" aria-describedby=imports-description>
+ <span class=go-textSubtle>Imports: </span>8
+ </a>
+ </span>
+ <div class="screen-reader-only sf-hidden" id=imports-description hidden>
+ Opens a new window with list of imports.
+ </div>
+ 
+ <span class=go-Main-headerDetailItem data-test-id=UnitHeader-importedby>
+ <a href="https://pkg.go.dev/github.com/robfig/cron?tab=importedby" aria-label="Imported By: 5,189" data-gtmc="header link" aria-describedby=importedby-description>
+ <span class=go-textSubtle>Imported by: </span>5,189
+ </a>
+ </span>
+ <div class="screen-reader-only sf-hidden" id=importedby-description hidden>
+ Opens a new window with list of known importers.
+ </div>
+ 
+ 
+ </div>
+ 
+ <div class="UnitHeader-overflowContainer sf-hidden">
+ <svg class=UnitHeader-overflowImage xmlns=http://www.w3.org/2000/svg height=24 viewBox="0 0 24 24" width=24>
+ <path d="M0 0h24v24H0z" fill=none></path>
+ <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+ </svg>
+ 
+ </div>
+ </div>
+</header>
+ <aside class="go-Main-aside js-mainAside"><div></div>
+ 
+ <div class=UnitMeta>
+ <h2 class=go-textLabel>Details</h2>
+ 
+ <ul class=UnitMeta-details>
+ <li>
+ <details class="go-Tooltip js-tooltip" data-gtmc=tooltip><template shadowrootmode=closed><slot name=internal-main-summary><summary>详细信息</summary></slot><slot></slot></template>
+ <summary class=go-textSubtle>
+ 
+ <img class=go-Icon src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIiBvcGFjaXR5PSIuODciLz48cGF0aCBkPSJNMTIgMkM2LjQ3IDIgMiA2LjQ3IDIgMTJzNC40NyAxMCAxMCAxMCAxMC00LjQ3IDEwLTEwUzE3LjUzIDIgMTIgMnptMCAxOGMtNC40MSAwLTgtMy41OS04LThzMy41OS04IDgtOCA4IDMuNTkgOCA4LTMuNTkgOC04IDh6bTMuNTktMTNMMTIgMTAuNTkgOC40MSA3IDcgOC40MSAxMC41OSAxMiA3IDE1LjU5IDguNDEgMTcgMTIgMTMuNDEgMTUuNTkgMTcgMTcgMTUuNTkgMTMuNDEgMTIgMTcgOC40MXoiLz48L3N2Zz4=" alt=unchecked height=24 width=24>
+ Valid go.mod file
+ <img class=go-Icon src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTEgMTdoLTJ2LTJoMnYyem0yLjA3LTcuNzVsLS45LjkyQzEzLjQ1IDEyLjkgMTMgMTMuNSAxMyAxNWgtMnYtLjVjMC0xLjEuNDUtMi4xIDEuMTctMi44M2wxLjI0LTEuMjZjLjM3LS4zNi41OS0uODYuNTktMS40MSAwLTEuMS0uOS0yLTItMnMtMiAuOS0yIDJIOGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0YzAgLjg4LS4zNiAxLjY4LS45MyAyLjI1eiIvPjwvc3ZnPg==" alt height=24 width=24>
+ </summary>
+ <p>
+ The Go module system was introduced in Go 1.11 and is the official dependency management
+ solution for Go.
+ </p>
+ </details>
+ </li>
+ <li>
+ <details class="go-Tooltip js-tooltip" data-gtmc=tooltip><template shadowrootmode=closed><slot name=internal-main-summary><summary>详细信息</summary></slot><slot></slot></template>
+ <summary class=go-textSubtle>
+ 
+ <img class="go-Icon go-Icon--accented" src=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4em0tMi01LjhsLTIuNi0yLjZMNiAxM2w0IDQgOC04LTEuNC0xLjR6Ii8+PC9zdmc+ alt=checked height=24 width=24>
+ Redistributable license
+ <img class=go-Icon src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTEgMTdoLTJ2LTJoMnYyem0yLjA3LTcuNzVsLS45LjkyQzEzLjQ1IDEyLjkgMTMgMTMuNSAxMyAxNWgtMnYtLjVjMC0xLjEuNDUtMi4xIDEuMTctMi44M2wxLjI0LTEuMjZjLjM3LS4zNi41OS0uODYuNTktMS40MSAwLTEuMS0uOS0yLTItMnMtMiAuOS0yIDJIOGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0YzAgLjg4LS4zNiAxLjY4LS45MyAyLjI1eiIvPjwvc3ZnPg==" alt height=24 width=24>
+ </summary>
+ <p>
+ Redistributable licenses place minimal restrictions on how software can be used,
+ modified, and redistributed.
+ </p>
+ </details>
+ </li>
+ <li>
+ <details class="go-Tooltip js-tooltip" data-gtmc=tooltip><template shadowrootmode=closed><slot name=internal-main-summary><summary>详细信息</summary></slot><slot></slot></template>
+ <summary class=go-textSubtle>
+ 
+ <img class="go-Icon go-Icon--accented" src=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4em0tMi01LjhsLTIuNi0yLjZMNiAxM2w0IDQgOC04LTEuNC0xLjR6Ii8+PC9zdmc+ alt=checked height=24 width=24>
+ Tagged version
+ <img class=go-Icon src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTEgMTdoLTJ2LTJoMnYyem0yLjA3LTcuNzVsLS45LjkyQzEzLjQ1IDEyLjkgMTMgMTMuNSAxMyAxNWgtMnYtLjVjMC0xLjEuNDUtMi4xIDEuMTctMi44M2wxLjI0LTEuMjZjLjM3LS4zNi41OS0uODYuNTktMS40MSAwLTEuMS0uOS0yLTItMnMtMiAuOS0yIDJIOGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0YzAgLjg4LS4zNiAxLjY4LS45MyAyLjI1eiIvPjwvc3ZnPg==" alt height=24 width=24>
+ </summary>
+ <p>Modules with tagged versions give importers more predictable builds.</p>
+ </details>
+ </li>
+ <li>
+ <details class="go-Tooltip js-tooltip" data-gtmc=tooltip><template shadowrootmode=closed><slot name=internal-main-summary><summary>详细信息</summary></slot><slot></slot></template>
+ <summary class=go-textSubtle>
+ 
+ <img class="go-Icon go-Icon--accented" src=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDEgMC04LTMuNTktOC04czMuNTktOCA4LTggOCAzLjU5IDggOC0zLjU5IDgtOCA4em0tMi01LjhsLTIuNi0yLjZMNiAxM2w0IDQgOC04LTEuNC0xLjR6Ii8+PC9zdmc+ alt=checked height=24 width=24>
+ Stable version
+ <img class=go-Icon src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTEgMTdoLTJ2LTJoMnYyem0yLjA3LTcuNzVsLS45LjkyQzEzLjQ1IDEyLjkgMTMgMTMuNSAxMyAxNWgtMnYtLjVjMC0xLjEuNDUtMi4xIDEuMTctMi44M2wxLjI0LTEuMjZjLjM3LS4zNi41OS0uODYuNTktMS40MSAwLTEuMS0uOS0yLTItMnMtMiAuOS0yIDJIOGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0YzAgLjg4LS4zNiAxLjY4LS45MyAyLjI1eiIvPjwvc3ZnPg==" alt height=24 width=24>
+ </summary>
+ <p>When a project reaches major version v1 it is considered stable.</p>
+ </details>
+ </li>
+ <li class=UnitMeta-detailsLearn>
+ <a href=https://pkg.go.dev/about#best-practices data-gtmc="meta link">Learn more about best practices</a>
+ </li>
+ </ul>
+ <h2 class=go-textLabel>Repository</h2>
+ <div class=UnitMeta-repo>
+ 
+ <a href=https://github.com/robfig/cron title=https://github.com/robfig/cron target=_blank rel=noopener>
+ github.com/robfig/cron
+ </a>
+ 
+ </div>
+ 
+ <h2 class=go-textLabel>Links</h2>
+ <ul class=UnitMeta-links>
+ 
+ 
+ <li>
+ <a href=https://deps.dev/go/github.com%2Frobfig%2Fcron/v1.2.0 title="View this module on Open Source Insights" target=_blank rel=noopener data-test-id=meta-link-depsdev>
+ <img class=depsdev-Icon src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMy41ODcyIDE2LjIwNDJMMTUuODAzNSAxOC40MjA1QzE2LjA2NDIgMTguNjczNSAxNi4wNjQyIDE5LjA4NzcgMTUuODExMSAxOS4zNDg0TDE1LjgwMzUgMTkuMzU2MUwzLjM0MTY4IDMxLjgxMDJDMy4wODg2MSAzMi4wNjMzIDIuNjc0NDkgMzIuMDYzMyAyLjQyMTQyIDMxLjgxMDJMMC4xODk4MDMgMjkuNTc4NkMtMC4wNjMyNjc2IDI5LjMyNTUgLTAuMDYzMjY3NiAyOC45MTE0IDAuMTg5ODAzIDI4LjY1ODNMMTIuNjUxNiAxNi4xOTY1QzEyLjkwNDcgMTUuOTM1OCAxMy4zMTg4IDE1LjkzNTggMTMuNTc5NSAxNi4xODg5QzEzLjU3OTUgMTYuMTk2NSAxMy41ODcyIDE2LjIwNDIgMTMuNTg3MiAxNi4yMDQyWiIgZmlsbD0iIzFBQUM5NCIvPgo8Y2lyY2xlIGN4PSIxNyIgY3k9IjE1IiByPSIxMyIgc3Ryb2tlPSIjMzJFMEM0IiBzdHJva2Utd2lkdGg9IjQiLz4KPGNpcmNsZSBjeD0iMTciIGN5PSIxNSIgcj0iNCIgc3Ryb2tlPSIjMzJFMEM0IiBzdHJva2Utd2lkdGg9IjQiLz4KPC9zdmc+Cg==" alt="Open Source Insights Logo">
+ Open Source Insights
+ </a>
+ </li>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </ul>
+ 
+ </div>
+</aside>
+ <nav class="go-Main-nav go-Main-nav--sticky js-mainNav" aria-label=Outline><div></div>
+ <div class=go-Main-navDesktop>
+ 
+ <div class=UnitOutline-jumpTo>
+ <button class="UnitOutline-jumpToInput go-ShortcutKey js-jumpToInput" aria-controls=jump-to-modal aria-label="Open Jump to Identifier" data-shortcut=f data-shortcut-alt=find data-test-id=jump-to-button data-gtmc="outline button">
+ Jump to ...
+ </button>
+ </div>
+ <ul class="go-Tree js-tree" role=tree aria-label=Outline style=--js-tree-height:132px>
+ 
+ <li class=js-readmeOutline role=none>
+ <a href=#section-readme data-gtmc="outline link" tabindex=0 aria-level=1 aria-owns=_nav_group_README aria-expanded=true role=treeitem aria-selected=true>
+ README
+ </a>
+ 
+ <ul id=_nav_group_README role=group>
+ 
+ <li role=none>
+ <a href=#readme-cron data-gtmc="readme outline link" tabindex=-1 aria-level=2 role=treeitem aria-selected=false>
+ cron
+ </a>
+ 
+ </li>
+ 
+ </ul>
+ </li>
+ 
+ 
+ <li role=none>
+ <a href=#section-documentation data-gtmc="outline link" tabindex=-1 aria-level=1 aria-owns=_nav_group_Documentation aria-expanded=false role=treeitem aria-selected=false>
+ Documentation
+ </a>
+ 
+<ul role=group id=_nav_group_Documentation class=sf-hidden>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+</ul>
+ </li>
+ 
+ 
+ <li role=none>
+ <a href=#section-sourcefiles data-gtmc="outline link" tabindex=-1 aria-level=1 role=treeitem>
+ Source Files
+ </a>
+ </li>
+ 
+ 
+ </ul>
+ </div>
+ <div class="go-Main-navMobile js-mainNavMobile sf-hidden">
+ 
+ </div>
+</nav>
+ <article class="go-Main-article js-mainContent">
+ <div class=UnitDetails data-test-id=UnitDetails style=display:block>
+ <div class="UnitDetails-content js-unitDetailsContent" data-test-id=UnitDetails-content>
+ 
+ 
+ <div class="UnitReadme UnitReadme--expanded js-readme">
+ <h2 class=UnitReadme-title id=section-readme>
+ <img class=go-Icon height=24 width=24 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTIwIDRINGMtMS4xIDAtMiAuOS0yIDJ2MTJjMCAxLjEuOSAyIDIgMmgxNmMxLjEgMCAyLS45IDItMlY2YzAtMS4xLS45LTItMi0yek00IDE4VjZoN3YxMkg0em0xNiAwaC03VjZoN3YxMnptLTYtOS41aDVWMTBoLTV6bTAgMi41aDV2MS41aC01em0wIDIuNWg1VjE1aC01em0tNy4yNS0uODEiLz48L3N2Zz4=" alt>
+ README
+ <a class=UnitReadme-idLink href=#section-readme aria-label="Go to Readme">¶</a>
+ </h2>
+ 
+ <div class=UnitReadme-content data-test-id=Unit-readmeContent>
+ <div class="Overview-readmeContent js-readmeContent"><p><a href=http://godoc.org/github.com/robfig/cron rel=nofollow><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMiAwaDI2djIwSDJhMiAyIDAgMDEtMi0yVjJhMiAyIDAgMDEyLTJ6IiBmaWxsPSIjNUM1QzVDIi8+PHBhdGggZD0iTTg3Ljk5IDBIMjh2MjBoNTkuOTlhMiAyIDAgMDAyLTJWMmEyIDIgMCAwMC0yLTJ6IiBmaWxsPSIjMDA3RDlDIi8+PHBhdGggZD0iTTM1LjE3NyAxNHYtMi45MTVjMC0uMzc0LjA3Mi0uNjgyLjIxNS0uOTI0LjE0Mi0uMjQyLjMyNC0uNDIzLjU0NC0uNTQ0LjIyLS4xMjIuNDQ0LS4xODIuNjcxLS4xODIuMTY5IDAgLjMwMy4wMS40MDEuMDI3LjEuMDE5LjE5LjA0My4yNy4wNzJsLjE2NS0xLjAzNGEuOTc3Ljk3NyAwIDAwLS4yNzUtLjA4MiAyLjAwNCAyLjAwNCAwIDAwLS4zMy0uMDI4Yy0uNDI1IDAtLjc4My4wOTMtMS4wNzIuMjgtLjI5LjE4OC0uNTA4LjQ2LS42NTUuODJsLS4xMS0uOTlIMzRWMTRoMS4xNzd6bTUuNjYuMTFjLjU0MiAwIDEuMDE5LS4xMTQgMS40My0uMzQxLjQxLS4yMjcuNzE0LS41NDMuOTEyLS45NDZsLS45MzUtLjQ0Yy0uMTQuMjU3LS4zMjIuNDUzLS41NS41ODktLjIyNy4xMzUtLjUyLjIwMy0uODguMjAzLS4zMyAwLS42MTYtLjA3My0uODU4LS4yMmExLjQzOSAxLjQzOSAwIDAxLS41Ni0uNjQ5IDIuMTY5IDIuMTY5IDAgMDEtLjE3Ny0uNjU1bC0uMDA0LS4wNDloNC4wM2MuMDEtLjA1OS4wMTgtLjEyNC4wMjUtLjE5NmwuMDA4LS4xMTJjLjAwOC0uMTE3LjAxMS0uMjQyLjAxMS0uMzc0IDAtLjQ4NC0uMS0uOTE4LS4zMDItMS4zMDNhMi4xOSAyLjE5IDAgMDAtLjg3LS45MDNjLS4zNzctLjIxNi0uODI2LS4zMjQtMS4zNDctLjMyNC0uNTI4IDAtLjk5NS4xMTUtMS40MDIuMzQ2YTIuNDQyIDIuNDQyIDAgMDAtLjk1Ny45OWMtLjIzMS40My0uMzQ3LjkzNy0uMzQ3IDEuNTI0cy4xMTYgMS4wOTUuMzQ3IDEuNTI0Yy4yMy40MjkuNTU1Ljc1OS45NzMuOTkuNDE4LjIzLjkwMi4zNDYgMS40NTIuMzQ2em0xLjMwMi0zLjQxaC0yLjg5NWwuMDItLjExNWMuMDE2LS4wNjguMDMzLS4xMzQuMDUzLS4xOTdsLjA2Ny0uMTgzYy4xMjUtLjI5My4zMDMtLjUxMy41MzQtLjY2LjIzLS4xNDcuNTA4LS4yMi44My0uMjIuNDcgMCAuODI5LjE1NiAxLjA3OC40NjguMTU2LjE5NC4yNTUuNDM3LjI5Ni43MjhsLjAxNy4xNzl6TTQ2LjMyIDE0VjkuNDI0aDEuNzVWOC41aC0xLjc4M3YtLjcwNGMwLS4yNy4wNjQtLjQ3Ni4xOS0uNjE3bC4wNjktLjA2NWMuMTcyLS4xNC40MDktLjIwOS43MS0uMjA5LjEzMSAwIC4yNDkuMDEzLjM1MS4wMzhhLjkyNy45MjcgMCAwMS4yNzUuMTE2bC4yMi0uODQ3YTEuMDYgMS4wNiAwIDAwLS40MjMtLjE5MiAyLjUxNiAyLjUxNiAwIDAwLS42MjItLjA3MmMtLjI5MyAwLS41NTkuMDM4LS43OTcuMTE1YTEuNjggMS42OCAwIDAwLS42MS4zNDFjLS4xNy4xNS0uMjk2LjMzNi0uMzguNTU2LS4wODUuMjItLjEyNy40Ny0uMTI3Ljc0OFY4LjVoLTEuMDM0di45MjRoMS4wMzRWMTRoMS4xNzd6bTUuMS4xMWMuNTQzIDAgMS4wMi0uMTE0IDEuNDMtLjM0MS40MTEtLjIyNy43MTUtLjU0My45MTMtLjk0NmwtLjkzNS0uNDRjLS4xMzkuMjU3LS4zMjIuNDUzLS41NS41ODktLjIyNy4xMzUtLjUyLjIwMy0uODguMjAzLS4zMyAwLS42MTYtLjA3My0uODU4LS4yMmExLjQzOSAxLjQzOSAwIDAxLS41Ni0uNjQ5IDIuMTY5IDIuMTY5IDAgMDEtLjE3Ny0uNjU1bC0uMDA0LS4wNDloNC4wM2MuMDEtLjA1OS4wMTgtLjEyNC4wMjUtLjE5NmwuMDA4LS4xMTJjLjAwOC0uMTE3LjAxMS0uMjQyLjAxMS0uMzc0IDAtLjQ4NC0uMS0uOTE4LS4zMDItMS4zMDNhMi4xOSAyLjE5IDAgMDAtLjg2OS0uOTAzYy0uMzc4LS4yMTYtLjgyNy0uMzI0LTEuMzQ4LS4zMjQtLjUyOCAwLS45OTUuMTE1LTEuNDAyLjM0NmEyLjQ0MiAyLjQ0MiAwIDAwLS45NTcuOTljLS4yMzEuNDMtLjM0Ny45MzctLjM0NyAxLjUyNHMuMTE2IDEuMDk1LjM0NyAxLjUyNGMuMjMxLjQyOS41NTUuNzU5Ljk3My45OS40MTguMjMuOTAyLjM0NiAxLjQ1Mi4zNDZ6bTEuMzAzLTMuNDFoLTIuODk1bC4wMi0uMTE1Yy4wMTYtLjA2OC4wMzMtLjEzNC4wNTMtLjE5N2wuMDY3LS4xODNjLjEyNS0uMjkzLjMwMy0uNTEzLjUzNC0uNjYuMjMxLS4xNDcuNTA4LS4yMi44My0uMjIuNDcgMCAuODMuMTU2IDEuMDc4LjQ2OC4xNTYuMTk0LjI1NS40MzcuMjk2LjcyOGwuMDE3LjE3OXpNNTYuNTMgMTR2LTIuOTE1YzAtLjM3NC4wNzItLjY4Mi4yMTUtLjkyNC4xNDMtLjI0Mi4zMjQtLjQyMy41NDQtLjU0NC4yMi0uMTIyLjQ0NC0uMTgyLjY3MS0uMTgyLjE3IDAgLjMwMy4wMS40MDIuMDI3LjA5OS4wMTkuMTg5LjA0My4yNy4wNzJsLjE2NC0xLjAzNGEuOTc3Ljk3NyAwIDAwLS4yNzUtLjA4MiAyLjAwNCAyLjAwNCAwIDAwLS4zMy0uMDI4Yy0uNDI1IDAtLjc4Mi4wOTMtMS4wNzIuMjgtLjI5LjE4OC0uNTA4LjQ2LS42NTUuODJsLS4xMS0uOTloLTFWMTRoMS4xNzZ6bTUuNjYuMTFjLjU0MiAwIDEuMDE5LS4xMTQgMS40My0uMzQxLjQxLS4yMjcuNzE1LS41NDMuOTEzLS45NDZsLS45MzUtLjQ0Yy0uMTQuMjU3LS4zMjMuNDUzLS41NS41ODktLjIyOC4xMzUtLjUyMS4yMDMtLjg4LjIwMy0uMzMgMC0uNjE2LS4wNzMtLjg1OC0uMjJhMS40MzkgMS40MzkgMCAwMS0uNTYxLS42NDkgMi4xNjkgMi4xNjkgMCAwMS0uMTc2LS42NTVsLS4wMDUtLjA0OWg0LjAzYy4wMS0uMDU5LjAxOS0uMTI0LjAyNS0uMTk2bC4wMDktLjExMmMuMDA3LS4xMTcuMDEtLjI0Mi4wMS0uMzc0IDAtLjQ4NC0uMS0uOTE4LS4zMDItMS4zMDNhMi4xOSAyLjE5IDAgMDAtLjg2OS0uOTAzYy0uMzc3LS4yMTYtLjgyNy0uMzI0LTEuMzQ3LS4zMjQtLjUyOCAwLS45OTYuMTE1LTEuNDAzLjM0NmEyLjQ0MiAyLjQ0MiAwIDAwLS45NTcuOTljLS4yMy40My0uMzQ2LjkzNy0uMzQ2IDEuNTI0cy4xMTUgMS4wOTUuMzQ2IDEuNTI0Yy4yMzEuNDI5LjU1Ni43NTkuOTc0Ljk5LjQxOC4yMy45MDIuMzQ2IDEuNDUyLjM0NnptMS4zMDMtMy40MWgtMi44OTZsLjAyMS0uMTE1Yy4wMTUtLjA2OC4wMzItLjEzNC4wNTItLjE5N2wuMDY4LS4xODNjLjEyNC0uMjkzLjMwMi0uNTEzLjUzMy0uNjYuMjMxLS4xNDcuNTA4LS4yMi44My0uMjIuNDcgMCAuODMuMTU2IDEuMDc5LjQ2OC4xNTYuMTk0LjI1NC40MzcuMjk1LjcyOGwuMDE4LjE3OXpNNjcuMyAxNHYtMi45MjZjMC0uNDE4LjA3NS0uNzUyLjIyNS0xLjAwMS4xNS0uMjUuMzQtLjQzLjU2Ny0uNTQ1LjIyNy0uMTEzLjQ2Mi0uMTcuNzA0LS4xNy4zMzcgMCAuNjE3LjEwNC44NDEuMzEzLjIyNC4yMS4zMzYuNTg1LjMzNiAxLjEyOFYxNGgxLjE3N3YtMy41NjRjMC0uNDYyLS4wOTItLjg0My0uMjc1LTEuMTQ0YTEuNzQgMS43NCAwIDAwLS43NDMtLjY3NiAyLjM4NyAyLjM4NyAwIDAwLTEuMDUtLjIyNmMtLjMwMSAwLS41ODUuMDQ4LS44NTMuMTQzYTEuNzIyIDEuNzIyIDAgMDAtLjY5My40NTdjLS4xMTYuMTI1LS4yMTcuMjctLjMuNDMzbC0uMDE3LjAzNy0uMDUxLS45NmgtMS4wNDVWMTRINjcuM3ptOC4wNDMuMTFjLjQxOCAwIC43ODgtLjA2OCAxLjExLS4yMDRhMi4xOSAyLjE5IDAgMDAuODEtLjU3MmMuMjE1LS4yNDUuMzc1LS41MzMuNDc4LS44NjNsLTEuMDY3LS4zNjNjLS4wNDQuMjI3LS4xMjcuNDItLjI0OC41NzdhMS4xOTcgMS4xOTcgMCAwMS0uNDU2LjM2NCAxLjU0IDEuNTQgMCAwMS0uNjUuMTI2Yy0uMzIyIDAtLjYtLjA3My0uODM1LS4yMmExLjM5NyAxLjM5NyAwIDAxLS41NC0uNjQ5Yy0uMTI0LS4yODYtLjE4Ni0uNjM0LS4xODYtMS4wNDUgMC0uNDE4LjA2LS43Ny4xODEtMS4wNTYuMTIxLS4yODYuMjk5LS41MDQuNTM0LS42NTUuMjM0LS4xNS41MTctLjIyNS44NDctLjIyNS4zMzcgMCAuNjEuMDkuODIuMjcuMjA4LjE4LjM2LjQzOC40NTYuNzc1bDEuMTEtLjQ0Yy0uMTEtLjMtLjI3LS41NjgtLjQ4My0uODAzYTIuMTQ4IDIuMTQ4IDAgMDAtLjc4Ny0uNTQ1Yy0uMzEyLS4xMjgtLjY4Ny0uMTkyLTEuMTI3LS4xOTItLjUyOCAwLTEgLjExNC0xLjQxNC4zNDFhMi4zODYgMi4zODYgMCAwMC0uOTY4Ljk4NWMtLjIzLjQyOS0uMzQ2Ljk0LS4zNDYgMS41MzQgMCAuNTk0LjExNSAxLjEwNS4zNDYgMS41MzQuMjMxLjQzLjU1Ni43NTguOTc0Ljk4NS40MTguMjI3Ljg5OC4zNDEgMS40NC4zNDF6bTYuMTkyIDBjLjU0MyAwIDEuMDItLjExNCAxLjQzLS4zNDEuNDExLS4yMjcuNzE1LS41NDMuOTEzLS45NDZsLS45MzUtLjQ0Yy0uMTM5LjI1Ny0uMzIyLjQ1My0uNTUuNTg5LS4yMjcuMTM1LS41Mi4yMDMtLjg4LjIwMy0uMzMgMC0uNjE2LS4wNzMtLjg1OC0uMjJhMS40MzkgMS40MzkgMCAwMS0uNTYtLjY0OSAyLjE2OSAyLjE2OSAwIDAxLS4xNzctLjY1NWwtLjAwNC0uMDQ5aDQuMDNjLjAxLS4wNTkuMDE4LS4xMjQuMDI1LS4xOTZsLjAwOC0uMTEyYy4wMDgtLjExNy4wMTEtLjI0Mi4wMTEtLjM3NCAwLS40ODQtLjEtLjkxOC0uMzAyLTEuMzAzYTIuMTkgMi4xOSAwIDAwLS44Ny0uOTAzYy0uMzc3LS4yMTYtLjgyNi0uMzI0LTEuMzQ3LS4zMjQtLjUyOCAwLS45OTUuMTE1LTEuNDAyLjM0NmEyLjQ0MiAyLjQ0MiAwIDAwLS45NTcuOTljLS4yMzEuNDMtLjM0Ny45MzctLjM0NyAxLjUyNHMuMTE2IDEuMDk1LjM0NyAxLjUyNGMuMjMuNDI5LjU1NS43NTkuOTczLjk5LjQxOC4yMy45MDIuMzQ2IDEuNDUyLjM0NnptMS4zMDMtMy40MWgtMi44OTVsLjAyLS4xMTVjLjAxNi0uMDY4LjAzMy0uMTM0LjA1My0uMTk3bC4wNjctLjE4M2MuMTI1LS4yOTMuMzAzLS41MTMuNTM0LS42Ni4yMy0uMTQ3LjUwOC0uMjIuODMtLjIyLjQ3IDAgLjgzLjE1NiAxLjA3OC40NjguMTU2LjE5NC4yNTUuNDM3LjI5Ni43MjhsLjAxNy4xNzl6TTYuMzU4IDguNzM2Yy0uMDM1IDAtLjA0My0uMDE3LS4wMjYtLjA0NGwuMTg0LS4yMzZjLjAxOC0uMDI2LjA2MS0uMDQ0LjA5Ni0uMDQ0aDMuMTNjLjAzNCAwIC4wNDMuMDI2LjAyNi4wNTNsLS4xNS4yMjdjLS4wMTcuMDI3LS4wNjEuMDUzLS4wODcuMDUzbC0zLjE3My0uMDA5em0tMS4zMjMuODA2Yy0uMDM1IDAtLjA0NC0uMDE3LS4wMjYtLjA0M2wuMTg0LS4yMzdjLjAxNy0uMDI2LjA2MS0uMDQzLjA5Ni0uMDQzaDMuOTk2Yy4wMzYgMCAuMDUzLjAyNi4wNDQuMDUybC0uMDcuMjFjLS4wMDkuMDM1LS4wNDMuMDUzLS4wNzkuMDUzbC00LjE0NS4wMDl6bTIuMTIxLjgwN2MtLjAzNSAwLS4wNDQtLjAyNi0uMDI2LS4wNTNsLjEyMi0uMjE5Yy4wMTgtLjAyNi4wNTMtLjA1Mi4wODgtLjA1MmgxLjc1M2MuMDM1IDAgLjA1Mi4wMjYuMDUyLjA2MWwtLjAxNy4yMWMwIC4wMzYtLjAzNS4wNjItLjA2Mi4wNjJsLTEuOTEtLjAxem05LjA5Ny0xLjc3Yy0uNTUyLjE0LS45My4yNDUtMS40NzIuMzg1LS4xMzIuMDM1LS4xNC4wNDQtLjI1NS0uMDg3LS4xMy0uMTUtLjIyNy0uMjQ2LS40MTEtLjMzMy0uNTUzLS4yNzItMS4wODgtLjE5My0xLjU4Ny4xMy0uNTk2LjM4Ni0uOTAyLjk1Ni0uODkzIDEuNjY2LjAwOC43MDEuNDkgMS4yOCAxLjE4MiAxLjM3Ni41OTcuMDc5IDEuMDk1LS4xMzEgMS40OS0uNTc4LjA4LS4wOTcuMTQ5LS4yMDIuMjM3LS4zMjVoLTEuNjkxYy0uMTg0IDAtLjIyOC0uMTE0LS4xNjctLjI2My4xMTQtLjI3MS4zMjQtLjcyNy40NDctLjk1NWEuMjM2LjIzNiAwIDAxLjIxOS0uMTRoMy4xOWMtLjAxNy4yMzctLjAxNy40NzMtLjA1My43MWEzLjczNyAzLjczNyAwIDAxLS43MTggMS43MThjLS42MzEuODMyLTEuNDU1IDEuMzUtMi40OTggMS40ODktLjg1OC4xMTQtMS42NTYtLjA1Mi0yLjM1Ny0uNTc3YTIuNzUzIDIuNzUzIDAgMDEtMS4xMTMtMS45NDdjLS4xMTQtLjk1NS4xNjctMS44MTQuNzQ1LTIuNTY4LjYyMi0uODE0IDEuNDQ2LTEuMzMyIDIuNDU0LTEuNTE1LjgyMy0uMTUgMS42MTItLjA1MyAyLjMyMi40MjkuNDY1LjMwNy43OTcuNzI3IDEuMDE3IDEuMjM2LjA1Mi4wNzguMDE3LjEyMy0uMDg4LjE0OW0yLjkwMSA0Ljg0NmMtLjc5OC0uMDE4LTEuNTI1LS4yNDYtMi4xMzktLjc3MWEyLjc0OSAyLjc0OSAwIDAxLS45NDYtMS42OTJjLS4xNTgtLjk5LjExNC0xLjg2Ni43MS0yLjY0Ni42NC0uODQyIDEuNDEtMS4yOCAyLjQ1NC0xLjQ2NC44OTQtLjE1NyAxLjczNS0uMDcgMi40OTcuNDQ3LjY5My40NzMgMS4xMjIgMS4xMTMgMS4yMzYgMS45NTQuMTQ5IDEuMTgzLS4xOTIgMi4xNDctMS4wMDggMi45NzFhNC4wMTQgNC4wMTQgMCAwMS0yLjEwMyAxLjEyMmMtLjIzNy4wNDQtLjQ3My4wNTItLjcwMS4wOHptMi4wODUtMy41NGMtLjAwOC0uMTE0LS4wMDgtLjIwMi0uMDI1LS4yOS0uMTU4LS44NjgtLjk1Ni0xLjM1OC0xLjc4OC0xLjE2NS0uODE2LjE4My0xLjM0MS43LTEuNTM0IDEuNTI0YTEuNDQ0IDEuNDQ0IDAgMDAuODA2IDEuNjU3Yy40ODIuMjEuOTY0LjE4NCAxLjQyOS0uMDUyLjY5Mi0uMzYgMS4wNjktLjkyIDEuMTEzLTEuNjc0aC0uMDAxeiIgZmlsbD0iI0ZBRkFGQSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PC9nPjwvc3ZnPg==" alt=GoDoc></a>
+<a href=https://travis-ci.org/robfig/cron rel=nofollow><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5OCIgaGVpZ2h0PSIyMCI+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4Mj0iMCIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1vcGFjaXR5PSIuMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3Qgcng9IjMiIHdpZHRoPSI5OCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzU1NSIvPjxyZWN0IHJ4PSIzIiB4PSIzNyIgd2lkdGg9IjYxIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOWY5ZjlmIi8+PHBhdGggZmlsbD0iIzlmOWY5ZiIgZD0iTTM3IDBoNHYyMGgtNHoiLz48cmVjdCByeD0iMyIgd2lkdGg9Ijk4IiBoZWlnaHQ9IjIwIiBmaWxsPSJ1cmwoI2EpIi8+PGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPjx0ZXh0IHg9IjE5LjUiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5idWlsZDwvdGV4dD48dGV4dCB4PSIxOS41IiB5PSIxNCI+YnVpbGQ8L3RleHQ+PHRleHQgeD0iNjYuNSIgeT0iMTUiIGZpbGw9IiMwMTAxMDEiIGZpbGwtb3BhY2l0eT0iLjMiPnVua25vd248L3RleHQ+PHRleHQgeD0iNjYuNSIgeT0iMTQiPnVua25vd248L3RleHQ+PC9nPjwvc3ZnPg==" alt="Build Status"></a></p>
+<h3 class=h1 id=readme-cron>cron</h3>
+<p>Documentation here: <a href=https://godoc.org/github.com/robfig/cron rel=nofollow>https://godoc.org/github.com/robfig/cron</a></p>
+</div>
+ </div>
+ <button class="UnitReadme-expandLink js-readmeExpand sf-hidden" data-test-id=readme-expand data-gtmc="readme button" aria-label="Expand Readme">Expand ▾</button>
+ <button class="UnitReadme-collapseLink js-readmeCollapse sf-hidden" data-test-id=readme-collapse data-gtmc="readme button" aria-label="Expand Readme">Collapse ▴</button>
+ 
+ </div>
+ 
+ 
+ 
+ 
+ <div class=UnitDoc>
+ <h2 class=UnitDoc-title id=section-documentation>
+ <img class=go-Icon height=24 width=24 src=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE2IDZsLTEuNDEgMS40MUwxOS4xNyAxMmwtNC41OCA0LjU5TDE2IDE4bDYtNnpNOCAxOGwxLjQxLTEuNDFMNC44MyAxMmw0LjU4LTQuNTlMOCA2bC02IDZ6Ii8+PC9zdmc+ alt>
+ Documentation
+ <a class=UnitDoc-idLink href=#section-documentation aria-label="Go to Documentation">¶</a>
+ </h2>
+ 
+ 
+ 
+ 
+ <div class="Documentation js-documentation">
+ 
+ 
+<div class="Documentation-content js-docContent"> <section class=Documentation-overview>
+ <h3 tabindex=-1 id=pkg-overview class=Documentation-overviewHeader>Overview <a href=#pkg-overview aria-label="Go to Overview">¶</a></h3>
+<div role=navigation aria-label="Table of Contents">
+ <ul class="Documentation-toc Documentation-toc-columns">
+ <li class=Documentation-tocItem>
+ <a href=#hdr-Usage>Usage</a>
+ </li>
+ <li class=Documentation-tocItem>
+ <a href=#hdr-CRON_Expression_Format>CRON Expression Format</a>
+ </li>
+ <li class=Documentation-tocItem>
+ <a href=#hdr-Special_Characters>Special Characters</a>
+ </li>
+ <li class=Documentation-tocItem>
+ <a href=#hdr-Predefined_schedules>Predefined schedules</a>
+ </li>
+ <li class=Documentation-tocItem>
+ <a href=#hdr-Intervals>Intervals</a>
+ </li>
+ <li class=Documentation-tocItem>
+ <a href=#hdr-Time_zones>Time zones</a>
+ </li>
+ <li class=Documentation-tocItem>
+ <a href=#hdr-Thread_safety>Thread safety</a>
+ </li>
+ <li class=Documentation-tocItem>
+ <a href=#hdr-Implementation>Implementation</a>
+ </li>
+ </ul>
+</div>
+<p>Package cron implements a cron spec parser and job runner.
+<h4 id=hdr-Usage>Usage <a class=Documentation-idLink href=#hdr-Usage aria-label="Go to Usage">¶</a></h4><p>Callers may register Funcs to be invoked on a given schedule. Cron will run
+them in their own goroutines.
+<pre>c := cron.New()
+c.AddFunc("0 30 * * * *", func() { fmt.Println("Every hour on the half hour") })
+c.AddFunc("@hourly",      func() { fmt.Println("Every hour") })
+c.AddFunc("@every 1h30m", func() { fmt.Println("Every hour thirty") })
+c.Start()
+..
+// Funcs are invoked in their own goroutine, asynchronously.
+...
+// Funcs may also be added to a running Cron
+c.AddFunc("@daily", func() { fmt.Println("Every day") })
+..
+// Inspect the cron job entries' next and previous run times.
+inspect(c.Entries())
+..
+c.Stop()  // Stop the scheduler (does not stop any jobs already running).
+</pre><h4 id=hdr-CRON_Expression_Format>CRON Expression Format <a class=Documentation-idLink href=#hdr-CRON_Expression_Format aria-label="Go to CRON Expression Format">¶</a></h4><p>A cron expression represents a set of times, using 6 space-separated fields.
+<pre>Field name   | Mandatory? | Allowed values  | Allowed special characters
+----------   | ---------- | --------------  | --------------------------
+Seconds      | Yes        | 0-59            | * / , -
+Minutes      | Yes        | 0-59            | * / , -
+Hours        | Yes        | 0-23            | * / , -
+Day of month | Yes        | 1-31            | * / , - ?
+Month        | Yes        | 1-12 or JAN-DEC | * / , -
+Day of week  | Yes        | 0-6 or SUN-SAT  | * / , - ?
+</pre><p>Note: Month and Day-of-week field values are case insensitive. "SUN", "Sun",
+and "sun" are equally accepted.
+<h4 id=hdr-Special_Characters>Special Characters <a class=Documentation-idLink href=#hdr-Special_Characters aria-label="Go to Special Characters">¶</a></h4><p>Asterisk ( * )
+<p>The asterisk indicates that the cron expression will match for all values of the
+field; e.g., using an asterisk in the 5th field (month) would indicate every
+month.
+<p>Slash ( / )
+<p>Slashes are used to describe increments of ranges. For example 3-59/15 in the
+1st field (minutes) would indicate the 3rd minute of the hour and every 15
+minutes thereafter. The form "*\/..." is equivalent to the form "first-last/...",
+that is, an increment over the largest possible range of the field. The form
+"N/..." is accepted as meaning "N-MAX/...", that is, starting at N, use the
+increment until the end of that specific range. It does not wrap around.
+<p>Comma ( , )
+<p>Commas are used to separate items of a list. For example, using "MON,WED,FRI" in
+the 5th field (day of week) would mean Mondays, Wednesdays and Fridays.
+<p>Hyphen ( - )
+<p>Hyphens are used to define ranges. For example, 9-17 would indicate every
+hour between 9am and 5pm inclusive.
+<p>Question mark ( ? )
+<p>Question mark may be used instead of '*' for leaving either day-of-month or
+day-of-week blank.
+<h4 id=hdr-Predefined_schedules>Predefined schedules <a class=Documentation-idLink href=#hdr-Predefined_schedules aria-label="Go to Predefined schedules">¶</a></h4><p>You may use one of several pre-defined schedules in place of a cron expression.
+<pre>Entry                  | Description                                | Equivalent To
+-----                  | -----------                                | -------------
+@yearly (or @annually) | Run once a year, midnight, Jan. 1st        | 0 0 0 1 1 *
+@monthly               | Run once a month, midnight, first of month | 0 0 0 1 * *
+@weekly                | Run once a week, midnight between Sat/Sun  | 0 0 0 * * 0
+@daily (or @midnight)  | Run once a day, midnight                   | 0 0 0 * * *
+@hourly                | Run once an hour, beginning of hour        | 0 0 * * * *
+</pre><h4 id=hdr-Intervals>Intervals <a class=Documentation-idLink href=#hdr-Intervals aria-label="Go to Intervals">¶</a></h4><p>You may also schedule a job to execute at fixed intervals, starting at the time it's added
+or cron is run. This is supported by formatting the cron spec like this:
+<pre>@every &lt;duration&gt;
+</pre><p>where "duration" is a string accepted by time.ParseDuration
+(<a href=http://golang.org/pkg/time/#ParseDuration>http://golang.org/pkg/time/#ParseDuration</a>).
+<p>For example, "@every 1h30m10s" would indicate a schedule that activates after
+1 hour, 30 minutes, 10 seconds, and then every interval after that.
+<p>Note: The interval does not take the job runtime into account. For example,
+if a job takes 3 minutes to run, and it is scheduled to run every 5 minutes,
+it will have only 2 minutes of idle time between each run.
+<h4 id=hdr-Time_zones>Time zones <a class=Documentation-idLink href=#hdr-Time_zones aria-label="Go to Time zones">¶</a></h4><p>All interpretation and scheduling is done in the machine's local time zone (as
+provided by the Go time package (<a href=http://www.golang.org/pkg/time>http://www.golang.org/pkg/time</a>).
+<p>Be aware that jobs scheduled during daylight-savings leap-ahead transitions will
+not be run!
+<h4 id=hdr-Thread_safety>Thread safety <a class=Documentation-idLink href=#hdr-Thread_safety aria-label="Go to Thread safety">¶</a></h4><p>Since the Cron service runs concurrently with the calling code, some amount of
+care must be taken to ensure proper synchronization.
+<p>All cron methods are designed to be correctly synchronized as long as the caller
+ensures that invocations have a clear happens-before ordering between them.
+<h4 id=hdr-Implementation>Implementation <a class=Documentation-idLink href=#hdr-Implementation aria-label="Go to Implementation">¶</a></h4><p>Cron entries are stored in an array, sorted by their next activation time. Cron
+sleeps until the next job is due to be run.
+<p>Upon waking:
+<ul class=Documentation-bulletList>
+ <li>it runs each entry that is active on that second</li>
+ <li>it calculates the next run times for the jobs that were run</li>
+ <li>it re-sorts the array of entries by next activation time.</li>
+ <li>it goes to sleep until the soonest job.</li>
+</ul>
+</section><section class=Documentation-index>
+ <h3 id=pkg-index class=Documentation-indexHeader>Index <a href=#pkg-index aria-label="Go to Index">¶</a></h3>
+<ul class=Documentation-indexList>
+<li class=Documentation-indexType>
+ <a href=#ConstantDelaySchedule>type ConstantDelaySchedule</a></li>
+<li><ul class=Documentation-indexTypeFunctions>
+<li>
+ <a href=#Every>func Every(duration time.Duration) ConstantDelaySchedule</a></li>
+</ul></li>
+<li><ul class=Documentation-indexTypeMethods>
+<li>
+ <a href=#ConstantDelaySchedule.Next>func (schedule ConstantDelaySchedule) Next(t time.Time) time.Time</a></li>
+</ul></li>
+<li class=Documentation-indexType>
+ <a href=#Cron>type Cron</a></li>
+<li><ul class=Documentation-indexTypeFunctions>
+<li>
+ <a href=#New>func New() *Cron</a></li>
+<li>
+ <a href=#NewWithLocation>func NewWithLocation(location *time.Location) *Cron</a></li>
+</ul></li>
+<li><ul class=Documentation-indexTypeMethods>
+<li>
+ <a href=#Cron.AddFunc>func (c *Cron) AddFunc(spec string, cmd func()) error</a></li>
+<li>
+ <a href=#Cron.AddJob>func (c *Cron) AddJob(spec string, cmd Job) error</a></li>
+<li>
+ <a href=#Cron.Entries>func (c *Cron) Entries() []*Entry</a></li>
+<li>
+ <a href=#Cron.Location>func (c *Cron) Location() *time.Location</a></li>
+<li>
+ <a href=#Cron.Run>func (c *Cron) Run()</a></li>
+<li>
+ <a href=#Cron.Schedule>func (c *Cron) Schedule(schedule Schedule, cmd Job)</a></li>
+<li>
+ <a href=#Cron.Start>func (c *Cron) Start()</a></li>
+<li>
+ <a href=#Cron.Stop>func (c *Cron) Stop()</a></li>
+</ul></li>
+<li class=Documentation-indexType>
+ <a href=#Entry>type Entry</a></li>
+<li class=Documentation-indexType>
+ <a href=#FuncJob>type FuncJob</a></li>
+<li><ul class=Documentation-indexTypeMethods>
+<li>
+ <a href=#FuncJob.Run>func (f FuncJob) Run()</a></li>
+</ul></li>
+<li class=Documentation-indexType>
+ <a href=#Job>type Job</a></li>
+<li class=Documentation-indexType>
+ <a href=#ParseOption>type ParseOption</a></li>
+<li class=Documentation-indexType>
+ <a href=#Parser>type Parser</a></li>
+<li><ul class=Documentation-indexTypeFunctions>
+<li>
+ <a href=#NewParser>func NewParser(options ParseOption) Parser</a></li>
+</ul></li>
+<li><ul class=Documentation-indexTypeMethods>
+<li>
+ <a href=#Parser.Parse>func (p Parser) Parse(spec string) (Schedule, error)</a></li>
+</ul></li>
+<li class=Documentation-indexType>
+ <a href=#Schedule>type Schedule</a></li>
+<li><ul class=Documentation-indexTypeFunctions>
+<li>
+ <a href=#Parse>func Parse(spec string) (Schedule, error)</a></li>
+<li>
+ <a href=#ParseStandard>func ParseStandard(standardSpec string) (Schedule, error)</a></li>
+</ul></li>
+<li class=Documentation-indexType>
+ <a href=#SpecSchedule>type SpecSchedule</a></li>
+<li><ul class=Documentation-indexTypeMethods>
+<li>
+ <a href=#SpecSchedule.Next>func (s *SpecSchedule) Next(t time.Time) time.Time</a></li>
+</ul></li>
+</ul>
+</section><h3 tabindex=-1 id=pkg-constants class=Documentation-constantsHeader>Constants <a href=#pkg-constants aria-label="Go to Constants">¶</a></h3>
+ <section class=Documentation-constants><p class=Documentation-empty>This section is empty.</p></section>
+ <h3 tabindex=-1 id=pkg-variables class=Documentation-variablesHeader>Variables <a href=#pkg-variables aria-label="Go to Variables">¶</a></h3>
+ <section class=Documentation-variables><p class=Documentation-empty>This section is empty.</p></section>
+ <h3 tabindex=-1 id=pkg-functions class=Documentation-functionsHeader>Functions <a href=#pkg-functions aria-label="Go to Functions">¶</a></h3>
+ <section class=Documentation-functions><p class=Documentation-empty>This section is empty.</p></section>
+ <h3 tabindex=-1 id=pkg-types class=Documentation-typesHeader>Types <a href=#pkg-types aria-label="Go to Types">¶</a></h3>
+ <section class=Documentation-types><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=ConstantDelaySchedule data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/constantdelay.go#L7>ConstantDelaySchedule</a> <a class=Documentation-idLink href=#ConstantDelaySchedule aria-label="Go to ConstantDelaySchedule">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type ConstantDelaySchedule struct {
+<span id=ConstantDelaySchedule.Delay data-kind=field>	Delay <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Duration>Duration</a>
+</span>}</pre>
+ </div>
+ <p>ConstantDelaySchedule represents a simple recurring duty cycle, e.g. "Every 5 minutes".
+It does not support jobs more frequent than once a second.
+</p>
+<div class=Documentation-typeFunc>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Every data-kind=function class=Documentation-typeFuncHeader>
+ <span>func <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/constantdelay.go#L14>Every</a> <a class=Documentation-idLink href=#Every aria-label="Go to Every">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func Every(duration <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Duration>Duration</a>) <a href=#ConstantDelaySchedule>ConstantDelaySchedule</a></pre>
+ </div>
+ <p>Every returns a crontab Schedule that activates once every duration.
+Delays of less than a second are not supported (will round up to 1 second).
+Any fields less than a Second are truncated.
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=ConstantDelaySchedule.Next data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (ConstantDelaySchedule) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/constantdelay.go#L25>Next</a> <a class=Documentation-idLink href=#ConstantDelaySchedule.Next aria-label="Go to ConstantDelaySchedule.Next">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (schedule <a href=#ConstantDelaySchedule>ConstantDelaySchedule</a>) Next(t <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Time>Time</a>) <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Time>Time</a></pre>
+ </div>
+ <p>Next returns the next time this should be run.
+This rounds so that the next activation time will be on the second.
+</p>
+ 
+ </div>
+ 
+ </div><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L13>Cron</a> <a class=Documentation-idLink href=#Cron aria-label="Go to Cron">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type Cron struct {
+<span id=Cron.ErrorLog data-kind=field>	ErrorLog *<a href=https://pkg.go.dev/log>log</a>.<a href=https://pkg.go.dev/log#Logger>Logger</a>
+</span>	<span class=comment>// contains filtered or unexported fields</span>
+}</pre>
+ </div>
+ <p>Cron keeps track of any number of entries, invoking the associated func as
+specified by the schedule. It may be started, stopped, and the entries may
+be inspected while running.
+</p>
+<div class=Documentation-typeFunc>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=New data-kind=function class=Documentation-typeFuncHeader>
+ <span>func <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L72>New</a> <a class=Documentation-idLink href=#New aria-label="Go to New">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func New() *<a href=#Cron>Cron</a></pre>
+ </div>
+ <p>New returns a new Cron job runner, in the Local time zone.
+</p>
+ 
+ </div><div class=Documentation-typeFunc>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=NewWithLocation data-kind=function class=Documentation-typeFuncHeader>
+ <span>func <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L77>NewWithLocation</a> <a class=Documentation-idLink href=#NewWithLocation aria-label="Go to NewWithLocation">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ <span class=Documentation-sinceVersionLabel>added in</span>
+ <span class=Documentation-sinceVersionVersion>v1.1.0</span>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func NewWithLocation(location *<a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Location>Location</a>) *<a href=#Cron>Cron</a></pre>
+ </div>
+ <p>NewWithLocation returns a new Cron job runner.
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron.AddFunc data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*Cron) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L95>AddFunc</a> <a class=Documentation-idLink href=#Cron.AddFunc aria-label="Go to Cron.AddFunc">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (c *<a href=#Cron>Cron</a>) AddFunc(spec <a href=https://pkg.go.dev/builtin#string>string</a>, cmd func()) <a href=https://pkg.go.dev/builtin#error>error</a></pre>
+ </div>
+ <p>AddFunc adds a func to the Cron to be run on the given schedule.
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron.AddJob data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*Cron) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L100>AddJob</a> <a class=Documentation-idLink href=#Cron.AddJob aria-label="Go to Cron.AddJob">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (c *<a href=#Cron>Cron</a>) AddJob(spec <a href=https://pkg.go.dev/builtin#string>string</a>, cmd <a href=#Job>Job</a>) <a href=https://pkg.go.dev/builtin#error>error</a></pre>
+ </div>
+ <p>AddJob adds a Job to the Cron to be run on the given schedule.
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron.Entries data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*Cron) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L124>Entries</a> <a class=Documentation-idLink href=#Cron.Entries aria-label="Go to Cron.Entries">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (c *<a href=#Cron>Cron</a>) Entries() []*<a href=#Entry>Entry</a></pre>
+ </div>
+ <p>Entries returns a snapshot of the cron entries.
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron.Location data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*Cron) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L134>Location</a> <a class=Documentation-idLink href=#Cron.Location aria-label="Go to Cron.Location">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ <span class=Documentation-sinceVersionLabel>added in</span>
+ <span class=Documentation-sinceVersionVersion>v1.1.0</span>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (c *<a href=#Cron>Cron</a>) Location() *<a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Location>Location</a></pre>
+ </div>
+ <p>Location gets the time zone location
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron.Run data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*Cron) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L148>Run</a> <a class=Documentation-idLink href=#Cron.Run aria-label="Go to Cron.Run">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ <span class=Documentation-sinceVersionLabel>added in</span>
+ <span class=Documentation-sinceVersionVersion>v1.1.0</span>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (c *<a href=#Cron>Cron</a>) Run()</pre>
+ </div>
+ <p>Run the cron scheduler, or no-op if already running.
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron.Schedule data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*Cron) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L110>Schedule</a> <a class=Documentation-idLink href=#Cron.Schedule aria-label="Go to Cron.Schedule">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (c *<a href=#Cron>Cron</a>) Schedule(schedule <a href=#Schedule>Schedule</a>, cmd <a href=#Job>Job</a>)</pre>
+ </div>
+ <p>Schedule adds a Job to the Cron to be run on the given schedule.
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron.Start data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*Cron) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L139>Start</a> <a class=Documentation-idLink href=#Cron.Start aria-label="Go to Cron.Start">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (c *<a href=#Cron>Cron</a>) Start()</pre>
+ </div>
+ <p>Start the cron scheduler in its own go-routine, or no-op if already started.
+</p>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Cron.Stop data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*Cron) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L234>Stop</a> <a class=Documentation-idLink href=#Cron.Stop aria-label="Go to Cron.Stop">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (c *<a href=#Cron>Cron</a>) Stop()</pre>
+ </div>
+ <p>Stop stops the cron scheduler if it is running; otherwise it does nothing.
+</p>
+ 
+ </div>
+ 
+ </div><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Entry data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L36>Entry</a> <a class=Documentation-idLink href=#Entry aria-label="Go to Entry">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type Entry struct {
+<span id=Entry.Schedule data-kind=field>	<span class=comment>// The schedule on which this job should be run.</span>
+</span>	Schedule <a href=#Schedule>Schedule</a>
+
+<span id=Entry.Next data-kind=field>	<span class=comment>// The next time the job will run. This is the zero time if Cron has not been</span>
+</span>	<span class=comment>// started or this entry's schedule is unsatisfiable</span>
+	Next <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Time>Time</a>
+
+<span id=Entry.Prev data-kind=field>	<span class=comment>// The last time this job was run. This is the zero time if the job has never</span>
+</span>	<span class=comment>// been run.</span>
+	Prev <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Time>Time</a>
+
+<span id=Entry.Job data-kind=field>	<span class=comment>// The Job to run.</span>
+</span>	Job <a href=#Job>Job</a>
+}</pre>
+ </div>
+ <p>Entry consists of a schedule and the func to execute on that schedule.
+</p>
+ 
+ </div><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=FuncJob data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L90>FuncJob</a> <a class=Documentation-idLink href=#FuncJob aria-label="Go to FuncJob">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type FuncJob func()</pre>
+ </div>
+ <p>A wrapper that turns a func() into a cron.Job
+</p>
+<div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=FuncJob.Run data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (FuncJob) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L92>Run</a> <a class=Documentation-idLink href=#FuncJob.Run aria-label="Go to FuncJob.Run">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (f <a href=#FuncJob>FuncJob</a>) Run()</pre>
+ </div>
+ 
+ 
+ </div>
+ 
+ </div><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Job data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L24>Job</a> <a class=Documentation-idLink href=#Job aria-label="Go to Job">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type Job interface {
+<span id=Job.Run data-kind=method>	Run()
+</span>}</pre>
+ </div>
+ <p>Job is an interface for submitted cron jobs.
+</p>
+ 
+ </div><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=ParseOption data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/parser.go#L15>ParseOption</a> <a class=Documentation-idLink href=#ParseOption aria-label="Go to ParseOption">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ <span class=Documentation-sinceVersionLabel>added in</span>
+ <span class=Documentation-sinceVersionVersion>v1.1.0</span>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type ParseOption <a href=https://pkg.go.dev/builtin#int>int</a></pre>
+ </div>
+ <p>Configuration options for creating a parser. Most options specify which
+fields should be included, while others enable features. If a field is not
+included the parser will assume a default value. These options do not change
+the order fields are parse in.
+</p>
+<div class=Documentation-typeConstant>
+ <div class=Documentation-declaration>
+ <pre>const (
+<span id=Second data-kind=constant>	Second      <a href=#ParseOption>ParseOption</a> = 1 &lt;&lt; <a href=https://pkg.go.dev/builtin#iota>iota</a> <span class=comment>// Seconds field, default 0</span>
+</span><span id=Minute data-kind=constant>	Minute                              <span class=comment>// Minutes field, default 0</span>
+</span><span id=Hour data-kind=constant>	Hour                                <span class=comment>// Hours field, default 0</span>
+</span><span id=Dom data-kind=constant>	Dom                                 <span class=comment>// Day of month field, default *</span>
+</span><span id=Month data-kind=constant>	Month                               <span class=comment>// Month field, default *</span>
+</span><span id=Dow data-kind=constant>	Dow                                 <span class=comment>// Day of week field, default *</span>
+</span><span id=DowOptional data-kind=constant>	DowOptional                         <span class=comment>// Optional day of week field, default *</span>
+</span><span id=Descriptor data-kind=constant>	Descriptor                          <span class=comment>// Allow descriptors such as @monthly, @weekly, etc.</span>
+</span>)</pre>
+ </div>
+ 
+</div>
+ 
+ </div><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Parser data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/parser.go#L47>Parser</a> <a class=Documentation-idLink href=#Parser aria-label="Go to Parser">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ <span class=Documentation-sinceVersionLabel>added in</span>
+ <span class=Documentation-sinceVersionVersion>v1.1.0</span>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type Parser struct {
+	<span class=comment>// contains filtered or unexported fields</span>
+}</pre>
+ </div>
+ <p>A custom Parser that can be configured.
+</p>
+<div class=Documentation-typeFunc>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=NewParser data-kind=function class=Documentation-typeFuncHeader>
+ <span>func <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/parser.go#L66>NewParser</a> <a class=Documentation-idLink href=#NewParser aria-label="Go to NewParser">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ <span class=Documentation-sinceVersionLabel>added in</span>
+ <span class=Documentation-sinceVersionVersion>v1.1.0</span>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func NewParser(options <a href=#ParseOption>ParseOption</a>) <a href=#Parser>Parser</a></pre>
+ </div>
+ <p>Creates a custom Parser with custom options.
+<pre>// Standard parser without descriptors
+specParser := NewParser(Minute | Hour | Dom | Month | Dow)
+sched, err := specParser.Parse("0 0 15 */3 *")
+
+// Same as above, just excludes time fields
+subsParser := NewParser(Dom | Month | Dow)
+sched, err := specParser.Parse("15 */3 *")
+
+// Same as above, just makes Dow optional
+subsParser := NewParser(Dom | Month | DowOptional)
+sched, err := specParser.Parse("15 */3")
+</pre>
+ 
+ </div><div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Parser.Parse data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (Parser) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/parser.go#L78>Parse</a> <a class=Documentation-idLink href=#Parser.Parse aria-label="Go to Parser.Parse">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ <span class=Documentation-sinceVersionLabel>added in</span>
+ <span class=Documentation-sinceVersionVersion>v1.1.0</span>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (p <a href=#Parser>Parser</a>) Parse(spec <a href=https://pkg.go.dev/builtin#string>string</a>) (<a href=#Schedule>Schedule</a>, <a href=https://pkg.go.dev/builtin#error>error</a>)</pre>
+ </div>
+ <p>Parse returns a new crontab schedule representing the given spec.
+It returns a descriptive error if the spec is not valid.
+It accepts crontab specs and features configured by NewParser.
+</p>
+ 
+ </div>
+ 
+ </div><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Schedule data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/cron.go#L29>Schedule</a> <a class=Documentation-idLink href=#Schedule aria-label="Go to Schedule">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type Schedule interface {
+<span id=Schedule.Next data-kind=method>	<span class=comment>// Return the next activation time, later than the given time.</span>
+</span>	<span class=comment>// Next is invoked initially, and then each time the job is run.</span>
+	Next(<a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Time>Time</a>) <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Time>Time</a>
+}</pre>
+ </div>
+ <p>The Schedule describes a job's duty cycle.
+</p>
+<div class=Documentation-typeFunc>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=Parse data-kind=function class=Documentation-typeFuncHeader>
+ <span>func <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/parser.go#L184>Parse</a> <a class=Documentation-idLink href=#Parse aria-label="Go to Parse">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func Parse(spec <a href=https://pkg.go.dev/builtin#string>string</a>) (<a href=#Schedule>Schedule</a>, <a href=https://pkg.go.dev/builtin#error>error</a>)</pre>
+ </div>
+ <p>Parse returns a new crontab schedule representing the given spec.
+It returns a descriptive error if the spec is not valid.
+<p>It accepts
+<ul class=Documentation-bulletList>
+ <li>Full crontab specs, e.g. "* * * * * ?"</li>
+ <li>Descriptors, e.g. "@midnight", "@every 1h30m"</li>
+</ul>
+ 
+ </div><div class=Documentation-typeFunc>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=ParseStandard data-kind=function class=Documentation-typeFuncHeader>
+ <span>func <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/parser.go#L170>ParseStandard</a> <a class=Documentation-idLink href=#ParseStandard aria-label="Go to ParseStandard">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ <span class=Documentation-sinceVersionLabel>added in</span>
+ <span class=Documentation-sinceVersionVersion>v1.1.0</span>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func ParseStandard(standardSpec <a href=https://pkg.go.dev/builtin#string>string</a>) (<a href=#Schedule>Schedule</a>, <a href=https://pkg.go.dev/builtin#error>error</a>)</pre>
+ </div>
+ <p>ParseStandard returns a new crontab schedule representing the given standardSpec
+(<a href=https://en.wikipedia.org/wiki/Cron>https://en.wikipedia.org/wiki/Cron</a>). It differs from Parse requiring to always
+pass 5 entries representing: minute, hour, day of month, month and day of week,
+in that order. It returns a descriptive error if the spec is not valid.
+<p>It accepts
+<ul class=Documentation-bulletList>
+ <li>Standard crontab specs, e.g. "* * * * ?"</li>
+ <li>Descriptors, e.g. "@midnight", "@every 1h30m"</li>
+</ul>
+ 
+ </div>
+ 
+ </div><div class=Documentation-type>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=SpecSchedule data-kind=type class=Documentation-typeHeader>
+ <span>type <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/spec.go#L7>SpecSchedule</a> <a class=Documentation-idLink href=#SpecSchedule aria-label="Go to SpecSchedule">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>type SpecSchedule struct {
+<span id=SpecSchedule.Second data-kind=field><span id=SpecSchedule.Minute data-kind=field><span id=SpecSchedule.Hour data-kind=field><span id=SpecSchedule.Dom data-kind=field><span id=SpecSchedule.Month data-kind=field><span id=SpecSchedule.Dow data-kind=field>	Second, Minute, Hour, Dom, Month, Dow <a href=https://pkg.go.dev/builtin#uint64>uint64</a>
+</span>}</span></span></span></span></span></pre>
+ </div>
+ <p>SpecSchedule specifies a duty cycle (to the second granularity), based on a
+traditional crontab specification. It is computed initially and stored as bit sets.
+</p>
+<div class=Documentation-typeMethod>
+ 
+ 
+ 
+ <h4 tabindex=-1 id=SpecSchedule.Next data-kind=method class=Documentation-typeMethodHeader>
+ <span>func (*SpecSchedule) <a class=Documentation-source href=https://github.com/robfig/cron/blob/v1.2.0/spec.go#L55>Next</a> <a class=Documentation-idLink href=#SpecSchedule.Next aria-label="Go to SpecSchedule.Next">¶</a></span>
+ <span class=Documentation-sinceVersion>
+ 
+ </span>
+</h4>
+ 
+ <div class=Documentation-declaration>
+ <pre>func (s *<a href=#SpecSchedule>SpecSchedule</a>) Next(t <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Time>Time</a>) <a href=https://pkg.go.dev/time>time</a>.<a href=https://pkg.go.dev/time#Time>Time</a></pre>
+ </div>
+ <p>Next returns the next time this schedule is activated, greater than the given
+time. If no time can be found to satisfy the schedule, return the zero time.
+</p>
+ 
+ </div>
+ 
+ </div></section></div> 
+ 
+ </div>
+ </div>
+ 
+ 
+ 
+ 
+ <div class="UnitFiles js-unitFiles">
+ <h2 class=UnitFiles-title id=section-sourcefiles>
+ <img class=go-Icon height=24 width=24 src=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE0IDJINmMtMS4xIDAtMS45OS45LTEuOTkgMkw0IDIwYzAgMS4xLjg5IDIgMS45OSAySDE4YzEuMSAwIDItLjkgMi0yVjhsLTYtNnpNNiAyMFY0aDd2NWg1djExSDZ6Ii8+PC9zdmc+ alt>
+ Source Files
+ <a class=UnitFiles-idLink href=#section-sourcefiles aria-label="Go to Source Files">¶</a>
+ </h2>
+ <div class=UnitFiles-titleLink>
+ <a href=https://github.com/robfig/cron/tree/v1.2.0 target=_blank rel=noopener>View all Source files</a>
+ </div>
+ <div>
+ <ul class=UnitFiles-fileList><li>
+ <a href=https://github.com/robfig/cron/blob/v1.2.0/constantdelay.go target=_blank rel=noopener title=constantdelay.go>constantdelay.go</a>
+ <li>
+ <a href=https://github.com/robfig/cron/blob/v1.2.0/cron.go target=_blank rel=noopener title=cron.go>cron.go</a>
+ <li>
+ <a href=https://github.com/robfig/cron/blob/v1.2.0/doc.go target=_blank rel=noopener title=doc.go>doc.go</a>
+ <li>
+ <a href=https://github.com/robfig/cron/blob/v1.2.0/parser.go target=_blank rel=noopener title=parser.go>parser.go</a>
+ <li>
+ <a href=https://github.com/robfig/cron/blob/v1.2.0/spec.go target=_blank rel=noopener title=spec.go>spec.go</a>
+ </ul>
+ </div>
+ </div>
+ 
+ 
+ </div>
+ </div>
+ <div id=showInternal-description hidden class=sf-hidden> Click to show internal directories. </div>
+ <div id=hideInternal-description hidden class=sf-hidden> Click to hide internal directories. </div>
+</article>
+ <footer class=go-Main-footer></footer>
+ </main>
+ 
+ <footer class=go-Footer>
+ 
+ <div class=go-Footer-links>
+ <div class=go-Footer-linkColumn>
+ <a href=https://go.dev/solutions class="go-Footer-link go-Footer-link--primary" data-gtmc="footer link">
+ Why Go
+ </a>
+ <a href=https://go.dev/solutions#use-cases class=go-Footer-link data-gtmc="footer link">
+ Use Cases
+ </a>
+ <a href=https://go.dev/solutions#case-studies class=go-Footer-link data-gtmc="footer link">
+ Case Studies
+ </a>
+ </div>
+ <div class=go-Footer-linkColumn>
+ <a href=https://learn.go.dev/ class="go-Footer-link go-Footer-link--primary" data-gtmc="footer link">
+ Get Started
+ </a>
+ <a href=https://play.golang.org/ class=go-Footer-link data-gtmc="footer link">
+ Playground
+ </a>
+ <a href=https://tour.golang.org/ class=go-Footer-link data-gtmc="footer link">
+ Tour
+ </a>
+ <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest" class=go-Footer-link data-gtmc="footer link">
+ Stack Overflow
+ </a>
+ <a href=https://go.dev/help class=go-Footer-link data-gtmc="footer link">
+ Help
+ </a>
+ </div>
+ <div class=go-Footer-linkColumn>
+ <a href=https://pkg.go.dev/ class="go-Footer-link go-Footer-link--primary" data-gtmc="footer link">
+ Packages
+ </a>
+ <a href=https://pkg.go.dev/std class=go-Footer-link data-gtmc="footer link">
+ Standard Library
+ </a>
+ <a href=https://pkg.go.dev/golang.org/x class=go-Footer-link data-gtmc="footer link">
+ Sub-repositories
+ </a>
+ <a href=https://pkg.go.dev/about class=go-Footer-link data-gtmc="footer link">
+ About Go Packages
+ </a>
+ </div>
+ <div class=go-Footer-linkColumn>
+ <a href=https://go.dev/project class="go-Footer-link go-Footer-link--primary" data-gtmc="footer link">
+ About
+ </a>
+ <a href=https://go.dev/dl/ class=go-Footer-link data-gtmc="footer link">Download</a>
+ <a href=https://go.dev/blog class=go-Footer-link data-gtmc="footer link">Blog</a>
+ <a href=https://github.com/golang/go/issues class=go-Footer-link data-gtmc="footer link">
+ Issue Tracker
+ </a>
+ <a href=https://go.dev/doc/devel/release.html class=go-Footer-link data-gtmc="footer link">
+ Release Notes
+ </a>
+ <a href=https://blog.golang.org/go-brand class=go-Footer-link data-gtmc="footer link">
+ Brand Guidelines
+ </a>
+ <a href=https://go.dev/conduct class=go-Footer-link data-gtmc="footer link">
+ Code of Conduct
+ </a>
+ </div>
+ <div class=go-Footer-linkColumn>
+ <a href=https://www.twitter.com/golang class="go-Footer-link go-Footer-link--primary" data-gtmc="footer link">
+ Connect
+ </a>
+ <a href=https://www.twitter.com/golang class=go-Footer-link data-gtmc="footer link">
+ Twitter
+ </a>
+ <a href=https://github.com/golang class=go-Footer-link data-gtmc="footer link">GitHub</a>
+ <a href=https://invite.slack.golangbridge.org/ class=go-Footer-link data-gtmc="footer link">
+ Slack
+ </a>
+ <a href=https://reddit.com/r/golang class=go-Footer-link data-gtmc="footer link">
+ r/golang
+ </a>
+ <a href=https://www.meetup.com/pro/go class=go-Footer-link data-gtmc="footer link">
+ Meetup
+ </a>
+ <a href=https://golangweekly.com/ class=go-Footer-link data-gtmc="footer link">
+ Golang Weekly
+ </a>
+ </div>
+ </div>
+ <div class=go-Footer-bottom>
+ <img class=go-Footer-gopher width=1431 height=901 src=data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTQzMSA5MDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1taXRlcmxpbWl0PSIyIj48cGF0aCBkPSJNMzM1LjYgODY3LjhjLS42LTMzLTEuMS00Ny43LTIuMi02OS42LS42LTEwLjYtLjctMTEuMi0yLjQtMTAtMSAuNy01LjcgNC42LTEwLjYgOC42LTE1LjQgMTIuNS0yNS4xIDE2LjItNDcuNCAxNy43LTEyLjcuOS0xNy4yIDIuMS0zMiA5LTcuNSAzLjUtMTUuNSA2LjgtMTcuOCA3LjUtMy4xLjgtMTUuNi45LTQ1IC40bC00MC43LS43LTkuNSA0Yy0xOC40IDcuOC0zMS45IDExLTQxLjUgOS44LTktMS4yLTIxLjQtNC40LTI2LjQtNy0xMS41LTUuOC0yMy4xLTE4LjMtMzguOC00Mi0xOS43LTI5LjYtMjQuNi00Mi0xOS4yLTQ4LjkgMS4yLTEuNSA0LjktNC4xIDguMy01LjggMTEuMy01LjYgMTEuOS02LjQgMTQuMS0xNy4xIDEuMi02IDcuMy04LjQgMTMuMy01LjMgMy43IDIgOS40IDguMSAxMy40IDE0LjYgNC40IDcuMSA0LjYgNy41IDYuOSAyMC41IDIuOCAxNS41IDguNSAzOC45IDEwLjggNDQgMS44IDQgMi40IDQuNSA3LjcgNi4xIDguNSAyLjQgMjMuNSAxLjUgMzIuOS0yLjEgMy45LTEuNCAxMi4yLTQgMTguNS01LjYgMTEuMS0yLjkgMTIuNS0zLjEgMzYuNS0zLjQgMzUtLjQgNTQuOC0zLjYgNjIuNS0xMC4xIDctNS45IDI4LTU2LjEgMzUuNC04NC44IDUuMi0xOS43IDUuNy0zMC45IDIuMi00Ni41LTUuMy0yMy40LTEzLjMtNzcuOC0xNC4zLTk2LjYtLjYtMTEuNSAxLTIzLjMgNi00NmwyLjItMTAtNS4xLTUuMmMtNi4yLTYuMS0xMS40LTE1LjEtMTQuNC0yNC44LTMtOS42LTMuOC0yOC4xLTEuNi0zOC40LjktNC4xIDEuNS03LjUgMS4zLTcuNi0uMS0uMS0zLjEtMi4yLTYuNy00LjctMjItMTUuNC0zMy4xLTM2LjQtMzMuMy02Mi44LS4xLTEzLjYgMS4zLTIyLjggNS45LTM3IDQuNi0xNC41IDEwLjgtMjQuNiAyMS4zLTM1IDEwLjEtMTAgMTguMS0xNC45IDMwLjgtMTkgMTMuMS00LjIgMjAuOC01LjMgMzguMy01LjNoMTUuNmwyLjMtMTEuMWMzLjQtMTYuMyA4LjYtMzIuOSAxMy43LTQzLjQgNy41LTE1LjUgMjAuNS0yNyA0NS4xLTM5LjkgOC41LTQuNCAxMi42LTcuNCAxOS4zLTEzLjggNS4zLTUuMSAxNC41LTEyLjEgMjQuNS0xOC44IDE4LjMtMTIuMSAzNS44LTI2LjcgNDcuMi0zOS40IDExLjMtMTIuNyAxNC42LTE1LjYgMjYuOC0yMy43IDE4LjgtMTIuNSA1NS0zMS44IDc5LjEtNDIuMSAxNC42LTYuMyAyMy04LjMgNjIuNC0xNC45IDE4LjQtMy4yIDM5LjEtNi45IDQ2LTguNEM2ODkuMi42IDY5MC4zLjUgNzIzLjUuNWMzNS45IDAgNTEuMi45IDgyLjUgNS4xIDIxLjEgMi44IDM0LjYgNiA0NCAxMC4yIDYuOSAzLjIgMzQuNSAxMy4zIDYyIDIyLjcgNDMuNyAxNS4xIDU3IDE5LjkgNjIuNSAyMi43IDE0LjIgNy4xIDM2LjEgMjQuNyA3MCA1Ni4zIDIwLjIgMTguOCAyMiAyMC4yIDQyLjkgMzQuNSAzMi4zIDIyIDM1LjQgMjYuMiA0OC43IDY3LjUgMTIuMyAzOC4yIDExIDM1IDE0LjUgMzQuOCA1LjYtLjMgMjQuNiAxLjcgMzEuMyAzLjMgMy42LjggMTEuMiAzLjggMTYuOCA2LjUgMjEuOCAxMC43IDM1LjMgMjguOCA0My4xIDU3LjggMi4xIDguMSAyLjYgMTEuOCAyLjYgMjQuMS4xIDEzLjQtLjEgMTUuMi0yLjggMjMuMy00LjYgMTQtMTQuMyAyNy4xLTI1LjYgMzQuOGwtNS4xIDMuNC44IDEwYzEuMyAxNi40LjggMzktMS4xIDQ4LjQtMS44IDguOS02LjEgMTkuMy05LjIgMjIuNS0xLjYgMS43LTEuOCAzLjItMS42IDEwLjIuNCA4LjEtMS42IDI2LjktNC4zIDQwLjctMS4zIDctMS4zIDcuMyAxIDExLjIgMS4zIDIuMiA1LjEgNy4yIDguNSAxMSAzLjQgMy45IDcgOC43IDguMSAxMC44IDUuNSAxMC40IDguNiAzNS40IDcuNSA2MC0xLjMgMjkuMy00LjggNDAuOS0yNi42IDg2LjQtOC42IDE4LTExLjQgMjUuNi0xMC42IDI5LjcuOCA0LjMgNS4zIDEwLjcgMTAuNiAxNS4xIDYuNyA1LjYgMjkgMjAuMyA0MC45IDI2LjkgNy43IDQuNCAxMi45IDguMyAyMC41IDE1LjUgMTMuMiAxMi41IDE4LjcgMTUuNSAyOC4xIDE1LjUgMTIuNi0uMSAxOS43LTUuMyAyOC40LTIxIDcuNi0xMy43IDExLTE4IDI2LjktMzQuNSAxNS40LTE1LjkgMjMuNi0yMi41IDM1LjItMjguNCAxOS44LTEwIDM3LjgtOS45IDQ5LjIuMyA1LjcgNS4yIDcuOCA5LjIgNy44IDE1LjEgMCA1LjUtMS4zIDguNC02LjIgMTMuNy04LjIgOC45LTIyIDE2LjUtNDQuMiAyNC4zLTEzLjcgNC45LTE4LjIgNy43LTI5LjggMTkuMWwtMTAuNiAxMC41LTQuMSAxMi44Yy0yLjIgNy01LjMgMTQuNi03IDE3LTYuOCA5LjgtMjQuMiAyMy43LTMxLjUgMjUuMS0yLjUuNS01LjgtLjItMTMtMi44LTExLjgtNC4zLTIxLTYuMy0zNS4yLTcuNS0xOC4yLTEuNy0zMS44LTcuNi02Ni42LTI5LjQtMTYuOS0xMC41LTI3LjgtMTYuNy0yOS4zLTE2LjctLjMgMC0uMyAxNC41LjEgMzIuMy40IDE3LjcuNCAzNi4xIDAgNDFsLS44IDguN0gzMzYuM2wtLjctMzMuMnoiIGZpbGw9IiMwYTBhMGEiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxnIGZpbGw9IiNmZWZlZmUiIGZpbGwtcnVsZT0ibm9uemVybyI+PHBhdGggZD0iTTM0OCA4NzQuOGMwLTE0LjUtLjctNDIuOS0xLjUtNjMuM2wtMS40LTM3IDMuNy0zYzEzLjUtMTAuOSAyMi43LTIyLjUgMzEuNy0zOS44IDYuNi0xMi45IDYuOS0xNS42IDIuOC0zNS44LTQuOS0yNC44LTMuNy0zOS42IDUuOS03NS45IDEuNy02LjMgMy4zLTEyLjUgMy42LTEzLjcuMi0xLjMuOC0yLjMgMS4xLTIuMy40IDAgNS40IDIuNCAxMS4yIDUuNCAxMi4zIDYuNSAyNy4zIDExLjggNDEuMyAxNC44IDguMSAxLjcgMTMuNiAyLjEgMjcuNiAyLjIgMzYuNi4xIDcxLjMtOC4yIDEwMy40LTI0LjYgMTAuMy01LjMgMjkuOS0xNy45IDMxLjMtMjAuMS40LS42IDEuMiAyLjYgMS45IDcuMSAyLjcgMTkuMiAxMyAzMCAzMiAzMy41bDYuOSAxLjMtLjMgNy41Yy0uMSA0LjEtLjcgMTYuNC0xLjIgMjcuNC0xLjUgMzItMS40IDM3LjIgMS40IDQzLjEgNi42IDE0LjEgMjQgMjEuOSA0MSAxOC40IDcuNS0xLjUgMTkuOS03LjkgMjYuMi0xMy40bDQuOS00LjMgNC40IDMuNGM5LjcgNy40IDI0LjYgMTIuNiAzNi4xIDEyLjUgMTUuOS0uMSAyOS4xLTEwLjQgMzMuNy0yNi40IDIuMy04LjMgMi44LTM1LjQuOS01My40LS45LTguMy0xLjYtMTUuNi0xLjYtMTYuMiAwLS43IDEuMi0xLjIgMi44LTEuMiA0LjYgMCAxNS42LTIuNyAyMC41LTUgMTEuMi01LjMgMTkuMy0xNi44IDIxLjgtMzEuMi43LTQgMS4zLTcuNCAxLjUtNy42LjEtLjIgMi44IDEuMyA2IDMuNCAxNiAxMC4yIDQyLjMgMjAuNiA2NS40IDI1LjggMjEuNSA0LjggMzIuOSA2IDU3IDYgMjQuOS4xIDMzLjctMS4yIDUxLjktNy42IDIxLjUtNy41IDQ5LjEtMjQuNyA2My0zOS4yIDEuOS0yIDMuOC0zLjYgNC4yLTMuNi40IDAgMSA0LjYgMS4zIDEwLjMgMS45IDI4LjggNS4yIDQ0LjUgMTIuNiA1OS4yIDggMTYuMSA5LjQgMjIuNCA5LjQgNDUuNWwuMSAxOS41LTUuMSAxNy41Yy03LjEgMjQuMS05LjYgMzYuNS05LjggNDguNS0uMSA4LjcuMiAxMC42IDIuMyAxNC40IDQuOCA5LjEgMTcuNyAyMC41IDMzLjggMzBsNy4zIDQuMy4yIDQzLjcuMyA0My42djE0Ljk1YzQuNS45LTg2IDMuMjY3LTM5MC43IDMuMzY3TDM0OCA5MTQuMjY0Vjg3NC44eiIvPjxwYXRoIGQ9Ik0xMjg4LjUgODYzLjljLTkuMy0zLjctMjMuMy02LjgtMzUuNC03LjktMTkuMS0xLjYtMzAuNC02LjUtNjUuOC0yOC42LTEwLjEtNi4zLTI1LjEtMTUtMzMuNC0xOS40LTI2LjYtMTQuMi00MC44LTI0LjktNDUuNS0zNC42LTIuNS01LTIuNi02LjItMi4xLTEzLjQuOC05LjggNC40LTI2LjMgMTAuNC00Ni45IDQuMS0xNC4zIDQuNS0xNi44IDUtMjkuOS45LTIzLjItMi41LTQwLjUtMTAuOC01NS43LTYuOS0xMi43LTEwLjUtMzEuMy0xMS41LTU5LjVsLS42LTE2LjUgNS44LTdjOS42LTExLjcgMTguOC0yNi43IDI0LjItMzkuM2wyLjMtNS4zIDQuNy44YzIuNi40IDExLjkuNyAyMC43LjYgMTUuMy0uMSAyMy45LTEuMyAzMi45LTQuOSAxLjgtLjcgMS45LS4zIDEuMiA4LjItLjMgNC45LTEuOCAxNi4zLTMuMiAyNS40LTEuNCA5LTIuMyAxNy43LTIgMTkuMy43IDMuNCA1IDkuOCAxMi45IDE5IDMuMyAzLjggNi44IDkuMiA3LjkgMTEuOSAzLjIgOC40IDQuOCAyMi45IDQuOCA0Mi44IDAgMzQtMi4xIDQxLjYtMjQuNSA4OS41LTUuNyAxMi4xLTEwLjggMjMuOC0xMS40IDI2LTMuNiAxMy40IDEuNyAyNC4yIDE4LjIgMzYuNCAxMC4yIDcuNiAyNyAxOC40IDM4LjcgMjQuOSA0LjYgMi41IDExLjcgOC4xIDE4LjQgMTQuMiA2LjMgNS45IDEzLjUgMTEuNSAxNyAxMy4zIDUuNyAzIDYuOCAzLjIgMTYuMSAzLjIgOC45IDAgMTAuNi0uMyAxNS43LTIuOCA3LjQtMy42IDE1LjQtMTIuNCAyMS4zLTIzLjIgMi42LTQuNyA2LjMtMTAuNyA4LjMtMTMuNCA0LjYtNiAyOC0zMC43IDI4LjUtMzAuMS4yLjMgMi4zIDYgNC41IDEyLjhsNC4xIDEyLjItNS43IDMuNmMtNy4xIDQuNi0yNS44IDIyLjctMjguMiAyNy40LS45IDEuOS0zLjEgOC00LjggMTMuNS0zLjYgMTEuNS03LjIgMTcuNS0xNC41IDI0LjEtNi40IDUuOC0xNSAxMS40LTE3LjQgMTEuNC0xLS4xLTQtMS02LjgtMi4xek03Ny41IDgzMy40Yy0xMC40LTIuMi0xNi44LTUuNi0yNC4yLTEyLjYtNy44LTcuNS0xNS40LTE3LjMtMjYuMy0zNC04LjEtMTIuMi0xOC0zMC43LTE4LTMzLjQgMC0uNyAzLjUtMy4xIDcuOC01LjMgMTAuNi01LjMgMTQuNy0xMC4yIDE2LjQtMTkuNi40LTEuNyAxLTEuNCA0LjYgMi40IDYuNSA3LjEgOC43IDEyLjMgMTEuNyAyNy42IDUuNCAyOC44IDEwLjQgNDUuMiAxNC44IDQ5LjQgOCA3LjUgMzEuNyA4LjcgNDguOCAyLjUgMTkuOC03LjIgMjIuMS03LjYgNTIuOS04LjQgNDYuNy0xLjMgNjQtNS41IDcxLjgtMTcuOCAxMS4zLTE3LjUgMzEuNi03MC45IDM2LjItOTQuOSAyLjktMTUuNSAyLjUtMjktMS44LTQ4LjgtNi40LTMwLjItMTMuNy04NS4zLTEyLjctOTYgLjYtNi4yIDctNDAuNCA3LjctNDEgLjItLjIgNC4xIDEgOC44IDIuNiAxMC44IDMuNiAyMS4zIDUuMiAzMC43IDQuNyA0LjgtLjIgNy4zIDAgNy4zLjggMCAuNiAyIDUuMiA0LjUgMTAuMiAxMi41IDI1LjkgMzkuMiA1Ni44IDYyLjkgNzMuMSAzLjUgMi40IDQuNiAzLjcgNC4xIDQuOS0xLjMgMy40LTkuNSAzNi4xLTExLjcgNDYuNy0zLjEgMTUuNS0zIDMxLjUuNiA0OS40IDMuNSAxOC4yIDMuNCAyMS41LTEgMzAuNC00LjcgOS40LTEzLjIgMjIuMS0xOC42IDI3LjctMi40IDIuNS0xMS4xIDEwLjQtMTkuMiAxNy41LTM0LjEgMjkuOC0zNy4yIDMxLjUtNjIuMiAzMy41LTE2LjkgMS4zLTIxLjIgMi41LTM2LjkgMTAuMmwtMTMgNi4zLTQ0LjUuMS00NC41LjItMTIuNSA1Yy0yMC45IDguNS0yOS40IDkuOC00NC41IDYuNnpNMTM3NS41IDc4NS44Yy0zLjctMTAtNC40LTEzLjItMy4zLTEzLjkgMS45LTEuMiAyLjYtLjMgNC4zIDUuOS45IDMuMSAxLjggNi41IDIuMSA3LjUuNiAyLTIuNCAyLjUtMy4xLjV6TTEzODAuNyA3ODIuNmMtLjQtMSAxLjMtMiA1LjYtMy42IDkuNS0zLjQgMjMuNy0xMC44IDI4LjUtMTQuNyA3LjItNS45IDguOC0xMS4xIDUuMi0xNy4xLTUuNy05LjQtMjQuMy05LjctNDMuNy0uNy04LjYgNC0xMC43IDIuOS0zLjEtMS41IDExLjktNi44IDI1LjUtMTAgMzQuMy04LjEgOS40IDIuMSAxNy41IDkuMyAxNy41IDE1LjUgMCA4LjYtMTEuNiAxOC4xLTMzLjMgMjcuNC01LjQgMi4zLTkuOSA0LjItMTAuMSA0LjItLjIgMC0uNi0uNi0uOS0xLjR6Ii8+PHBhdGggZD0iTTEzNzguMiA3NzQuM2MtMS4xLTMuNy0uOS01LjMgMS01LjMgMS43IDAgMTguMS03LjkgMjAtOS43IDIuNS0yLjIgMi4zLTUuMS0uNS01LjgtMi4zLS42LTEwIDEuNS0xOS41IDUuNGwtNS4zIDIuMS0xLjgtNC4yLTEuOC00LjMgNC42LTIuNGM3LjMtMy44IDE4LTcuMSAyNS4xLTcuNyA1LjQtLjUgNy41LS4zIDExLjMgMS40IDUuMSAyLjMgOSA3LjQgOC4xIDEwLjctMSAzLjctMTAuMSAxMS4xLTE4LjYgMTUuMy04LjcgNC4yLTE4LjUgOC4yLTIwLjQgOC4yLS42IDAtMS42LTEuNi0yLjItMy43eiIvPjxwYXRoIGQ9Ik0xMzY5LjYgNzY5LjNjLTIuMy0yLjMgNC43LTYuNCAxOS4zLTExLjMgMTIuMi00LjEgMTEuOC0xLjUtLjYgNC4zLTEwLjkgNS0xOCA3LjctMTguNyA3ek0xMzY1LjYgNzU2LjVjLTMuMS05LjUtMS42LTEwLjkgMi40LTIuMSAzLjQgNy41IDMuNSA4LjIgMS42IDguOS0xLjEuNC0yLjEtMS40LTQtNi44ek02NzIuMyA3MDcuNGMtNC45LTEuOC0xMi04LjUtMTMtMTIuMy0uNy0yLjYgMS4zLTYwLjMgMi4zLTY3LjdsLjYtNC4yIDUuOC0uNmMzLjMtLjQgOC4zLTEuNCAxMS4yLTIuMiAxNi4yLTQuNSAyNC4xLTYuMyAzMC43LTYuOWw3LjMtLjctLjMgMzguNy0uNCAzOC43LTYgNS42Yy0xMS42IDEwLjgtMjcuMyAxNS42LTM4LjIgMTEuNnpNNzU0LjEgNzA1LjVjLTguMS0xLjgtMTcuNi02LjMtMjIuMi0xMC42bC0zLjctMy40LjUtMzkuNC42LTM5LjQgNy44LjdjOS43LjggNDQuMSA2LjUgNDUuMSA3LjQuNC40IDEuNCA4LjEgMi4zIDE3LjIgMi4xIDIwLjQgMS43IDQ1LS45IDUyLjEtNC42IDEyLjYtMTUuNiAxOC40LTI5LjUgMTUuNHpNNDUzLjggNjE2LjVjLTQzLjUtNi44LTg3LjctMzcuMy0xMTYuNy04MC40LTE2LjQtMjQuMy0yMC0zNi43LTIwLjgtNzIuMi0uNi0yNS4xLjQtMzkuMSA0LjItNTguNCAxMS40LTU3LjMgMzguOC0xMDEgODEuNC0xMjkuNiA0OS0zMyAxMzIuNy01My44IDI0OC42LTYxLjkgMzEuOC0yLjIgMTA3LjgtMy4zIDE0MC45LTIuMSAxMzguMiA1IDIyMi43IDI3IDI3MCA3MC4yIDMzLjQgMzAuNiA1NS4yIDcyLjIgNjMuNiAxMjEuMyA2IDM1LjIgNCA3OC40LTQuNyA5OS0zLjUgOC41LTEyIDIyLjctMTguOCAzMS42LTI2LjkgMzQuOC01OS4zIDU3LjEtOTcgNjYuNy0xMC41IDIuNy0xMi4xIDIuOC0zNCAyLjgtMjguNiAwLTQ0LjUtMi4yLTcwLjQtOS43LTE4LjktNS40LTM5LjMtMTQuNy01Mi42LTIzLjktNi40LTQuNC03LjItNS40LTktMTAuNi01LjItMTUuMi0yMS44LTI5LjctNDQuOS0zOC45bC04LTMuMy0xLjEtNC45Yy0xLjMtNS43LTQuMS05LjktOS4zLTE0LTE3LjQtMTMuOC01Mi4xLTE4LjEtNzkuNy0xMC0yMC4zIDUuOS0zMi4yIDE4LjEtMjkuNSAzMC4ybC43IDMuMy04LjYgMy45Yy0xOC41IDguMy0zNSAyMi4yLTQxLjkgMzUuMi0yLjYgNC45LTUuMSA3LjctMTEgMTIuNC0xOS42IDE1LjctNDMgMjcuNy02OC40IDM1LjQtMjcuMyA4LjItNjAuNyAxMS4zLTgzIDcuOXptODMuNy01MC45YzI5LjctNS4yIDU4LjMtMTcuMiA4MC43LTMzLjggMTEuMS04LjIgMzAuMy0yNS40IDM3LTMzLjEgMTcuMi0xOS43IDI3LjUtMzkuOSAzMi45LTY0LjcgMy4xLTEzLjcgMy4zLTM5LjcuNi01My4zLTkuMS00NC45LTM4LTgxLjgtNzkuOC0xMDEuNi0zOS4zLTE4LjctNzkuNy0xOS45LTEyMy45LTMuOC02Ni4yIDI0LjEtMTA5LjIgNjUuOC0xMjIuNSAxMTguNy0zLjcgMTQuOC00LjggMjQuMi00LjcgNDEgLjEgMTYuOSAxLjYgMjggNS43IDQwLjkgMTMuNSA0Mi43IDQ5LjMgNzQuNCA5Ny41IDg2LjYgOC4zIDIuMSAxMi41IDIuOCAyNy41IDQuOSA2LjEuOSA0MS4zLS40IDQ5LTEuOHptNDEzLTE4LjZjMzcuOS0zLjcgNzAuNi0xNy41IDkzLjUtMzkuNiAxOC40LTE3LjcgMjkuNS0zOS40IDMzLjctNjUuOCAyLjQtMTUuNSAxLjQtNDguOS0yLjEtNjUuMy0xNC40LTY4LjItNjQuNy0xMTAuMS0xNDcuNi0xMjIuOC0xNC41LTIuMi00OC4zLTMuMS01OS4xLTEuNi00NyA2LjgtODYuNSAzMy0xMDkuMyA3Mi44LTEzLjEgMjIuOC0xOC4zIDQ0LjYtMTcuMyA3My4xLjYgMTguMyAyLjcgMjkuMyA4LjcgNDQuNyA5LjUgMjQuNSAyNy45IDQ4IDQ5LjcgNjMuNyAxMC40IDcuNSAzNSAyMC43IDQ4LjMgMjYgMzIuNyAxMi44IDY4LjIgMTggMTAxLjUgMTQuOHoiLz48cGF0aCBkPSJNNDgwLjIgNTU3LjRjLTI0LjUtMy41LTQ4LjUtMTMuMS02Ny4yLTI2LjctMTQuNC0xMC41LTMwLjQtMzAuNS0zNy00Ni4zLTExLjgtMjguMy0xMi44LTYzLjktMi44LTk1LjMgNy4xLTIyLjUgMTcuNC0zOC45IDM1LjctNTcuMSAxMC44LTEwLjcgMjIuMS0yMC4yIDIyLjEtMTguNyAwIC4zLTEuNiAyLjUtMy43IDQuOS05LjYgMTEuNC0xOS4yIDI4LjctMjQuMSA0My41LTUuNyAxNi44LTYuNyAyMy44LTYuNyA0NS4zLjEgMTcgLjQgMjAuNyAyLjQgMjkgNyAyOC40IDIwLjYgNTIgNDEuMyA3MS41IDI2LjUgMjQuOSA1OS42IDM4LjYgOTYuOCA0MC4yIDEzLjEuNSAzMC0uNiAzNC41LTIuMy44LS4zIDEuNS0uMSAxLjUuNCAwIDEuMi0xNC41IDYuMS0yNS41IDguNy0xOS41IDQuNS00Ny45IDUuOC02Ny4zIDIuOXoiLz48cGF0aCBkPSJNNTI3LjUgNTM1LjRjLTE3LjItMi41LTI5LjgtNi4yLTQzLjQtMTIuNS0zOS44LTE4LjYtNjcuNi01NC41LTc0LjctOTYuNC0yLjQtMTQuMy0xLjUtMzcuMyAyLTUwLjUgNi41LTI0LjQgMTYuOC00Mi4zIDM0LjUtNjAuMSAzNC4xLTM0IDg0LjQtNDcuNSAxMzIuMS0zNS40IDUwLjkgMTMgODkuMSA1Mi42IDk5LjEgMTAzIDIuMSAxMC40IDEuOCAzNi44LS41IDQ3LjMtNS40IDI1LjItMTcuMyA0Ny0zNS42IDY1LjItMTguOCAxOC45LTQyLjQgMzEuNS03MCAzNy41LTcuMyAxLjYtMzYuOSAyLjktNDMuNSAxLjl6bTExMC42LTgyLjZjMTIuMS02IDIxLjEtMTYuOSAyNC4zLTI5LjMgNi45LTI2LjEtMTAuMS01Mi0zNy4xLTU2LjctMjEuNi0zLjctNDMuNCA5LjgtNTAuMyAzMS4xLTEuOSA2LjEtMi4yIDguNi0xLjggMTYuNy41IDguNCAxIDEwLjMgNC4yIDE2LjkgNS45IDExLjkgMTUuMiAxOS45IDI4LjEgMjQuMSAyLjUuOSA3LjggMS4zIDE0LjYgMS4xIDkuOS0uMiAxMS0uNCAxOC0zLjl6Ii8+PHBhdGggZD0iTTYyNy44IDQyOC40Yy0zLjEtMS42LTUuOC02LjEtNS44LTkuNSAwLTMuNCAzLjgtOC42IDcuMS05LjggNi0yLjEgMTMgMS43IDE0LjQgNy45LjkgNC0xLjcgOS42LTUuNCAxMS40LTMuNyAyLTYuOCAyLTEwLjMgMHpNOTEyLjUgNTM4LjRjLTE4LjUtMi4xLTI1LjgtNC40LTEzLjctNC40IDEwLjkgMCAyNy44LTMuNCA0Mi4yLTguNSA0Mi43LTE1LjEgNzctNTAuNiA4OS44LTkzIDQuNi0xNSA1LjctMjMuMyA1LjYtNDEtLjEtMTIuNS0uNi0xOC4zLTIuMy0yNi41LTQtMTguOS0xMS44LTM2LjgtMjMuMi01My02LjgtOS43LTI0LjQtMjcuMi0zMy43LTMzLjUtNC0yLjctNi45LTUuMS02LjQtNS4zIDEuNi0uNSAxOS43IDcuNCAyOC43IDEyLjUgMzAuMiAxNy4yIDUyLjEgNDMuMSA2Mi41IDc0LjEgOC45IDI2LjcgMTEgNjUuMiA1IDkwLjEtMTEuOSA0OC45LTUzLjMgODAuNi0xMTUgODguMS03LjguOS0zMi40IDEuMi0zOS41LjR6Ii8+PHBhdGggZD0iTTg4MCA1MjIuM2MtNTEuNi0zLjctOTYuNS0zNC44LTExNi4xLTgwLjMtNi44LTE1LjctOS0yNi4xLTkuNi00NS0uNC0xMi40LS4xLTE4LjcgMS4xLTI1LjUgOC40LTQ4LjUgNDYuNi05MC4xIDk1LjEtMTAzLjYgMTguOS01LjIgNDMuMy02LjYgNjIuMi0zLjMgNTAuNSA4LjUgOTIuNCA0NC41IDEwNi43IDkxLjQgNy41IDI0LjcgNy4yIDUxLjQtLjkgNzUuNy02LjEgMTguMi0xNS4xIDMzLjQtMjguMiA0Ny4zLTIzLjQgMjQuOS01NC4zIDM5LjgtODguOCA0My0xMC43IDEtMTIuMiAxLTIxLjUuM3pNOTgwLjIgNDQxYzEyLjMtNC42IDIzLjItMTUuOSAyNy40LTI4LjIgMi44LTguMiAyLjUtMjEuNS0uNi0zMC4xLTQuNi0xMi45LTE1LjYtMjMuNC0yOS0yNy43LTUuOC0xLjktOC42LTIuMi0xNi40LTEuOC04LjMuMy0xMC4yLjgtMTYuOCA0LjEtOS43IDQuNy0xNi44IDExLjgtMjEuNSAyMS41LTMuMiA2LjQtMy43IDguNS00LjEgMTYuNC0uNiAxMS4xIDEuNSAxOS41IDYuNyAyNy42IDYuNSA5LjkgMTcuNyAxNy45IDI4LjQgMjAuMiA2LjcgMS40IDE5LjUuNSAyNS45LTJ6Ii8+PHBhdGggZD0iTTk3MS4zIDQxMi41Yy0zLjItMy4yLTMuNS0zLjktMy03LjggMS41LTExLjMgMTYtMTMuNCAyMC40LTMgMi44IDYuOS0yLjMgMTQuMy05LjkgMTQuMy0zLjIgMC00LjctLjctNy41LTMuNXpNNjQ2LjUgNjEwLjljLTcuNy0xLjItMTUuNi01LjEtMTguOS05LjQtMy42LTQuNy02LTE0LjUtNS4yLTIxLjUgMS40LTExLjggOS45LTI0LjEgMjMuMi0zMy42IDUuOS00LjIgMjUuNy0xNC40IDI4LTE0LjQuNiAwIDMuOCAxLjYgNyAzLjUgMjEuNiAxMyA2MS43IDEzLjkgODUuNiAxLjkgMy43LTEuOSA4LjMtNC43IDEwLjItNi40bDMuNC0zLjEgNi43IDIuNWMxMyA1IDIyLjcgMTAuNyAzMC4xIDE4LjEgOS45IDkuOCAxMS45IDE0LjMgMTEuOSAyNyAwIDguOS0uNCAxMC43LTIuOSAxNi4zLTcuOCAxNy0yMy4xIDIwLjMtNjIuMSAxMy4zLTMwLjgtNS41LTU4LjctNS4yLTc3LjMuOS0xNC4zIDQuNy0yOSA2LjUtMzkuNyA0Ljl6TTI5MC4xIDUwMC45Yy0yMi40LTQuNC0zNS41LTE1LjItNDEuOS0zNC43LTIuMS02LjUtMi41LTkuNi0yLjYtMjAuMiAwLTYuOS4yLTEzIC42LTEzLjUuNC0uNyA1LjEtLjYgMTQuNS4zIDEyIDEuMSA0MS4zIDEuMiA0NSAuMSAxLS4zIDEuNCA1LjUgMS43IDI1LjYuMyAyMi42IDEgMzEuOCAzLjEgNDEuMy41IDIuMS40IDIuMi03LjcgMi4xLTQuNi0uMS0xMC4zLS41LTEyLjctMXpNMTEzOSA0OTIuMWMtMy0uMy01LjQtMS01LjMtMS42IDIuNC0xNSAzLjQtMjkuNiAzLjEtNDcuN2wtLjMtMjAuOCAzLjUuOGM3LjUgMS42IDI5LjIuNSA0NS40LTIuMiA4LjctMS41IDE2LjEtMi40IDE2LjUtMi4xIDEuMyAxLjQuNiA0MS44LS44IDQ3LjUtMi4xIDguNS01LjUgMTUuMy04LjkgMTguMi04LjUgNy4yLTMwLjEgMTAuNC01My4yIDcuOXpNMjc5LjMgNDIzLjRjLjMtMS4xIDEuOC03LjMgMy4yLTEzLjkgMy42LTE2LjMgMTAuMS00Mi4zIDEzLTUyLjEgNS40LTE3LjggMjAuOC00NS42IDQ3LjktODYuNmwxLjgtMi44LTIuOC0xLjFjLTQuMi0xLjYtMTcuNC00LjktMTkuNi00LjktMyAwLTMtMi0uMy0xNC4xIDMuNi0xNi4yIDgtMzAuMSAxMi41LTM5LjUgNi4xLTEyLjggMTguMy0yMy41IDM5LjEtMzQuOGw4LjYtNC42LjcgMy4xYy4zIDEuNy42IDUuNy42IDguOCAwIDcuOSAyLjYgMzEuNSA1IDQ1LjIgMi4zIDEzLjcgNi4xIDI3LjIgOS41IDM0LjNsMi41IDUuMS0yLjIgMS41Yy0xNi42IDExLjEtMzcgMzAuMi00Ny45IDQ1LTIwLjcgMjguMS0zNC44IDYyLjgtNDAuNSAxMDAuMi0xLjQgOC45LTIuMiAxMS43LTMuNCAxMS43LS44IDAtNy41LjQtMTQuOS43LTEyLjcuNi0xMy4zLjYtMTIuOC0xLjJ6Ii8+PHBhdGggZD0iTTI1Ni41IDQxNi43Yy0yNC40LTkuOS0zOS40LTI2LjQtNDQuMS00OC44LTQuNS0yMSAyLjgtNTIgMTYuMy02OS45IDEwLjctMTQuMSAyOC4xLTIzLjIgNDkuOC0yNi4xIDE0LjUtMS45IDQ3LjQuNyA0Ni44IDMuNy0uMS42LTQuMiA3LjQtOS4xIDE1LjMtNSA3LjgtMTEuMiAxOC4zLTEzLjggMjMuMmwtNC45IDguOS00LjUtLjdjLTE4LjItMi42LTMwLjUgMi4zLTMzLjggMTMuMy0yLjEgNy4xLTEuNSAxNi4zIDEuMyAyMi4xIDIuMyA0LjUgOC43IDExLjcgMTUuMiAxN2wyLjIgMS44LTIuOCAxMmMtMS42IDYuNi0zLjkgMTYuNC01LjEgMjEuOC0xLjcgNy41LTIuNSA5LjctMy44IDkuNy0uOSAwLTUuMy0xLjUtOS43LTMuM3pNMTE0MSA0MTMuN2MtNC43LTEtNS41LTEuNS01LjgtMy43LS45LTcuMi01LjYtMjguNy04LjItMzcuMy0xNi43LTU2LjEtNTMuNC0xMDEuOC0xMDAuNS0xMjUuNC00LjktMi41LTkuMS00LjYtOS4yLTQuNy0uMi0uMiAyLjQtNi41IDUuOC0xNC4yIDMuMy03LjYgNy44LTE4LjQgMTAuMS0yMy45IDMuMS03LjggMjYuMy01OCAyNy4zLTU5LjMuMS0uMiA0LjcgMi44IDEwLjEgNi42IDUuNSAzLjggMTUgMTAuNCAyMS4yIDE0LjcgMTEuNSA4IDIwLjcgMTcuNiAyNS4xIDI2LjMgMSAyLjEgNS45IDE2LjMgMTAuOSAzMS43IDUgMTUuNCA5LjQgMjguOCA5LjcgMjkuNy41IDEuMyAwIDEuOS0yLjIgMi40LTcuNSAxLjYtMTggNC42LTE5LjIgNS40LTEuMS42LjkgNS43IDkuOCAyNSAyMi41IDQ4LjYgMjkuOSA2Ny40IDMyLjcgODMgMS44IDEwLjEgNCA0MSAzLjEgNDMuNC0uNSAxLjMtMiAxLjYtNy45IDEuNS00IDAtOS44LS42LTEyLjgtMS4yeiIvPjxwYXRoIGQ9Ik0xMTczLjYgMzk5LjNjLS4zLTQuMy0xLjEtMTIuOS0xLjctMTkuMS0uNi02LjMtLjktMTEuNS0uNy0xMS42LjItLjIgMi44LTEuNyA1LjgtMy40IDYuNy0zLjcgMTMuNS0xMC4zIDE2LjMtMTUuNyA0LjgtOSAxLjYtMjIuOS03LTMwLjUtNi41LTUuNy0xMi4zLTcuMy0yNC45LTYuOWwtMTAuNS40LTkuOC0yMS4zYy01LjQtMTEuNy05LjYtMjEuNC05LjItMjEuNiAxLjQtLjkgMTYuNi0yLjYgMjMuMS0yLjYgMzggMCA2Mi44IDE4LjQgNzMuNiA1NC41IDIuMSA2LjkgMi44IDExLjkgMy4xIDIxLjUuNiAxNC4xLS42IDIwLjktNS40IDMwLjgtMy45IDgtMTUuOSAxOS44LTI0LjggMjQuNC02LjMgMy4zLTIyLjcgOC44LTI2IDguOC0uOSAwLTEuNS0yLjMtMS45LTcuN3pNNDAyLjIgMjU0LjNjLTYtMTUuNi0xMC4yLTM5LjgtMTIuMy03MC43bC0xLjMtMTcuOSA4LTcuNmM0LjctNC42IDE0LjMtMTEuOSAyMy45LTE4LjMgMTktMTIuNSAzMy4yLTI0LjUgNTEuNS00My41IDE3LjYtMTguMiAyOS40LTI2IDcyLjUtNDcuOCAzNi43LTE4LjYgNDEuMy0yMCA5NS0yOC45IDE0LjktMi41IDMyLjgtNS43IDM5LjktNy4xIDctMS40IDEyLjktMi41IDEzLjEtMi41LjcgMCAxLjUgNS41IDMuOSAyNiA1LjYgNDcuOCA1LjkgNTIuOCA2LjEgMTA1LjUuMSAyNy41LjUgNTIuNS45IDU1LjZsLjggNS43LTE1LjguNmMtMTIyLjcgNS0yMTAuNCAyMi0yNzAuNCA1Mi43LTYuNCAzLjItMTIgNS45LTEyLjMgNS45LS4zIDAtMS45LTMuNS0zLjUtNy43ek0xMDAwLjQgMjM2Yy0zNS41LTEzLjctODkuOS0yNC41LTE0Ny45LTI5LjQtMzYuOC0zLjItNTQuMS0zLjktOTgtNGwtNDUtLjEtLjctMTMuNWMtLjQtNy40LS42LTMxLjctLjYtNTQgLjItNDMuMi0uNi01NS4zLTYuNy0xMDQuOS0xLjQtMTAuNy0yLjItMTkuNy0xLjktMjAgMS0xLjEgNTEuNy0uNCA2Ni40LjggMzMuNCAyLjcgNTguOCA2LjQgNzAuNSAxMC4xIDMuMyAxIDExLjQgNC4xIDE4IDYuOCAxMC43IDQuNCA0My45IDE2LjMgNzAuNSAyNS4zIDIwLjMgNi44IDQxLjcgMTQuNyA0Ni42IDE3LjIgMTEuMyA1LjcgMzcuOCAyNy40IDY4LjYgNTYuMWwxNS43IDE0LjYtMi44IDYuM2MtMS42IDMuNC02LjMgMTMuNC0xMC42IDIyLjItNC4yIDguOC05LjggMjEuMi0xMi40IDI3LjUtMTAgMjQtMTguNCA0My0xOSA0Mi45LS4zIDAtNS4yLTEuOC0xMC43LTMuOXoiLz48L2c+PC9zdmc+ alt="Gopher in flight goggles">
+ <ul class=go-Footer-listRow>
+ <li class=go-Footer-listItem>
+ <a href=https://go.dev/copyright data-gtmc="footer link">Copyright</a>
+ </li>
+ <li class=go-Footer-listItem>
+ <a href=https://go.dev/tos data-gtmc="footer link">Terms of Service</a>
+ </li>
+ <li class=go-Footer-listItem>
+ <a href=http://www.google.com/intl/en/policies/privacy/ data-gtmc="footer link" target=_blank rel=noopener>
+ Privacy Policy
+ </a>
+ </li>
+ <li class=go-Footer-listItem>
+ <a href=https://go.dev/s/pkgsite-feedback target=_blank rel=noopener data-gtmc="footer link">
+ Report an Issue
+ </a>
+ </li>
+ <li class=go-Footer-listItem>
+ <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Theme Toggle">
+ <img data-value=auto class="go-Icon go-Icon--inverted" height=24 width=24 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTAgMGgyNHYyNEgwVjB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTIwIDE1LjMxTDIzLjMxIDEyIDIwIDguNjlWNGgtNC42OUwxMiAuNjkgOC42OSA0SDR2NC42OUwuNjkgMTIgNCAxNS4zMVYyMGg0LjY5TDEyIDIzLjMxIDE1LjMxIDIwSDIwdi00LjY5ek0xMiAxOFY2YzMuMzEgMCA2IDIuNjkgNiA2cy0yLjY5IDYtNiA2eiIvPjwvc3ZnPg==" alt="System theme">
+ <img data-value=dark class="go-Icon go-Icon--inverted sf-hidden" height=24 width=24 src=data:, alt="Dark theme">
+ <img data-value=light class="go-Icon go-Icon--inverted sf-hidden" height=24 width=24 src=data:, alt="Light theme">
+ <p> Theme Toggle </p>
+ </button>
+ </li>
+ <li class=go-Footer-listItem>
+ <button class="go-Button go-Button--text go-Footer-keyboard js-openShortcuts" aria-label="Shorcuts Modal">
+ <img class="go-Icon go-Icon--inverted" height=24 width=24 src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iIzQ1NUE2NCI+PHBhdGggZD0iTTIwIDVINGMtMS4xIDAtMS45OS45LTEuOTkgMkwyIDE3YzAgMS4xLjkgMiAyIDJoMTZjMS4xIDAgMi0uOSAyLTJWN2MwLTEuMS0uOS0yLTItMnptLTkgM2gydjJoLTJWOHptMCAzaDJ2MmgtMnYtMnpNOCA4aDJ2Mkg4Vjh6bTAgM2gydjJIOHYtMnptLTEgMkg1di0yaDJ2MnptMC0zSDVWOGgydjJ6bTkgN0g4di0yaDh2MnptMC00aC0ydi0yaDJ2MnptMC0zaC0yVjhoMnYyem0zIDNoLTJ2LTJoMnYyem0wLTNoLTJWOGgydjJ6Ii8+PHBhdGggZD0iTTAgMGgyNHYyNEgwem0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz48L3N2Zz4=" alt>
+ <p> Shortcuts Modal </p>
+ </button>
+ </li>
+ </ul>
+ <a class=go-Footer-googleLogo href=https://google.com/ target=_blank rel=noopener data-gtmc="footer link">
+ <img class=go-Footer-googleLogoImg height=24 width=72 src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNLjEyOCA5LjI3NmMwLTUuMTA1IDQuMzItOS4yNjEgOS40NTctOS4yNjEgMi44NDIgMCA0Ljg2NSAxLjEwNyA2LjM4OCAyLjU1MmwtMS43OTYgMS43ODVjLTEuMDkxLTEuMDE3LTIuNTY5LTEuODA3LTQuNTkyLTEuODA3LTMuNzUgMC02LjY4MyAzLjAwNC02LjY4MyA2LjczMXMyLjkzMiA2LjczMiA2LjY4MyA2LjczMmMyLjQzMiAwIDMuODItLjk3MSA0LjcwNi0xLjg1My43MjctLjcyMiAxLjIwNC0xLjc2MSAxLjM4Ni0zLjE4NEg5LjU4NVY4LjQ0aDguNTdjLjA5MS40NTEuMTM3Ljk5My4xMzcgMS41OCAwIDEuODk4LS41MjMgNC4yNDgtMi4yMDYgNS45Mi0xLjYzNiAxLjY5My0zLjcyOCAyLjU5Ny02LjUgMi41OTctNS4xMzkgMC05LjQ1OC00LjE1Ni05LjQ1OC05LjI2Mk0yNS4yMTggMTYuMTg5Yy0xLjgxOSAwLTMuMzg3LTEuNDkxLTMuMzg3LTMuNjE1IDAtMi4xNDYgMS41NjgtMy42MTQgMy4zODctMy42MTQgMS44MTggMCAzLjM4NyAxLjQ2OCAzLjM4NyAzLjYxNCAwIDIuMTI0LTEuNTY5IDMuNjE1LTMuMzg3IDMuNjE1bTAtOS41NzhjLTMuMzIgMC02LjAyNCAyLjUwNy02LjAyNCA1Ljk2MyAwIDMuNDM0IDIuNzA1IDUuOTY0IDYuMDI0IDUuOTY0IDMuMzE4IDAgNi4wMjQtMi41MyA2LjAyNC01Ljk2NCAwLTMuNDU2LTIuNzA2LTUuOTYzLTYuMDI0LTUuOTYzTTM4LjM2IDE2LjE4OWMtMS44MiAwLTMuMzg4LTEuNDkxLTMuMzg4LTMuNjE1IDAtMi4xNDYgMS41NjktMy42MTQgMy4zODctMy42MTQgMS44MTkgMCAzLjM4NyAxLjQ2OCAzLjM4NyAzLjYxNCAwIDIuMTI0LTEuNTY4IDMuNjE1LTMuMzg3IDMuNjE1bTAtOS41NzhjLTMuMzE5IDAtNi4wMjQgMi41MDctNi4wMjQgNS45NjMgMCAzLjQzNCAyLjcwNSA1Ljk2NCA2LjAyNCA1Ljk2NHM2LjAyNC0yLjUzIDYuMDI0LTUuOTY0YzAtMy40NTYtMi43MDUtNS45NjMtNi4wMjQtNS45NjNNNTEuNDY2IDE2LjE4OWMtMS44MTggMC0zLjM0MS0xLjUxNC0zLjM0MS0zLjU5MiAwLTIuMSAxLjUyMy0zLjYzNyAzLjM0MS0zLjYzNyAxLjc5NiAwIDMuMjA2IDEuNTM2IDMuMjA2IDMuNjM3IDAgMi4wNzgtMS40MSAzLjU5Mi0zLjIwNiAzLjU5MnptMy4wMjQtOS4yMTd2Ljk3MmgtLjA5MWMtLjU5MS0uNy0xLjcyOC0xLjMzMy0zLjE2LTEuMzMzLTMgMC01Ljc1MSAyLjYyLTUuNzUxIDUuOTg2IDAgMy4zNDMgMi43NSA1Ljk0MSA1Ljc1IDUuOTQxIDEuNDMzIDAgMi41Ny0uNjMzIDMuMTYtMS4zNTZoLjA5MnYuODU5YzAgMi4yODEtMS4yMjggMy41MDEtMy4yMDYgMy41MDEtMS42MTQgMC0yLjYxNC0xLjE1Mi0zLjAyMy0yLjEyM2wtMi4yOTYuOTQ5Yy42NiAxLjU4MSAyLjQxIDMuNTI0IDUuMzIgMy41MjQgMy4wOTEgMCA1LjcwNS0xLjgwOCA1LjcwNS02LjIxMlY2Ljk3MmgtMi41ek02MS40NDYgMTguMTc2aC0yLjYzN1YuNjQ3aDIuNjM3ek02OC40NyA4LjkxNWMxLjA0NiAwIDEuOTMyLjUyIDIuMjI4IDEuMjY1bC01LjM2NSAyLjIxNGMtLjA2OC0yLjMwNSAxLjc5Ni0zLjQ4IDMuMTM3LTMuNDhtLjIwNSA3LjI3NWMtMS4zNDIgMC0yLjI5Ni0uNjEtMi45MS0xLjgwN2w4LjAyNS0zLjI5OC0uMjczLS42NzhjLS41LTEuMzMzLTIuMDI0LTMuNzk1LTUuMTM4LTMuNzk1LTMuMDkyIDAtNS42NiAyLjQxNy01LjY2IDUuOTYzIDAgMy4zNDQgMi41NDYgNS45NjQgNS45NTYgNS45NjQgMi43NSAwIDQuMzQyLTEuNjcyIDUtMi42NDNMNzEuNjMgMTQuNTRjLS42ODIuOTk0LTEuNjE0IDEuNjQ5LTIuOTU1IDEuNjQ5Ii8+PC9nPjwvc3ZnPg==" alt="Google logo">
+ </a>
+ </div>
+ </footer>
+ 
+ <dialog id=jump-to-modal class="JumpDialog go-Modal go-Modal--md js-modal sf-hidden">
+ 
+ </dialog>
+ <dialog class="ShortcutsDialog go-Modal go-Modal--sm js-modal sf-hidden">
+ 
+ </dialog>
+ 
+ <section class="Cookie-notice js-cookieNotice Cookie-notice--visible">
+ <div>go.dev uses cookies from Google to deliver and enhance the quality of its services and to
+ analyze traffic. <a target=_blank href=https://policies.google.com/technologies/cookies>Learn more.</a></div>
+ <div><button class=go-Button>Okay</button></div>
+ </section>
+ 
+ 
+ 
+ <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W8MVQXG" height="0" width="0" style="display:none;visibility:hidden">
+        </iframe>
+      </noscript>
+ 
+ 
+ 
+ <div class="js-canonicalURLPath sf-hidden" data-canonical-url-path=/github.com/robfig/cron@v1.2.0 hidden></div>
+ <div class="js-playgroundVars sf-hidden" data-modulepath=github.com/robfig/cron data-version=v1.2.0 hidden></div>
+ 
+ 
+ 
+<div style=all:initial><div style=all:initial id=__hcfy__><template shadowrootmode=open><style class=sf-hidden>#root{-webkit-text-size-adjust:100%;box-sizing:border-box;font-size:14px;font-weight:400;letter-spacing:0;line-height:1.28581;text-transform:none;color:#182026;font-family:-apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Open Sans","Helvetica Neue","Icons16",sans-serif;touch-action:manipulation}#root>.bp5-portal{z-index:9999999999}</style><style class=sf-hidden>#translate-panel{background-color:#f6f7f9;display:flex;flex-direction:column;padding-bottom:8px}.bp5-dark #translate-panel{background-color:#252a31}#translate-panel .fixed{flex-shrink:0;margin-bottom:10px}#translate-panel .body{flex-grow:1;overflow:auto;overscroll-behavior:contain}#translate-panel .body::-webkit-scrollbar{width:8px;background-color:rgba(0,0,0,0);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar:hover{background-color:rgba(0,0,0,.09)}#translate-panel .body::-webkit-scrollbar-thumb:vertical{background:rgba(0,0,0,.5);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar-thumb:vertical:active{background:rgba(0,0,0,.61);-webkit-border-radius:100px}#translate-panel.size-small,#translate-panel.size-small h6.bp5-heading,#translate-panel.size-small .bp5-control.bp5-large,#translate-panel.size-small textarea.bp5-input.bp5-small{font-size:14px}#translate-panel.size-small .phonetic-item,#translate-panel.size-small .quick-settings a{font-size:12px}#translate-panel.size-middle,#translate-panel.size-middle h6.bp5-heading,#translate-panel.size-middle .bp5-control.bp5-large,#translate-panel.size-middle textarea.bp5-input{font-size:18px}#translate-panel.size-middle .phonetic-item,#translate-panel.size-middle .quick-settings a{font-size:14px}#translate-panel.size-large,#translate-panel.size-large h6.bp5-heading,#translate-panel.size-large .bp5-control.bp5-large,#translate-panel.size-large textarea.bp5-input.bp5-large{font-size:22px}#translate-panel.size-large .source,#translate-panel.size-large .phonetic-item,#translate-panel.size-large .quick-settings a{font-size:18px}#translate-panel .bp5-button.bp5-small,#translate-panel .bp5-small .bp5-button{min-height:20px;min-width:20px}#translate-panel .header{display:flex;align-items:center;padding:4px 6px 4px 10px;border-bottom:1px solid #d1d1d1}.bp5-dark #translate-panel .header{border-bottom-color:rgba(17,20,24,.4)}#translate-panel .header .drag-block{min-width:5px;flex-shrink:0;flex-grow:1;align-self:stretch}#translate-panel .header .left{flex-shrink:0;display:flex}#translate-panel .header .right{flex-shrink:0;display:flex;align-items:center}#translate-panel .header .right .bp5-icon-arrow-right{flex-shrink:0;margin:0 5px}#translate-panel .header .right>.bp5-button{flex-shrink:0;margin:0 1px}#translate-panel .header .right>.bp5-button:last-child{margin-right:0}#translate-panel .quick-settings{padding:4px 9px;margin:0 1px}#translate-panel .quick-settings>div{margin-bottom:5px}#translate-panel .quick-settings .bp5-control{margin-bottom:0}#translate-panel .query-text{position:relative;padding:10px 10px 2px 10px}#translate-panel .query-text textarea.bp5-input{min-height:44px;font-family:system-ui,-apple-system,"Segoe UI","Roboto","Ubuntu","Cantarell","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";overscroll-behavior:contain}#translate-panel .query-text .translate-btn{position:absolute;opacity:.6}#translate-panel .query-text .translate-btn:hover{opacity:1}#translate-panel .body{padding:0 10px}#translate-panel .body .bp5-card:first-child{margin-top:1px}#translate-panel .body .bp5-card:last-child{margin-bottom:1px}#translate-panel .body .no-api{margin:20px 0}.result-block{margin:8px 0;padding:2px 5px}.result-block .bp5-button{visibility:hidden}.result-block .error .bp5-button,.result-block:hover .bp5-button{visibility:visible}.result-block .legend{display:flex;align-items:center;justify-content:space-between}.result-block .legend .legend-left{display:flex;align-items:center}.result-block .legend .api-ico,.result-block .legend .bp5-heading{flex-shrink:0;white-space:nowrap}.result-block .legend .api-ico{display:inline-block;width:14px;height:14px;background-size:contain;margin-right:3px}.result-block .legend .bp5-heading{margin-bottom:0;margin-right:10px}.result-block .legend .source{cursor:pointer;font-size:12px;display:inline-flex;align-items:center}.result-block .legend .source .source-text{overflow:hidden}.result-block .legend .source .bp5-icon{position:relative;top:-1px;margin-left:1px}.result-block .phonetic{display:flex;flex-wrap:wrap}.result-block .phonetic .phonetic-item{display:flex;align-items:center;font-size:12px}.result-block .phonetic .phonetic-item:not(:last-child){margin-right:12px}.result-block .common-result p{line-height:1.3;margin:2px 0;overflow-wrap:break-word}.result-block .common-result .dict a{text-decoration:underline}.result-block .error{font-size:12px;padding:5px 10px}.result-block .dict-pos{margin-right:5px}.external-translators{margin-bottom:3px;padding:0;display:flex;flex-wrap:wrap}.external-translators>div{margin:0 5px 5px 0}.quick-links a{margin:0 5px 5px 0}#popper-container{width:250px;max-width:100%;position:absolute;left:0;top:0;z-index:9999999998;touch-action:none;transition:opacity .2s;background-color:#f6f7f9}.bp5-dark #popper-container{background-color:#252a31}#popper-container.show{opacity:1;pointer-events:auto;-moz-user-select:auto;user-select:auto}#popper-container,#popper-container[data-popper-reference-hidden=true]{opacity:0;pointer-events:none;-moz-user-select:none;user-select:none}#popper-container .drag-block{cursor:-webkit-grab;cursor:grab}#popper-container.pin{position:fixed}#popper-container.pin .arrow{display:none}#popper-container .arrow,#popper-container .arrow::before{position:absolute;width:8px;height:8px;z-index:-1}#popper-container .arrow::before{content:"";transform:rotate(45deg);background:#f6f7f9}.bp5-dark #popper-container .arrow::before{background-color:#252a31}#popper-container .arrow{display:none}#popper-container.show[data-popper-placement]:not([data-popper-reference-hidden=true]) .arrow{display:block}#popper-container[data-popper-placement^=top] .arrow{bottom:-5px}#popper-container[data-popper-placement^=top] .arrow::before{border-right:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#popper-container[data-popper-placement^=bottom] .arrow{top:-5px}#popper-container[data-popper-placement^=bottom] .arrow::before{border-left:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=left] .arrow{right:-5px}#popper-container[data-popper-placement^=left] .arrow::before{border-right:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=right] .arrow{left:-5px}#popper-container[data-popper-placement^=right] .arrow::before{border-left:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#translate-btn{display:none;position:absolute;z-index:9999999999;left:0;top:0}#translate-btn .bp5-button{padding:2px;min-width:0;min-height:0}#translate-btn .btn-icon{width:18px;height:18px;background-image:url(moz-extension://72d6ca68-5609-1440-b1ba-15daf8cbdb2d/logo.png);background-size:contain}.bp5-dark #translate-btn .btn-icon{background-image:url(moz-extension://72d6ca68-5609-1440-b1ba-15daf8cbdb2d/logowhite36.png)}#translate-btn.show{display:block}.translate-type-selector .bp5-label{display:inline}.translate-type-selector .bp5-radio{margin-bottom:0}#ocr-container{position:fixed;z-index:99999999999999;left:0;top:0;right:0;bottom:0}#ocr-container .toolbar{display:none;position:absolute;z-index:1}#ocr-container img{max-width:100%}#app{cursor:default}.switch-pin{flex-shrink:0;cursor:pointer}.switch-pin .bp5-icon-pin{transition:transform .2s,color .2s;transform:rotate(-45deg)}.pin .switch-pin .bp5-icon-pin{transform:rotate(-70deg)}.cut-btn{margin-left:2px}.app-toaster-container{position:fixed!important;z-index:9999999999!important}.app-toaster-container .bp5-toast{min-width:auto}#web-trs-panel .app-toaster-container{padding-right:0;padding-left:0}#web-trs-panel .page-trs-form-group{margin:0 0 0 0;align-items:center}#web-trs-panel .page-trs-form-group>label{width:70px}</style><div id=root dir=ltr class=bp5-dark><div id=app class=bp5-dark><div id=translate-btn class=sf-hidden></div><div id=popper-container style=width:250px;transform:translate(0px) class=bp5-elevation-4><div id=translate-panel class=size-small><div class=fixed><div class=header><div class=left><div class=switch-pin><button type=button class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-pin"><svg data-icon=pin height=14 role=img viewBox="0 0 16 16" width=14><path d="M9.41.92c-.51.51-.41 1.5.15 2.56L4.34 7.54C2.8 6.48 1.45 6.05.92 6.58l3.54 3.54-3.54 4.95 4.95-3.54 3.54 3.54c.53-.53.1-1.88-.96-3.42l4.06-5.22c1.06.56 2.04.66 2.55.15L9.41.92z" fill-rule=evenodd></path></svg></span></button></div><button type=button class="bp5-button bp5-minimal bp5-small cut-btn" title=截图翻译><span aria-hidden=true class="bp5-icon bp5-icon-cut"><svg data-icon=cut height=14 role=img viewBox="0 0 16 16" width=14><path d="M13 2s.71-1.29 0-2L8.66 5.07l1.05 1.32L13 2zm.07 8c-.42 0-.82.09-1.18.26L3.31 0c-.69.71 0 2 0 2l3.68 5.02-2.77 3.24A2.996 2.996 0 000 13c0 1.66 1.34 3 3 3s3-1.34 3-3c0-.46-.11-.89-.29-1.27L8.1 8.54l2.33 3.19c-.18.39-.29.82-.29 1.27 0 1.66 1.31 3 2.93 3S16 14.66 16 13s-1.31-3-2.93-3zM3 14c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm10.07 0c-.54 0-.98-.45-.98-1s.44-1 .98-1 .98.45.98 1-.44 1-.98 1z" fill-rule=evenodd></path></svg></span></button><button type=button class="bp5-button bp5-minimal bp5-small cut-btn" title=网页全文翻译><span aria-hidden=true class="bp5-icon bp5-icon-translate"><svg data-icon=translate height=14 role=img viewBox="0 0 16 16" width=14><path d="M15.89 14.56l-3.99-8h-.01c-.17-.33-.5-.56-.89-.56s-.72.23-.89.56h-.01L9 8.76 7.17 7.38l.23-.18C8.37 6.47 9 5.31 9 4V3h1c.55 0 1-.45 1-1s-.45-1-1-1H7c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1H1c-.55 0-1 .45-1 1s.45 1 1 1h6v1c0 .66-.32 1.25-.82 1.61l-.68.51-.68-.5C4.32 5.25 4 4.66 4 4H2c0 1.31.63 2.47 1.6 3.2l.23.17L1.4 9.2l.01.01C1.17 9.4 1 9.67 1 10c0 .55.45 1 1 1 .23 0 .42-.09.59-.21l.01.01 2.9-2.17 2.6 1.95-1.99 3.98h.01c-.07.13-.12.28-.12.44 0 .55.45 1 1 1 .39 0 .72-.23.89-.56h.01L8.62 14h4.76l.72 1.45h.01c.17.32.5.55.89.55.55 0 1-.45 1-1 0-.16-.05-.31-.11-.44zM9.62 12L11 9.24 12.38 12H9.62z" fill-rule=evenodd></path></svg></span></button><button type=button class="bp5-button bp5-minimal bp5-small cut-btn" title=音视频翻译 style=margin-right:2px><span aria-hidden=true class="bp5-icon bp5-icon-video"><svg data-icon=video height=14 role=img viewBox="0 0 16 16" width=14><path d="M15 2H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h14c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zM5 11V5l6 3-6 3z" fill-rule=evenodd></path></svg></span></button><button type=button title=图片翻译 class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-media"><svg data-icon=media height=14 role=img viewBox="0 0 16 16" width=14><path d="M11.99 6.99c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3-5h-14c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-10c0-.55-.45-1-1-1zm-1 9l-5-3-1 2-3-4-3 5v-7h12v7z" fill-rule=evenodd></path></svg></span></button><button type=button title=语音翻译 class="bp5-button bp5-minimal bp5-small"><span class=bp5-icon><svg version=1.1 id=Capa_1 width=14 height=14 xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink x=0px y=0px viewBox="0 0 490.9 490.9" xml:space=preserve><g><g><path d="M245.5,322.9c53,0,96.2-43.2,96.2-96.2V96.2c0-53-43.2-96.2-96.2-96.2s-96.2,43.2-96.2,96.2v130.5 C149.3,279.8,192.5,322.9,245.5,322.9z M173.8,96.2c0-39.5,32.2-71.7,71.7-71.7s71.7,32.2,71.7,71.7v130.5 c0,39.5-32.2,71.7-71.7,71.7s-71.7-32.2-71.7-71.7V96.2z"></path><path d="M94.4,214.5c-6.8,0-12.3,5.5-12.3,12.3c0,85.9,66.7,156.6,151.1,162.8v76.7h-63.9c-6.8,0-12.3,5.5-12.3,12.3 s5.5,12.3,12.3,12.3h152.3c6.8,0,12.3-5.5,12.3-12.3s-5.5-12.3-12.3-12.3h-63.9v-76.7c84.4-6.3,151.1-76.9,151.1-162.8 c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3c0,76.6-62.3,138.9-138.9,138.9s-138.9-62.3-138.9-138.9 C106.6,220,101.2,214.5,94.4,214.5z"></path></g></g></svg></span></button></div><div class=drag-block title=按住不放可以拖动></div><div class=right><button type=button disabled title=添加到收藏夹 class="bp5-button bp5-disabled bp5-minimal bp5-small" tabindex=-1><span aria-hidden=true class="bp5-icon bp5-icon-star-empty"><svg data-icon=star-empty height=14 role=img viewBox="0 0 16 16" width=14><path d="M16 6.11l-5.53-.84L8 0 5.53 5.27 0 6.11l4 4.1L3.06 16 8 13.27 12.94 16 12 10.21l4-4.1zM4.91 13.2l.59-3.62L3 7.02l3.45-.53L8 3.2l1.55 3.29 3.45.53-2.5 2.56.59 3.62L8 11.49 4.91 13.2z" fill-rule=evenodd></path></svg></span></button><button type=button class="bp5-button bp5-minimal bp5-small settings" title=快捷设置><span aria-hidden=true class="bp5-icon bp5-icon-cog"><svg data-icon=cog height=14 role=img viewBox="0 0 16 16" width=14><path d="M15.19 6.39h-1.85c-.11-.37-.27-.71-.45-1.04l1.36-1.36c.31-.31.31-.82 0-1.13l-1.13-1.13a.803.803 0 00-1.13 0l-1.36 1.36c-.33-.17-.67-.33-1.04-.44V.79c0-.44-.36-.8-.8-.8h-1.6c-.44 0-.8.36-.8.8v1.86c-.39.12-.75.28-1.1.47l-1.3-1.3c-.3-.3-.79-.3-1.09 0L1.82 2.91c-.3.3-.3.79 0 1.09l1.3 1.3c-.2.34-.36.7-.48 1.09H.79c-.44 0-.8.36-.8.8v1.6c0 .44.36.8.8.8h1.85c.11.37.27.71.45 1.04l-1.36 1.36c-.31.31-.31.82 0 1.13l1.13 1.13c.31.31.82.31 1.13 0l1.36-1.36c.33.18.67.33 1.04.44v1.86c0 .44.36.8.8.8h1.6c.44 0 .8-.36.8-.8v-1.86c.39-.12.75-.28 1.1-.47l1.3 1.3c.3.3.79.3 1.09 0l1.09-1.09c.3-.3.3-.79 0-1.09l-1.3-1.3c.19-.35.36-.71.48-1.1h1.85c.44 0 .8-.36.8-.8v-1.6a.816.816 0 00-.81-.79zm-7.2 4.6c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill-rule=evenodd></path></svg></span></button><button type=button title=关闭(Esc) class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-cross"><svg data-icon=cross height=18 role=img viewBox="0 0 16 16" width=18><path d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z" fill-rule=evenodd></path></svg></span></button></div></div><div class=bp5-collapse><div class="bp5-collapse-body sf-hidden" aria-hidden=true></div></div></div><div class=body><p>请输入需要翻译的文本。</p></div></div><div class="arrow sf-hidden"></div></div><div id=web-trs-panel></div></div></div></template></div></div><script data-template-shadow-root>(()=>{document.currentScript.remove();processNode(document);function processNode(node){node.querySelectorAll("template[shadowrootmode]").forEach(element=>{let shadowRoot = element.parentElement.shadowRoot;if (!shadowRoot) {try {shadowRoot=element.parentElement.attachShadow({mode:element.getAttribute("shadowrootmode")});shadowRoot.innerHTML=element.innerHTML;element.remove()} catch (error) {} if (shadowRoot) {processNode(shadowRoot)}}})}})()</script>
