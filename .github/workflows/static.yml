@@ -34,7 +34,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Update links
-        run: echo "aa https://billxiang.github.io/BillXiang-BookMarks/" >> index.html
+        run: pwd;ls
+        with:
+          path: '.'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
