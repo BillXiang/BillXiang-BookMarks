@@ -13,15 +13,11 @@ echo "<!DOCTYPE html>
     <body>
       <table id="myTable" class="tablesorter">
         <thead><tr><th>Index</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>" > index.html
+        <tbody>" > index.html
         
-find . -type f -print0|xargs -0 -i echo {}|cut -d'/' -f2-|grep -v ".git"|grep -v ls.sh|awk '{url=$0;sub(/书签工具栏/, "", $0);print "<a href=\"https://billxiang.github.io/BillXiang-BookMarks/"url"\">"$0"</a>"}' >> index.html
+find . -type f -print0|xargs -0 -i echo {}|cut -d'/' -f2-|grep -v ".git"|grep -v ls.sh|awk '{url=$0;sub(/书签工具栏/, "", $0);print "<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/"url"\">"$0"</a></td></tr>"}' >> index.html
 
-echo "      </td>
-          <tr>
-        </tbody>
+echo "  </tbody>
       </table>
     </body>
   </html>" >> index.html
