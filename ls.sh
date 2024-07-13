@@ -12,13 +12,15 @@ echo "<!DOCTYPE html>
     </head>
     <body>
       <table id="myTable" class="tablesorter">
-        <h1>Index</h1>
+        <thead><tr><th>Index</th></tr></thead>
         <tbody>
-          <hr><pre>" > index.html
+          <tr>
+            <td>" > index.html
         
 find . -type f -print0|xargs -0 -i echo {}|cut -d'/' -f2-|grep -v ".git"|grep -v ls.sh|awk '{url=$0;sub(/书签工具栏/, "", $0);print "<a href=\"https://billxiang.github.io/BillXiang-BookMarks/"url"\">"$0"</a>"}' >> index.html
 
-echo "   </pre><hr>
+echo "      </td>
+          <tr>
         </tbody>
       </table>
     </body>
