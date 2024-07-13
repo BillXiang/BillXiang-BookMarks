@@ -5,12 +5,21 @@
 #    fi
 #done
 echo "<!DOCTYPE html> 
-<html> 
-  <head>
-  </head>
-  <body>
-    <h1>Index</h1>
-    <hr><pre>" > index.html
+  <html> 
+    <head>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/jquery.tablesorter.min.js"></script>
+    </head>
+    <body>
+      <table id="myTable" class="tablesorter">
+        <h1>Index</h1>
+        <tbody>
+          <hr><pre>" > index.html
+        
 find . -type f -print0|xargs -0 -i echo {}|cut -d'/' -f2-|grep -v ".git"|grep -v ls.sh|awk '{url=$0;sub(/书签工具栏/, "", $0);print "<a href=\"https://billxiang.github.io/BillXiang-BookMarks/"url"\">"$0"</a>"}' >> index.html
-echo "</pre><hr>
-  </body></html>" >> index.html
+
+echo "   </pre><hr>
+        </tbody>
+      </table>
+    </body>
+  </html>" >> index.html
