@@ -22,7 +22,11 @@ echo "<!DOCTYPE html>
         <thead><tr><th>Index</th></tr></thead>
         <tbody>" > index.html
         
-find . -type f -print0|xargs -0 -i echo {}|cut -d'/' -f2-|grep -v ".git"|grep -v ls.sh|grep -v index.html|awk '{url=$0;sub(/书签工具栏/, "", $0);print "<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/"url"\">"$0"</a></td></tr>"}' >> index.html
+find . -type f -print0|xargs -0 -i echo {}|cut -d'/' -f2-|grep -v ".git"|grep -v ls.sh|grep -v index.html|
+awk -F'(' '{url=$0;sub(/书签工具栏/, "", $0); print $NF,"<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/"url"\">"$0"</a></td></tr>"}'|
+sort -rk1|
+awk -F'<tr><td>' '{$1=""; print "<tr><td>"$0}'
+>> index.html
 
 echo "  </tbody>
       </table>
