@@ -27,7 +27,7 @@ awk -F'(' '{url=$0;sub(/书签工具栏/, "", $0); print $NF,"<tr><td>"url,"<tr>
 sort -rk1 > sort.tmp
 cat sort.tmp
 cat sort.tmp |
-awk -F'<tr><td>' '{$1="";file[NR]=$2;$2=""}{FILENAME=file[NR];cmd = "head -n 3 " FILENAME " | tail -n 1 |cut -c6- > head.tmp" NR;result=system(cmd);ret=getline line < ("head.tmp" NR);print "<tr><td><a href="line">"result,FILENAME"原文</a></td><td>"file[NR]}{cmd = "cat head.tmp" NR;system(cmd);}' >> index.html
+awk -F'<tr><td>' '{$1="";file[NR]=$2;$2="";FILENAME=file[NR];cmd = "head -n 3 " FILENAME " | tail -n 1 |cut -c6- > head.tmp" NR;result=system(cmd);}{ret=getline line < ("head.tmp" NR);print "<tr><td><a href="line">"result,FILENAME"原文</a></td><td>"file[NR]}{cmd = "cat head.tmp" NR;system(cmd);}' >> index.html
 rm -f sort.tmp
 
 echo "  </tbody>
