@@ -26,7 +26,7 @@ find . -type f -print0|xargs -0 -i echo {}|cut -d'/' -f2-|grep -v ".git"|grep -v
 awk -F'(' '{url=$0;sub(/书签工具栏/, "", $0); print $NF,"<tr><td>"url,"<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/"url"\">"$0"</a></td></tr>"}'|
 sort -rk1 > sort.tmp
 cat sort.tmp
-cat sort.tmp |awk -F'<tr><td>' '{$1="";file[NR]=$2;$2=""}{FILENAME=file[NR];cmd = "head -n 3 " FILENAME " | tail -n 1 |cut -c6-> head.tmp" NR;result=system(cmd);getline line < ("head.tmp" NR);print "<tr><td><a href="line">原文</a></td><td>"file[NR]}{cmd = "rm -f head.tmp" NR;system(cmd);}' >> index.html
+cat sort.tmp |awk -F'<tr><td>' '{$1="";file[NR]=$2;$2=""}{FILENAME=file[NR];cmd = "head -n 3 " FILENAME " | tail -n 1 |cut -c6-> head.tmp" NR;result=system(cmd);getline line < ("head.tmp" NR);print "<tr><td><a href="line">原文</a></td><td>"file[NR]}{cmd = "cat head.tmp" NR" rm -f head.tmp" NR;system(cmd);}' >> index.html
 rm -f sort.tmp
 
 echo "  </tbody>
