@@ -25,7 +25,7 @@ echo "<!DOCTYPE html>
 find . -type f -print0|xargs -0 -i echo {}|cut -d'/' -f2-|grep -v ".git"|grep -v ls.sh|grep -v index.html|grep -v README.md|
 awk -F'(' '{url=$0;sub(/书签工具栏/, "", $0); print $NF,"<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/"url"\">"$0"</a></td></tr>"}'|
 sort -rk1|
-awk -F'<tr><td>' '{$1=""; print "<tr><td>"$0}' >> index.html
+awk -F'<tr><td>' '{$1="";file[NR]=$2;$2=""}{FILENAME=file[NR];cmd = "head -n 3 " FILENAME " | tail -n 1 |cut -c6-> head.tmp" NR;result=system(cmd);getline line < ("head.tmp" NR);print "<tr><td><a href="line">原文</a></td><td>"file[NR]}{cmd = "rm -f head.tmp" NR;system(cmd);}' >> index.html
 
 echo "  </tbody>
       </table>
