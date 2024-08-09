@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+rm -f *.tmp
 echo "<!DOCTYPE html>
   <html>
     <head>
@@ -55,3 +56,4 @@ read_dir(){
 echo "" > url.tmp
 read_dir "."
 cat url.tmp |LC_ALL=C  sort -t'<' -rk 1 >> index.html
+rm -f *.tmp
