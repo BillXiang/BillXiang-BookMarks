@@ -19,7 +19,7 @@ echo "<!DOCTYPE html>
         <tbody>" > index.html
 
 read_dir(){
-    for file in $1/*;
+    for file in "$1"/*;
     do
         #echo $file"####"
         if [ -d "$file" ]
@@ -31,21 +31,21 @@ read_dir(){
             fi
         else
             html=$(echo $file|grep "html$"|wc -l)
+            
+            name=${file/\.\//}
+            name=${name/书签工具栏/}
+            name=${name/(*).html/}
+            echo $name
             if [[ "$html" -ne 0 ]];then
                 ori_url=`head -n 3 "$file"|tail -n 1`
                 ori_url=${ori_url:6}
-
-                name=${file/\.\//}
-                name=${name/书签工具栏/}
-                name=${name/(*).html/}
-                echo $name
 
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
                     echo "<tr><td>$a $b</td><td><a href='$ori_url'>Original URL</a></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
                 done
             else
-                echo "<tr><td>____________________</td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$file</a></td></tr>" >> url.tmp
+                echo "<tr><td>____________________</td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
             fi
 
         fi
