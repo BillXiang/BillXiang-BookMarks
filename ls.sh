@@ -43,7 +43,7 @@ read_dir(){
 
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
-                    echo "<tr><td>\"$a\"_\"$b\"</td><td><a href='$ori_url'>Original URL</a></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
+                    echo "<tr><td>${a}_${b}</td><td><a href='$ori_url'>Original URL</a></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
                 done
             else
                 echo "<tr><td>____________________</td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
