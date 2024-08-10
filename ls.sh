@@ -43,7 +43,7 @@ read_dir(){
 
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
-                    echo "<tr><td>$a $b</td><td><a href='$ori_url'>Original URL</a></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
+                    echo "<tr><td>$a_$b</td><td><a href='$ori_url'>Original URL</a></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
                 done
             else
                 echo "<tr><td>____________________</td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
@@ -55,5 +55,5 @@ read_dir(){
 
 echo "" > url.tmp
 read_dir "."
-cat url.tmp |LC_ALL=C  sort -t'<' -rk 1 >> index.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 >> index.html
 rm -f *.tmp
