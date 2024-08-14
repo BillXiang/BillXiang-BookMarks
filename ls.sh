@@ -5,6 +5,8 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <meta charset="UTF-8">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
       <script>
         var _hmt = _hmt || [];
         (function() {
@@ -80,6 +82,20 @@ cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 >> all.html
 
 echo "  </tbody>
       </table>
+      <div id="gitalk-container"></div>
+      <script>
+      const gitalk = new Gitalk({
+        clientID: 'Ov23likAQqUjMmw0YgcJ',
+        clientSecret: 'b7c0049ccc92a8478fcd41efb9bcd847b0588f82',
+        repo: 'BillXiang-BookMarks',
+        owner: 'BillXiang',
+        admin: ['BillXiang'],
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+       
+      gitalk.render('gitalk-container')
+      </script>
     </body>
 </html>" >> index.html
 
