@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 rm -f *.tmp
+
 echo "<!DOCTYPE html>
   <html>
     <head>
@@ -16,7 +17,26 @@ echo "<!DOCTYPE html>
     </head>
     <body>
       <table id="myTable">
-        <thead><tr><th>Index</th></tr></thead>
+        <thead><tr><th><a href='./index.html'>Recently Read</a></th><th>All</th></tr></thead>
+        <tbody>" > all.html
+
+echo "<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8">
+      <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement('"script"');
+          hm.src = '"https://hm.baidu.com/hm.js?ec59a7c509d311b9e44b32db0e8bc394"';
+          var s = document.getElementsByTagName('"script"')[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      </script>
+    </head>
+    <body>
+      <table id="myTable">
+        <thead><tr><th>Recently Read</th><th><a href='./all.html'>All</a></th></tr></thead>
         <tbody>" > index.html
 
 read_dir(){
@@ -55,5 +75,16 @@ read_dir(){
 
 echo "" > url.tmp
 read_dir "."
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 >> index.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 10>> index.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 >> all.html
+
+echo "  </tbody>
+      </table>
+    </body>
+</html>" >> index.html
+
+echo "  </tbody>
+      </table>
+    </body>
+</html>" >> all.html
 rm -f *.tmp
