@@ -5,6 +5,7 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <meta charset="UTF-8">
+      <link rel="stylesheet" type="text/css" href="style.css">
       <script>
         var _hmt = _hmt || [];
         (function() {
@@ -16,6 +17,7 @@ echo "<!DOCTYPE html>
       </script>
     </head>
     <body>
+      <img src="avatar.jpeg" class="round_icon"  alt="">
       <table id="myTable">
         <thead><tr><th><a href='./index.html'>Recently Read</a></th><th>All</th></tr></thead>
         <tbody>" > all.html
@@ -24,6 +26,7 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <meta charset="UTF-8">
+      <link rel="stylesheet" type="text/css" href="style.css">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
       <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
       <script>
@@ -37,6 +40,7 @@ echo "<!DOCTYPE html>
       </script>
     </head>
     <body>
+      <img src="avatar.jpeg" class="round_icon"  alt="">
       <table id="myTable">
         <thead><tr><th>Recently Read</th><th><a href='./all.html'>All</a></th></tr></thead>
         <tbody>" > index.html
