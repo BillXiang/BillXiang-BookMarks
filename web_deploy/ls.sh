@@ -5,7 +5,7 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <meta charset="UTF-8">
-      <link rel="stylesheet" type="text/css" href="style.css">
+      <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
       <script>
         var _hmt = _hmt || [];
         (function() {
@@ -17,7 +17,7 @@ echo "<!DOCTYPE html>
       </script>
     </head>
     <body>
-      <img src="avatar.jpeg" class="round_icon"  alt="">
+      <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
       <table id="myTable">
         <thead><tr><th><a href='./index.html'>Recently Read</a></th><th>All</th></tr></thead>
         <tbody>" > all.html
@@ -26,7 +26,7 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <meta charset="UTF-8">
-      <link rel="stylesheet" type="text/css" href="style.css">
+      <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
       <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
       <script>
@@ -40,7 +40,7 @@ echo "<!DOCTYPE html>
       </script>
     </head>
     <body>
-      <img src="avatar.jpeg" class="round_icon"  alt="">
+      <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
       <table id="myTable">
         <thead><tr><th>Recently Read</th><th><a href='./all.html'>All</a></th></tr></thead>
         <tbody>" > index.html
@@ -82,7 +82,8 @@ read_dir(){
 echo "" > url.tmp
 read_dir "."
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 10 >> index.html
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 >> all.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" >> all.html
+rm -f url.tmp
 
 echo "  </tbody>
       </table>
