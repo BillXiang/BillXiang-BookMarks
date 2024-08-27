@@ -5,6 +5,7 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <meta charset="UTF-8">
+      <title>BillXiang</title>
       <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
       <script>
         var _hmt = _hmt || [];
@@ -26,6 +27,7 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <meta charset="UTF-8">
+      <title>BillXiang</title>
       <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
       <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
