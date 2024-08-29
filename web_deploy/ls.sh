@@ -71,8 +71,8 @@ read_dir(){
 
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
-                    echo "<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><strong>$name</strong></a></td></tr>" >> url.tmp
-                    echo "<tr><td>收录日期 ${a}_${b}</td><td><a href='$ori_url'>原文链接</a></td></tr>" >> url.tmp
+                    echo "<tr><td>${a}_${b}</td><td><a href='$ori_url'>原文链接</a></td> <td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><strong>$name</strong></a></td></tr>" >> url.tmp
+                    echo "<tr></tr>" >> url.tmp
                 done
             else
                 echo "<tr><td>____________________</td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
