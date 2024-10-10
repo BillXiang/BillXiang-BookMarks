@@ -1,0 +1,962 @@
+<!DOCTYPE html> <html lang=en style><!--
+ Page saved with SingleFile 
+ url: https://www.kernel.org/doc/html/v6.2/userspace-api/iommufd.html 
+ saved date: Thu Oct 10 2024 11:58:17 GMT+0800 (中国标准时间)
+--><meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1.0"><meta name=generator content="Docutils 0.17: http://docutils.sourceforge.net/">
+<title>IOMMUFD — The Linux Kernel documentation</title>
+<style>div.clearer{clear:both}div.sphinxsidebar{float:left;margin-left:-100%;word-wrap:break-word;overflow-wrap:break-word}div.sphinxsidebar ul{list-style:none}div.sphinxsidebar ul ul{margin-left:20px;list-style:square}div.sphinxsidebar ul ul{margin-top:0;margin-bottom:0}div.sphinxsidebar form{margin-top:10px}div.sphinxsidebar #searchbox form.search{overflow:hidden}div.sphinxsidebar #searchbox input[type="text"]{float:left;width:80%;padding:0.25em;box-sizing:border-box}div.sphinxsidebar #searchbox input[type="submit"]{float:left;width:20%;border-left:none;padding:0.25em;box-sizing:border-box}div.body{min-width:360px;max-width:800px}div.body p,div.body dd,div.body li,div.body blockquote{-moz-hyphens:auto;-ms-hyphens:auto;-webkit-hyphens:auto;hyphens:auto}a.headerlink{visibility:hidden}h1:hover>a.headerlink,h2:hover>a.headerlink,h3:hover>a.headerlink,h4:hover>a.headerlink,h5:hover>a.headerlink,h6:hover>a.headerlink,dt:hover>a.headerlink,caption:hover>a.headerlink,p.caption:hover>a.headerlink,div.code-block-caption:hover>a.headerlink{visibility:visible}div.admonition,blockquote{clear:left}div.admonition{margin-top:10px;margin-bottom:10px}div.sidebar>:last-child,aside.sidebar>:last-child,div.topic>:last-child,aside.topic>:last-child,div.admonition>:last-child{margin-bottom:0}div.sidebar::after,aside.sidebar::after,div.topic::after,aside.topic::after,div.admonition::after,blockquote::after{display:block;content:"";clear:both}.field-list p{margin:0}.sig{font-family:"Consolas","Menlo","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace}.sig-name{background-color:transparent;font-weight:bold}.sig-name{font-size:1.1em}.sig-paren{font-size:larger}.sig.c .k,.sig.c .kt{color:#0033B3}ol.arabic{list-style:decimal}:not(li)>ol>li:first-child>:first-child,:not(li)>ul>li:first-child>:first-child{margin-top:0px}:not(li)>ol>li:last-child>:last-child,:not(li)>ul>li:last-child>:last-child{margin-bottom:0px}ol.simple>li:not(:first-child)>p,ul.simple>li:not(:first-child)>p{margin-top:0}ul.simple p{margin-bottom:0}dl.field-list{display:grid;grid-template-columns:fit-content(30%) auto}dl.field-list>dt{font-weight:bold;word-break:break-word;padding-left:0.5em;padding-right:5px}dl.field-list>dt:after{content:":"}dl.field-list>dd{padding-left:0.5em;margin-top:0em;margin-left:0em;margin-bottom:0em}dl{margin-bottom:15px}dd>:first-child{margin-top:0px}dd{margin-top:3px;margin-bottom:10px}dl>dd:last-child,dl>dd:last-child>:last-child{margin-bottom:0}dt:target,span.highlighted{background-color:#fbe54e}pre{overflow:auto;overflow-y:hidden}pre,div[class*="highlight-"]{clear:both}span.pre{-moz-hyphens:none;-ms-hyphens:none;-webkit-hyphens:none;hyphens:none;white-space:nowrap}div[class*="highlight-"]{margin:1em 0}div.highlight pre{margin:0}code.xref{font-weight:bold}body{font-family:serif;font-size:inherit;background-color:#fff;color:#000;margin:0;padding:0}div.documentwrapper{float:left;width:100%}div.bodywrapper{margin:0 0 0 15em}div.sphinxsidebar{width:15em;line-height:1.5}div.body{background-color:#fff;color:#3E4349}div.footer{width:65em;margin:20px auto 30px auto;font-size:14px;color:#888;text-align:right}div.footer a{color:#888}div.sphinxsidebar a{color:#444;text-decoration:none;border-bottom:1px dotted #999}div.sphinxsidebar a:hover{border-bottom:1px solid #999}div.sphinxsidebarwrapper h1.logo{margin-top:-10px;margin-bottom:5px;text-align:left}div.sphinxsidebarwrapper p.blurb{margin-top:0;font-style:normal}div.sphinxsidebar h3{font-family:serif;color:#444;font-size:24px;font-weight:normal;margin:0 0 5px 0;padding:0}div.sphinxsidebar h3 a{color:#444}div.sphinxsidebar h3 a,div.sphinxsidebar h3 a:hover{border:none}div.sphinxsidebar p{color:#555;margin:10px 0}div.sphinxsidebar ul{margin:10px 0;padding:0;color:#000}div.sphinxsidebar input{border:1px solid #CCC;font-family:serif;font-size:1em}a{color:#004B6B;text-decoration:underline}a:hover{color:#6D4100;text-decoration:underline}div.body h1,div.body h2,div.body h3{font-family:serif;font-weight:normal;margin:30px 0px 10px 0px;padding:0}div.body h1{margin-top:0;padding-top:0}a.headerlink{color:#DDD;padding:0 4px;text-decoration:none}a.headerlink:hover{color:#444;background:#EAEAEA}div.body p,div.body dd,div.body li{line-height:1.4em}div.admonition{margin:20px 0px;padding:10px 30px}div.admonition p.admonition-title{font-family:serif;font-weight:normal;font-size:24px;margin:0 0 10px 0;padding:0;line-height:1}div.highlight{background-color:#fff}dt:target,.highlight{background:#FAF3E8}div.note{background-color:#EEE;border:1px solid #CCC}p.admonition-title{display:inline}p.admonition-title:after{content:":"}pre,code{font-family:"Consolas","Menlo","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;font-size:0.9em}dl{margin:0;padding:0}dl dd{margin-left:30px}blockquote{margin:0 0 0 30px;padding:0}ul,ol{margin:10px 0 10px 30px;padding:0}pre{background:#EEE;padding:7px 30px;line-height:1.3em}code{background-color:#ecf0f3;color:#222}code.xref{background-color:#FBFBFB;border-bottom:1px solid #fff}a.reference{text-decoration:none;border-bottom:1px dotted #004B6B}a.reference:hover{border-bottom:1px solid #6D4100}a:hover tt,a:hover code{background:#EEE}@media screen and (max-width:870px){div.sphinxsidebar{display:none}div.document{width:100%}div.documentwrapper{margin-left:0;margin-top:0;margin-right:0;margin-bottom:0}div.bodywrapper{margin-top:0;margin-right:0;margin-bottom:0;margin-left:0}ul{margin-left:0}li>ul{margin-left:30px}.bodywrapper{margin:0}.footer{width:auto}}@media screen and (max-width:875px){body{margin:0;padding:20px 30px}div.documentwrapper{float:none;background:#fff}div.sphinxsidebar{display:block;float:none;width:102.5%;margin:50px -30px -20px -30px;padding:10px 20px;background:#333;color:#FFF}div.sphinxsidebar h3,div.sphinxsidebar p,div.sphinxsidebar h3 a{color:#fff}div.sphinxsidebar a{color:#AAA}div.document{width:100%;margin:0}div.footer{display:none}div.bodywrapper{margin:0}div.body{min-height:0;padding:0}.footer{width:auto}}</style>
+<link rel=index title=Index href=https://www.kernel.org/doc/html/v6.2/genindex.html>
+<link rel=search title=Search href=https://www.kernel.org/doc/html/v6.2/search.html>
+<link rel=next title="Linux Media Infrastructure userspace API" href=https://www.kernel.org/doc/html/v6.2/userspace-api/media/index.html>
+<link rel=prev title="IOMMU Userspace API" href=https://www.kernel.org/doc/html/v6.2/userspace-api/iommu.html>
+<style>div.body h1{font-size:180%}div.body h2{font-size:150%}div.body h3{font-size:130%}div.body{padding:0 15px 0 10px}div.sphinxsidebarwrapper{padding:1em 0.4em}div.sphinxsidebar{font-size:inherit}div.document{margin:20px 10px 0 10px;width:auto}dl.function,dl.struct,dl.enum{margin-top:2em;background-color:#ecf0f3}dl.function dt{margin-left:10em;text-indent:-10em}dt.sig-object{font-size:larger}div.kernelindent{margin-left:2em;margin-right:4em}</style>
+<meta name=viewport content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+<meta name=referrer content=no-referrer><style>.sf-hidden{display:none!important}</style><link rel=canonical href=https://www.kernel.org/doc/html/v6.2/userspace-api/iommufd.html><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"><style>img[src="data:,"],source[src="data:,"]{display:none!important}</style><body>
+ 
+ <div class=document>
+ <div class=documentwrapper>
+ <div class=bodywrapper>
+ 
+ <div class=body role=main>
+ 
+ <section id=iommufd>
+<h1>IOMMUFD<a class=headerlink href=#iommufd title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class=field-odd>Author</dt>
+<dd class=field-odd><p>Jason Gunthorpe</p>
+</dd>
+<dt class=field-even>Author</dt>
+<dd class=field-even><p>Kevin Tian</p>
+</dd>
+</dl>
+<section id=overview>
+<h2>Overview<a class=headerlink href=#overview title="Permalink to this heading">¶</a></h2>
+<p>IOMMUFD is the user API to control the IOMMU subsystem as it relates to managing
+IO page tables from userspace using file descriptors. It intends to be general
+and consumable by any driver that wants to expose DMA to userspace. These
+drivers are eventually expected to deprecate any internal IOMMU logic
+they may already/historically implement (e.g. vfio_iommu_type1.c).</p>
+<p>At minimum iommufd provides universal support of managing I/O address spaces and
+I/O page tables for all IOMMUs, with room in the design to add non-generic
+features to cater to specific hardware functionality.</p>
+<p>In this context the capital letter (IOMMUFD) refers to the subsystem while the
+small letter (iommufd) refers to the file descriptors created via /dev/iommu for
+use by userspace.</p>
+</section>
+<section id=key-concepts>
+<h2>Key Concepts<a class=headerlink href=#key-concepts title="Permalink to this heading">¶</a></h2>
+<section id=user-visible-objects>
+<h3>User Visible Objects<a class=headerlink href=#user-visible-objects title="Permalink to this heading">¶</a></h3>
+<p>Following IOMMUFD objects are exposed to userspace:</p>
+<ul>
+<li><p>IOMMUFD_OBJ_IOAS, representing an I/O address space (IOAS), allowing map/unmap
+of user space memory into ranges of I/O Virtual Address (IOVA).</p>
+<p>The IOAS is a functional replacement for the VFIO container, and like the VFIO
+container it copies an IOVA map to a list of iommu_domains held within it.</p>
+</li>
+<li><p>IOMMUFD_OBJ_DEVICE, representing a device that is bound to iommufd by an
+external driver.</p></li>
+<li><p>IOMMUFD_OBJ_HW_PAGETABLE, representing an actual hardware I/O page table
+(i.e. a single struct iommu_domain) managed by the iommu driver.</p>
+<p>The IOAS has a list of HW_PAGETABLES that share the same IOVA mapping and
+it will synchronize its mapping with each member HW_PAGETABLE.</p>
+</li>
+</ul>
+<p>All user-visible objects are destroyed via the IOMMU_DESTROY uAPI.</p>
+<p>The diagram below shows relationship between user-visible objects and kernel
+datastructures (external to iommufd), with numbers referred to operations
+creating the objects and links:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span> _________________________________________________________
+|                         iommufd                         |
+|       [1]                                               |
+|  _________________                                      |
+| |                 |                                     |
+| |                 |                                     |
+| |                 |                                     |
+| |                 |                                     |
+| |                 |                                     |
+| |                 |                                     |
+| |                 |        [3]                 [2]      |
+| |                 |    ____________         __________  |
+| |      IOAS       |&lt;--|            |&lt;------|          | |
+| |                 |   |HW_PAGETABLE|       |  DEVICE  | |
+| |                 |   |____________|       |__________| |
+| |                 |         |                   |       |
+| |                 |         |                   |       |
+| |                 |         |                   |       |
+| |                 |         |                   |       |
+| |                 |         |                   |       |
+| |_________________|         |                   |       |
+|         |                   |                   |       |
+|_________|___________________|___________________|_______|
+          |                   |                   |
+          |              _____v______      _______v_____
+          | PFN storage |            |    |             |
+          |------------&gt;|iommu_domain|    |struct device|
+                        |____________|    |_____________|
+</pre></div>
+</div>
+<ol class=arabic>
+<li><p>IOMMUFD_OBJ_IOAS is created via the IOMMU_IOAS_ALLOC uAPI. An iommufd can
+hold multiple IOAS objects. IOAS is the most generic object and does not
+expose interfaces that are specific to single IOMMU drivers. All operations
+on the IOAS must operate equally on each of the iommu_domains inside of it.</p></li>
+<li><p>IOMMUFD_OBJ_DEVICE is created when an external driver calls the IOMMUFD kAPI
+to bind a device to an iommufd. The driver is expected to implement a set of
+ioctls to allow userspace to initiate the binding operation. Successful
+completion of this operation establishes the desired DMA ownership over the
+device. The driver must also set the driver_managed_dma flag and must not
+touch the device until this operation succeeds.</p></li>
+<li><p>IOMMUFD_OBJ_HW_PAGETABLE is created when an external driver calls the IOMMUFD
+kAPI to attach a bound device to an IOAS. Similarly the external driver uAPI
+allows userspace to initiate the attaching operation. If a compatible
+pagetable already exists then it is reused for the attachment. Otherwise a
+new pagetable object and iommu_domain is created. Successful completion of
+this operation sets up the linkages among IOAS, device and iommu_domain. Once
+this completes the device could do DMA.</p>
+<p>Every iommu_domain inside the IOAS is also represented to userspace as a
+HW_PAGETABLE object.</p>
+<div class="admonition note">
+<p class=admonition-title>Note</p>
+<p>Future IOMMUFD updates will provide an API to create and manipulate the
+HW_PAGETABLE directly.</p>
+</div>
+</li>
+</ol>
+<p>A device can only bind to an iommufd due to DMA ownership claim and attach to at
+most one IOAS object (no support of PASID yet).</p>
+</section>
+<section id=kernel-datastructure>
+<h3>Kernel Datastructure<a class=headerlink href=#kernel-datastructure title="Permalink to this heading">¶</a></h3>
+<p>User visible objects are backed by following datastructures:</p>
+<ul class=simple>
+<li><p>iommufd_ioas for IOMMUFD_OBJ_IOAS.</p></li>
+<li><p>iommufd_device for IOMMUFD_OBJ_DEVICE.</p></li>
+<li><p>iommufd_hw_pagetable for IOMMUFD_OBJ_HW_PAGETABLE.</p></li>
+</ul>
+<p>Several terminologies when looking at these datastructures:</p>
+<ul class=simple>
+<li><p>Automatic domain - refers to an iommu domain created automatically when
+attaching a device to an IOAS object. This is compatible to the semantics of
+VFIO type1.</p></li>
+<li><p>Manual domain - refers to an iommu domain designated by the user as the
+target pagetable to be attached to by a device. Though currently there are
+no uAPIs to directly create such domain, the datastructure and algorithms
+are ready for handling that use case.</p></li>
+<li><p>In-kernel user - refers to something like a VFIO mdev that is using the
+IOMMUFD access interface to access the IOAS. This starts by creating an
+iommufd_access object that is similar to the domain binding a physical device
+would do. The access object will then allow converting IOVA ranges into struct
+page * lists, or doing direct read/write to an IOVA.</p></li>
+</ul>
+<p>iommufd_ioas serves as the metadata datastructure to manage how IOVA ranges are
+mapped to memory pages, composed of:</p>
+<ul class=simple>
+<li><p>struct io_pagetable holding the IOVA map</p></li>
+<li><p>struct iopt_area’s representing populated portions of IOVA</p></li>
+<li><p>struct iopt_pages representing the storage of PFNs</p></li>
+<li><p>struct iommu_domain representing the IO page table in the IOMMU</p></li>
+<li><p>struct iopt_pages_access representing in-kernel users of PFNs</p></li>
+<li><p><a class="reference internal" href=https://www.kernel.org/doc/html/v6.2/core-api/xarray.html#c.xarray title=xarray><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>xarray</span></code></a> pinned_pfns holding a list of pages pinned by in-kernel users</p></li>
+</ul>
+<p>Each iopt_pages represents a logical linear array of full PFNs. The PFNs are
+ultimately derived from userspace VAs via an mm_struct. Once they have been
+pinned the PFNs are stored in IOPTEs of an iommu_domain or inside the pinned_pfns
+xarray if they have been pinned through an iommufd_access.</p>
+<p>PFN have to be copied between all combinations of storage locations, depending
+on what domains are present and what kinds of in-kernel “software access” users
+exist. The mechanism ensures that a page is pinned only once.</p>
+<p>An io_pagetable is composed of iopt_areas pointing at iopt_pages, along with a
+list of iommu_domains that mirror the IOVA to PFN map.</p>
+<p>Multiple io_pagetable-s, through their iopt_area-s, can share a single
+iopt_pages which avoids multi-pinning and double accounting of page
+consumption.</p>
+<p>iommufd_ioas is sharable between subsystems, e.g. VFIO and VDPA, as long as
+devices managed by different subsystems are bound to a same iommufd.</p>
+</section>
+</section>
+<section id=iommufd-user-api>
+<h2>IOMMUFD User API<a class=headerlink href=#iommufd-user-api title="Permalink to this heading">¶</a></h2>
+<p id=general-ioctl-format><strong>General ioctl format</strong></p>
+<p>The ioctl interface follows a general format to allow for extensibility. Each
+ioctl is passed in a structure pointer as the argument providing the size of
+the structure in the first u32. The kernel checks that any structure space
+beyond what it understands is 0. This allows userspace to use the backward
+compatible portion while consistently using the newer, larger, structures.</p>
+<p>ioctls use a standard meaning for common errnos:</p>
+<blockquote>
+<div><ul class=simple>
+<li><p>ENOTTY: The IOCTL number itself is not supported at all</p></li>
+<li><p>E2BIG: The IOCTL number is supported, but the provided structure has
+non-zero in a part the kernel does not understand.</p></li>
+<li><p>EOPNOTSUPP: The IOCTL number is supported, and the structure is
+understood, however a known field has a value the kernel does not
+understand or support.</p></li>
+<li><p>EINVAL: Everything about the IOCTL was understood, but a field is not
+correct.</p></li>
+<li><p>ENOENT: An ID or IOVA provided does not exist.</p></li>
+<li><p>ENOMEM: Out of memory.</p></li>
+<li><p>EOVERFLOW: Mathematics overflowed.</p></li>
+</ul>
+</div></blockquote>
+<p>As well as additional errnos, within specific ioctls.</p>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_destroy>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_destroy</span></span></span><a class=headerlink href=#c.iommu_destroy title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_DESTROY)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_destroy {
+    __u32 size;
+    __u32 id;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_destroy title=iommu_destroy><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_destroy</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>id</span></code><dd><p>iommufd object ID to destroy. Can be any destroyable object type.</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>Destroy any object held within iommufd.</p>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_ioas_alloc>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_ioas_alloc</span></span></span><a class=headerlink href=#c.iommu_ioas_alloc title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_IOAS_ALLOC)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_ioas_alloc {
+    __u32 size;
+    __u32 flags;
+    __u32 out_ioas_id;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_ioas_alloc title=iommu_ioas_alloc><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_ioas_alloc</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>flags</span></code><dd><p>Must be 0</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>out_ioas_id</span></code><dd><p>Output IOAS ID for the allocated object</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>Allocate an IO Address Space (IOAS) which holds an IO Virtual Address (IOVA)
+to memory mapping.</p>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_iova_range>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_iova_range</span></span></span><a class=headerlink href=#c.iommu_iova_range title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_IOVA_RANGE)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_iova_range {
+    __aligned_u64 start;
+    __aligned_u64 last;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>start</span></code><dd><p>First IOVA</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>last</span></code><dd><p>Inclusive last IOVA</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>An interval in IOVA space.</p>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_ioas_iova_ranges>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_ioas_iova_ranges</span></span></span><a class=headerlink href=#c.iommu_ioas_iova_ranges title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_IOAS_IOVA_RANGES)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_ioas_iova_ranges {
+    __u32 size;
+    __u32 ioas_id;
+    __u32 num_iovas;
+    __u32 __reserved;
+    __aligned_u64 allowed_iovas;
+    __aligned_u64 out_iova_alignment;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_ioas_iova_ranges title=iommu_ioas_iova_ranges><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_ioas_iova_ranges</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>ioas_id</span></code><dd><p>IOAS ID to read ranges from</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>num_iovas</span></code><dd><p>Input/Output total number of ranges in the IOAS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>__reserved</span></code><dd><p>Must be 0</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>allowed_iovas</span></code><dd><p>Pointer to the output array of <a class="reference internal" href=#c.iommu_iova_range title=iommu_iova_range><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_iova_range</span></code></a></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>out_iova_alignment</span></code><dd><p>Minimum alignment required for mapping IOVA</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>Query an IOAS for ranges of allowed IOVAs. Mapping IOVA outside these ranges
+is not allowed. num_iovas will be set to the total number of iovas and
+the allowed_iovas[] will be filled in as space permits.</p>
+<p>The allowed ranges are dependent on the HW path the DMA operation takes, and
+can change during the lifetime of the IOAS. A fresh empty IOAS will have a
+full range, and each attached device will narrow the ranges based on that
+device’s HW restrictions. Detaching a device can widen the ranges. Userspace
+should query ranges after every attach/detach to know what IOVAs are valid
+for mapping.</p>
+<p>On input num_iovas is the length of the allowed_iovas array. On output it is
+the total number of iovas filled in. The ioctl will return -EMSGSIZE and set
+num_iovas to the required value if num_iovas is too small. In this case the
+caller should allocate a larger output array and re-issue the ioctl.</p>
+<p>out_iova_alignment returns the minimum IOVA alignment that can be given
+to IOMMU_IOAS_MAP/COPY. IOVA’s must satisfy:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>starting_iova % out_iova_alignment == 0
+(starting_iova + length) % out_iova_alignment == 0
+</pre></div>
+</div>
+<p>out_iova_alignment can be 1 indicating any IOVA is allowed. It cannot
+be higher than the system PAGE_SIZE.</p>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_ioas_allow_iovas>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_ioas_allow_iovas</span></span></span><a class=headerlink href=#c.iommu_ioas_allow_iovas title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_IOAS_ALLOW_IOVAS)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_ioas_allow_iovas {
+    __u32 size;
+    __u32 ioas_id;
+    __u32 num_iovas;
+    __u32 __reserved;
+    __aligned_u64 allowed_iovas;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_ioas_allow_iovas title=iommu_ioas_allow_iovas><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_ioas_allow_iovas</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>ioas_id</span></code><dd><p>IOAS ID to allow IOVAs from</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>num_iovas</span></code><dd><p>Input/Output total number of ranges in the IOAS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>__reserved</span></code><dd><p>Must be 0</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>allowed_iovas</span></code><dd><p>Pointer to array of <a class="reference internal" href=#c.iommu_iova_range title=iommu_iova_range><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_iova_range</span></code></a></p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>Ensure a range of IOVAs are always available for allocation. If this call
+succeeds then IOMMU_IOAS_IOVA_RANGES will never return a list of IOVA ranges
+that are narrower than the ranges provided here. This call will fail if
+IOMMU_IOAS_IOVA_RANGES is currently narrower than the given ranges.</p>
+<p>When an IOAS is first created the IOVA_RANGES will be maximally sized, and as
+devices are attached the IOVA will narrow based on the device restrictions.
+When an allowed range is specified any narrowing will be refused, ie device
+attachment can fail if the device requires limiting within the allowed range.</p>
+<p>Automatic IOVA allocation is also impacted by this call. MAP will only
+allocate within the allowed IOVAs if they are present.</p>
+<p>This call replaces the entire allowed list with the given list.</p>
+<dl class="c enum">
+<dt class="sig sig-object c" id=c.iommufd_ioas_map_flags>
+<span class=k><span class=pre>enum</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_ioas_map_flags</span></span></span><a class=headerlink href=#c.iommufd_ioas_map_flags title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Flags for map and copy</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Constants</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>IOMMU_IOAS_MAP_FIXED_IOVA</span></code><dd><p>If clear the kernel will compute an appropriate
+IOVA to place the mapping at</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>IOMMU_IOAS_MAP_WRITEABLE</span></code><dd><p>DMA is allowed to write to this mapping</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>IOMMU_IOAS_MAP_READABLE</span></code><dd><p>DMA is allowed to read from this mapping</p>
+</dd>
+</dl>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_ioas_map>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_ioas_map</span></span></span><a class=headerlink href=#c.iommu_ioas_map title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_IOAS_MAP)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_ioas_map {
+    __u32 size;
+    __u32 flags;
+    __u32 ioas_id;
+    __u32 __reserved;
+    __aligned_u64 user_va;
+    __aligned_u64 length;
+    __aligned_u64 iova;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_ioas_map title=iommu_ioas_map><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_ioas_map</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>flags</span></code><dd><p>Combination of <a class="reference internal" href=#c.iommufd_ioas_map_flags title=iommufd_ioas_map_flags><code class="xref c c-enum docutils literal notranslate"><span class=pre>enum</span> <span class=pre>iommufd_ioas_map_flags</span></code></a></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>ioas_id</span></code><dd><p>IOAS ID to change the mapping of</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>__reserved</span></code><dd><p>Must be 0</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>user_va</span></code><dd><p>Userspace pointer to start mapping from</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>length</span></code><dd><p>Number of bytes to map</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>iova</span></code><dd><p>IOVA the mapping was placed at. If IOMMU_IOAS_MAP_FIXED_IOVA is set
+then this must be provided as input.</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>Set an IOVA mapping from a user pointer. If FIXED_IOVA is specified then the
+mapping will be established at iova, otherwise a suitable location based on
+the reserved and allowed lists will be automatically selected and returned in
+iova.</p>
+<p>If IOMMU_IOAS_MAP_FIXED_IOVA is specified then the iova range must currently
+be unused, existing IOVA cannot be replaced.</p>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_ioas_copy>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_ioas_copy</span></span></span><a class=headerlink href=#c.iommu_ioas_copy title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_IOAS_COPY)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_ioas_copy {
+    __u32 size;
+    __u32 flags;
+    __u32 dst_ioas_id;
+    __u32 src_ioas_id;
+    __aligned_u64 length;
+    __aligned_u64 dst_iova;
+    __aligned_u64 src_iova;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_ioas_copy title=iommu_ioas_copy><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_ioas_copy</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>flags</span></code><dd><p>Combination of <a class="reference internal" href=#c.iommufd_ioas_map_flags title=iommufd_ioas_map_flags><code class="xref c c-enum docutils literal notranslate"><span class=pre>enum</span> <span class=pre>iommufd_ioas_map_flags</span></code></a></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>dst_ioas_id</span></code><dd><p>IOAS ID to change the mapping of</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>src_ioas_id</span></code><dd><p>IOAS ID to copy from</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>length</span></code><dd><p>Number of bytes to copy and map</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>dst_iova</span></code><dd><p>IOVA the mapping was placed at. If IOMMU_IOAS_MAP_FIXED_IOVA is
+set then this must be provided as input.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>src_iova</span></code><dd><p>IOVA to start the copy</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>Copy an already existing mapping from src_ioas_id and establish it in
+dst_ioas_id. The src iova/length must exactly match a range used with
+IOMMU_IOAS_MAP.</p>
+<p>This may be used to efficiently clone a subset of an IOAS to another, or as a
+kind of ‘cache’ to speed up mapping. Copy has an efficiency advantage over
+establishing equivalent new mappings, as internal resources are shared, and
+the kernel will pin the user memory only once.</p>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_ioas_unmap>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_ioas_unmap</span></span></span><a class=headerlink href=#c.iommu_ioas_unmap title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_IOAS_UNMAP)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_ioas_unmap {
+    __u32 size;
+    __u32 ioas_id;
+    __aligned_u64 iova;
+    __aligned_u64 length;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_ioas_unmap title=iommu_ioas_unmap><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_ioas_unmap</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>ioas_id</span></code><dd><p>IOAS ID to change the mapping of</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>iova</span></code><dd><p>IOVA to start the unmapping at</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>length</span></code><dd><p>Number of bytes to unmap, and return back the bytes unmapped</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>Unmap an IOVA range. The iova/length must be a superset of a previously
+mapped range used with IOMMU_IOAS_MAP or IOMMU_IOAS_COPY. Splitting or
+truncating ranges is not allowed. The values 0 to U64_MAX will unmap
+everything.</p>
+<dl class="c enum">
+<dt class="sig sig-object c" id=c.iommufd_option>
+<span class=k><span class=pre>enum</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_option</span></span></span><a class=headerlink href=#c.iommufd_option title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_OPTION_RLIMIT_MODE) and ioctl(IOMMU_OPTION_HUGE_PAGES)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Constants</strong></p>
+<p><code class="docutils literal notranslate"><span class=pre>IOMMU_OPTION_RLIMIT_MODE</span></code></p>
+<blockquote>
+<div><p>Change how RLIMIT_MEMLOCK accounting works. The caller must have privilege
+to invoke this. Value 0 (default) is user based accouting, 1 uses process
+based accounting. Global option, object_id must be 0</p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class=pre>IOMMU_OPTION_HUGE_PAGES</span></code></p>
+<blockquote>
+<div><p>Value 1 (default) allows contiguous pages to be combined when generating
+iommu mappings. Value 0 disables combining, everything is mapped to
+PAGE_SIZE. This can be useful for benchmarking. This is a per-IOAS
+option, the object_id must be the IOAS ID.</p>
+</div></blockquote>
+</div>
+<dl class="c enum">
+<dt class="sig sig-object c" id=c.iommufd_option_ops>
+<span class=k><span class=pre>enum</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_option_ops</span></span></span><a class=headerlink href=#c.iommufd_option_ops title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_OPTION_OP_SET) and ioctl(IOMMU_OPTION_OP_GET)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Constants</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>IOMMU_OPTION_OP_SET</span></code><dd><p>Set the option’s value</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>IOMMU_OPTION_OP_GET</span></code><dd><p>Get the option’s value</p>
+</dd>
+</dl>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_option>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_option</span></span></span><a class=headerlink href=#c.iommu_option title="Permalink to this definition">¶</a><br></dt>
+<dd><p>iommu option multiplexer</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_option {
+    __u32 size;
+    __u32 option_id;
+    __u16 op;
+    __u16 __reserved;
+    __u32 object_id;
+    __aligned_u64 val64;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_option title=iommu_option><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_option</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>option_id</span></code><dd><p>One of <a class="reference internal" href=#c.iommufd_option title=iommufd_option><code class="xref c c-enum docutils literal notranslate"><span class=pre>enum</span> <span class=pre>iommufd_option</span></code></a></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>op</span></code><dd><p>One of <a class="reference internal" href=#c.iommufd_option_ops title=iommufd_option_ops><code class="xref c c-enum docutils literal notranslate"><span class=pre>enum</span> <span class=pre>iommufd_option_ops</span></code></a></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>__reserved</span></code><dd><p>Must be 0</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>object_id</span></code><dd><p>ID of the object if required</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>val64</span></code><dd><p>Option value to set or value returned on get</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>Change a simple option value. This multiplexor allows controlling options
+on objects. IOMMU_OPTION_OP_SET will load an option and IOMMU_OPTION_OP_GET
+will return the current value.</p>
+<dl class="c enum">
+<dt class="sig sig-object c" id=c.iommufd_vfio_ioas_op>
+<span class=k><span class=pre>enum</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_vfio_ioas_op</span></span></span><a class=headerlink href=#c.iommufd_vfio_ioas_op title="Permalink to this definition">¶</a><br></dt>
+<dd><p>IOMMU_VFIO_IOAS_* ioctls</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Constants</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>IOMMU_VFIO_IOAS_GET</span></code><dd><p>Get the current compatibility IOAS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>IOMMU_VFIO_IOAS_SET</span></code><dd><p>Change the current compatibility IOAS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>IOMMU_VFIO_IOAS_CLEAR</span></code><dd><p>Disable VFIO compatibility</p>
+</dd>
+</dl>
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id=c.iommu_vfio_ioas>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommu_vfio_ioas</span></span></span><a class=headerlink href=#c.iommu_vfio_ioas title="Permalink to this definition">¶</a><br></dt>
+<dd><p>ioctl(IOMMU_VFIO_IOAS)</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Definition</strong>:</p>
+<div class="highlight-none notranslate"><div class=highlight><pre><span></span>struct iommu_vfio_ioas {
+    __u32 size;
+    __u32 ioas_id;
+    __u16 op;
+    __u16 __reserved;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>size</span></code><dd><p>sizeof(<a class="reference internal" href=#c.iommu_vfio_ioas title=iommu_vfio_ioas><code class="xref c c-struct docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommu_vfio_ioas</span></code></a>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>ioas_id</span></code><dd><p>For IOMMU_VFIO_IOAS_SET the input IOAS ID to set
+For IOMMU_VFIO_IOAS_GET will output the IOAS ID</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>op</span></code><dd><p>One of <a class="reference internal" href=#c.iommufd_vfio_ioas_op title=iommufd_vfio_ioas_op><code class="xref c c-enum docutils literal notranslate"><span class=pre>enum</span> <span class=pre>iommufd_vfio_ioas_op</span></code></a></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>__reserved</span></code><dd><p>Must be 0</p>
+</dd>
+</dl>
+</div>
+<p><strong>Description</strong></p>
+<p>The VFIO compatibility support uses a single ioas because VFIO APIs do not
+support the ID field. Set or Get the IOAS that VFIO compatibility will use.
+When VFIO_GROUP_SET_CONTAINER is used on an iommufd it will get the
+compatibility ioas, either by taking what is already set, or auto creating
+one. From then on VFIO will continue to use that ioas and is not effected by
+this ioctl. SET or CLEAR does not destroy any auto-created IOAS.</p>
+</section>
+<section id=iommufd-kernel-api>
+<h2>IOMMUFD Kernel API<a class=headerlink href=#iommufd-kernel-api title="Permalink to this heading">¶</a></h2>
+<p>The IOMMUFD kAPI is device-centric with group-related tricks managed behind the
+scene. This allows the external drivers calling such kAPI to implement a simple
+device-centric uAPI for connecting its device to an iommufd, instead of
+explicitly imposing the group semantics in its uAPI as VFIO does.</p>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_device_bind>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_device</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class="sig-name descname"><span class=n><span class=pre>iommufd_device_bind</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_ctx</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>ictx</span></span>, <span class=k><span class=pre>struct</span></span><span class=w> </span><a class="reference internal" href=https://www.kernel.org/doc/html/v6.2/driver-api/infrastructure.html#c.device title=device><span class=n><span class=pre>device</span></span></a><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>dev</span></span>, <span class=n><span class=pre>u32</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>id</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_device_bind title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Bind a physical device to an iommu fd</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_ctx</span> <span class=pre>*ictx</span></code><dd><p>iommufd file descriptor</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>device</span> <span class=pre>*dev</span></code><dd><p>Pointer to a physical device struct</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>u32</span> <span class=pre>*id</span></code><dd><p>Output ID number to return to userspace for this device</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>A successful bind establishes an ownership over the device and returns
+struct iommufd_device pointer, otherwise returns error pointer.</p>
+<p>A driver using this API must set driver_managed_dma and must not touch
+the device until this routine succeeds and establishes ownership.</p>
+<p>Binding a PCI device places the entire RID under iommufd control.</p>
+<p>The caller must undo this with <a class="reference internal" href=#c.iommufd_device_unbind title=iommufd_device_unbind><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_device_unbind()</span></code></a></p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_device_unbind>
+<span class=kt><span class=pre>void</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_device_unbind</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_device</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>idev</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_device_unbind title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Undo <a class="reference internal" href=#c.iommufd_device_bind title=iommufd_device_bind><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_device_bind()</span></code></a></p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_device</span> <span class=pre>*idev</span></code><dd><p>Device returned by <a class="reference internal" href=#c.iommufd_device_bind title=iommufd_device_bind><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_device_bind()</span></code></a></p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Release the device from iommufd control. The DMA ownership will return back
+to unowned with DMA controlled by the DMA API. This invalidates the
+iommufd_device pointer, other APIs that consume it must not be called
+concurrently.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_device_attach>
+<span class=kt><span class=pre>int</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_device_attach</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_device</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>idev</span></span>, <span class=n><span class=pre>u32</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>pt_id</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_device_attach title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Connect a device from an iommu_domain</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_device</span> <span class=pre>*idev</span></code><dd><p>device to attach</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>u32</span> <span class=pre>*pt_id</span></code><dd><p>Input a IOMMUFD_OBJ_IOAS, or IOMMUFD_OBJ_HW_PAGETABLE
+Output the IOMMUFD_OBJ_HW_PAGETABLE ID</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This connects the device to an iommu_domain, either automatically or manually
+selected. Once this completes the device could do DMA.</p>
+<p>The caller should return the resulting pt_id back to userspace.
+This function is undone by calling <a class="reference internal" href=#c.iommufd_device_detach title=iommufd_device_detach><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_device_detach()</span></code></a>.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_device_detach>
+<span class=kt><span class=pre>void</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_device_detach</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_device</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>idev</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_device_detach title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Disconnect a device to an iommu_domain</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_device</span> <span class=pre>*idev</span></code><dd><p>device to detach</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Undo <a class="reference internal" href=#c.iommufd_device_attach title=iommufd_device_attach><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_device_attach()</span></code></a>. This disconnects the idev from the previously
+attached pt_id. The device returns back to a blocked DMA translation.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_access_create>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_access</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class="sig-name descname"><span class=n><span class=pre>iommufd_access_create</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_ctx</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>ictx</span></span>, <span class=n><span class=pre>u32</span></span><span class=w> </span><span class=n><span class=pre>ioas_id</span></span>, <span class=k><span class=pre>const</span></span><span class=w> </span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_access_ops</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>ops</span></span>, <span class=kt><span class=pre>void</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>data</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_access_create title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Create an iommufd_access</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_ctx</span> <span class=pre>*ictx</span></code><dd><p>iommufd file descriptor</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>u32</span> <span class=pre>ioas_id</span></code><dd><p>ID for a IOMMUFD_OBJ_IOAS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>const</span> <span class=pre>struct</span> <span class=pre>iommufd_access_ops</span> <span class=pre>*ops</span></code><dd><p>Driver’s ops to associate with the access</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>void</span> <span class=pre>*data</span></code><dd><p>Opaque data to pass into ops functions</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>An iommufd_access allows a driver to read/write to the IOAS without using
+DMA. The underlying CPU memory can be accessed using the
+<a class="reference internal" href=#c.iommufd_access_pin_pages title=iommufd_access_pin_pages><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_access_pin_pages()</span></code></a> or <a class="reference internal" href=#c.iommufd_access_rw title=iommufd_access_rw><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_access_rw()</span></code></a> functions.</p>
+<p>The provided ops are required to use <a class="reference internal" href=#c.iommufd_access_pin_pages title=iommufd_access_pin_pages><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_access_pin_pages()</span></code></a>.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_access_destroy>
+<span class=kt><span class=pre>void</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_access_destroy</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_access</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>access</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_access_destroy title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Destroy an iommufd_access</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_access</span> <span class=pre>*access</span></code><dd><p>The access to destroy</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>The caller must stop using the access before destroying it.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_access_unpin_pages>
+<span class=kt><span class=pre>void</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_access_unpin_pages</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_access</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>access</span></span>, <span class=kt><span class=pre>unsigned</span></span><span class=w> </span><span class=kt><span class=pre>long</span></span><span class=w> </span><span class=n><span class=pre>iova</span></span>, <span class=kt><span class=pre>unsigned</span></span><span class=w> </span><span class=kt><span class=pre>long</span></span><span class=w> </span><span class=n><span class=pre>length</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_access_unpin_pages title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Undo iommufd_access_pin_pages</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_access</span> <span class=pre>*access</span></code><dd><p>IOAS access to act on</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>unsigned</span> <span class=pre>long</span> <span class=pre>iova</span></code><dd><p>Starting IOVA</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>unsigned</span> <span class=pre>long</span> <span class=pre>length</span></code><dd><p>Number of bytes to access</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Return the struct page’s. The caller must stop accessing them before calling
+this. The iova/length must exactly match the one provided to access_pages.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_access_pin_pages>
+<span class=kt><span class=pre>int</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_access_pin_pages</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_access</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>access</span></span>, <span class=kt><span class=pre>unsigned</span></span><span class=w> </span><span class=kt><span class=pre>long</span></span><span class=w> </span><span class=n><span class=pre>iova</span></span>, <span class=kt><span class=pre>unsigned</span></span><span class=w> </span><span class=kt><span class=pre>long</span></span><span class=w> </span><span class=n><span class=pre>length</span></span>, <span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>page</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>out_pages</span></span>, <span class=kt><span class=pre>unsigned</span></span><span class=w> </span><span class=kt><span class=pre>int</span></span><span class=w> </span><span class=n><span class=pre>flags</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_access_pin_pages title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Return a list of pages under the iova</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_access</span> <span class=pre>*access</span></code><dd><p>IOAS access to act on</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>unsigned</span> <span class=pre>long</span> <span class=pre>iova</span></code><dd><p>Starting IOVA</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>unsigned</span> <span class=pre>long</span> <span class=pre>length</span></code><dd><p>Number of bytes to access</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>page</span> <span class=pre>**out_pages</span></code><dd><p>Output page list</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>unsigned</span> <span class=pre>int</span> <span class=pre>flags</span></code><dd><p>IOPMMUFD_ACCESS_RW_* flags</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Reads <strong>length</strong> bytes starting at iova and returns the struct page * pointers.
+These can be kmap’d by the caller for CPU access.</p>
+<p>The caller must perform <a class="reference internal" href=#c.iommufd_access_unpin_pages title=iommufd_access_unpin_pages><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_access_unpin_pages()</span></code></a> when done to balance
+this.</p>
+<p>This API always requires a page aligned iova. This happens naturally if the
+ioas alignment is &gt;= PAGE_SIZE and the iova is PAGE_SIZE aligned. However
+smaller alignments have corner cases where this API can fail on otherwise
+aligned iova.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_access_rw>
+<span class=kt><span class=pre>int</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_access_rw</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_access</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>access</span></span>, <span class=kt><span class=pre>unsigned</span></span><span class=w> </span><span class=kt><span class=pre>long</span></span><span class=w> </span><span class=n><span class=pre>iova</span></span>, <span class=kt><span class=pre>void</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>data</span></span>, <span class=n><span class=pre>size_t</span></span><span class=w> </span><span class=n><span class=pre>length</span></span>, <span class=kt><span class=pre>unsigned</span></span><span class=w> </span><span class=kt><span class=pre>int</span></span><span class=w> </span><span class=n><span class=pre>flags</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_access_rw title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Read or write data under the iova</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_access</span> <span class=pre>*access</span></code><dd><p>IOAS access to act on</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>unsigned</span> <span class=pre>long</span> <span class=pre>iova</span></code><dd><p>Starting IOVA</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>void</span> <span class=pre>*data</span></code><dd><p>Kernel buffer to copy to/from</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>size_t</span> <span class=pre>length</span></code><dd><p>Number of bytes to access</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class=pre>unsigned</span> <span class=pre>int</span> <span class=pre>flags</span></code><dd><p>IOMMUFD_ACCESS_RW_* flags</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Copy kernel to/from data into the range given by IOVA/length. If flags
+indicates IOMMUFD_ACCESS_RW_KTHREAD then a large copy can be optimized
+by changing it into copy_to/from_user().</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_ctx_get>
+<span class=kt><span class=pre>void</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_ctx_get</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_ctx</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>ictx</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_ctx_get title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Get a context reference</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_ctx</span> <span class=pre>*ictx</span></code><dd><p>Context to get</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>The caller must already hold a valid reference to ictx.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_ctx_from_file>
+<span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_ctx</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class="sig-name descname"><span class=n><span class=pre>iommufd_ctx_from_file</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><a class="reference internal" href=#c.iommufd_ctx_from_file title=file><span class=n><span class=pre>file</span></span></a><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>file</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_ctx_from_file title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Acquires a reference to the iommufd context</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>file</span> <span class=pre>*file</span></code><dd><p>File to obtain the reference from</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Returns a pointer to the iommufd_ctx, otherwise ERR_PTR. The struct file
+remains owned by the caller and the caller must still do fput. On success
+the caller is responsible to call <a class="reference internal" href=#c.iommufd_ctx_put title=iommufd_ctx_put><code class="xref c c-func docutils literal notranslate"><span class=pre>iommufd_ctx_put()</span></code></a>.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id=c.iommufd_ctx_put>
+<span class=kt><span class=pre>void</span></span><span class=w> </span><span class="sig-name descname"><span class=n><span class=pre>iommufd_ctx_put</span></span></span><span class=sig-paren>(</span><span class=k><span class=pre>struct</span></span><span class=w> </span><span class=n><span class=pre>iommufd_ctx</span></span><span class=w> </span><span class=p><span class=pre>*</span></span><span class=n><span class=pre>ictx</span></span><span class=sig-paren>)</span><a class=headerlink href=#c.iommufd_ctx_put title="Permalink to this definition">¶</a><br></dt>
+<dd><p>Put back a reference</p>
+</dl>
+<div class="kernelindent docutils container">
+<p><strong>Parameters</strong></p>
+<dl class=simple>
+<dt><code class="docutils literal notranslate"><span class=pre>struct</span> <span class=pre>iommufd_ctx</span> <span class=pre>*ictx</span></code><dd><p>Context to put back</p>
+</dd>
+</dl>
+</div>
+<section id=vfio-and-iommufd>
+<h3>VFIO and IOMMUFD<a class=headerlink href=#vfio-and-iommufd title="Permalink to this heading">¶</a></h3>
+<p>Connecting a VFIO device to iommufd can be done in two ways.</p>
+<p>First is a VFIO compatible way by directly implementing the /dev/vfio/vfio
+container IOCTLs by mapping them into io_pagetable operations. Doing so allows
+the use of iommufd in legacy VFIO applications by symlinking /dev/vfio/vfio to
+/dev/iommufd or extending VFIO to SET_CONTAINER using an iommufd instead of a
+container fd.</p>
+<p>The second approach directly extends VFIO to support a new set of device-centric
+user API based on aforementioned IOMMUFD kernel API. It requires userspace
+change but better matches the IOMMUFD API semantics and easier to support new
+iommufd features when comparing it to the first approach.</p>
+<p>Currently both approaches are still work-in-progress.</p>
+<p>There are still a few gaps to be resolved to catch up with VFIO type1, as
+documented in iommufd_vfio_check_extension().</p>
+</section>
+</section>
+<section id=future-todos>
+<h2>Future TODOs<a class=headerlink href=#future-todos title="Permalink to this heading">¶</a></h2>
+<p>Currently IOMMUFD supports only kernel-managed I/O page table, similar to VFIO
+type1. New features on the radar include:</p>
+<blockquote>
+<div><ul class=simple>
+<li><p>Binding iommu_domain’s to PASID/SSID</p></li>
+<li><p>Userspace page tables, for ARM, x86 and S390</p></li>
+<li><p>Kernel bypass’d invalidation of user page tables</p></li>
+<li><p>Re-use of the KVM page table in the IOMMU</p></li>
+<li><p>Dirty page tracking in the IOMMU</p></li>
+<li><p>Runtime Increase/Decrease of IOPTE size</p></li>
+<li><p>PRI support with faults resolved in userspace</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+ </div>
+ 
+ </div>
+ </div>
+ <div class=sphinxsidebar role=navigation aria-label="main navigation">
+ <div class=sphinxsidebarwrapper>
+<h1 class=logo><a href=https://www.kernel.org/doc/html/v6.2/index.html>The Linux Kernel</a></h1>
+<p class=blurb>6.2.0</p>
+<div id=searchbox style=display:block role=search>
+ <h3 id=searchlabel>Quick search</h3>
+ <div class=searchformwrapper>
+ <form class=search action=../search.html>
+ <input type=text name=q aria-labelledby=searchlabel autocomplete=off autocorrect=off autocapitalize=none spellcheck=false value>
+ <input type=submit value=Go>
+ </form>
+ </div>
+</div>
+ <div>
+ <h3><a href=https://www.kernel.org/doc/html/v6.2/index.html>Table of Contents</a></h3>
+ <ul>
+<li><a class="reference internal" href=#>IOMMUFD</a><ul>
+<li><a class="reference internal" href=#overview>Overview</a></li>
+<li><a class="reference internal" href=#key-concepts>Key Concepts</a><ul>
+<li><a class="reference internal" href=#user-visible-objects>User Visible Objects</a></li>
+<li><a class="reference internal" href=#kernel-datastructure>Kernel Datastructure</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href=#iommufd-user-api>IOMMUFD User API</a></li>
+<li><a class="reference internal" href=#iommufd-kernel-api>IOMMUFD Kernel API</a><ul>
+<li><a class="reference internal" href=#vfio-and-iommufd>VFIO and IOMMUFD</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href=#future-todos>Future TODOs</a></li>
+</ul>
+</li>
+</ul>
+ </div>
+ <div role=note aria-label="source link">
+ <h3>This Page</h3>
+ <ul class=this-page-menu>
+ <li><a href=https://www.kernel.org/doc/html/v6.2/_sources/userspace-api/iommufd.rst.txt rel=nofollow>Show Source</a></li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ <div class=clearer></div>
+ </div>
+ <div class=footer>
+ ©The kernel development community.
+ 
+ |
+ Powered by <a href=http://sphinx-doc.org/>Sphinx 5.0.1</a>
+ &amp; <a href=https://github.com/bitprophet/alabaster>Alabaster 0.7.12</a>
+ 
+ |
+ <a href=https://www.kernel.org/doc/html/v6.2/_sources/userspace-api/iommufd.rst.txt rel=nofollow>Page source</a>
+ </div>
+ 
+ 
+ 
+<div style=all:initial><div style=all:initial id=__hcfy__><template shadowrootmode=open><style class=sf-hidden>#root{-webkit-text-size-adjust:100%;box-sizing:border-box;font-size:14px;font-weight:400;letter-spacing:0;line-height:1.28581;text-transform:none;color:#182026;font-family:-apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Open Sans","Helvetica Neue","Icons16",sans-serif;touch-action:manipulation}#root>.bp5-portal{z-index:9999999999}</style><style class=sf-hidden>#translate-panel{background-color:#f6f7f9;display:flex;flex-direction:column;padding-bottom:8px}.bp5-dark #translate-panel{background-color:#252a31}#translate-panel .fixed{flex-shrink:0;margin-bottom:10px}#translate-panel .body{flex-grow:1;overflow:auto;overscroll-behavior:contain}#translate-panel .body::-webkit-scrollbar{width:8px;background-color:rgba(0,0,0,0);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar:hover{background-color:rgba(0,0,0,.09)}#translate-panel .body::-webkit-scrollbar-thumb:vertical{background:rgba(0,0,0,.5);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar-thumb:vertical:active{background:rgba(0,0,0,.61);-webkit-border-radius:100px}#translate-panel.size-small,#translate-panel.size-small h6.bp5-heading,#translate-panel.size-small .bp5-control.bp5-large,#translate-panel.size-small textarea.bp5-input.bp5-small{font-size:14px}#translate-panel.size-small .phonetic-item,#translate-panel.size-small .quick-settings a{font-size:12px}#translate-panel.size-middle,#translate-panel.size-middle h6.bp5-heading,#translate-panel.size-middle .bp5-control.bp5-large,#translate-panel.size-middle textarea.bp5-input{font-size:18px}#translate-panel.size-middle .phonetic-item,#translate-panel.size-middle .quick-settings a{font-size:14px}#translate-panel.size-large,#translate-panel.size-large h6.bp5-heading,#translate-panel.size-large .bp5-control.bp5-large,#translate-panel.size-large textarea.bp5-input.bp5-large{font-size:22px}#translate-panel.size-large .source,#translate-panel.size-large .phonetic-item,#translate-panel.size-large .quick-settings a{font-size:18px}#translate-panel .bp5-button.bp5-small,#translate-panel .bp5-small .bp5-button{min-height:20px;min-width:20px}#translate-panel .header{display:flex;align-items:center;padding:4px 6px 4px 10px;border-bottom:1px solid #d1d1d1}.bp5-dark #translate-panel .header{border-bottom-color:rgba(17,20,24,.4)}#translate-panel .header .drag-block{min-width:5px;flex-shrink:0;flex-grow:1;align-self:stretch}#translate-panel .header .left{flex-shrink:0;display:flex}#translate-panel .header .right{flex-shrink:0;display:flex;align-items:center}#translate-panel .header .right .bp5-icon-arrow-right{flex-shrink:0;margin:0 5px}#translate-panel .header .right>.bp5-button{flex-shrink:0;margin:0 1px}#translate-panel .header .right>.bp5-button:last-child{margin-right:0}#translate-panel .quick-settings{padding:4px 9px;margin:0 1px}#translate-panel .quick-settings>div{margin-bottom:5px}#translate-panel .quick-settings .bp5-control{margin-bottom:0}#translate-panel .query-text{position:relative;padding:10px 10px 2px 10px}#translate-panel .query-text textarea.bp5-input{min-height:44px;font-family:system-ui,-apple-system,"Segoe UI","Roboto","Ubuntu","Cantarell","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";overscroll-behavior:contain}#translate-panel .query-text .translate-btn{position:absolute;opacity:.6}#translate-panel .query-text .translate-btn:hover{opacity:1}#translate-panel .body{padding:0 10px}#translate-panel .body .bp5-card:first-child{margin-top:1px}#translate-panel .body .bp5-card:last-child{margin-bottom:1px}#translate-panel .body .no-api{margin:20px 0}.result-block{margin:8px 0;padding:2px 5px}.result-block .bp5-button{visibility:hidden}.result-block .error .bp5-button,.result-block:hover .bp5-button{visibility:visible}.result-block .legend{display:flex;align-items:center;justify-content:space-between}.result-block .legend .legend-left{display:flex;align-items:center}.result-block .legend .api-ico,.result-block .legend .bp5-heading{flex-shrink:0;white-space:nowrap}.result-block .legend .api-ico{display:inline-block;width:14px;height:14px;background-size:contain;margin-right:3px}.result-block .legend .bp5-heading{margin-bottom:0;margin-right:10px}.result-block .legend .source{cursor:pointer;font-size:12px;display:inline-flex;align-items:center}.result-block .legend .source .source-text{overflow:hidden}.result-block .legend .source .bp5-icon{position:relative;top:-1px;margin-left:1px}.result-block .phonetic{display:flex;flex-wrap:wrap}.result-block .phonetic .phonetic-item{display:flex;align-items:center;font-size:12px}.result-block .phonetic .phonetic-item:not(:last-child){margin-right:12px}.result-block .common-result p{line-height:1.3;margin:2px 0;overflow-wrap:break-word}.result-block .common-result .dict a{text-decoration:underline}.result-block .error{font-size:12px;padding:5px 10px}.result-block .dict-pos{margin-right:5px}.external-translators{margin-bottom:3px;padding:0;display:flex;flex-wrap:wrap}.external-translators>div{margin:0 5px 5px 0}.quick-links a{margin:0 5px 5px 0}#popper-container{width:250px;max-width:100%;position:absolute;left:0;top:0;z-index:9999999998;touch-action:none;transition:opacity .2s;background-color:#f6f7f9}.bp5-dark #popper-container{background-color:#252a31}#popper-container.show{opacity:1;pointer-events:auto;-moz-user-select:auto;user-select:auto}#popper-container,#popper-container[data-popper-reference-hidden=true]{opacity:0;pointer-events:none;-moz-user-select:none;user-select:none}#popper-container .drag-block{cursor:-webkit-grab;cursor:grab}#popper-container.pin{position:fixed}#popper-container.pin .arrow{display:none}#popper-container .arrow,#popper-container .arrow::before{position:absolute;width:8px;height:8px;z-index:-1}#popper-container .arrow::before{content:"";transform:rotate(45deg);background:#f6f7f9}.bp5-dark #popper-container .arrow::before{background-color:#252a31}#popper-container .arrow{display:none}#popper-container.show[data-popper-placement]:not([data-popper-reference-hidden=true]) .arrow{display:block}#popper-container[data-popper-placement^=top] .arrow{bottom:-5px}#popper-container[data-popper-placement^=top] .arrow::before{border-right:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#popper-container[data-popper-placement^=bottom] .arrow{top:-5px}#popper-container[data-popper-placement^=bottom] .arrow::before{border-left:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=left] .arrow{right:-5px}#popper-container[data-popper-placement^=left] .arrow::before{border-right:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=right] .arrow{left:-5px}#popper-container[data-popper-placement^=right] .arrow::before{border-left:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#translate-btn{display:none;position:absolute;z-index:9999999999;left:0;top:0}#translate-btn .bp5-button{padding:2px;min-width:0;min-height:0}#translate-btn .btn-icon{width:18px;height:18px;background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logo.png);background-size:contain}.bp5-dark #translate-btn .btn-icon{background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logowhite36.png)}#translate-btn.show{display:block}.translate-type-selector .bp5-label{display:inline}.translate-type-selector .bp5-radio{margin-bottom:0}#ocr-container{position:fixed;z-index:99999999999999;left:0;top:0;right:0;bottom:0}#ocr-container .toolbar{display:none;position:absolute;z-index:1}#ocr-container img{max-width:100%}#app{cursor:default}.switch-pin{flex-shrink:0;cursor:pointer}.switch-pin .bp5-icon-pin{transition:transform .2s,color .2s;transform:rotate(-45deg)}.pin .switch-pin .bp5-icon-pin{transform:rotate(-70deg)}.cut-btn{margin-left:2px}.app-toaster-container{position:fixed!important;z-index:9999999999!important}.app-toaster-container .bp5-toast{min-width:auto}#web-trs-panel .app-toaster-container{padding-right:0;padding-left:0}#web-trs-panel .page-trs-form-group{margin:0 0 0 0;align-items:center}#web-trs-panel .page-trs-form-group>label{width:70px}</style><div id=root dir=ltr><div id=app><div id=translate-btn class=sf-hidden></div><div id=popper-container style=width:290px;transform:translate(0px) class=bp5-elevation-4><div id=translate-panel class=size-small><div class=fixed><div class=header><div class=left><div class=switch-pin><button type=button class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-pin"><svg data-icon=pin height=14 role=img viewBox="0 0 16 16" width=14><path d="M9.41.92c-.51.51-.41 1.5.15 2.56L4.34 7.54C2.8 6.48 1.45 6.05.92 6.58l3.54 3.54-3.54 4.95 4.95-3.54 3.54 3.54c.53-.53.1-1.88-.96-3.42l4.06-5.22c1.06.56 2.04.66 2.55.15L9.41.92z" fill-rule=evenodd></path></svg></span></button></div><button type=button title=图片翻译 class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-media"><svg data-icon=media height=14 role=img viewBox="0 0 16 16" width=14><path d="M11.99 6.99c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3-5h-14c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-10c0-.55-.45-1-1-1zm-1 9l-5-3-1 2-3-4-3 5v-7h12v7z" fill-rule=evenodd></path></svg></span></button><button type=button title=语音翻译 class="bp5-button bp5-minimal bp5-small"><span class=bp5-icon><svg version=1.1 id=Capa_1 width=14 height=14 xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink x=0px y=0px viewBox="0 0 490.9 490.9" xml:space=preserve><g><g><path d="M245.5,322.9c53,0,96.2-43.2,96.2-96.2V96.2c0-53-43.2-96.2-96.2-96.2s-96.2,43.2-96.2,96.2v130.5 C149.3,279.8,192.5,322.9,245.5,322.9z M173.8,96.2c0-39.5,32.2-71.7,71.7-71.7s71.7,32.2,71.7,71.7v130.5 c0,39.5-32.2,71.7-71.7,71.7s-71.7-32.2-71.7-71.7V96.2z"></path><path d="M94.4,214.5c-6.8,0-12.3,5.5-12.3,12.3c0,85.9,66.7,156.6,151.1,162.8v76.7h-63.9c-6.8,0-12.3,5.5-12.3,12.3 s5.5,12.3,12.3,12.3h152.3c6.8,0,12.3-5.5,12.3-12.3s-5.5-12.3-12.3-12.3h-63.9v-76.7c84.4-6.3,151.1-76.9,151.1-162.8 c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3c0,76.6-62.3,138.9-138.9,138.9s-138.9-62.3-138.9-138.9 C106.6,220,101.2,214.5,94.4,214.5z"></path></g></g></svg></span></button></div><div class=drag-block title=按住不放可以拖动></div><div class=right><button type=button disabled title=添加到收藏夹 class="bp5-button bp5-disabled bp5-minimal bp5-small" tabindex=-1><span aria-hidden=true class="bp5-icon bp5-icon-star-empty"><svg data-icon=star-empty height=14 role=img viewBox="0 0 16 16" width=14><path d="M16 6.11l-5.53-.84L8 0 5.53 5.27 0 6.11l4 4.1L3.06 16 8 13.27 12.94 16 12 10.21l4-4.1zM4.91 13.2l.59-3.62L3 7.02l3.45-.53L8 3.2l1.55 3.29 3.45.53-2.5 2.56.59 3.62L8 11.49 4.91 13.2z" fill-rule=evenodd></path></svg></span></button><span class=bp5-popover-target><button type=button class="bp5-button bp5-minimal bp5-small settings" title=快捷设置 aria-expanded=false aria-haspopup=menu><span aria-hidden=true class="bp5-icon bp5-icon-cog"><svg data-icon=cog height=14 role=img viewBox="0 0 16 16" width=14><path d="M15.19 6.39h-1.85c-.11-.37-.27-.71-.45-1.04l1.36-1.36c.31-.31.31-.82 0-1.13l-1.13-1.13a.803.803 0 00-1.13 0l-1.36 1.36c-.33-.17-.67-.33-1.04-.44V.79c0-.44-.36-.8-.8-.8h-1.6c-.44 0-.8.36-.8.8v1.86c-.39.12-.75.28-1.1.47l-1.3-1.3c-.3-.3-.79-.3-1.09 0L1.82 2.91c-.3.3-.3.79 0 1.09l1.3 1.3c-.2.34-.36.7-.48 1.09H.79c-.44 0-.8.36-.8.8v1.6c0 .44.36.8.8.8h1.85c.11.37.27.71.45 1.04l-1.36 1.36c-.31.31-.31.82 0 1.13l1.13 1.13c.31.31.82.31 1.13 0l1.36-1.36c.33.18.67.33 1.04.44v1.86c0 .44.36.8.8.8h1.6c.44 0 .8-.36.8-.8v-1.86c.39-.12.75-.28 1.1-.47l1.3 1.3c.3.3.79.3 1.09 0l1.09-1.09c.3-.3.3-.79 0-1.09l-1.3-1.3c.19-.35.36-.71.48-1.1h1.85c.44 0 .8-.36.8-.8v-1.6a.816.816 0 00-.81-.79zm-7.2 4.6c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill-rule=evenodd></path></svg></span></button></span><button type=button title=关闭(Esc) class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-cross"><svg data-icon=cross height=18 role=img viewBox="0 0 16 16" width=18><path d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z" fill-rule=evenodd></path></svg></span></button></div></div><div class=bp5-collapse><div class="bp5-collapse-body sf-hidden" aria-hidden=true></div></div></div><div class=body><p>请输入需要翻译的文本。</p></div></div><div class="arrow sf-hidden"></div></div><div id=web-trs-panel></div></div></div></template></div></div><script data-template-shadow-root>(()=>{document.currentScript.remove();processNode(document);function processNode(node){node.querySelectorAll("template[shadowrootmode]").forEach(element=>{let shadowRoot = element.parentElement.shadowRoot;if (!shadowRoot) {try {shadowRoot=element.parentElement.attachShadow({mode:element.getAttribute("shadowrootmode"),delegatesFocus:element.getAttribute("shadowrootdelegatesfocus")!=null,clonable:element.getAttribute("shadowrootclonable")!=null,serializable:element.getAttribute("shadowrootserializable")!=null});shadowRoot.innerHTML=element.innerHTML;element.remove()} catch (error) {} if (shadowRoot) {processNode(shadowRoot)}}})}})()</script>
