@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd"> <html xmlns=http://www.w3.org/1999/xhtml style><!--
+ Page saved with SingleFile 
+ url: https://www.pediy.com/kssd/pediy09/pediy09-491.htm 
+ saved date: Tue Oct 15 2024 22:43:54 GMT+0800 (中国标准时间)
+--><meta charset=utf-8>
+<title>ring 3级32位x86 cpu仿真</title>
+<style>:root{--sf-img-0: url("data:image/jpeg;base64,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")}</style><style media=screen>*{margin:0;padding:0;border:0}.left{float:left}.right{float:right}.clear{clear:both}fieldset{border:#999 solid 1px;margin-bottom:6px;padding:8px}legend{color:#00447f}a{text-decoration:none;color:#0099cc}a:hover{text-decoration:underline}p,li{line-height:18px}body{font-size:12px;background:#EFF3F9;color:#000000;text-align:center}.wrapper{width:98%;text-align:left;margin:10px auto;overflow:hidden}#top{height:30px}#MiniToolBar{width:180px;float:right;height:25px;background:var(--sf-img-0) no-repeat right -50px;margin-right:20px}#MiniToolBar a:link,#MiniToolBar a:visited{color:#0099cc;font-weight:bold}#MiniToolBar ul{padding:0 5px;height:25px;line-height:25px;background:var(--sf-img-0) no-repeat -366px -160px;list-style:none}#MiniToolBar li{width:60px;float:left;text-align:center;color:#B8D1EA;margin-top:3px}#MiniToolBar li.line{width:10px;padding:0;overflow:hidden}#MiniToolBar li.about{width:80px}.page{padding:10px;background:#fdfdfd;border:1px solid #CCCCCC}.content{float:left;width:100%}.navigation{height:38px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAmCAIAAACK3mZQAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADhJREFUeNpUw4cJwDAMALD8f6/3DCnUYIFOd59/Va2ZuUbEdPdpZl9VnSIymXkS0YqIKwC8V4ABAEbTbyv22ZRMAAAAAElFTkSuQmCC)repeat-x;border:1px solid #CCCCCC;margin-bottom:10px}.navigation ul{list-style:none}.navigation ul li{float:left;line-height:38px}.navigation ul.left li span.title{color:#888;font-size:14px;font-weight:bold;padding-left:10px;padding-right:10px}.navigation ul li span.content{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAINSURBVBgZBcG/r55zGAfg6/4+z3va01NHlYgzEfE7MdCIGISFgS4Gk8ViYyM2Mdlsko4GSf8Do0FLRCIkghhYJA3aVBtEz3nP89wf11VJvPDepdd390+8Nso5nESBQoq0pfvXm9fzWf19453LF85vASqJlz748vInb517dIw6EyYBIIG49u+xi9/c9MdvR//99MPPZ7+4cP4IZhhTPbwzT2d+vGoaVRRp1rRliVvHq+cfvM3TD82+7mun0o/ceO7NT+/4/KOXjwZU1ekk0840bAZzMQ2mooqh0A72d5x/6sB9D5zYnff3PoYBoWBgFKPKqDKqjCpjKr//dcu9p489dra88cydps30KswACfNEKanSaxhlntjJ8Mv12Paie+vZ+0+oeSwwQ0Iw1xAR1CiFNJkGO4wu3ZMY1AAzBI0qSgmCNJsJUEOtJSMaCTBDLyQ0CknAGOgyTyFFiLI2awMzdEcSQgSAAKVUmAeNkxvWJWCGtVlDmgYQ0GFtgg4pNtOwbBcwQy/Rife/2yrRRVI0qYCEBly8Z+P4qMEMy7JaVw72N568e+iwhrXoECQkfH91kY7jwwXMsBx1L93ZruqrK6uuiAIdSnTIKKPLPFcvay8ww/Hh+ufeznTXu49v95IMoQG3784gYXdTqvRmqn/Wpa/ADFX58MW3L71SVU9ETgEIQQQIOOzub+fhIvwPRDgeVjWDahIAAAAASUVORK5CYII=)no-repeat center;width:40px;display:block;height:38px;border-right:1px solid #CCCCCC}.box{background:#FFF;border:1px solid #CCCCCC;padding:20px;margin-bottom:15px}.corners{-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px}.content ul{list-style:none;margin-left:10px}.content li{line-height:18px;color:#999}.content li a{color:#999}.content li span.title{color:#0099cc}.content li span.improtant{color:#333}div.post span.detail{display:block;color:#999;line-height:18px;border-bottom:1px solid #ededed;padding-bottom:9px;margin-bottom:9px}div.entry{margin-bottom:-18px}div.entry p{line-height:18px;margin-bottom:18px;padding-left:4em}#footer{height:40px;text-align:center;line-height:40px}</style>
+<meta name=GENERATOR content="MSHTML 8.00.7600.16385">
+<meta name=keywords content=pediy.com,kanxue.com,pediy,安全,软件安全,WEB安全,逆向,加密,解密,加壳,脱壳,软件保护,破解,debug,pack,unpack>
+<meta name=referrer content=no-referrer><link type=image/x-icon rel="shortcut icon" href="data:image/x-icon;base64,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"><style>.sf-hidden{display:none!important}</style><link rel=canonical href=https://www.pediy.com/kssd/pediy09/pediy09-491.htm><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"><style>img[src="data:,"],source[src="data:,"]{display:none!important}</style></head>
+<body>
+<div id=top>
+ <div id=MiniToolBar>
+ <ul>
+ <li><a href=http://bbs.pediy.com/kxsearch.php target=_blank>在线搜索</a> </li>
+ <li class=line>| </li>
+ <li class=about><a href=http://bbs.pediy.com/kxzhidao.php target=_blank>有问题找看雪</a> </li>
+ </ul>
+ </div>
+</div>
+<div class=wrapper>
+<div class="page corners">
+ <div class="navigation corners">
+ <ul class=left>
+ <li><span class=content></span></li>
+ <li><span class=title>ring 3级32位x86 cpu仿真</span> </li>
+ </ul>
+ </div>
+ <div class=content>
+ <div class="box corners post"><span class=detail>
+ <ul>
+ <li><span class=title>标 题：</span><span class=improtant>
+ ring 3级32位x86 cpu仿真</span>
+ <li><span class=title>作 者：</span><span class=improtant>linxer</span>
+ <li><span class=title>时 间：</span><font color=#666686>2007-04-08 16:47 
+</font> <br><li><span class=title>链 接：</span><a href="http://bbs.pediy.com/showthread.php?t=42343"><font color=#666686>http://bbs.pediy.com/showthread.php?t=42343</font></a></li>
+ </ul>
+ </span>
+ <div class=entry>
+ 
+ <p></p>
+<blockquote> 
+ <p class=pediy>【&nbsp;&nbsp;标题&nbsp;&nbsp;】&nbsp;ring&nbsp;3级32位x86&nbsp;cpu仿真<br>
+【&nbsp;&nbsp;作者&nbsp;&nbsp;】&nbsp;linxer<br>
+【&nbsp;&nbsp;Q&nbsp;Q&nbsp;&nbsp;&nbsp;】&nbsp;3568599<br>
+【&nbsp;&nbsp;声明&nbsp;&nbsp;】&nbsp;俺系初级选手，高手略过。失误之处敬请诸位大侠赐教！<br>
+<br>
+题外话：本文系本人最近编码的总结，目前初步完成了ring&nbsp;3级别x86&nbsp;cpu的仿真，但由于这个东西还跟很多模块关联在一起，这些模块我都还没有写，因此，我写的这个虚拟的ring&nbsp;3&nbsp;x86&nbsp;cpu的代码也还没有进行功能性等测试，目前只是能编译过去而已。本文旨在说明如何仿真，不在于show代码，不过为了说明问题，会引用一些代码，这些代码来源于那些未测试的代码，有意往下看的，请抱着一颗发掘代码bug的心，抱歉！<br>
+<br>
+前段时间已经发过一篇关于如何识别x86机器码的文章，机器码识别出来了，接下来就是要交给仿真的cpu执行，这里给出一个相对简单的cpu的实现。<br>
+<br>
+首先说下，这里为什么只仿真ring&nbsp;3级别的一些功能？这是由于仿真的cpu上不能安装OS决定的，如果要用到一些ring&nbsp;0的功能那怎么办呢，就只能仔细分析这个ring&nbsp;0的功能，通过其它方式仿真出来了。<br>
+<br>
+这个仿真的cpu包含以下三个部分：cpu环境，寻址系统和指令解析系统。<br>
+<br>
+一.cpu环境<br>
+<br>
+必要的宏定义<br>
+<br>
+#define&nbsp;u8&nbsp;unsigned&nbsp;char<br>
+#define&nbsp;s8&nbsp;char<br>
+<br>
+#define&nbsp;u16&nbsp;unsigned&nbsp;short&nbsp;int<br>
+#define&nbsp;s16&nbsp;short&nbsp;int<br>
+<br>
+#define&nbsp;u32&nbsp;unsigned&nbsp;int<br>
+#define&nbsp;s32&nbsp;int<br>
+<br>
+1.&nbsp;8个普通寄存器在x86上按如下顺序索引<br>
+typedef&nbsp;enum&nbsp;tagCommonRegIndex<br>
+{<br>
+&nbsp;&nbsp;EAX&nbsp;=&nbsp;0,<br>
+&nbsp;&nbsp;ECX,<br>
+&nbsp;&nbsp;EDX,<br>
+&nbsp;&nbsp;EBX,<br>
+&nbsp;&nbsp;ESP,<br>
+&nbsp;&nbsp;EBP,<br>
+&nbsp;&nbsp;ESI,<br>
+&nbsp;&nbsp;EDI<br>
+}CommonRegIndex;<br>
+<br>
+2.&nbsp;6个段寄存器在x86上按如下顺序索引<br>
+typedef&nbsp;enum&nbsp;tagSegmentRegIndex<br>
+{<br>
+&nbsp;&nbsp;ES&nbsp;=&nbsp;0,<br>
+&nbsp;&nbsp;CS,<br>
+&nbsp;&nbsp;SS,<br>
+&nbsp;&nbsp;DS,<br>
+&nbsp;&nbsp;FS,<br>
+&nbsp;&nbsp;GS<br>
+}SegmentRegIndex;<br>
+<br>
+3.&nbsp;定义标志寄存器有用位的索引<br>
+这里并没有按照intel&nbsp;CPU的格式来定义，主要是出于效率考虑，因为程序执行过程中有大量的跳转语句，这些语句都要用到条件位，用这种方式比用一个unsigned&nbsp;long来定义标志寄存器，每次可以节省一个&amp;操作，由于在仿真的cpu上执行程序，效果是个大问题，因此这里在效率问题上也是“寸土必争”的；另外，我还把常用的条件位放在一起了，这也与x86&nbsp;cpu不同，这里只要是为了减少cache&nbsp;miss情况，不过应该收效甚微的<br>
+<br>
+这种定义方式就注定了标志寄存器操作指令的特殊性，幸好与标志寄存器相关的指令只要仿真四条(pushf/sahf/popf/lahf)<br>
+typedef&nbsp;enum&nbsp;tagFlagReg<br>
+{<br>
+&nbsp;&nbsp;CF&nbsp;=&nbsp;0,<br>
+&nbsp;&nbsp;ZF,<br>
+&nbsp;&nbsp;SF,<br>
+&nbsp;&nbsp;OF,<br>
+&nbsp;&nbsp;DF,<br>
+&nbsp;&nbsp;PF,<br>
+&nbsp;&nbsp;AF,<br>
+&nbsp;&nbsp;TF,<br>
+&nbsp;&nbsp;IF<br>
+}FlagReg;<br>
+<br>
+4.&nbsp;普通32位寄存器结构声明<br>
+用这个结构可以比较方便的访问普通寄存器里包含的"小寄存器"，比如说eax中的ax/ah/al<br>
+typedef&nbsp;union&nbsp;tagCommonReg<br>
+{<br>
+&nbsp;&nbsp;s32&nbsp;nAll;<br>
+&nbsp;&nbsp;s16&nbsp;_x;<br>
+&nbsp;&nbsp;struct&nbsp;tag8CommonReg<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;s8&nbsp;_l;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;s8&nbsp;_h;<br>
+&nbsp;&nbsp;}_8;<br>
+}CommonReg,&nbsp;*PCommonReg;<br>
+<br>
+5.&nbsp;cpu环境<br>
+typedef&nbsp;struct&nbsp;tagCPUEnvernment<br>
+{<br>
+&nbsp;&nbsp;CommonReg&nbsp;&nbsp;commonReg[8];&nbsp;&nbsp;//8个普通32位寄存器<br>
+&nbsp;&nbsp;u32&nbsp;&nbsp;&nbsp;&nbsp;eip;&nbsp;&nbsp;&nbsp;&nbsp;//eip寄存器<br>
+&nbsp;&nbsp;CommonReg&nbsp;&nbsp;segReg[6];&nbsp;&nbsp;//段寄存器，这里其实用s16就可以啦，段寄存器虽然有48bit，但是我们可见的只有16bit<br>
+&nbsp;&nbsp;u8&nbsp;&nbsp;&nbsp;&nbsp;flagReg[9];&nbsp;&nbsp;//要用到的9个标志寄存器位<br>
+}CPUEnvernment,&nbsp;*PCPUEnvernment;<br>
+<br>
+为了以下的应用，这里定义一个cpu环境变量：<br>
+CPUEnvernment&nbsp;g_cpu;<br>
+<br>
+<br>
+二.寻址系统<br>
+<br>
+这里不含寄存器的寻址，因为寄存器的寻址可以很轻松搞定，一般都在opcode和ModR/M包含了。这里特指内存寻址。<br>
+<br>
+对32位的cpu来说，含有16位寻址和32位寻址，具体用的是那种寻址方式，由每条指令的寻址大小前缀码指定，不过现在好像都是用32位寻址啦。<br>
+<br>
+1.&nbsp;16位寻址<br>
+<br>
+要内存寻址的指令，指令一定会有modR/M字节，这个字节会标识该如何寻址，在16位寻址的指令中，是没有sib字节的，这样使得16位寻址仿真起来也相对简单些。比如，当mod=00,R/M=000的时候，它表示[bx&nbsp;+&nbsp;si]，我们可以由g_cpu.commonReg[EBX]._x&nbsp;+&nbsp;g_cpu.commonReg[ESI]._x得到程序执行过程中用到的虚拟地址。具体情况可以参考Intel官方手册第二卷的Intel&nbsp;Instruction&nbsp;Set&nbsp;Reference(A-M)部分的36页。<br>
+<br>
+2.&nbsp;32位寻址<br>
+<br>
+32位寻址比16位寻址要复杂的多，要32内存寻址的指令中一定会有modR/M字节，可能会有sib字节。<br>
+<br>
+在R/M不为100的时候，表示指令中不含sib字节，它的情况跟16位寻址没有什么差别，比如，当mod=00,R/M=000的时候，它表示[eax]，我们可以由g_cpu.commonReg[EAX].nAll得到程序执行过程中用到的虚拟地址。具体情况可以参考Intel官方手册第二卷的Intel&nbsp;Instruction&nbsp;Set&nbsp;Reference(A-M)部分的37页。<br>
+<br>
+在R/M=100的时候，那么指令就含有sib字节了，sib字节主要用来支持一些象数组样的寻址，比如说sib=01&nbsp;000&nbsp;001，由它表示的是[ecx&nbsp;+&nbsp;eax&nbsp;*&nbsp;2]，我们可以由g_cpu.commonReg[ECX].nAll&nbsp;+&nbsp;g_cpu.commonReg[EAX].nAll&nbsp;*&nbsp;2得到sib字节表示的虚拟地址，然后在和mod字段配合，加上一定的偏移，就可以得到最终的虚拟地址了。具体情况可以参考Intel官方手册第二卷的Intel&nbsp;Instruction&nbsp;Set&nbsp;Reference(A-M)部分的38页。<br>
+<br>
+3.&nbsp;地址转换<br>
+由上面得到的地址都是虚拟地址，那怎么获得这个虚拟地址实际表示的操作数呢，即怎样获得它在真实cpu上的虚拟地址呢，这个转换应该可以说比较简单的，在程序在仿真cpu上执行前，我们要有个PE&nbsp;load的过程，在这个过程中，我们可以知道，这个pe文件的ImageBase跟真实加载到内存中的起始地址的差额，用这个差额就可以完成这种地址转换了。<br>
+<br>
+<br>
+三.指令解析系统<br>
+<br>
+写这个模块是最枯燥的，不过这也取决于你要虚拟多少条指令，基本上是每个指令要有一个专门的解析函数，因此工作量是挺大的，体力活！<br>
+<br>
+对指令的解析可以用两种方法来做到：<br>
+<br>
+1.&nbsp;关键地方内嵌汇编<br>
+因为对条件位的设置比较麻烦，我们可以用真实的cpu来搞定这些工作，这样轻松简洁，出错概率也减小不少，拿opcode=0x3c来说，它是cmp指令，它的一个参作数在eax中，第二个参作数是一个立即数<br>
+<br>
+s32&nbsp;cmp_rac_imm_fun()<br>
+{<br>
+&nbsp;&nbsp;s32&nbsp;lFirst;<br>
+&nbsp;&nbsp;s32&nbsp;lSecond;<br>
+&nbsp;&nbsp;s16&nbsp;sFirst;<br>
+&nbsp;&nbsp;s16&nbsp;sSecond;<br>
+&nbsp;&nbsp;s8&nbsp;cFirst;<br>
+&nbsp;&nbsp;s8&nbsp;cSecond;<br>
+<br>
+&nbsp;&nbsp;u8&nbsp;cCF&nbsp;=&nbsp;0;&nbsp;//这里目前只仿真了4个条件位，初始默认为0<br>
+&nbsp;&nbsp;u8&nbsp;cOF&nbsp;=&nbsp;0;<br>
+&nbsp;&nbsp;u8&nbsp;cSF&nbsp;=&nbsp;0;<br>
+&nbsp;&nbsp;u8&nbsp;cZF&nbsp;=&nbsp;0;<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;if(操作数大小是4)&nbsp;//将最可能执行到的条件放前面，以提高效率<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lFirst&nbsp;=&nbsp;g_cpu.commonReg[EAX].nAll;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lSecond&nbsp;=&nbsp;立即数;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_asm<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;esi,&nbsp;lFirst;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmp&nbsp;esi,&nbsp;lSecond;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jnc&nbsp;cmp_rac_imm_cf_1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cCF,&nbsp;1;<br>
+cmp_rac_imm_cf_1:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jno&nbsp;cmp_rac_imm_of_1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cOF,&nbsp;1;<br>
+cmp_rac_imm_of_1:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jne&nbsp;cmp_rac_imm_zf_1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cZF,&nbsp;1;<br>
+cmp_rac_imm_zf_1:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jns&nbsp;cmp_rac_imm_sf_1;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cSF,&nbsp;1;<br>
+cmp_rac_imm_sf_1:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;else&nbsp;if(操作数大小是2)<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sFirst&nbsp;=&nbsp;g_cpu.commonReg[EAX]._x;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sSecond&nbsp;=&nbsp;立即数;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_asm<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;si,&nbsp;sFirst;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmp&nbsp;si,&nbsp;sSecond;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jnc&nbsp;cmp_rac_imm_cf_2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cCF,&nbsp;1;<br>
+cmp_rac_imm_cf_2:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jno&nbsp;cmp_rac_imm_of_2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cOF,&nbsp;1;<br>
+cmp_rac_imm_of_2:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jne&nbsp;cmp_rac_imm_zf_2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cZF,&nbsp;1;<br>
+cmp_rac_imm_zf_2:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jns&nbsp;cmp_rac_imm_sf_2;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cSF,&nbsp;1;<br>
+cmp_rac_imm_sf_2:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;else&nbsp;if(操作数大小是1)<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cFirst&nbsp;=&nbsp;g_cpu.commonReg[EAX]._8._l;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cSecond&nbsp;=&nbsp;立即数;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_asm<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;dh,&nbsp;cFirst;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmp&nbsp;dh,&nbsp;cSecond;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jnc&nbsp;cmp_rac_imm_cf_3;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cCF,&nbsp;1;<br>
+cmp_rac_imm_cf_3:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jno&nbsp;cmp_rac_imm_of_3;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cOF,&nbsp;1;<br>
+cmp_rac_imm_of_3:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jne&nbsp;cmp_rac_imm_zf_3;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cZF,&nbsp;1;<br>
+cmp_rac_imm_zf_3:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jns&nbsp;cmp_rac_imm_sf_3;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mov&nbsp;cSF,&nbsp;1;<br>
+cmp_rac_imm_sf_3:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;g_cpu.flagReg[ZF]&nbsp;=&nbsp;cZF;&nbsp;//修正仿真cpu中的某些条件位<br>
+&nbsp;&nbsp;g_cpu.flagReg[OF]&nbsp;=&nbsp;cOF;<br>
+&nbsp;&nbsp;g_cpu.flagReg[CF]&nbsp;=&nbsp;cCF;<br>
+&nbsp;&nbsp;g_cpu.flagReg[SF]&nbsp;=&nbsp;cSF;<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;g_cpu.eip&nbsp;+=&nbsp;指定大小;&nbsp;//eip指向下条待执行指令<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;return&nbsp;0;<br>
+}<br>
+<br>
+当然这种方法对某些指令的仿真是行不通的。<br>
+<br>
+2.&nbsp;完全手工模拟<br>
+还以opcode=0x3c为例，这里简单点说明，略过很多情况<br>
+<br>
+s32&nbsp;cmp_rac_imm_fun()<br>
+{<br>
+&nbsp;&nbsp;s32&nbsp;lFirst;<br>
+&nbsp;&nbsp;s16&nbsp;sFirst;<br>
+&nbsp;&nbsp;s8&nbsp;cFirst;<br>
+<br>
+&nbsp;&nbsp;//这里为了说明问题，阿拉就不模拟对OF,CF的影响了，我怕麻烦<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;if(操作数大小是4)&nbsp;//将最可能执行到的条件放前面，以提高效率<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lFirst&nbsp;=&nbsp;g_cpu.commonReg[EAX].nAll&nbsp;-&nbsp;立即数;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;g_cpu.flagReg[ZF]&nbsp;=&nbsp;(lFirst&nbsp;==&nbsp;0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;g_cpu.flagReg[SF]&nbsp;=&nbsp;(lFirst&nbsp;&lt;&nbsp;0);<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;else&nbsp;if(操作数大小是2)<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sFirst&nbsp;=&nbsp;g_cpu.commonReg[EAX]._x&nbsp;-&nbsp;立即数;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;g_cpu.flagReg[ZF]&nbsp;=&nbsp;(sFirst&nbsp;==&nbsp;0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;g_cpu.flagReg[SF]&nbsp;=&nbsp;(sFirst&nbsp;&lt;&nbsp;0);<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;else&nbsp;if(操作数大小是1)<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cFirst&nbsp;=&nbsp;g_cpu.commonReg[EAX]._8._l&nbsp;-&nbsp;立即数;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;g_cpu.flagReg[ZF]&nbsp;=&nbsp;(cFirst&nbsp;==&nbsp;0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;g_cpu.flagReg[SF]&nbsp;=&nbsp;(cFirst&nbsp;&lt;&nbsp;0);<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;g_cpu.eip&nbsp;+=&nbsp;指定大小;&nbsp;//eip指向下条待执行指令<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;return&nbsp;0;<br>
+}<br>
+<br>
+通过以上两个方法，应该是可以搞定所有ring&nbsp;3级别的指令的解析的。<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+下面说下，如何将识别出来的机器码跟该机器码对应的解析函数关联起来：我们在x86机器码的识别过程，可以给每个识别出来的opcode一个id，而其相映的解析函数也用这个id，然后将所有解析函数放入函数指针数组中，并通过这个id索引，这样就可以从opcode快速找到相映的解析函数了。<br>
+<br>
+<br>
+就写到这里吧，这个仿真cpu的功能还很简单，还有待加强...... </p>
+</blockquote> <p></p>
+ </div>
+ </div>
+ </div>
+ <div class=clear></div>
+</div>
+</div>
+<div class=wrapper>
+<div class="page corners">
+ <div class=content>
+ <div class="box corners post"><span class=detail>
+ <ul>
+ <li><span class=title>标 题：</span><span class=improtant>答复</span>
+ <li><span class=title>作 者：</span><span class=improtant>笨笨雄</span>
+ <li><span class=title>时 间：</span><font color=#666686>2007-04-08 16:59 
+ </font> 
+ </ul>
+ </span>
+ <div class=entry>
+ <p> 
+<blockquote> 
+ <p class=pediy>个人建议，在x86平台上仿真x86，没有必要识别所有指令，建立数组，标记带modr\m&nbsp;byte和string类型的opcode。重定向寻址指令就行了<br>
+<br>
+牛人写代码就是快，我构思VM比你早，但是你的框架写出来了，我还在想实现思路<img src=data:image/gif;base64,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 border=0 alt title=124.gif class=inlineimg>&nbsp;<br>
+<br>
+不过我的是用在加密上的，而不是解密<img src="data:image/gif;base64,R0lGODlhDwAPANUtAP/6u//4p//7zv/4n//83P/7yv/7x//70tXPgPHqkf/5sP/82f/81e7nj//4pf/5sc7IfOjhi//3neHah+bfiv/6v//4qvvzl9/Yhv/83f/70f/4q//82P/7xv/7y//6vf/6wP/82/72mP/6xf/7ycvFevrylv/818K8dcG7dN/f3////wAAAKSkpAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAC0ALAAAAAAPAA8AAAZ4wJZQyCoWh8hWkcA5FEBHJIuQCTEEHYAiwBqyTouiwFApSkxd5YGl8bAArM2AleiyDAXSSGsJDC4JERNFH0aGhghFDywrKoyNjI4lRQ6Rj46QKEUiliuQkCl2DSyYnyyhRBQYRZ6Op6hECBCHKbBer7WhaUlKhklBADs=" border=0 alt title=狂笑 class=inlineimg> </p>
+</blockquote> <p></p>
+ </div>
+ </div>
+ </div>
+ <div class=clear></div>
+</div>
+</div>
+<div class=wrapper>
+<div class="page corners">
+ <div class=content>
+ <div class="box corners post"><span class=detail>
+ <ul>
+ <li><span class=title>标 题：</span><span class=improtant>答复</span>
+ <li><span class=title>作 者：</span><span class=improtant>linxer</span>
+ <li><span class=title>时 间：</span><font color=#666686>2007-04-08 17:20 
+ </font> 
+ </ul>
+ </span>
+ <div class=entry>
+ <p> 
+<blockquote> 
+ <p class=pediy><div style=margin:0px;margin-top:5px>
+ 
+ <div style=margin:20px;margin-top:10px><fieldset><legend><div class=smallfont style=margin-bottom:2px>引用:</div></legend> 
+ 
+ 
+ 
+ <div> <i>最初由 <strong>笨笨雄</strong>发布</i> 
+ <a href="https://www.pediy.com/kssd/pediy09/showthread.php?p=295581#post295581" rel=nofollow><img class=inlineimg src="data:image/gif;base64,R0lGODlhDAAMAPcAAP///1BZiU1ZgpaYolBYi7XY20pQe6XE/qbF/6zO/4+Snoye6lFZjK7P/5y74pa0zLzj/1ZhkWZqh6vL4n6J0oab6n2M3Zy0/4af7XuI3lhikpaw8H+M5XqRp4ib+W55zWlzw7GzzYKV6KS//4SR78Dn/36Q5HyN0Mva6HiGyXiEx4qXt5S34UlReFlbdYCDlGBxkpuhqo6krJagsLHS6bvY6MjJ3Z+287XR53yK4Pv8/4GP6aC/47TU+ICLsJy72rS/5EZOdoCN5KOou5WYok5Wg6fD+HuNzYCM4jpCcbHP/8PD2H2TyGRojL7l/6nE//7//6C5/z5GgMXt/5SYqsLE2k5bfZit/4OW5qe/3r2903eGxo2l0/X3/ISKmJKuyKG+9Jat+JWw1cbI3ZCTo5q911BZilhkla7I4pmr7pSxzZGj75qfw3qH0cLj62l8l19ovpCk/dHR45mrzq7Q/7/B15Khw6jI85y29pSeqnyJ3XeF3GtynHJ/1oGU7J6947XY/6HA4qC12Pr7/4qPmgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAMAAwAQAihAFGUefBFzY9APP44YAHEzoItEV50AVDFgh8PH9AoMcIFBhEAAEJsOGCixoQOMUBquUMnAaAKgqJcCHNEgIJBAOSk2eNDBR8XEppQQCKEAwk4bgrI8JJnBo0STiBMwYCjh5g3hEAuAYOgAZYsT0bgYWJlABQAY27kmHNlzYkzZHQAqCMiTp8VKTRQAWmjjZ4MO0AMSdIiiIEiAcwQYCCFTUAAOw==" border=0 alt=查看帖子></a> </div>
+ 个人建议，在x86平台上仿真x86，没有必要识别所有指令，建立数组，标记带modr\m&nbsp;byte和string类型的opcode。重定向寻址指令就行了
+ 
+ </fieldset></div>
+</div>雄大哥，不知道能否说得详细点呢，觉得你这个思路很好，阿拉想了解下，寻址重定向前后应该做些什么呢？<br>
+<br>
+由于阿拉资质有限，目前还没有想明白，你这个思路能不能在我这里用，如果能用的话，又该怎么用...... <p></p>
+</blockquote> <p></p>
+ </div>
+ </div>
+ </div>
+ <div class=clear></div>
+</div>
+</div>
+<div class=wrapper>
+<div class="page corners">
+ <div class=content>
+ <div class="box corners post"><span class=detail>
+ <ul>
+ <li><span class=title>标 题：</span><span class=improtant>答复</span>
+ <li><span class=title>作 者：</span><span class=improtant>笨笨雄</span>
+ <li><span class=title>时 间：</span><font color=#666686>2007-04-08 19:49 
+ </font> 
+ </ul>
+ </span>
+ <div class=entry>
+ <p> 
+<blockquote> 
+ <p class=pediy>首先是解释modr\m&nbsp;byte,如果是不带寄存器的寻址，直接改地址就好了<br>
+<br>
+如果是带寄存器寻址的，可以在代码运行缓冲区中改写这条指令。举一个简单的例子吧<br>
+<br>
+假设有以下代码<br>
+<br>
+mov&nbsp;eax,00400000<br>
+xor&nbsp;ecx,ecx<br>
+mov&nbsp;edx,dword&nbsp;ptr&nbsp;[eax+4*ecx]<br>
+<br>
+前两条指令不带modr\m&nbsp;byte的，在计算完指令长度之后，可以将一条完整的指令复制到代码执行缓冲区中。第三条指令，由于寻址是不确定的。因此在代码执行缓冲区中写入一条jmp到自己虚拟机里的。也就是缓冲区被写成下面的样子：<br>
+<br>
+mov&nbsp;eax,00400000<br>
+xor&nbsp;ecx,ecx<br>
+jmp&nbsp;VM_reAddr_proc<br>
+<br>
+然后按照实际情况的eax和ecx便可以知道确切的值了。计算实际加载地址与默认地址的差值，然后加上去不就好了。如果你担心程序自己申请内存，并对跟内存寻址的情况。那么你在模拟分配内存函数的时候，将申请地址的返回值，也加上那个差值。便可以用统一的算法解决所有寻址问题了。计算出程序原本需要访问地址，生成<br>
+<br>
+mov&nbsp;reg32,dword&nbsp;ptr&nbsp;[xxxxxxxx]<br>
+<br>
+注意环境保护，你可以用真实CPU的寄存器。切换堆栈也就mov&nbsp;esp,dword&nbsp;ptr&nbsp;[xxxxxxx]。<br>
+<br>
+在最初构思的时候，我是想如何提高虚拟机速率的。不过最近发现，编译器使用了大量带modr\m&nbsp;byte的代码。这样的方法不见得能提高多少性能。当然了，这跟我的方向不同，没深入想过 </p>
+</blockquote> 
+ </div>
+ </div>
+ </div>
+ <div class=clear></div>
+</div>
+</div>
+<iframe name=cool frameborder=0 width=1 height=1 marginheight=0 scrolling=no sandbox="allow-popups allow-top-navigation allow-top-navigation-by-user-activation" srcdoc="<html><meta charset=utf-8><meta name=referrer content=no-referrer><meta http-equiv=content-security-policy content=&quot;default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;&quot;><style>img[src=&quot;data:,&quot;],source[src=&quot;data:,&quot;]{display:none!important}</style>"></iframe>
+<div id=footer> ©2000-2012 <a href=http://www.pediy.com/><b><font color=#000000>PE</font><font color=#ff6000>diy</font><font color=#000000>.com</font></b></a> All rights reserved. By <font color=#318AEF face=Verdana>PEDIY </font> <br>
+</div>
+<div style=all:initial><div style=all:initial id=__hcfy__><template shadowrootmode=open><style class=sf-hidden>#root{-webkit-text-size-adjust:100%;box-sizing:border-box;font-size:14px;font-weight:400;letter-spacing:0;line-height:1.28581;text-transform:none;color:#182026;font-family:-apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Open Sans","Helvetica Neue","Icons16",sans-serif;touch-action:manipulation}#root>.bp5-portal{z-index:9999999999}</style><style class=sf-hidden>#translate-panel{background-color:#f6f7f9;display:flex;flex-direction:column;padding-bottom:8px}.bp5-dark #translate-panel{background-color:#252a31}#translate-panel .fixed{flex-shrink:0;margin-bottom:10px}#translate-panel .body{flex-grow:1;overflow:auto;overscroll-behavior:contain}#translate-panel .body::-webkit-scrollbar{width:8px;background-color:rgba(0,0,0,0);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar:hover{background-color:rgba(0,0,0,.09)}#translate-panel .body::-webkit-scrollbar-thumb:vertical{background:rgba(0,0,0,.5);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar-thumb:vertical:active{background:rgba(0,0,0,.61);-webkit-border-radius:100px}#translate-panel.size-small,#translate-panel.size-small h6.bp5-heading,#translate-panel.size-small .bp5-control.bp5-large,#translate-panel.size-small textarea.bp5-input.bp5-small{font-size:14px}#translate-panel.size-small .phonetic-item,#translate-panel.size-small .quick-settings a{font-size:12px}#translate-panel.size-middle,#translate-panel.size-middle h6.bp5-heading,#translate-panel.size-middle .bp5-control.bp5-large,#translate-panel.size-middle textarea.bp5-input{font-size:18px}#translate-panel.size-middle .phonetic-item,#translate-panel.size-middle .quick-settings a{font-size:14px}#translate-panel.size-large,#translate-panel.size-large h6.bp5-heading,#translate-panel.size-large .bp5-control.bp5-large,#translate-panel.size-large textarea.bp5-input.bp5-large{font-size:22px}#translate-panel.size-large .source,#translate-panel.size-large .phonetic-item,#translate-panel.size-large .quick-settings a{font-size:18px}#translate-panel .bp5-button.bp5-small,#translate-panel .bp5-small .bp5-button{min-height:20px;min-width:20px}#translate-panel .header{display:flex;align-items:center;padding:4px 6px 4px 10px;border-bottom:1px solid #d1d1d1}.bp5-dark #translate-panel .header{border-bottom-color:rgba(17,20,24,.4)}#translate-panel .header .drag-block{min-width:5px;flex-shrink:0;flex-grow:1;align-self:stretch}#translate-panel .header .left{flex-shrink:0;display:flex}#translate-panel .header .right{flex-shrink:0;display:flex;align-items:center}#translate-panel .header .right .bp5-icon-arrow-right{flex-shrink:0;margin:0 5px}#translate-panel .header .right>.bp5-button{flex-shrink:0;margin:0 1px}#translate-panel .header .right>.bp5-button:last-child{margin-right:0}#translate-panel .quick-settings{padding:4px 9px;margin:0 1px}#translate-panel .quick-settings>div{margin-bottom:5px}#translate-panel .quick-settings .bp5-control{margin-bottom:0}#translate-panel .query-text{position:relative;padding:10px 10px 2px 10px}#translate-panel .query-text textarea.bp5-input{min-height:44px;font-family:system-ui,-apple-system,"Segoe UI","Roboto","Ubuntu","Cantarell","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";overscroll-behavior:contain}#translate-panel .query-text .translate-btn{position:absolute;opacity:.6}#translate-panel .query-text .translate-btn:hover{opacity:1}#translate-panel .body{padding:0 10px}#translate-panel .body .bp5-card:first-child{margin-top:1px}#translate-panel .body .bp5-card:last-child{margin-bottom:1px}#translate-panel .body .no-api{margin:20px 0}.result-block{margin:8px 0;padding:2px 5px}.result-block .bp5-button{visibility:hidden}.result-block .error .bp5-button,.result-block:hover .bp5-button{visibility:visible}.result-block .legend{display:flex;align-items:center;justify-content:space-between}.result-block .legend .legend-left{display:flex;align-items:center}.result-block .legend .api-ico,.result-block .legend .bp5-heading{flex-shrink:0;white-space:nowrap}.result-block .legend .api-ico{display:inline-block;width:14px;height:14px;background-size:contain;margin-right:3px}.result-block .legend .bp5-heading{margin-bottom:0;margin-right:10px}.result-block .legend .source{cursor:pointer;font-size:12px;display:inline-flex;align-items:center}.result-block .legend .source .source-text{overflow:hidden}.result-block .legend .source .bp5-icon{position:relative;top:-1px;margin-left:1px}.result-block .phonetic{display:flex;flex-wrap:wrap}.result-block .phonetic .phonetic-item{display:flex;align-items:center;font-size:12px}.result-block .phonetic .phonetic-item:not(:last-child){margin-right:12px}.result-block .common-result p{line-height:1.3;margin:2px 0;overflow-wrap:break-word}.result-block .common-result .dict a{text-decoration:underline}.result-block .error{font-size:12px;padding:5px 10px}.result-block .dict-pos{margin-right:5px}.external-translators{margin-bottom:3px;padding:0;display:flex;flex-wrap:wrap}.external-translators>div{margin:0 5px 5px 0}.quick-links a{margin:0 5px 5px 0}#popper-container{width:250px;max-width:100%;position:absolute;left:0;top:0;z-index:9999999998;touch-action:none;transition:opacity .2s;background-color:#f6f7f9}.bp5-dark #popper-container{background-color:#252a31}#popper-container.show{opacity:1;pointer-events:auto;-moz-user-select:auto;user-select:auto}#popper-container,#popper-container[data-popper-reference-hidden=true]{opacity:0;pointer-events:none;-moz-user-select:none;user-select:none}#popper-container .drag-block{cursor:-webkit-grab;cursor:grab}#popper-container.pin{position:fixed}#popper-container.pin .arrow{display:none}#popper-container .arrow,#popper-container .arrow::before{position:absolute;width:8px;height:8px;z-index:-1}#popper-container .arrow::before{content:"";transform:rotate(45deg);background:#f6f7f9}.bp5-dark #popper-container .arrow::before{background-color:#252a31}#popper-container .arrow{display:none}#popper-container.show[data-popper-placement]:not([data-popper-reference-hidden=true]) .arrow{display:block}#popper-container[data-popper-placement^=top] .arrow{bottom:-5px}#popper-container[data-popper-placement^=top] .arrow::before{border-right:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#popper-container[data-popper-placement^=bottom] .arrow{top:-5px}#popper-container[data-popper-placement^=bottom] .arrow::before{border-left:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=left] .arrow{right:-5px}#popper-container[data-popper-placement^=left] .arrow::before{border-right:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=right] .arrow{left:-5px}#popper-container[data-popper-placement^=right] .arrow::before{border-left:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#translate-btn{display:none;position:absolute;z-index:9999999999;left:0;top:0}#translate-btn .bp5-button{padding:2px;min-width:0;min-height:0}#translate-btn .btn-icon{width:18px;height:18px;background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logo.png);background-size:contain}.bp5-dark #translate-btn .btn-icon{background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logowhite36.png)}#translate-btn.show{display:block}.translate-type-selector .bp5-label{display:inline}.translate-type-selector .bp5-radio{margin-bottom:0}#ocr-container{position:fixed;z-index:99999999999999;left:0;top:0;right:0;bottom:0}#ocr-container .toolbar{display:none;position:absolute;z-index:1}#ocr-container img{max-width:100%}#app{cursor:default}.switch-pin{flex-shrink:0;cursor:pointer}.switch-pin .bp5-icon-pin{transition:transform .2s,color .2s;transform:rotate(-45deg)}.pin .switch-pin .bp5-icon-pin{transform:rotate(-70deg)}.cut-btn{margin-left:2px}.app-toaster-container{position:fixed!important;z-index:9999999999!important}.app-toaster-container .bp5-toast{min-width:auto}#web-trs-panel .app-toaster-container{padding-right:0;padding-left:0}#web-trs-panel .page-trs-form-group{margin:0 0 0 0;align-items:center}#web-trs-panel .page-trs-form-group>label{width:70px}</style><div id=root dir=ltr><div id=app><div id=translate-btn class=sf-hidden></div><div id=popper-container style=width:290px;transform:translate(0px) class=bp5-elevation-4><div id=translate-panel class=size-small><div class=fixed><div class=header><div class=left><div class=switch-pin><button type=button class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-pin"><svg data-icon=pin height=14 role=img viewBox="0 0 16 16" width=14><path d="M9.41.92c-.51.51-.41 1.5.15 2.56L4.34 7.54C2.8 6.48 1.45 6.05.92 6.58l3.54 3.54-3.54 4.95 4.95-3.54 3.54 3.54c.53-.53.1-1.88-.96-3.42l4.06-5.22c1.06.56 2.04.66 2.55.15L9.41.92z" fill-rule=evenodd></path></svg></span></button></div><button type=button title=图片翻译 class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-media"><svg data-icon=media height=14 role=img viewBox="0 0 16 16" width=14><path d="M11.99 6.99c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3-5h-14c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-10c0-.55-.45-1-1-1zm-1 9l-5-3-1 2-3-4-3 5v-7h12v7z" fill-rule=evenodd></path></svg></span></button><button type=button title=语音翻译 class="bp5-button bp5-minimal bp5-small"><span class=bp5-icon><svg version=1.1 id=Capa_1 width=14 height=14 xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink x=0px y=0px viewBox="0 0 490.9 490.9" xml:space=preserve><g><g><path d="M245.5,322.9c53,0,96.2-43.2,96.2-96.2V96.2c0-53-43.2-96.2-96.2-96.2s-96.2,43.2-96.2,96.2v130.5 C149.3,279.8,192.5,322.9,245.5,322.9z M173.8,96.2c0-39.5,32.2-71.7,71.7-71.7s71.7,32.2,71.7,71.7v130.5 c0,39.5-32.2,71.7-71.7,71.7s-71.7-32.2-71.7-71.7V96.2z"></path><path d="M94.4,214.5c-6.8,0-12.3,5.5-12.3,12.3c0,85.9,66.7,156.6,151.1,162.8v76.7h-63.9c-6.8,0-12.3,5.5-12.3,12.3 s5.5,12.3,12.3,12.3h152.3c6.8,0,12.3-5.5,12.3-12.3s-5.5-12.3-12.3-12.3h-63.9v-76.7c84.4-6.3,151.1-76.9,151.1-162.8 c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3c0,76.6-62.3,138.9-138.9,138.9s-138.9-62.3-138.9-138.9 C106.6,220,101.2,214.5,94.4,214.5z"></path></g></g></svg></span></button></div><div class=drag-block title=按住不放可以拖动></div><div class=right><button type=button disabled title=添加到收藏夹 class="bp5-button bp5-disabled bp5-minimal bp5-small" tabindex=-1><span aria-hidden=true class="bp5-icon bp5-icon-star-empty"><svg data-icon=star-empty height=14 role=img viewBox="0 0 16 16" width=14><path d="M16 6.11l-5.53-.84L8 0 5.53 5.27 0 6.11l4 4.1L3.06 16 8 13.27 12.94 16 12 10.21l4-4.1zM4.91 13.2l.59-3.62L3 7.02l3.45-.53L8 3.2l1.55 3.29 3.45.53-2.5 2.56.59 3.62L8 11.49 4.91 13.2z" fill-rule=evenodd></path></svg></span></button><button type=button class="bp5-button bp5-minimal bp5-small settings" title=快捷设置><span aria-hidden=true class="bp5-icon bp5-icon-cog"><svg data-icon=cog height=14 role=img viewBox="0 0 16 16" width=14><path d="M15.19 6.39h-1.85c-.11-.37-.27-.71-.45-1.04l1.36-1.36c.31-.31.31-.82 0-1.13l-1.13-1.13a.803.803 0 00-1.13 0l-1.36 1.36c-.33-.17-.67-.33-1.04-.44V.79c0-.44-.36-.8-.8-.8h-1.6c-.44 0-.8.36-.8.8v1.86c-.39.12-.75.28-1.1.47l-1.3-1.3c-.3-.3-.79-.3-1.09 0L1.82 2.91c-.3.3-.3.79 0 1.09l1.3 1.3c-.2.34-.36.7-.48 1.09H.79c-.44 0-.8.36-.8.8v1.6c0 .44.36.8.8.8h1.85c.11.37.27.71.45 1.04l-1.36 1.36c-.31.31-.31.82 0 1.13l1.13 1.13c.31.31.82.31 1.13 0l1.36-1.36c.33.18.67.33 1.04.44v1.86c0 .44.36.8.8.8h1.6c.44 0 .8-.36.8-.8v-1.86c.39-.12.75-.28 1.1-.47l1.3 1.3c.3.3.79.3 1.09 0l1.09-1.09c.3-.3.3-.79 0-1.09l-1.3-1.3c.19-.35.36-.71.48-1.1h1.85c.44 0 .8-.36.8-.8v-1.6a.816.816 0 00-.81-.79zm-7.2 4.6c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill-rule=evenodd></path></svg></span></button><button type=button title=关闭(Esc) class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-cross"><svg data-icon=cross height=18 role=img viewBox="0 0 16 16" width=18><path d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z" fill-rule=evenodd></path></svg></span></button></div></div><div class=bp5-collapse><div class="bp5-collapse-body sf-hidden" aria-hidden=true></div></div></div><div class=body><p>请输入需要翻译的文本。</p></div></div><div class="arrow sf-hidden"></div></div><div id=web-trs-panel></div></div></div></template></div></div><script data-template-shadow-root>(()=>{document.currentScript.remove();processNode(document);function processNode(node){node.querySelectorAll("template[shadowrootmode]").forEach(element=>{let shadowRoot = element.parentElement.shadowRoot;if (!shadowRoot) {try {shadowRoot=element.parentElement.attachShadow({mode:element.getAttribute("shadowrootmode"),delegatesFocus:element.getAttribute("shadowrootdelegatesfocus")!=null,clonable:element.getAttribute("shadowrootclonable")!=null,serializable:element.getAttribute("shadowrootserializable")!=null});shadowRoot.innerHTML=element.innerHTML;element.remove()} catch (error) {} if (shadowRoot) {processNode(shadowRoot)}}})}})()</script>
