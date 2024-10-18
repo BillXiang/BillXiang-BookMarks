@@ -1,0 +1,643 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html xmlns=http://www.w3.org/1999/xhtml style><!--
+ Page saved with SingleFile 
+ url: http://www.wowotech.net/linux_kenrel/why-dt.html 
+ saved date: Fri Oct 18 2024 15:41:28 GMT+0800 (中国标准时间)
+--><meta charset=utf-8>
+<title>Device Tree（一）：背景介绍</title>
+<meta name=keywords content="Linux 嵌入式 ARM RTOS Technology 享受 C语言,Device,tree">
+<meta name=description content="一、前言 作为一个多年耕耘在linux 2.6.23内核的开发者，各个不同项目中各种不同周边外设驱动的开发以及各种琐碎的、扯皮的俗务占据了大部分的时间。当有机会下载3.14的内核...">
+<meta name=generator content=emlog>
+<link rel=EditURI type=application/rsd+xml title=RSD href=http://www.wowotech.net/xmlrpc.php?rsd>
+<link rel=wlwmanifest type=application/wlwmanifest+xml href=http://www.wowotech.net/wlwmanifest.xml>
+<link rel=alternate type=application/rss+xml title=RSS href=http://www.wowotech.net/rss.php>
+<style>:root{--sf-img-0: url("data:image/png;base64,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");--sf-img-6: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=")}</style><style>body{background:#FFFFFF;color:#323232;text-align:center;font:13px/18px Arial,Helvetica,sans-serif;margin:0px auto 0px;padding:0px}#wrap{background:#FFFFFF;width:960px;text-align:left;margin:0px auto 0px;padding:0px}img{border:none}a:link,a:active,a:visited{color:#886353;text-decoration:none}a:hover{color:#886353;text-decoration:underline}#header h1{color:#1F1F1F;font-size:30px;font-weight:normal;letter-spacing:0px;margin:10px 0px 3px 0px;padding:20px 0px 0px 0px;font-family:Georgia,"Times New Roman",Times,serif;line-height:normal}#header h1 a:link{color:#1F1F1F;text-decoration:none}#header h1 a:active{color:#1F1F1F;text-decoration:none}#header h1 a:visited{color:#1F1F1F;text-decoration:none}#header h1 a:hover{color:#1F1F1F;text-decoration:none}#header h3{color:#525252;font-style:italic;font-size:15px;font-weight:normal;margin:0px 0px 0px 40px;padding:10px 0px 10px 0px}#nav{margin:10px 0px 0px 0px;border:1px solid #eee}#nav .bar{margin:0px;padding:0px;height:30px}#nav .bar .item{height:30px;line-height:30px;display:block;float:left;padding:0 18px;position:relative}#nav a:link{color:#1F1F1F;text-decoration:none}#nav a:active{color:#1F1F1F;text-decoration:none}#nav a:visited{color:#1F1F1F;text-decoration:none}#nav a:hover{color:#1F1F1F;text-decoration:underline}#banner{height:134px}#pagenavi{text-align:center;font-size:14px}#pagenavi a{padding:0px 3px}#pagenavi a:hover{text-decoration:overline}#pagenavi span{font-size:16px;color:#999999}#content{width:960px;margin:0px auto 0px;padding:0px}#content p{padding:0px 0px 15px 0px;margin:0px;line-height:20px}#content h2{color:#1F1F1F;font-size:18px;font-weight:bold;padding:0px 0px 0px 0px;margin:25px 0px 10px 0px}#content h3{color:#444444;font-size:14px;font-weight:bold;margin:15px 0px 0px 0px;padding:8px 0px 8px 0px}#contentleft{float:left;width:678px;margin:0px 0px 0px 0px;padding:0px 20px 20px 20px;border-left:1px solid #eee;border-right:1px solid #eee}blockquote{margin:0px 20px 20px 20px;padding:25px 20px 25px 20px;background:#EFEFEF;border-left:5px solid #696969;border-right:5px solid #696969}#contentleft .date{color:#A97965;font-size:12px}#contentleft .tag{color:#A97965;font-size:12px;margin:0px 0px 0px 0px}#contentleft img{max-width:690px}#sidebar{float:right;width:200px;margin:0px 0px 0px 0px;padding:0px 19px 20px 19px;border-right:1px solid #eee;font:12px/18px Verdana,Arial,Helvetica,sans-serif;overflow:hidden}#sidebar ul{list-style-type:none;margin:0px;padding:0px}#sidebar ul li{background:transparent var(--sf-img-0) 0px 3px no-repeat;margin:0px 0px 0px 0px;padding:0px 0px 0px 18px}#sidebar ul li ul li{background:transparent var(--sf-img-0) 0px 3px no-repeat;margin:0px 0px 0px 0px;padding:0px 0px 0px 18px}#sidebar li{list-style-type:none}#footerbar{margin:40px auto 30px;padding:10px 0px;width:960px;text-align:center;overflow:hidden;border-top:1px solid #eee}#contentleft .nextlog{text-align:center;margin:5px 0;font-size:12px}#contentleft .comment-header{margin:15px 0px 5px 0px}#contentleft .comment-post{clear:both}#contentleft .comment-post p{margin:5px 0px}#contentleft .comment-post .cancel-reply{float:right;font-size:12px;cursor:pointer;padding-right:10%}#contentleft .comment-post .cancel-reply:hover{text-decoration:underline}#contentleft .comment-post small{font-size:12px;color:#999}#contentleft .comment-post input{padding:5px 5px;border:1px #b6b6b6 solid;font-size:12px;color:#333;width:40%}#contentleft .comment-post #comment{width:90%;border:1px #b6b6b6 solid;font-size:12px;color:#333}#contentleft .comment-post #comment_submit{background:url(data:image/gif;base64,R0lGODlhbwAdALMAAAAAAP////v7+/n5+fPz8+zs7NfX19bW1s/Pz////wAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAkALAAAAABvAB0AAAS2MKBJq7046827/1VgCGRpnmiqrmzrvnA5IGNs33iukzOy/8AgblYTGo9IInLJ3Cmb0GjrKa1aBdSrlpndeoXdr1g3OxDO6LR6zW673/C4fJ6e0O/4vH5fR/D/gIF6doKFhodnEwWLjI2Oj5CRkpOUlZaXjYqYm5ydnp+MmqCjpKWcoqapqquoq66vna2ws7SRsrW4tbe5vK67vcClv8HEnsPFyJfHycySy83QmRIg1NXW19gUAREAOw==)no-repeat;border:0;color:#000000;width:111px;height:29px;text-align:center;cursor:pointer}#contentleft .comment-post .input{width:100px}#contentleft .comment{margin:10px 0;padding:10px 0px;font-size:12px;border-bottom:1px #f7f7f7 solid;overflow:hidden;color:#333;height:100%;zoom:1}#contentleft .comment .comment-time{color:#999999;display:inline;font-size:10px}#contentleft .comment .comment-info{float:left;width:90%}#contentleft .comment .comment-content{margin:8px 0px 0px 0px}#contentleft .comment .comment-reply{float:right;font-size:12px;cursor:pointer}#contentleft .comment .comment-reply:hover{text-decoration:underline}#contentleft .comment-children{width:95%;margin:auto;clear:both;border:none;padding:0}.rss{margin:20px 0px}</style>
+<style>@media screen{.tag{color:#008}}</style>
+<!--[if IE 6]>
+<script src="http://www.wowotech.net/content/templates/default/iefix.js" type="text/javascript"></script>
+<![endif]-->
+<meta name=referrer content=no-referrer><link type=image/x-icon rel="shortcut icon" href="data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAD//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////v7+//7+/v/+/v7/////////////////////////////////////////////////////////////////zc3N/5qamv+fn5//lpaW/+Li4v//////////////////////////////////////////////////////ysrK/7S0tP/9/f3/3d3d//T09P+UlJT/9/f3////////////0NDQ/2BgYP+7u7v//v7+/////////////////5ycnP/+/v7/oaGh/7W1tf+SkpL/09PT/8vLy///////+Pj4/5iYmP/d3d3/fn5+/3Fxcf/+/v7///////////+hoaH//v7+/5ycnP+Li4v/jo6O/8fHx//U1NT///////j4+P/Gxsb/Tk5O/9PT0/+NjY3/ubm5////////////nZ2d//7+/v+tra3/pqam/7a2tv+YmJj//f39//////++vr7/2dnZ/+3t7f9hYWH/+vr6/3d3d//+/v7//////6SkpP/r6+v//v7+/+Li4v/c3Nz//v7+///////09PT/lZWV//7+/v/+/v7/gYGB/97e3v9tbW3/5+fn//7+/v/29vb/kZGR/+fn5/////////////7+/v/f39//kZGR//Dw8P///////////97e3v95eXn/5eXl/2NjY/+Hh4f///////j4+P+wsLD/n5+f/6CgoP+cnJz/tbW1//v7+//////////////////+/v7/cHBw/29vb/+np6f/mpqa//////////////////7+/v/+/v7//v7+////////////////////////////4+Pj/4eHh/+bm5v/2NjY//7+/v//////////////////////////////////////////////////////0NDQ/66urv/8/Pz/y8vL//7+/v///////////////////////////////////////////////////////////6mpqf/g4OD//////729vf//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="><style>.sf-hidden{display:none!important}</style><link rel=canonical href=http://www.wowotech.net/linux_kenrel/why-dt.html><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"><style>img[src="data:,"],source[src="data:,"]{display:none!important}</style></head>
+<body>
+<div id=wrap>
+ <div id=header>
+ <h1><a href=http://www.wowotech.net/>蜗窝科技</a></h1>
+ <h3>慢下来，享受技术。</h3>
+ </div>
+ <div id=banner><a href=http://www.wowotech.net/><img src="data:image/jpeg;base64,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" height=134 width=960></a></div>
+ <div id=nav>	<ul class=bar>
+ <li class="item common">
+ <a href=http://www.wowotech.net/>博客</a>
+ </li>
+ <li class="item common">
+ <a href=http://www.wowotech.net/sort/project>项目</a>
+ <ul class="sub-nav sf-hidden">
+ </ul>
+ </li>
+ <li class="item common">
+ <a href=http://www.wowotech.net/about.html>关于蜗窝</a>
+ </li>
+ <li class="item common">
+ <a href=http://www.wowotech.net/contact_us.html>联系我们</a>
+ </li>
+ <li class="item common">
+ <a href=http://www.wowotech.net/support_us.html>支持与合作</a>
+ </li>
+ <li class="item common">
+ <a href=http://www.wowotech.net/admin>登录</a>
+ </li>
+ </ul>
+</div>﻿<div id=content>
+<div id=contentleft>
+ <h2>Device Tree（一）：背景介绍</h2>
+ <p class=date>作者：<a href=http://www.wowotech.net/author/3 title="linuxer ">linuxer</a> 发布于：2014-5-22 16:46 
+ 分类：<a href=http://www.wowotech.net/sort/device_model>统一设备模型</a>
+ </p>
+ <p>
+ 一、前言
+</p>
+<p>
+ 作为一个多年耕耘在linux 2.6.23内核的开发者，各个不同项目中各种不同周边外设驱动的开发以及各种琐碎的、扯皮的俗务占据了大部分的时间。当有机会下载3.14的内核并准备学习的时候，突然发现linux kernel对于我似乎变得非常的陌生了，各种新的机制，各种framework、各种新的概念让我感到阅读内核代码变得举步维艰。 还好，剖析内核的热情还在，剩下的就交给时间的。首先进入视线的是Device Tree机制，这是和porting内核非常相关的机制，如果想让将我们的硬件平台迁移到高版本的内核上，Device Tree是一个必须要扫清的障碍。
+</p>
+<p>
+ 我想从下面三个方面来了解Device Tree：
+</p>
+<p>
+ 1、为何要引入Device Tree，这个机制是用来解决什么问题的？（这是本文的主题）
+</p>
+<p>
+ 2、Device Tree的基础概念（请参考<a target=_blank href=http://www.wowotech.net/linux_kenrel/dt_basic_concept.html>DT基础概念</a>）
+</p>
+<p>
+ 3、ARM linux中和Device Tree相关的代码分析（请参考<a target=_blank href=http://www.wowotech.net/linux_kenrel/dt-code-analysis.html>DT代码分析</a>）
+</p>
+<p>
+ 阅读linux内核代码就像欣赏冰山，有看得到的美景（各种内核机制及其代码），也有埋在水面之下看不到的基础（机制背后的源由和目的）。沉醉于各种内核机制的代码固然有无限乐趣，但更重要的是注入更多的思考，思考其背后的机理，真正理解软件抽象。这样才能举一反三，并应用在具体的工作和生活中。
+</p>
+<p>
+ 本文主要从下面几个方面阐述为何ARM linux会引入Device Tree：
+</p>
+<p>
+ 1、没有Device Tree的ARM linux是如何运转的？
+</p>
+<p>
+ 2、混乱的ARM architecture代码和存在的问题
+</p>
+<p>
+ 3、新内核的解决之道
+</p>
+<p>
+ &nbsp;
+</p>
+<p>
+ 二、没有Device Tree的ARM linux是如何运转的？
+</p>
+<p>
+ 我曾经porting内核到两个ARM-based的平台上。一个是小的芯片公司的应用处理器，公司自己购买了CPU core，该CPU core使用ARM兼容的指令集（但不是ARM）加上各种公司自行设计的多媒体外设整合成公司的产品进行销售。而我的任务就是porting 2.4.18内核到该平台上。在黑白屏幕的手机时代，那颗AP（application process）支持了彩屏、camera、JPEG硬件加速、2D/3D加速、MMC/SD卡、各种音频加速（内置DSP）等等特性，功能强大到无法直视。另外一次移植经历是让2.6.23内核跑在一个大公司的冷门BP（baseband processor）上。具体porting的方法是很简单的：
+</p>
+<p>
+ 1、自己撰写一个bootloader并传递适当的参数给kernel。除了传统的command line以及tag list之类的，最重要的是申请一个machine type，当拿到属于自己项目的machine type ID的时候，当时心情雀跃，似乎自己已经是开源社区的一份子了（其实当时是有意愿，或者说有目标是想将大家的代码并入到linux kernel main line的）。
+</p>
+<p>
+ 2、在内核的arch/arm目录下建立mach-xxx目录，这个目录下，放入该SOC的相关代码，例如中断controller的代码，时间相关的代码，内存映射，睡眠相关的代码等等。此外，最重要的是建立一个board specific文件，定义一个machine的宏：
+</p>
+<blockquote>
+ <p>
+ MACHINE_START(project name, "xxx公司的xxx硬件平台") <br>
+&nbsp;&nbsp;&nbsp; .phys_io&nbsp;&nbsp;&nbsp; = 0x40000000, <br>
+&nbsp;&nbsp;&nbsp; .boot_params&nbsp;&nbsp;&nbsp; = 0xa0000100,&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; .io_pg_offst&nbsp;&nbsp;&nbsp; = (io_p2v(0x40000000) &gt;&gt; 18) &amp; 0xfffc, <br>
+&nbsp;&nbsp;&nbsp; .map_io&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = xxx_map_io, <br>
+&nbsp;&nbsp;&nbsp; .init_irq&nbsp;&nbsp;&nbsp; = xxx_init_irq, <br>
+&nbsp;&nbsp;&nbsp; .timer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = &amp;xxx_timer, <br>
+&nbsp;&nbsp;&nbsp; .init_machine&nbsp;&nbsp;&nbsp; = xxx_init, <br>
+MACHINE_END
+ </p>
+</blockquote>
+<p>
+ 在xxx_init函数中，一般会加入很多的platform device。因此，伴随这个board specific文件中是大量的静态table，描述了各种硬件设备信息。
+</p>
+<p>
+ 3、调通了system level的driver（timer，中断处理，clock等）以及串口terminal之后，linux kernel基本是可以起来了，后续各种driver不断的添加，直到系统软件支持所有的硬件。
+</p>
+<p>
+ 综上所述，在linux kernel中支持一个SOC平台其实是非常简单的，让linux kernel在一个特定的平台上“跑”起来也是非常简单的，问题的重点是如何优雅的”跑”。
+</p>
+<p>
+ &nbsp;
+</p>
+<p>
+ 三、混乱的ARM architecture代码和存在的问题
+</p>
+<p>
+ 每次正式的linux kernel release之后都会有两周的merge window，在这个窗口期间，kernel各个部分的维护者都会提交各自的patch，将自己测试稳定的代码请求并入kernel main line。每到这个时候，Linus就会比较繁忙，他需要从各个内核维护者的分支上取得最新代码并merge到自己的kernel source tree中。Tony Lindgren，内核OMAP development tree的维护者，发送了一个邮件给Linus，请求提交OMAP平台代码修改，并给出了一些细节描述：
+</p>
+<p>
+ 1、简单介绍本次改动
+</p>
+<p>
+ 2、关于如何解决merge conficts。有些git mergetool就可以处理，不能处理的，给出了详细介绍和解决方案
+</p>
+<p>
+ 一切都很平常，也给出了足够的信息，然而，正是这个pull request引发了一场针对ARM linux的内核代码的争论。我相信Linus一定是对ARM相关的代码早就不爽了，ARM的merge工作量较大倒在其次，主要是他认为ARM很多的代码都是垃圾，代码里面有若干愚蠢的table，而多个人在维护这个table，从而导致了冲突。因此，在处理完OMAP的pull request之后（Linus并非针对OMAP平台，只是Tony Lindgren撞在枪口上了），他发出了怒吼：
+</p>
+<blockquote>
+<pre>Gaah. Guys, this whole ARM thing is a f*cking pain in the ass.</pre>
+</blockquote>
+<p>
+ 负责ARM linux开发的Russell King脸上挂不住，进行了反驳：事情没有那么严重，这次的merge conficts就是OMAP和IMX/MXC之间一点协调的问题，不能抹杀整个ARM linux团队的努力。其他的各个ARM平台维护者也加入讨论：ARM平台如何复杂，如何庞大，对于arm linux code我们已经有一些思考，正在进行中……一时间，讨论的气氛有些尖锐，但总体是坦诚和友好的。
+</p>
+<p>
+ 对于一件事情，不同层次的人有不同层次的思考。这次争论涉及的人包括：
+</p>
+<p>
+ 1、内核维护者（CPU体系结构无关的代码）
+</p>
+<p>
+ 2、维护ARM系统结构代码的人
+</p>
+<p>
+ 3、维护ARM sub architecture的人（来自各个ARM SOC vendor）
+</p>
+<p>
+ 维护ARM sub architecture的人并没有强烈的使命感，作为公司的一员，他们最大的目标是以最快的速度支持自己公司的SOC，尽快的占领市场。这些人的软件功力未必强，对linux kernel的理解未必深入（有些人可能很强，但是人在江湖身不由己）。在这样的情况下，很多SOC specific的代码都是通过copy and paste，然后稍加修改代码就提交了。此外，各个ARM vendor的SOC family是一长串的CPU list，每个CPU多多少少有些不同，这时候＃ifdef就充斥了各个源代码中，让ARM mach-和plat-目录下的代码有些不忍直视。
+</p>
+<p>
+ 作为维护ARM体系结构的人，其能力不容置疑。以Russell King为首的team很好的维护了ARM体系结构的代码。基本上，除了mach-和plat-目录，其他的目录中的代码和目录组织是很好的。作为ARM linux的维护者，维护一个不断有新的SOC加入的CPU architecture code的确是一个挑战。在Intel X86的架构一统天下的时候，任何想正面攻击Intel的对手都败下阵来。想要击倒巨人（或者说想要和巨人并存）必须另辟蹊径。ARM的策略有两个，一个是focus在嵌入式应用上，也就意味着要求低功耗，同时也避免了和Intel的正面对抗。另外一个就是博采众家之长，采用license IP的方式，让更多的厂商加入ARM建立的生态系统。毫无疑问，ARM公司是成功的，但是这种模式也给ARM linux的维护者带来了噩梦。越来越多的芯片厂商加入ARM阵营，越来越多的ARM platform相关的代码被加入到内核，不同厂商的周边HW block设计又各不相同……
+</p>
+<p>
+ 内核维护者是真正对操作系统内核软件有深入理解的人，他们往往能站在更高的层次上去观察问题，发现问题。Linus注意到每次merge window中，ARM的代码变化大约占整个ARCH目录的60％，他认为这是一个很明显的符号，意味着ARM linux的代码可能存在问题。其实，60％这个比率的确很夸张，因为unicore32是在2.6.39 merge window中第一次全新提交，它的代码是全新的，但是其代码变化大约占整个ARCH目录的9.6％（需要提及的是unicore32是一个中国芯）。有些维护ARM linux的人认为这是CPU市场占用率的体现，不是问题，直到内核维护者贴出实际的代码并指出问题所在。内核维护者当然想linux kernel支持更多的硬件平台，但是他们更愿意为linux kernel制定更长远的规划。例如：对于各种繁杂的ARM平台，用一个kernel image来支持。
+</p>
+<p>
+ 经过争论，确定的问题如下：
+</p>
+<p>
+ 1、ARM linux缺少platform（各个ARM sub architecture，或者说各个SOC）之间的协调，导致arm linux的代码有重复。值得一提的是在本次争论之前，ARM维护者已经进行了不少相关的工作（例如PM和clock tree）来抽象相同的功能模块。
+</p>
+<p>
+ 2、ARM linux中大量的board specific的源代码应该踢出kernel，否则这些垃圾代码和table会影响linux kernel的长期目标。
+</p>
+<p>
+ 3、各个sub architecture的维护者直接提交给Linux并入主线的机制缺乏层次。
+</p>
+<p>
+ &nbsp;
+</p>
+<p>
+ 四、新内核的解决之道
+</p>
+<p>
+ 针对ARM linux的现状，最需要解决的是人员问题，也就是如何整合ARM sub architecture（各个ARM Vendor）的资源。因此，内核社区成立了一个ARM sub architecture的team，该team主要负责协调各个ARM厂商的代码（not ARM core part），Russell King继续负责ARM core part的代码。此外，建立一个ARM platform consolidation tree。ARM sub architecture team负责review各个sub architecture维护者提交的代码，并在ARM platform consolidation tree上维护。在下一个merge window到来的时候，将patch发送给Linus。
+</p>
+<p>
+ 针对重复的代码问题，如果不同的SOC使用了相同的IP block（例如I2C controller），那么这个driver的code要从各个arch/arm/mach-xxx中独立出来，变成一个通用的模块供各个SOC specific的模块使用。移动到哪个目录呢？对于I2C或者USB OTG而言，这些HW block的驱动当然应该移动到kernel/drivers目录。因为，对于这些外设，可能是in-chip，也可能是off-chip的，但是对于软件而言，它们是没有差别的（或者说好的软件抽象应该掩盖底层硬件的不同）。对于那些system level的code呢？例如clock control、interrupt control。其实这些也不是ARM-specific，应该属于linux kernel的核心代码，应该放到linux/kernel目录下，属于core-Linux-kernel frameworks。当然对于ARM平台，也需要保存一些和framework交互的code，这些code叫做ARM SoC core architecture code。OK，总结一下：
+</p>
+<p>
+ 1、ARM的核心代码仍然保存在arch/arm目录下
+</p>
+<p>
+ 2、ARM SoC core architecture code保存在arch/arm目录下
+</p>
+<p>
+ 3、ARM SOC的周边外设模块的驱动保存在drivers目录下
+</p>
+<p>
+ 4、ARM SOC的特定代码在arch/arm/mach-xxx目录下
+</p>
+<p>
+ 5、ARM SOC board specific的代码被移除，由Device Tree机制来负责传递硬件拓扑和硬件资源信息。
+</p>
+<p>
+ OK，终于来到了Device Tree了。本质上，Device Tree改变了原来用hardcode方式将HW 配置信息嵌入到内核代码的方法，改用bootloader传递一个DB的形式。对于基于ARM CPU的嵌入式系统，我们习惯于针对每一个platform进行内核的编译。但是随着ARM在消费类电子上的广泛应用（甚至桌面系统、服务器系统），我们期望ARM能够象X86那样用一个kernel image来支持多个platform。在这种情况下，如果我们认为kernel是一个black box，那么其输入参数应该包括：
+</p>
+<p>
+ 1、识别platform的信息
+</p>
+<p>
+ 2、runtime的配置参数
+</p>
+<p>
+ 3、设备的拓扑结构以及特性
+</p>
+<p>
+ 对于嵌入式系统，在系统启动阶段，bootloader会加载内核并将控制权转交给内核，此外，还需要把上述的三个参数信息传递给kernel，以便kernel可以有较大的灵活性。在linux kernel中，Device Tree的设计目标就是如此。
+</p>
+<p>
+ <br>
+</p>
+<p>
+ <em><span style=color:#808080>原创文章，转发请注明出处。蜗窝科技</span></em>，<a href=http://www.wowotech.net/linux_kenrel/why-dt.html target=_blank>www.wowotech.net</a>。
+</p>	<p class=tag>标签: <a href=http://www.wowotech.net/tag/Device>Device</a>	<a href=http://www.wowotech.net/tag/tree>tree</a></p>
+ <a href=http://www.wowotech.net/support_us.html style=display:block;text-align:center>
+ <img src="data:image/png;base64,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" align=middle width=86 height=40>
+ </a>
+ <div class=nextlog> « <a href=http://www.wowotech.net/bluetooth/bt_overview.html>蓝牙协议分析(1)_基本概念</a>
+ |
+ <a href=http://www.wowotech.net/pm_subsystem/reboot.html>Linux电源管理(3)_Generic PM之Reboot过程</a>»
+ </div>
+ <a name=comments></a>
+ <p class=comment-header><b>评论：</b></p>
+ <div class=comment id=comment-8686>
+ <a name=8686></a>
+ <div class=comment-info>
+ <b>DyalnW </b><br><span class=comment-time>2022-10-12 14:06</span>
+ <div class=comment-content>正在学习device tree，感谢大佬的文章</div>
+ <div class=comment-reply><a href=#comment-8686>回复</a></div>
+ </div>
+ </div>
+ <div class=comment id=comment-8235>
+ <a name=8235></a>
+ <div class=comment-info>
+ <b>wolf2blood </b><br><span class=comment-time>2021-05-08 17:05</span>
+ <div class=comment-content>想请教蜗窝一个问题:我现在对海思HI3536进行内核升级，从3.10升级到4.9.88，uboot是2010版本的，我拿的海思最新的补丁是HI3559的linux-4.9.37.patch，里面有关于HI3536的配置文件！我编译成功生成uImage，加载的时候卡在了Uncompressing Linux... done, booting the kernel，我追踪内核代码发现是在init/main的函数setup_arch--&gt;paging_init--&gt;devicemaps_init--&gt;local_tlb_flush_all这里卡住了，清除TLB页表缓存不动作！这个uboot本来是传递机器码的，我现在按照网上那种方式传递dtb还是不行，是不是uboot不支持传递设备树所以配置了也没有用啊！我的配置是这样的bootcmd=ping 192.168.1.19; ping 192.168.1.19;tftp 0x42000000 uImage;tftp 0x45500000 hi3536dv100.dtb;bootm 0x42000000 - 0x45500000，内核大小为3.1M，我折腾了一个半月依然卡在这里，跪求蜗窝能给一些建议！</div>
+ <div class=comment-reply><a href=#comment-8235>回复</a></div>
+ </div>
+ <div class="comment comment-children" id=comment-8254>
+ <a name=8254></a>
+ <div class=comment-info>
+ <b>kein </b><br><span class=comment-time>2021-07-19 13:30</span>
+ <div class=comment-content>@wolf2blood：老哥，问题有没有解决了，是什么原因？</div>
+ <div class=comment-reply><a href=#comment-8254>回复</a></div> </div>
+ </div>
+ <div class="comment comment-children" id=comment-8605>
+ <a name=8605></a>
+ <div class=comment-info>
+ <b>Gonglja </b><br><span class=comment-time>2022-04-28 20:32</span>
+ <div class=comment-content>@wolf2blood：uboot中 添加对扁平化设备树的支持，CONFIG_OF_LIBFDT，然后机器码传递0xffffffff即可。</div>
+ <div class=comment-reply><a href=#comment-8605>回复</a></div> </div>
+ </div>
+ </div>
+ <div class=comment id=comment-7204>
+ <a name=7204></a>
+ <div class=comment-info>
+ <b>Jack </b><br><span class=comment-time>2019-02-25 16:06</span>
+ <div class=comment-content>請教蝸窩兩幾個問題：
+<br>1. 目前再研究如何將新的Kernel 移植到前人所交接的版子，原先是可以動作。(版本為Kernel 4.15左右)
+<br>但我去下載kernel 4.19版本來編譯後，根據其他網站及論壇所講解的方式及步驟，有成功將zImage所編譯出來。
+<br>放入燒錄後，但始終卡住在Starting kernel位置，不知蝸窩是否有什麼方向或是建議可提供。謝謝蝸窩。
+<br>2. 而我編譯的步驟為
+<br>&nbsp;&nbsp; a. 下載源碼
+<br>&nbsp;&nbsp; b. 設定環境變數export ARCH=arm;export CROSS_COMPILE=arm-linux-gnueabihf-;
+<br>&nbsp;&nbsp; c. 開始編譯 make menuconfig;make;之後就會出現zImage
+<br>不知蝸窩有沒有什麼方向可以提供。謝謝。</div>
+ <div class=comment-reply><a href=#comment-7204>回复</a></div>
+ </div>
+ <div class="comment comment-children" id=comment-7528>
+ <a name=7528></a>
+ <div class=comment-info>
+ <b>Downey </b><br><span class=comment-time>2019-07-11 16:39</span>
+ <div class=comment-content>@Jack：可能是image地址的问题</div>
+ <div class=comment-reply><a href=#comment-7528>回复</a></div> </div>
+ </div>
+ </div>
+ <div class=comment id=comment-6667>
+ <a name=6667></a>
+ <div class=comment-info>
+ <b>bigbigtree </b><br><span class=comment-time>2018-04-16 07:34</span>
+ <div class=comment-content>wowo大哥，您好！请问一下您上面讲的移植内核“调通了system level的driver（timer，中断处理，clock等）以及串口terminal之后，linux kernel基本是可以起来了”，这个是怎么做的呢？有没有一些文章介绍呢？就是让linux最小系统跑起来，可以进入终端，谢谢您</div>
+ <div class=comment-reply><a href=#comment-6667>回复</a></div>
+ </div>
+ <div class="comment comment-children" id=comment-6669>
+ <a name=6669></a>
+ <div class=comment-info>
+ <b><a href=http://www.wowotech.net/ target=_blank>wowo</a> </b><br><span class=comment-time>2018-04-16 08:47</span>
+ <div class=comment-content>@bigbigtree：你可以看看这个专题（不知道能否帮到你）：
+<br>http://www.wowotech.net/sort/x_project</div>
+ <div class=comment-reply><a href=#comment-6669>回复</a></div> </div>
+ </div>
+ </div>
+ <div class=comment id=comment-6567>
+ <a name=6567></a>
+ <div class=comment-info>
+ <b>wason </b><br><span class=comment-time>2018-02-27 10:48</span>
+ <div class=comment-content>你好，看了你的文章，感到非常惊讶，请问你是如何对linux设备树的历史背景了解得那么清楚呢？</div>
+ <div class=comment-reply><a href=#comment-6567>回复</a></div>
+ </div>
+ </div>
+ <div class=comment id=comment-6428>
+ <a name=6428></a>
+ <div class=comment-info>
+ <b>black </b><br><span class=comment-time>2017-12-28 14:04</span>
+ <div class=comment-content>逻辑上flat device tree实现了adv cfg &amp; pwr management(acpi)中的cfg部分，但是power management部分怎么办？</div>
+ <div class=comment-reply><a href=#comment-6428>回复</a></div>
+ </div>
+ </div>
+ <div class=comment id=comment-6406>
+ <a name=6406></a>
+ <div class=comment-info>
+ <b>风露 </b><br><span class=comment-time>2017-12-21 23:05</span>
+ <div class=comment-content>请教蜗窝两个问题：
+<br>1、对于platform匹配，我的理解是这样的：
+<br>过去采用的方式是，Linux静态定义板级信息，通过bootloader传递的machine type ID 进行静态匹配，匹配上之后得到相关硬件资源和定义的初始化接口。
+<br>dt采用的方式是，Linux同样定义一些静态信息（DT_MACHINE_START和MACHINE_END），然后根据dts根目录中的“compatible”来进行匹配。
+<br>这样理解对吗？如果是这样，在platform匹配上面，这两种方式好像换汤不换药啊。
+<br>2、对于硬件信息的初始化。我的理解是这样的：
+<br>过去的方式是：通过静态配置的方式，把各种控制器相关的信息（如寄存器）写死，内核中配置上要使用的驱动，并给驱动传入这些寄存器等参数，完成硬件的初始化。
+<br>dt的方式是，片上的硬件信息都写到dts中，内核配置上可能用到的驱动（会产生冗余？），然后Linux启动时会解析dtb，根据node来进行硬件设备的注册。这种理解对吗？另外，这是否就是dt引入的根本原因？</div>
+ <div class=comment-reply><a href=#comment-6406>回复</a></div>
+ </div>
+ <div class="comment comment-children" id=comment-6408>
+ <a name=6408></a>
+ <div class=comment-info>
+ <b><a href=http://www.wowotech.net/ target=_blank>linuxer</a> </b><br><span class=comment-time>2017-12-22 16:36</span>
+ <div class=comment-content>@风露：基本上我是认同你的看法的。
+<br>DTS之前，bootloader可以通过tag list传递参数，以便实现内核的动态配置，但是，这时候设备往往是通过静态定义的xxx_device hardcode在代码中，DTS主要解决这个问题，顺便接管了原理tag list的功能，使之统一在dts的框架中。</div>
+ <div class=comment-reply><a href=#comment-6408>回复</a></div> </div>
+ <div class="comment comment-children" id=comment-6410>
+ <a name=6410></a>
+ <div class=comment-info>
+ <b>风露 </b><br><span class=comment-time>2017-12-22 17:35</span>
+ <div class=comment-content>@linuxer：关于tag list，bootargs可以通过在 chosen node中指定，但对于一些自定义tag在哪里进行传递</div>
+ <div class=comment-reply><a href=#comment-6410>回复</a></div> </div>
+ </div>
+ </div>
+ </div>
+ <div class=comment id=comment-6146>
+ <a name=6146></a>
+ <div class=comment-info>
+ <b>Isara </b><br><span class=comment-time>2017-10-27 10:59</span>
+ <div class=comment-content>字里行间体现出的风采，和背后沉淀的底蕴，这都是装不出来的</div>
+ <div class=comment-reply><a href=#comment-6146>回复</a></div>
+ </div>
+ </div>
+ <div class=comment id=comment-5817>
+ <a name=5817></a>
+ <div class=comment-info>
+ <b>zin </b><br><span class=comment-time>2017-07-17 18:29</span>
+ <div class=comment-content>写的真好，学习了</div>
+ <div class=comment-reply><a href=#comment-5817>回复</a></div>
+ </div>
+ </div>
+ <div class=comment id=comment-5211>
+ <a name=5211></a>
+ <div class=comment-info>
+ <b>光阴的事故 </b><br><span class=comment-time>2017-02-08 10:21</span>
+ <div class=comment-content>感谢，我是新手，有空就过来学习哈</div>
+ <div class=comment-reply><a href=#comment-5211>回复</a></div>
+ </div>
+ </div>
+ <div id=pagenavi>
+ <span>1</span> <a href=http://www.wowotech.net/device_model/why-dt.html/comment-page-2#comments>2</a> <a href=http://www.wowotech.net/device_model/why-dt.html/comment-page-3#comments>3</a> </div>
+ <div id=comment-place>
+ <div class=comment-post id=comment-post>
+ <div class=cancel-reply id=cancel-reply style=display:none></div>
+ <p class=comment-header><b>发表评论：</b><a name=respond></a></p>
+ <form method=post name=commentform action="http://www.wowotech.net/index.php?action=addcom" id=commentform>
+ 
+ <p>
+ <input type=text name=comname maxlength=49 value size=22 tabindex=1>
+ <label for=author><small>昵称</small></label>
+ </p>
+ <p>
+ <input type=text name=commail maxlength=128 value size=22 tabindex=2>
+ <label for=email><small>邮件地址 (选填)</small></label>
+ </p>
+ <p>
+ <input type=text name=comurl maxlength=128 value size=22 tabindex=3>
+ <label for=url><small>个人主页 (选填)</small></label>
+ </p>
+ <p><textarea name=comment id=comment rows=10 tabindex=4 value></textarea></p>
+ <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAAAWBAMAAACPjvdAAAAAFVBMVEX///8/FeiTROZyU+SaVyuzJe8vVYGveqboAAAA0UlEQVQoka2SOw7DIBBEB39Sb5RPbXECS1wgBQdIQ+80e/8jhGXXjlFsK0VG/gHPwywAfESEHbnDzs3RPSNavnbt66ab/yC7sWr/X5uuVDdywHTAdzF28k6lXgZYS7K62hCAiO5qTBZPJ64sAloS5qGMUJylg75ceeZ2nBmX+rMwp4k1kzEhhFHylGVMZbLM3NWnGZoBYlJ8VLeZ4YohqI/m6Z/5+SKwrYD3JfNFfeKSWWu30N7Kd+JDyojRipGpNsUOfLTdtHiv+r7OpcPvh+YNXTkaGQgMLOUAAAAASUVORK5CYII=" align=absmiddle><input name=imgcode type=text class=input size=5 tabindex=5 value> <input type=submit id=comment_submit value=发表评论 tabindex=6></p>
+ 
+ </form>
+ </div>
+ </div>
+ <div style=clear:both></div>
+</div>
+<ul id=sidebar>
+ <li>
+ <h3><span>站内搜索</span></h3>
+ <ul>
+ 
+<form name=search_form1 target=_blank>
+<input name=word size=30 value=请输入关键字>
+<input type=submit value=百度搜索><br>
+<input checked name=myselect type=radio value=0>
+<font color=#ff0000 style=FONT-SIZE:12px>蜗窝站内</font> 
+<input name=myselect type=radio value=1>
+<font color=#0000cc style=FONT-SIZE:12px>互联网</font> 
+</form>	</ul>
+ </li>
+ <li>
+ <h3><span>功能</span></h3>
+ <ul>
+ <a href=http://www.wowotech.net/message_board.html>留言板<br></a>
+<a href="http://www.wowotech.net/?plugin=commentlist">评论列表<br></a>
+<a href=http://www.wowotech.net/support_list>支持者列表<br></a>	</ul>
+ </li>
+ <li>
+ <h3><span>最新评论</span></h3>
+ <ul id=newcomment>
+ <li id=comment>SuiTang <br><a href=http://www.wowotech.net/bluetooth/ble_stack_overview.html#8939>请教下大神，蓝牙Beacon的Local Name可以重复吗...</a></li>
+ <li id=comment>huozi <br><a href=http://www.wowotech.net/kernel_synchronization/atomic.html#8938>@testtest：下面 nothing 的提问中应该回答了...</a></li>
+ <li id=comment>huozi <br><a href=http://www.wowotech.net/kernel_synchronization/atomic.html/comment-page-2#8937>@passenger：是的，在ldrex后是会被打断，但返回...</a></li>
+ <li id=comment>hdzhang <br><a href=http://www.wowotech.net/irq_subsystem/cmwq-intro.html#8936>CMWQ机制引入后我发现会有个问题，创建UNBOUND类型的...</a></li>
+ <li id=comment>北葵依旧菜 <br><a href=http://www.wowotech.net/about.html#8934>感谢博主，博主多年前的文章在今天依旧熠熠生辉，解答了很多疑惑</a></li>
+ <li id=comment>jqdeng <br><a href=http://www.wowotech.net/process_management/448.html#8933>@新手：curr的确是从rb tree拿下来了，但是on_r...</a></li>
+ </ul>
+ </li>
+ <li>
+ <h3><span>文章分类</span></h3>
+ <ul id=blogsort>
+ <li>
+ <a href=http://www.wowotech.net/sort/linux_kenrel>Linux内核分析(25)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=4"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ <ul>
+ <li>
+ <a href=http://www.wowotech.net/sort/device_model>统一设备模型(15)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=12"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/pm_subsystem>电源管理子系统(43)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=13"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/irq_subsystem>中断子系统(15)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=14"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/process_management>进程管理(31)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=15"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/kernel_synchronization>内核同步机制(26)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=16"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/gpio_subsystem>GPIO子系统(5)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=17"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/timer_subsystem>时间子系统(14)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=18"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/comm>通信类协议(7)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=20"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/memory_management>内存管理(31)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=21"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/graphic_subsystem>图形子系统(2)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=23"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/filesystem>文件系统(5)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=26"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/tty_framework>TTY子系统(6)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=27"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ </ul>
+ <li>
+ <a href=http://www.wowotech.net/sort/u-boot>u-boot分析(3)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=25"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ <li>
+ <a href=http://www.wowotech.net/sort/linux_application>Linux应用技巧(13)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=3"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ <li>
+ <a href=http://www.wowotech.net/sort/soft>软件开发(6)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=1"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ <li>
+ <a href=http://www.wowotech.net/sort/basic_tech>基础技术(13)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=6"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ <ul>
+ <li>
+ <a href=http://www.wowotech.net/sort/bluetooth>蓝牙(16)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=10"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/armv8a_arch>ARMv8A Arch(15)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=19"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/display>显示(3)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=22"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ <li>
+ <a href=http://www.wowotech.net/sort/usb>USB(1)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=28"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ </ul>
+ <li>
+ <a href=http://www.wowotech.net/sort/basic_subject>基础学科(10)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=7"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ <li>
+ <a href=http://www.wowotech.net/sort/tech_discuss>技术漫谈(12)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=8"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ <li>
+ <a href=http://www.wowotech.net/sort/project>项目专区(0)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=9"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ <ul>
+ <li>
+ <a href=http://www.wowotech.net/sort/x_project>X Project(28)</a>
+ <a href="http://www.wowotech.net/rss.php?sort=24"><img src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"><rect fill-opacity="0"/></svg>' alt=订阅该分类 style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-6)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"></a>
+ </li>
+ </ul>
+ </ul>
+ </li>
+ <li>
+ <h3><span>随机文章</span></h3>
+ <ul id=randlog>
+ <li><a href=http://www.wowotech.net/timer_subsystem/time_subsystem_index.html>Linux时间子系统系列文章之目录</a></li>
+ <li><a href=http://www.wowotech.net/basic_tech/sdram-internals.html>SDRAM Internals</a></li>
+ <li><a href=http://www.wowotech.net/tty_framework/system_console_driver.html>Linux TTY framework(5)_System console driver</a></li>
+ <li><a href=http://www.wowotech.net/116.html>kobject在字符设备中的使用</a></li>
+ <li><a href=http://www.wowotech.net/pm_subsystem/generic_pm_architecture.html>Linux电源管理(2)_Generic PM之基本概念和软件架构</a></li>
+ </ul>
+ </li>
+ <li>
+ <h3><span>文章存档</span></h3>
+ <ul id=record>
+ <li><a href=http://www.wowotech.net/record/202402>2024年2月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202305>2023年5月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202210>2022年10月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202208>2022年8月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202206>2022年6月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202205>2022年5月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202204>2022年4月(2)</a></li>
+ <li><a href=http://www.wowotech.net/record/202202>2022年2月(2)</a></li>
+ <li><a href=http://www.wowotech.net/record/202112>2021年12月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202111>2021年11月(5)</a></li>
+ <li><a href=http://www.wowotech.net/record/202107>2021年7月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202106>2021年6月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/202105>2021年5月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/202003>2020年3月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/202002>2020年2月(2)</a></li>
+ <li><a href=http://www.wowotech.net/record/202001>2020年1月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/201912>2019年12月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/201905>2019年5月(4)</a></li>
+ <li><a href=http://www.wowotech.net/record/201903>2019年3月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/201901>2019年1月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/201812>2018年12月(2)</a></li>
+ <li><a href=http://www.wowotech.net/record/201811>2018年11月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/201810>2018年10月(2)</a></li>
+ <li><a href=http://www.wowotech.net/record/201808>2018年8月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/201806>2018年6月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/201805>2018年5月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/201804>2018年4月(7)</a></li>
+ <li><a href=http://www.wowotech.net/record/201802>2018年2月(4)</a></li>
+ <li><a href=http://www.wowotech.net/record/201801>2018年1月(5)</a></li>
+ <li><a href=http://www.wowotech.net/record/201712>2017年12月(2)</a></li>
+ <li><a href=http://www.wowotech.net/record/201711>2017年11月(2)</a></li>
+ <li><a href=http://www.wowotech.net/record/201710>2017年10月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/201709>2017年9月(5)</a></li>
+ <li><a href=http://www.wowotech.net/record/201708>2017年8月(4)</a></li>
+ <li><a href=http://www.wowotech.net/record/201707>2017年7月(4)</a></li>
+ <li><a href=http://www.wowotech.net/record/201706>2017年6月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/201705>2017年5月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/201704>2017年4月(1)</a></li>
+ <li><a href=http://www.wowotech.net/record/201703>2017年3月(8)</a></li>
+ <li><a href=http://www.wowotech.net/record/201702>2017年2月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201701>2017年1月(5)</a></li>
+ <li><a href=http://www.wowotech.net/record/201612>2016年12月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201611>2016年11月(11)</a></li>
+ <li><a href=http://www.wowotech.net/record/201610>2016年10月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201609>2016年9月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201608>2016年8月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201607>2016年7月(5)</a></li>
+ <li><a href=http://www.wowotech.net/record/201606>2016年6月(8)</a></li>
+ <li><a href=http://www.wowotech.net/record/201605>2016年5月(8)</a></li>
+ <li><a href=http://www.wowotech.net/record/201604>2016年4月(7)</a></li>
+ <li><a href=http://www.wowotech.net/record/201603>2016年3月(5)</a></li>
+ <li><a href=http://www.wowotech.net/record/201602>2016年2月(5)</a></li>
+ <li><a href=http://www.wowotech.net/record/201601>2016年1月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201512>2015年12月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201511>2015年11月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201510>2015年10月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201509>2015年9月(4)</a></li>
+ <li><a href=http://www.wowotech.net/record/201508>2015年8月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/201507>2015年7月(7)</a></li>
+ <li><a href=http://www.wowotech.net/record/201506>2015年6月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/201505>2015年5月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201504>2015年4月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201503>2015年3月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201502>2015年2月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201501>2015年1月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201412>2014年12月(17)</a></li>
+ <li><a href=http://www.wowotech.net/record/201411>2014年11月(8)</a></li>
+ <li><a href=http://www.wowotech.net/record/201410>2014年10月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201409>2014年9月(7)</a></li>
+ <li><a href=http://www.wowotech.net/record/201408>2014年8月(12)</a></li>
+ <li><a href=http://www.wowotech.net/record/201407>2014年7月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201406>2014年6月(6)</a></li>
+ <li><a href=http://www.wowotech.net/record/201405>2014年5月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201404>2014年4月(9)</a></li>
+ <li><a href=http://www.wowotech.net/record/201403>2014年3月(7)</a></li>
+ <li><a href=http://www.wowotech.net/record/201402>2014年2月(3)</a></li>
+ <li><a href=http://www.wowotech.net/record/201401>2014年1月(4)</a></li>
+ </ul>
+ </li>
+<div class=rss>
+<a href=http://www.wowotech.net/rss.php title=RSS订阅><img src="data:image/gif;base64,R0lGODlhGAAYAPf/AP99Jf+xOv2jZPzZxP+WPeNMAP+tQuZnIP+5O/+MAP+ZJP/qwv90ANVYIP+WOf+hQv/Yu/+VK/qJPvqNRf+QO/qaK/9pAP/CPf7Ttf+mAP6jHe5ZAP++O/+RAPzcy+18Pei1o/7Wuv+TPP3ClOlVANRFAP+cQv+GMf+7Mv+pQvmHPv+WI/+/VP9uAP+iP//37vteAP/r1N1zQ/3k1f6JO/liAP7x5//x4/6mW/96AP7Db//dt/+WANVlNf/Cgv+FI/+aAP+wQvqJGv/58dtdIP++PP+JAPO0kv+eAP+6Pv7///+2AP+TMf73+f/Wqf6DNP+CKv5kAP+BAP/Jlf+NPP+0O/+zP/6NI/ZeAP+mP+J0PtxKAP6NKv+3O/74+/+dMfFZAP+PP/+iAP93Ef+GAOFhIPJdAP+tPP+rAPaEP/GAPv9+AP+tP/+0K/+nUP+xAP+TQedTAOZ5Pv/8+f+wP//46t6Ud/79//mdT/3v7P6/j/+/fv+pOv+wO/nf0f6WDvjCqP6IFehOAO1oIf+vAP/nuf+ePP/16f+dS/+xPP+aPPelc/6zbPmZT/vOtP6MP/+eGv/Rjf6sM9BeMv+vP/zJoeVtLPOTYPzFmfuKCPmrX/y6kfm+nv++Zv/Pmv7UnPrCp/+PMOF2Qv+zDvurO8s9AP+rQP+LI//bo//25PNtIv9pBv/DMv+sI//IO/64S/+HEMlMGf+CHvuUEv+YF//KjM1WJ+Shh/+XMP+zVv9uCP/iwONdFP+lMtFLEf+lOPpzHvvg2fyiEPqANeuZcNx6UP+4cP6kSf+TN/26WP+VNPmna/dZAP+7Hv339//z6v+1QPiEO//u3f+RI/+RJvKAO/SBPPzp5v3s4f/v5Oh5Pv54Dut9P/qIOfiIJP/23/+rBfubO+VxM/+ZOv+dOv/YsvvKpO14Nf7Np/2ucPmwbf+2bPBlFv94FfnGsPuVOv/+/PvX0PXg2ffl3/mYGv749/6cHf+hMv2iNvqVVf+kNv2GOf+YNuVlIP///////yH5BAEAAP8ALAAAAAAYABgAAAj/AP8JfDYCh4kHWVKkMGAgiEOGuWrdEEgRA4VQih64yGKKDR0rIEHSOdNLn5OKUESYIPflHp8zfarI7NJFZiJKbBSctLGPAgF+75YJwBcgQBUESJHW7HPG1Bdpm57AceDA0R0vmCR1Qcqha5EkSaDRCfLLRz4qIpgw8sd2yKs2XS/ILYKiTSsNkGi5kBAm7Tq2/uok00QKhStWzUaBy4AESIcEK1T0VebmBdsFOrx4UCdsyRJCaDKIAcKjgwK+IhwYisEW1Se2TTjRe/Mm9OjSCiSLIIBrB9tILAoBjlchQ+jGPCBL9hlhClsdQjKx+MY2WAUxYpCUhpzmEXNjgbMM/wDlDdICtgNmIe9gZIUaCWiZuJmz65gSf9ca/Tnvb0SC7WRMo4YKVFCAzDg3ePKAZf44g4c9qfjTRDgJJECGFFd8kAYNaHFRjg85ROCbP3kI0QlblUhhhBRrnKKNGtHQAMcYE0jAgBSwjGhOIKzZcMUaa+TwgxbcVKMCFMMA4k43OeRAzSH+1MPFHmzhwEAODPwggxwfWANMCGx5sA2WzimRDgHw+KNHCwy0AEAxWshxDjszsHVDO20iwhY6sgzhDwYtWGDBE7f0IIolBVyCTTYCRBHoCTbMAcEYMcwRwipR1LDIPJPIQMQWBQyiChZRCKoLFCcAYAEATwBQgxl0/kgDgi2+lACqIBuYgUUNNcDga6/MgLEBCUdQBEIspZRgawFxkLDBs8I+S0IcvBRL0T/y2NFDAw0QUUYZ/Rwg7gH99CMOMX5QFBAAOw==" alt=订阅Rss></a>
+</div>
+</ul>
+</div>
+<div style=clear:both></div>
+<div id=footerbar>
+ Copyright @ 2013-2015 <a href=http://www.wowotech.net/ title=wowotech>蜗窝科技</a> All rights reserved.
+ Powered by <a href=http://www.emlog.net/ title=采用emlog系统>emlog</a>
+ <a href=http://www.miibeian.gov.cn/ target=_blank></a> </div>
+</div>
+<div style=all:initial><div style=all:initial id=__hcfy__><template shadowrootmode=open><style class=sf-hidden>#root{-webkit-text-size-adjust:100%;box-sizing:border-box;font-size:14px;font-weight:400;letter-spacing:0;line-height:1.28581;text-transform:none;color:#182026;font-family:-apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Open Sans","Helvetica Neue","Icons16",sans-serif;touch-action:manipulation}#root>.bp5-portal{z-index:9999999999}</style><style class=sf-hidden>#translate-panel{background-color:#f6f7f9;display:flex;flex-direction:column;padding-bottom:8px}.bp5-dark #translate-panel{background-color:#252a31}#translate-panel .fixed{flex-shrink:0;margin-bottom:10px}#translate-panel .body{flex-grow:1;overflow:auto;overscroll-behavior:contain}#translate-panel .body::-webkit-scrollbar{width:8px;background-color:rgba(0,0,0,0);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar:hover{background-color:rgba(0,0,0,.09)}#translate-panel .body::-webkit-scrollbar-thumb:vertical{background:rgba(0,0,0,.5);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar-thumb:vertical:active{background:rgba(0,0,0,.61);-webkit-border-radius:100px}#translate-panel.size-small,#translate-panel.size-small h6.bp5-heading,#translate-panel.size-small .bp5-control.bp5-large,#translate-panel.size-small textarea.bp5-input.bp5-small{font-size:14px}#translate-panel.size-small .phonetic-item,#translate-panel.size-small .quick-settings a{font-size:12px}#translate-panel.size-middle,#translate-panel.size-middle h6.bp5-heading,#translate-panel.size-middle .bp5-control.bp5-large,#translate-panel.size-middle textarea.bp5-input{font-size:18px}#translate-panel.size-middle .phonetic-item,#translate-panel.size-middle .quick-settings a{font-size:14px}#translate-panel.size-large,#translate-panel.size-large h6.bp5-heading,#translate-panel.size-large .bp5-control.bp5-large,#translate-panel.size-large textarea.bp5-input.bp5-large{font-size:22px}#translate-panel.size-large .source,#translate-panel.size-large .phonetic-item,#translate-panel.size-large .quick-settings a{font-size:18px}#translate-panel .bp5-button.bp5-small,#translate-panel .bp5-small .bp5-button{min-height:20px;min-width:20px}#translate-panel .header{display:flex;align-items:center;padding:4px 6px 4px 10px;border-bottom:1px solid #d1d1d1}.bp5-dark #translate-panel .header{border-bottom-color:rgba(17,20,24,.4)}#translate-panel .header .drag-block{min-width:5px;flex-shrink:0;flex-grow:1;align-self:stretch}#translate-panel .header .left{flex-shrink:0;display:flex}#translate-panel .header .right{flex-shrink:0;display:flex;align-items:center}#translate-panel .header .right .bp5-icon-arrow-right{flex-shrink:0;margin:0 5px}#translate-panel .header .right>.bp5-button{flex-shrink:0;margin:0 1px}#translate-panel .header .right>.bp5-button:last-child{margin-right:0}#translate-panel .quick-settings{padding:4px 9px;margin:0 1px}#translate-panel .quick-settings>div{margin-bottom:5px}#translate-panel .quick-settings .bp5-control{margin-bottom:0}#translate-panel .query-text{position:relative;padding:10px 10px 2px 10px}#translate-panel .query-text textarea.bp5-input{min-height:44px;font-family:system-ui,-apple-system,"Segoe UI","Roboto","Ubuntu","Cantarell","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";overscroll-behavior:contain}#translate-panel .query-text .translate-btn{position:absolute;opacity:.6}#translate-panel .query-text .translate-btn:hover{opacity:1}#translate-panel .body{padding:0 10px}#translate-panel .body .bp5-card:first-child{margin-top:1px}#translate-panel .body .bp5-card:last-child{margin-bottom:1px}#translate-panel .body .no-api{margin:20px 0}.result-block{margin:8px 0;padding:2px 5px}.result-block .bp5-button{visibility:hidden}.result-block .error .bp5-button,.result-block:hover .bp5-button{visibility:visible}.result-block .legend{display:flex;align-items:center;justify-content:space-between}.result-block .legend .legend-left{display:flex;align-items:center}.result-block .legend .api-ico,.result-block .legend .bp5-heading{flex-shrink:0;white-space:nowrap}.result-block .legend .api-ico{display:inline-block;width:14px;height:14px;background-size:contain;margin-right:3px}.result-block .legend .bp5-heading{margin-bottom:0;margin-right:10px}.result-block .legend .source{cursor:pointer;font-size:12px;display:inline-flex;align-items:center}.result-block .legend .source .source-text{overflow:hidden}.result-block .legend .source .bp5-icon{position:relative;top:-1px;margin-left:1px}.result-block .phonetic{display:flex;flex-wrap:wrap}.result-block .phonetic .phonetic-item{display:flex;align-items:center;font-size:12px}.result-block .phonetic .phonetic-item:not(:last-child){margin-right:12px}.result-block .common-result p{line-height:1.3;margin:2px 0;overflow-wrap:break-word}.result-block .common-result .dict a{text-decoration:underline}.result-block .error{font-size:12px;padding:5px 10px}.result-block .dict-pos{margin-right:5px}.external-translators{margin-bottom:3px;padding:0;display:flex;flex-wrap:wrap}.external-translators>div{margin:0 5px 5px 0}.quick-links a{margin:0 5px 5px 0}#popper-container{width:250px;max-width:100%;position:absolute;left:0;top:0;z-index:9999999998;touch-action:none;transition:opacity .2s;background-color:#f6f7f9}.bp5-dark #popper-container{background-color:#252a31}#popper-container.show{opacity:1;pointer-events:auto;-moz-user-select:auto;user-select:auto}#popper-container,#popper-container[data-popper-reference-hidden=true]{opacity:0;pointer-events:none;-moz-user-select:none;user-select:none}#popper-container .drag-block{cursor:-webkit-grab;cursor:grab}#popper-container.pin{position:fixed}#popper-container.pin .arrow{display:none}#popper-container .arrow,#popper-container .arrow::before{position:absolute;width:8px;height:8px;z-index:-1}#popper-container .arrow::before{content:"";transform:rotate(45deg);background:#f6f7f9}.bp5-dark #popper-container .arrow::before{background-color:#252a31}#popper-container .arrow{display:none}#popper-container.show[data-popper-placement]:not([data-popper-reference-hidden=true]) .arrow{display:block}#popper-container[data-popper-placement^=top] .arrow{bottom:-5px}#popper-container[data-popper-placement^=top] .arrow::before{border-right:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#popper-container[data-popper-placement^=bottom] .arrow{top:-5px}#popper-container[data-popper-placement^=bottom] .arrow::before{border-left:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=left] .arrow{right:-5px}#popper-container[data-popper-placement^=left] .arrow::before{border-right:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=right] .arrow{left:-5px}#popper-container[data-popper-placement^=right] .arrow::before{border-left:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#translate-btn{display:none;position:absolute;z-index:9999999999;left:0;top:0}#translate-btn .bp5-button{padding:2px;min-width:0;min-height:0}#translate-btn .btn-icon{width:18px;height:18px;background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logo.png);background-size:contain}.bp5-dark #translate-btn .btn-icon{background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logowhite36.png)}#translate-btn.show{display:block}.translate-type-selector .bp5-label{display:inline}.translate-type-selector .bp5-radio{margin-bottom:0}#ocr-container{position:fixed;z-index:99999999999999;left:0;top:0;right:0;bottom:0}#ocr-container .toolbar{display:none;position:absolute;z-index:1}#ocr-container img{max-width:100%}#app{cursor:default}.switch-pin{flex-shrink:0;cursor:pointer}.switch-pin .bp5-icon-pin{transition:transform .2s,color .2s;transform:rotate(-45deg)}.pin .switch-pin .bp5-icon-pin{transform:rotate(-70deg)}.cut-btn{margin-left:2px}.app-toaster-container{position:fixed!important;z-index:9999999999!important}.app-toaster-container .bp5-toast{min-width:auto}#web-trs-panel .app-toaster-container{padding-right:0;padding-left:0}#web-trs-panel .page-trs-form-group{margin:0 0 0 0;align-items:center}#web-trs-panel .page-trs-form-group>label{width:70px}</style><div id=root dir=ltr><div id=app><div id=translate-btn class=sf-hidden></div><div id=popper-container style=width:290px;transform:translate(0px) class=bp5-elevation-4><div id=translate-panel class=size-small><div class=fixed><div class=header><div class=left><div class=switch-pin><button type=button class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-pin"><svg data-icon=pin height=14 role=img viewBox="0 0 16 16" width=14><path d="M9.41.92c-.51.51-.41 1.5.15 2.56L4.34 7.54C2.8 6.48 1.45 6.05.92 6.58l3.54 3.54-3.54 4.95 4.95-3.54 3.54 3.54c.53-.53.1-1.88-.96-3.42l4.06-5.22c1.06.56 2.04.66 2.55.15L9.41.92z" fill-rule=evenodd></path></svg></span></button></div><button type=button title=图片翻译 class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-media"><svg data-icon=media height=14 role=img viewBox="0 0 16 16" width=14><path d="M11.99 6.99c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3-5h-14c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-10c0-.55-.45-1-1-1zm-1 9l-5-3-1 2-3-4-3 5v-7h12v7z" fill-rule=evenodd></path></svg></span></button><button type=button title=语音翻译 class="bp5-button bp5-minimal bp5-small"><span class=bp5-icon><svg version=1.1 id=Capa_1 width=14 height=14 xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink x=0px y=0px viewBox="0 0 490.9 490.9" xml:space=preserve><g><g><path d="M245.5,322.9c53,0,96.2-43.2,96.2-96.2V96.2c0-53-43.2-96.2-96.2-96.2s-96.2,43.2-96.2,96.2v130.5 C149.3,279.8,192.5,322.9,245.5,322.9z M173.8,96.2c0-39.5,32.2-71.7,71.7-71.7s71.7,32.2,71.7,71.7v130.5 c0,39.5-32.2,71.7-71.7,71.7s-71.7-32.2-71.7-71.7V96.2z"></path><path d="M94.4,214.5c-6.8,0-12.3,5.5-12.3,12.3c0,85.9,66.7,156.6,151.1,162.8v76.7h-63.9c-6.8,0-12.3,5.5-12.3,12.3 s5.5,12.3,12.3,12.3h152.3c6.8,0,12.3-5.5,12.3-12.3s-5.5-12.3-12.3-12.3h-63.9v-76.7c84.4-6.3,151.1-76.9,151.1-162.8 c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3c0,76.6-62.3,138.9-138.9,138.9s-138.9-62.3-138.9-138.9 C106.6,220,101.2,214.5,94.4,214.5z"></path></g></g></svg></span></button></div><div class=drag-block title=按住不放可以拖动></div><div class=right><button type=button disabled title=添加到收藏夹 class="bp5-button bp5-disabled bp5-minimal bp5-small" tabindex=-1><span aria-hidden=true class="bp5-icon bp5-icon-star-empty"><svg data-icon=star-empty height=14 role=img viewBox="0 0 16 16" width=14><path d="M16 6.11l-5.53-.84L8 0 5.53 5.27 0 6.11l4 4.1L3.06 16 8 13.27 12.94 16 12 10.21l4-4.1zM4.91 13.2l.59-3.62L3 7.02l3.45-.53L8 3.2l1.55 3.29 3.45.53-2.5 2.56.59 3.62L8 11.49 4.91 13.2z" fill-rule=evenodd></path></svg></span></button><button type=button class="bp5-button bp5-minimal bp5-small settings" title=快捷设置><span aria-hidden=true class="bp5-icon bp5-icon-cog"><svg data-icon=cog height=14 role=img viewBox="0 0 16 16" width=14><path d="M15.19 6.39h-1.85c-.11-.37-.27-.71-.45-1.04l1.36-1.36c.31-.31.31-.82 0-1.13l-1.13-1.13a.803.803 0 00-1.13 0l-1.36 1.36c-.33-.17-.67-.33-1.04-.44V.79c0-.44-.36-.8-.8-.8h-1.6c-.44 0-.8.36-.8.8v1.86c-.39.12-.75.28-1.1.47l-1.3-1.3c-.3-.3-.79-.3-1.09 0L1.82 2.91c-.3.3-.3.79 0 1.09l1.3 1.3c-.2.34-.36.7-.48 1.09H.79c-.44 0-.8.36-.8.8v1.6c0 .44.36.8.8.8h1.85c.11.37.27.71.45 1.04l-1.36 1.36c-.31.31-.31.82 0 1.13l1.13 1.13c.31.31.82.31 1.13 0l1.36-1.36c.33.18.67.33 1.04.44v1.86c0 .44.36.8.8.8h1.6c.44 0 .8-.36.8-.8v-1.86c.39-.12.75-.28 1.1-.47l1.3 1.3c.3.3.79.3 1.09 0l1.09-1.09c.3-.3.3-.79 0-1.09l-1.3-1.3c.19-.35.36-.71.48-1.1h1.85c.44 0 .8-.36.8-.8v-1.6a.816.816 0 00-.81-.79zm-7.2 4.6c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill-rule=evenodd></path></svg></span></button><button type=button title=关闭(Esc) class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-cross"><svg data-icon=cross height=18 role=img viewBox="0 0 16 16" width=18><path d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z" fill-rule=evenodd></path></svg></span></button></div></div><div class=bp5-collapse><div class="bp5-collapse-body sf-hidden" aria-hidden=true></div></div></div><div class=body><p>请输入需要翻译的文本。</p></div></div><div class="arrow sf-hidden"></div></div><div id=web-trs-panel></div></div></div></template></div></div><script data-template-shadow-root>(()=>{document.currentScript.remove();processNode(document);function processNode(node){node.querySelectorAll("template[shadowrootmode]").forEach(element=>{let shadowRoot = element.parentElement.shadowRoot;if (!shadowRoot) {try {shadowRoot=element.parentElement.attachShadow({mode:element.getAttribute("shadowrootmode"),delegatesFocus:element.getAttribute("shadowrootdelegatesfocus")!=null,clonable:element.getAttribute("shadowrootclonable")!=null,serializable:element.getAttribute("shadowrootserializable")!=null});shadowRoot.innerHTML=element.innerHTML;element.remove()} catch (error) {} if (shadowRoot) {processNode(shadowRoot)}}})}})()</script>
