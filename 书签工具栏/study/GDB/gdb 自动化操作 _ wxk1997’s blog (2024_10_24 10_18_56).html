@@ -1,0 +1,190 @@
+<!DOCTYPE html> <html lang=en style><!--
+ Page saved with SingleFile 
+ url: https://pullp.github.io/2020/09/05/gdb-commands.html 
+ saved date: Thu Oct 24 2024 10:18:56 GMT+0800 (中国标准时间)
+--><meta charset=utf-8>
+<meta http-equiv=X-UA-Compatible content="IE=edge">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>gdb 自动化操作 | wxk1997’s blog</title>
+<meta name=generator content="Jekyll v3.9.0">
+<meta property=og:title content="gdb 自动化操作">
+<meta name=author content=wxk1997>
+<meta property=og:locale content=en_US>
+<meta name=description content="才发现gdb有commands这个东西, 学习记录一下">
+<meta property=og:description content="才发现gdb有commands这个东西, 学习记录一下">
+<link rel=canonical href=https://pullp.github.io/2020/09/05/gdb-commands.html>
+<meta property=og:url content=https://pullp.github.io/2020/09/05/gdb-commands.html>
+<meta property=og:site_name content="wxk1997’s blog">
+<meta property=og:type content=article>
+<meta property=article:published_time content=2020-09-05T00:00:00+00:00>
+<meta name=twitter:card content=summary>
+<meta property=twitter:title content="gdb 自动化操作">
+<script type=application/ld+json>{"description":"才发现gdb有commands这个东西, 学习记录一下","url":"https://pullp.github.io/2020/09/05/gdb-commands.html","headline":"gdb 自动化操作","@type":"BlogPosting","datePublished":"2020-09-05T00:00:00+00:00","dateModified":"2020-09-05T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://pullp.github.io/2020/09/05/gdb-commands.html"},"author":{"@type":"Person","name":"wxk1997"},"@context":"https://schema.org"}</script>
+<style>body,h1,h2,p,blockquote,pre,ol,ul{margin:0;padding:0}body{font:400 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";color:#111;background-color:#fdfdfd;-webkit-text-size-adjust:100%;-webkit-font-feature-settings:"kern"1;-moz-font-feature-settings:"kern"1;-o-font-feature-settings:"kern"1;font-feature-settings:"kern"1;font-kerning:normal;display:flex;min-height:100vh;flex-direction:column}h1,p,blockquote,pre,ul,ol,.highlight{margin-bottom:15px}main{display:block}ol{margin-left:30px}h1,h2{font-weight:400}a{color:#2a7ae2;text-decoration:none}a:visited{color:#1756a9}a:hover{color:#111;text-decoration:underline}.social-media-list a:hover{text-decoration:none}.social-media-list a:hover .username{text-decoration:underline}blockquote{color:#828282;border-left:4px solid #e8e8e8;padding-left:15px;font-size:18px;letter-spacing:-1px;font-style:italic}blockquote>:last-child{margin-bottom:0}pre,code{font-size:15px;border:1px solid #e8e8e8;border-radius:3px;background-color:#eef}code{padding:1px 5px}pre{padding:8px 12px;overflow-x:auto}pre>code{border:0;padding-right:0;padding-left:0}.wrapper{max-width:-webkit-calc(800px - (30px*2));max-width:calc(800px - (30px*2));margin-right:auto;margin-left:auto;padding-right:30px;padding-left:30px}@media screen and (max-width:800px){.wrapper{max-width:-webkit-calc(800px - (30px));max-width:calc(800px - (30px));padding-right:15px;padding-left:15px}}.wrapper:after,.footer-col-wrapper:after{content:"";display:table;clear:both}.svg-icon{width:16px;height:16px;display:inline-block;fill:#828282;padding-right:5px;vertical-align:text-top}.site-header{border-top:5px solid #424242;border-bottom:1px solid #e8e8e8;min-height:55.95px;position:relative}.site-title{font-size:26px;font-weight:300;line-height:54px;letter-spacing:-1px;margin-bottom:0;float:left}.site-title,.site-title:visited{color:#424242}.site-nav{float:right;line-height:54px}.site-nav .page-link{color:#111;line-height:1.5}.site-nav .page-link:not(:last-child){margin-right:20px}@media screen and (max-width:600px){.site-nav{position:absolute;top:9px;right:15px;background-color:#fdfdfd;border:1px solid #e8e8e8;border-radius:5px;text-align:right}.site-nav label[for="nav-trigger"]{display:block;float:right;width:36px;height:36px;z-index:2;cursor:pointer}.site-nav .menu-icon>svg{fill:#424242}.site-nav input~.trigger{clear:both;display:none}.site-nav input:checked~.trigger{display:block;padding-bottom:5px}.site-nav .page-link{display:block;padding:5px 10px;margin-left:20px}.site-nav .page-link:not(:last-child){margin-right:0}}.site-footer{border-top:1px solid #e8e8e8;padding:30px 0}.footer-heading{font-size:18px;margin-bottom:15px}.contact-list,.social-media-list{list-style:none;margin-left:0}.footer-col-wrapper{font-size:15px;color:#828282;margin-left:-15px}.footer-col{float:left;margin-bottom:15px;padding-left:15px}.footer-col-1{width:-webkit-calc(35% - (30px/2));width:calc(35% - (30px/2))}.footer-col-2{width:-webkit-calc(20% - (30px/2));width:calc(20% - (30px/2))}.footer-col-3{width:-webkit-calc(45% - (30px/2));width:calc(45% - (30px/2))}@media screen and (max-width:800px){.footer-col-1,.footer-col-2{width:-webkit-calc(50% - (30px/2));width:calc(50% - (30px/2))}.footer-col-3{width:-webkit-calc(100% - (30px/2));width:calc(100% - (30px/2))}}@media screen and (max-width:600px){.footer-col{float:none;width:-webkit-calc(100% - (30px/2));width:calc(100% - (30px/2))}}.page-content{padding:30px 0;flex:1}.post-meta{font-size:14px;color:#828282}.post-header{margin-bottom:30px}.post-title{font-size:42px;letter-spacing:-1px;line-height:1}@media screen and (max-width:800px){.post-title{font-size:36px}}.post-content{margin-bottom:30px}@media screen and (max-width:800px){}@media screen and (max-width:800px){}@media screen and (max-width:800px){}.highlighter-rouge .highlight{background:#eef}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .c1{color:#998;font-style:italic}.highlight .kt{color:#458;font-weight:bold}.highlight .s{color:#d14}.highlight .nb{color:#0086B3}.highlight .nf{color:#900;font-weight:bold}.highlight .nt{color:navy}.highlight .nv{color:teal}.highlight .ow{font-weight:bold}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .se{color:#d14}</style><link type=application/atom+xml rel=alternate href=https://pullp.github.io/feed.xml title="wxk1997's blog"><meta name=referrer content=no-referrer><style>.sf-hidden{display:none!important}</style><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"><style>img[src="data:,"],source[src="data:,"]{display:none!important}</style></head>
+<body><header class=site-header role=banner>
+ <div class=wrapper><a class=site-title rel=author href=https://pullp.github.io/>wxk1997's blog</a><nav class=site-nav>
+ <input type=checkbox id=nav-trigger class="nav-trigger sf-hidden" value=on>
+ <label for=nav-trigger>
+ <span class="menu-icon sf-hidden">
+ <svg viewBox="0 0 18 15" width=18px height=15px>
+ <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+ </svg>
+ </span>
+ </label>
+ <div class=trigger><a class=page-link href=https://pullp.github.io/about/>About</a><a class=page-link href=https://pullp.github.io/friends/>Friends</a></div>
+ </nav></div>
+</header>
+<main class=page-content aria-label=Content>
+ <div class=wrapper>
+ <article class="post h-entry" itemscope itemtype=http://schema.org/BlogPosting>
+ <header class=post-header>
+ <h1 class="post-title p-name" itemprop="name headline">gdb 自动化操作</h1>
+ <p class=post-meta>
+ <time class=dt-published datetime=2020-09-05T00:00:00+00:00 itemprop=datePublished>Sep 5, 2020
+ </time>• <span itemprop=author itemscope itemtype=http://schema.org/Person><span class="p-author h-card" itemprop=name>wxk1997</span></span></p>
+ </header>
+ <div class="post-content e-content" itemprop=articleBody>
+ <h1 id=前言>前言</h1>
+<p>在做强网杯的一道vmpwn的时候, 有了这样一种需求.</p>
+<blockquote>
+ <p>gdb可不可以实现这样一种功能: 在某处下个断点, 然后让程序运行到这个地方自动将当前的寄存器值保存到某个文件中然后继续执行. 最后得到一个包含执行过程中每次到达这个位置的时候的寄存器的值的文件</p>
+</blockquote>
+<p>据我所知ollydbg是有这种功能的. 可以在每次断点处执行一个脚本. 在脚本中可以通过一些指令将寄存器中的内容保存到文件中并继续执行, 直到下次遇到这个断点或者程序退出.</p>
+<p>经过搜索, 发现gdb提供了一个commands命令[2], 可以实现类似的功能. 在此记录一下.</p>
+<h1 id=正文>正文</h1>
+<p>我们以这份代码为例, 我们希望得到每次循环中val的值.</p>
+<div class="language-c highlighter-rouge"><div class=highlight><pre class=highlight><code><span class=kt>int</span> <span class=nf>main</span><span class=p>(){</span>
+    <span class=kt>int</span> <span class=n>val</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span> <span class=n>i</span><span class=o>&lt;</span><span class=mi>100</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>){</span>
+        <span class=n>val</span> <span class=o>=</span> <span class=p>(</span><span class=mi>7</span> <span class=o>*</span> <span class=p>(</span><span class=n>val</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span> <span class=o>/</span> <span class=mi>3</span><span class=p>)</span> <span class=o>&amp;</span> <span class=mh>0xffff</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></div></div>
+<p>源码编译得到二进制文件中main函数反汇编结果如下</p>
+<pre><code class=language-asm>00000000004004d6 &lt;main&gt;:
+  4004d6: push   rbp
+  4004d7: mov    rbp,rsp
+  4004da: mov    DWORD PTR [rbp-0x8],0x1
+  4004e1: mov    DWORD PTR [rbp-0x4],0x0
+  4004e8: jmp    400517 &lt;main+0x41&gt;
+  4004ea: mov    eax,DWORD PTR [rbp-0x8]
+  4004ed: lea    edx,[rax+0x1]
+  4004f0: mov    eax,edx
+  4004f2: shl    eax,0x3
+  4004f5: sub    eax,edx
+  4004f7: mov    ecx,eax
+  4004f9: mov    edx,0x55555556
+  4004fe: mov    eax,ecx
+  400500: imul   edx
+  400502: mov    eax,ecx
+  400504: sar    eax,0x1f
+  400507: sub    edx,eax
+  400509: mov    eax,edx
+  40050b: and    eax,0xffff
+  400510: mov    DWORD PTR [rbp-0x8],eax
+  400513: add    DWORD PTR [rbp-0x4],0x1
+  400517: cmp    DWORD PTR [rbp-0x4],0x63
+  40051b: jle    4004ea &lt;main+0x14&gt;
+  40051d: mov    eax,0x0
+  400522: pop    rbp
+  400523: ret
+</code></pre>
+<p>可以看到在 <code class="language-plaintext highlighter-rouge">0x400510</code> 处将计算得到的 <code class="language-plaintext highlighter-rouge">val</code> 从 <code class="language-plaintext highlighter-rouge">rax</code> 寄存器中存储到了栈上 <code class="language-plaintext highlighter-rouge">rbp-0x08</code>地址处.</p>
+<p>那么我们就可以写以下gdb脚本 <code class="language-plaintext highlighter-rouge">dump.gs</code></p>
+<pre><code class=language-gdb_script>b *0x400510
+commands
+silent
+printf "val is %#x\n", $rax
+c
+end
+</code></pre>
+<p>然后在调试的时候加载这个脚本并直接<code class="language-plaintext highlighter-rouge">run</code>即可</p>
+<div class="language-bash highlighter-rouge"><div class=highlight><pre class=highlight><code>root@vm<span class=nv>$ </span>gdb ./test
+<span class=o>(</span>gdb<span class=o>)</span> <span class=nb>source</span> ./dump.gs
+Breakpoint 1 at 0x400510: file test.c, line 9.
+<span class=o>(</span>gdb<span class=o>)</span> run
+</code></pre></div></div>
+<p>就可以打印出每次循环时val的值</p>
+<div class="language-plaintext highlighter-rouge"><div class=highlight><pre class=highlight><code>(gdb) run
+val is 0x4
+val is 0xb
+val is 0x1c
+val is 0x43
+val is 0x9e
+val is 0x173
+val is 0x364
+val is 0x7eb
+...
+</code></pre></div></div>
+<p>现在可以将val的值打印到终端了. 那么如何将这些信息保存到文件中呢? 在 <code class="language-plaintext highlighter-rouge">run</code> 之前执行如下命令即可[3]</p>
+<div class="language-plaintext highlighter-rouge"><div class=highlight><pre class=highlight><code>set logging on
+</code></pre></div></div>
+<p>再次run之后就可以看到当前目录下多了一个 <code class="language-plaintext highlighter-rouge">gdb.txt</code>. 里面就是打印的内容.</p>
+<div class="language-bash highlighter-rouge"><div class=highlight><pre class=highlight><code>➜  <span class=nb>local </span>git:<span class=o>(</span>master<span class=o>)</span> ✗ <span class=nb>cat</span> ./gdb.txt
+Starting program: ...
+warning:...
+warning: ...
+
+val is 0x4
+val is 0xb
+val is 0x1c
+...
+</code></pre></div></div>
+<p>目前位置虽然可以满足一开始的需求了, 但是每次操作的时候还是感觉很麻烦, 不过做题的时候时间原因到这儿就没有继续深究了. 现在有空了再看看有没有什么更加高效优雅的解决方案.</p>
+<p>这个时候自然就想到万能的<code class="language-plaintext highlighter-rouge">python</code>了. 通过对官方文档[4]的简单阅读, 最终得到如下脚本. 可以将每次循环的值写入文件.</p>
+<div class="language-python highlighter-rouge"><div class=highlight><pre class=highlight><code><span class=c1># dump.py
+</span><span class=n>gdb</span><span class=p>.</span><span class=n>execute</span><span class=p>(</span><span class=s>"b *0x400510"</span><span class=p>)</span>
+<span class=n>gdb</span><span class=p>.</span><span class=n>execute</span><span class=p>(</span><span class=s>"start"</span><span class=p>)</span>
+<span class=n>vals</span> <span class=o>=</span> <span class=p>[]</span>
+
+<span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>100</span><span class=p>):</span>
+    <span class=n>gdb</span><span class=p>.</span><span class=n>execute</span><span class=p>(</span><span class=s>"continue"</span><span class=p>)</span>
+    <span class=n>vals</span><span class=p>.</span><span class=n>append</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=nb>int</span><span class=p>(</span><span class=n>gdb</span><span class=p>.</span><span class=n>parse_and_eval</span><span class=p>(</span><span class=s>"$rax"</span><span class=p>))))</span>
+
+<span class=nb>open</span><span class=p>(</span><span class=s>"./vals"</span><span class=p>,</span> <span class=s>"w"</span><span class=p>).</span><span class=n>write</span><span class=p>(</span><span class=s>"</span><span class=se>\n</span><span class=s>"</span><span class=p>.</span><span class=n>join</span><span class=p>(</span><span class=n>vals</span><span class=p>))</span>
+</code></pre></div></div>
+<p>直接执行如下命令</p>
+<div class="language-bash highlighter-rouge"><div class=highlight><pre class=highlight><code>gdb ./test <span class=nt>-x</span> ./dump.py
+</code></pre></div></div>
+<p>就可以得到一个包含了100次循环中<code class="language-plaintext highlighter-rouge">val</code>值的文件<code class="language-plaintext highlighter-rouge">./vals</code></p>
+<div class="language-bash highlighter-rouge"><div class=highlight><pre class=highlight><code>➜  <span class=nb>local </span>git:<span class=o>(</span>master<span class=o>)</span> ✗ <span class=nb>cat</span> ./vals
+4
+11
+28
+67
+158
+371
+868
+...
+</code></pre></div></div>
+<h1 id=结语>结语</h1>
+<p>常言道 <code class="language-plaintext highlighter-rouge">人生苦短, 我用python</code>, 诚不我欺. python灵活的语法以及强大的兼容性使得python在这类写脚本的场景中十分好用. 大多数时候都可以替代<code class="language-plaintext highlighter-rouge">shell脚本</code>了. 有时我甚至会想将来会不会又某个shell内置python的那一天. 自此 <code class="language-plaintext highlighter-rouge">shell 脚本</code>是路人.</p>
+<h1 id=参考>参考</h1>
+<ol>
+ <li><a href=https://stackoverflow.com/questions/13935443/gdb-scripting-execute-commands-at-selected-breakpoint>so上有人提了和我类似的需求</a></li>
+ <li><a href=https://sourceware.org/gdb/onlinedocs/gdb/Break-Commands.html>commands 官方文档</a></li>
+ <li><a href=https://stackoverflow.com/questions/5941158/gdb-print-to-file-instead-of-stdout>如何将gdb的输出保存到文件</a></li>
+ <li><a href=https://sourceware.org/gdb/current/onlinedocs/gdb/Python.html#Python>Extending GDB using Python</a></li>
+</ol>
+ </div><a class="u-url sf-hidden" href=https://pullp.github.io/2020/09/05/gdb-commands.html hidden></a>
+</article>
+ </div>
+ </main><footer class="site-footer h-card">
+ <data class=u-url href=/></data>
+ <div class=wrapper>
+ <h2 class=footer-heading>wxk1997's blog</h2>
+ <div class=footer-col-wrapper>
+ <div class="footer-col footer-col-1">
+ <ul class=contact-list>
+ <li class=p-name>wxk1997's blog<li><a class=u-email href=mailto:weixiankui1997@gmail.com>weixiankui1997@gmail.com</a></ul>
+ </div>
+ <div class="footer-col footer-col-2"><ul class=social-media-list><li><a href=https://github.com/pullp><svg class=svg-icon><symbol id=github fill-rule=evenodd clip-rule=evenodd stroke-linejoin=round stroke-miterlimit=1.414><path d="M8 0C3.58 0 0 3.582 0 8c0 3.535 2.292 6.533 5.47 7.59.4.075.547-.172.547-.385 0-.19-.007-.693-.01-1.36-2.226.483-2.695-1.073-2.695-1.073-.364-.924-.89-1.17-.89-1.17-.725-.496.056-.486.056-.486.803.056 1.225.824 1.225.824.714 1.223 1.873.87 2.33.665.072-.517.278-.87.507-1.07-1.777-.2-3.644-.888-3.644-3.953 0-.873.31-1.587.823-2.147-.09-.202-.36-1.015.07-2.117 0 0 .67-.215 2.2.82.64-.178 1.32-.266 2-.27.68.004 1.36.092 2 .27 1.52-1.035 2.19-.82 2.19-.82.43 1.102.16 1.915.08 2.117.51.56.82 1.274.82 2.147 0 3.073-1.87 3.75-3.65 3.947.28.24.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.14.46.55.38C13.71 14.53 16 11.53 16 8c0-4.418-3.582-8-8-8"></path></symbol><use xlink:href=#github></use></svg> <span class=username>pullp</span></a></ul>
+</div>
+ <div class="footer-col footer-col-3">
+ <p>Learn and Share</p>
+ </div>
+ </div>
+ </div>
+</footer>
+<div style=all:initial><div style=all:initial id=__hcfy__><template shadowrootmode=open><style class=sf-hidden>#root{-webkit-text-size-adjust:100%;box-sizing:border-box;font-size:14px;font-weight:400;letter-spacing:0;line-height:1.28581;text-transform:none;color:#182026;font-family:-apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Open Sans","Helvetica Neue","Icons16",sans-serif;touch-action:manipulation}#root>.bp5-portal{z-index:9999999999}</style><style class=sf-hidden>#translate-panel{background-color:#f6f7f9;display:flex;flex-direction:column;padding-bottom:8px}.bp5-dark #translate-panel{background-color:#252a31}#translate-panel .fixed{flex-shrink:0;margin-bottom:10px}#translate-panel .body{flex-grow:1;overflow:auto;overscroll-behavior:contain}#translate-panel .body::-webkit-scrollbar{width:8px;background-color:rgba(0,0,0,0);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar:hover{background-color:rgba(0,0,0,.09)}#translate-panel .body::-webkit-scrollbar-thumb:vertical{background:rgba(0,0,0,.5);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar-thumb:vertical:active{background:rgba(0,0,0,.61);-webkit-border-radius:100px}#translate-panel.size-small,#translate-panel.size-small h6.bp5-heading,#translate-panel.size-small .bp5-control.bp5-large,#translate-panel.size-small textarea.bp5-input.bp5-small{font-size:14px}#translate-panel.size-small .phonetic-item,#translate-panel.size-small .quick-settings a{font-size:12px}#translate-panel.size-middle,#translate-panel.size-middle h6.bp5-heading,#translate-panel.size-middle .bp5-control.bp5-large,#translate-panel.size-middle textarea.bp5-input{font-size:18px}#translate-panel.size-middle .phonetic-item,#translate-panel.size-middle .quick-settings a{font-size:14px}#translate-panel.size-large,#translate-panel.size-large h6.bp5-heading,#translate-panel.size-large .bp5-control.bp5-large,#translate-panel.size-large textarea.bp5-input.bp5-large{font-size:22px}#translate-panel.size-large .source,#translate-panel.size-large .phonetic-item,#translate-panel.size-large .quick-settings a{font-size:18px}#translate-panel .bp5-button.bp5-small,#translate-panel .bp5-small .bp5-button{min-height:20px;min-width:20px}#translate-panel .header{display:flex;align-items:center;padding:4px 6px 4px 10px;border-bottom:1px solid #d1d1d1}.bp5-dark #translate-panel .header{border-bottom-color:rgba(17,20,24,.4)}#translate-panel .header .drag-block{min-width:5px;flex-shrink:0;flex-grow:1;align-self:stretch}#translate-panel .header .left{flex-shrink:0;display:flex}#translate-panel .header .right{flex-shrink:0;display:flex;align-items:center}#translate-panel .header .right .bp5-icon-arrow-right{flex-shrink:0;margin:0 5px}#translate-panel .header .right>.bp5-button{flex-shrink:0;margin:0 1px}#translate-panel .header .right>.bp5-button:last-child{margin-right:0}#translate-panel .quick-settings{padding:4px 9px;margin:0 1px}#translate-panel .quick-settings>div{margin-bottom:5px}#translate-panel .quick-settings .bp5-control{margin-bottom:0}#translate-panel .query-text{position:relative;padding:10px 10px 2px 10px}#translate-panel .query-text textarea.bp5-input{min-height:44px;font-family:system-ui,-apple-system,"Segoe UI","Roboto","Ubuntu","Cantarell","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";overscroll-behavior:contain}#translate-panel .query-text .translate-btn{position:absolute;opacity:.6}#translate-panel .query-text .translate-btn:hover{opacity:1}#translate-panel .body{padding:0 10px}#translate-panel .body .bp5-card:first-child{margin-top:1px}#translate-panel .body .bp5-card:last-child{margin-bottom:1px}#translate-panel .body .no-api{margin:20px 0}.result-block{margin:8px 0;padding:2px 5px}.result-block .bp5-button{visibility:hidden}.result-block .error .bp5-button,.result-block:hover .bp5-button{visibility:visible}.result-block .legend{display:flex;align-items:center;justify-content:space-between}.result-block .legend .legend-left{display:flex;align-items:center}.result-block .legend .api-ico,.result-block .legend .bp5-heading{flex-shrink:0;white-space:nowrap}.result-block .legend .api-ico{display:inline-block;width:14px;height:14px;background-size:contain;margin-right:3px}.result-block .legend .bp5-heading{margin-bottom:0;margin-right:10px}.result-block .legend .source{cursor:pointer;font-size:12px;display:inline-flex;align-items:center}.result-block .legend .source .source-text{overflow:hidden}.result-block .legend .source .bp5-icon{position:relative;top:-1px;margin-left:1px}.result-block .phonetic{display:flex;flex-wrap:wrap}.result-block .phonetic .phonetic-item{display:flex;align-items:center;font-size:12px}.result-block .phonetic .phonetic-item:not(:last-child){margin-right:12px}.result-block .common-result p{line-height:1.3;margin:2px 0;overflow-wrap:break-word}.result-block .common-result .dict a{text-decoration:underline}.result-block .error{font-size:12px;padding:5px 10px}.result-block .dict-pos{margin-right:5px}.external-translators{margin-bottom:3px;padding:0;display:flex;flex-wrap:wrap}.external-translators>div{margin:0 5px 5px 0}.quick-links a{margin:0 5px 5px 0}#popper-container{width:250px;max-width:100%;position:absolute;left:0;top:0;z-index:9999999998;touch-action:none;transition:opacity .2s;background-color:#f6f7f9}.bp5-dark #popper-container{background-color:#252a31}#popper-container.show{opacity:1;pointer-events:auto;-moz-user-select:auto;user-select:auto}#popper-container,#popper-container[data-popper-reference-hidden=true]{opacity:0;pointer-events:none;-moz-user-select:none;user-select:none}#popper-container .drag-block{cursor:-webkit-grab;cursor:grab}#popper-container.pin{position:fixed}#popper-container.pin .arrow{display:none}#popper-container .arrow,#popper-container .arrow::before{position:absolute;width:8px;height:8px;z-index:-1}#popper-container .arrow::before{content:"";transform:rotate(45deg);background:#f6f7f9}.bp5-dark #popper-container .arrow::before{background-color:#252a31}#popper-container .arrow{display:none}#popper-container.show[data-popper-placement]:not([data-popper-reference-hidden=true]) .arrow{display:block}#popper-container[data-popper-placement^=top] .arrow{bottom:-5px}#popper-container[data-popper-placement^=top] .arrow::before{border-right:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#popper-container[data-popper-placement^=bottom] .arrow{top:-5px}#popper-container[data-popper-placement^=bottom] .arrow::before{border-left:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=left] .arrow{right:-5px}#popper-container[data-popper-placement^=left] .arrow::before{border-right:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=right] .arrow{left:-5px}#popper-container[data-popper-placement^=right] .arrow::before{border-left:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#translate-btn{display:none;position:absolute;z-index:9999999999;left:0;top:0}#translate-btn .bp5-button{padding:2px;min-width:0;min-height:0}#translate-btn .btn-icon{width:18px;height:18px;background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logo.png);background-size:contain}.bp5-dark #translate-btn .btn-icon{background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logowhite36.png)}#translate-btn.show{display:block}.translate-type-selector .bp5-label{display:inline}.translate-type-selector .bp5-radio{margin-bottom:0}#ocr-container{position:fixed;z-index:99999999999999;left:0;top:0;right:0;bottom:0}#ocr-container .toolbar{display:none;position:absolute;z-index:1}#ocr-container img{max-width:100%}#app{cursor:default}.switch-pin{flex-shrink:0;cursor:pointer}.switch-pin .bp5-icon-pin{transition:transform .2s,color .2s;transform:rotate(-45deg)}.pin .switch-pin .bp5-icon-pin{transform:rotate(-70deg)}.cut-btn{margin-left:2px}.app-toaster-container{position:fixed!important;z-index:9999999999!important}.app-toaster-container .bp5-toast{min-width:auto}#web-trs-panel .app-toaster-container{padding-right:0;padding-left:0}#web-trs-panel .page-trs-form-group{margin:0 0 0 0;align-items:center}#web-trs-panel .page-trs-form-group>label{width:70px}</style><div id=root dir=ltr><div id=app><div id=translate-btn class=sf-hidden></div><div id=popper-container style=width:290px;transform:translate(0px) class=bp5-elevation-4><div id=translate-panel class=size-small><div class=fixed><div class=header><div class=left><div class=switch-pin><button type=button class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-pin"><svg data-icon=pin height=14 role=img viewBox="0 0 16 16" width=14><path d="M9.41.92c-.51.51-.41 1.5.15 2.56L4.34 7.54C2.8 6.48 1.45 6.05.92 6.58l3.54 3.54-3.54 4.95 4.95-3.54 3.54 3.54c.53-.53.1-1.88-.96-3.42l4.06-5.22c1.06.56 2.04.66 2.55.15L9.41.92z" fill-rule=evenodd></path></svg></span></button></div><button type=button title=图片翻译 class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-media"><svg data-icon=media height=14 role=img viewBox="0 0 16 16" width=14><path d="M11.99 6.99c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3-5h-14c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-10c0-.55-.45-1-1-1zm-1 9l-5-3-1 2-3-4-3 5v-7h12v7z" fill-rule=evenodd></path></svg></span></button><button type=button title=语音翻译 class="bp5-button bp5-minimal bp5-small"><span class=bp5-icon><svg version=1.1 id=Capa_1 width=14 height=14 xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink x=0px y=0px viewBox="0 0 490.9 490.9" xml:space=preserve><g><g><path d="M245.5,322.9c53,0,96.2-43.2,96.2-96.2V96.2c0-53-43.2-96.2-96.2-96.2s-96.2,43.2-96.2,96.2v130.5 C149.3,279.8,192.5,322.9,245.5,322.9z M173.8,96.2c0-39.5,32.2-71.7,71.7-71.7s71.7,32.2,71.7,71.7v130.5 c0,39.5-32.2,71.7-71.7,71.7s-71.7-32.2-71.7-71.7V96.2z"></path><path d="M94.4,214.5c-6.8,0-12.3,5.5-12.3,12.3c0,85.9,66.7,156.6,151.1,162.8v76.7h-63.9c-6.8,0-12.3,5.5-12.3,12.3 s5.5,12.3,12.3,12.3h152.3c6.8,0,12.3-5.5,12.3-12.3s-5.5-12.3-12.3-12.3h-63.9v-76.7c84.4-6.3,151.1-76.9,151.1-162.8 c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3c0,76.6-62.3,138.9-138.9,138.9s-138.9-62.3-138.9-138.9 C106.6,220,101.2,214.5,94.4,214.5z"></path></g></g></svg></span></button></div><div class=drag-block title=按住不放可以拖动></div><div class=right><button type=button disabled title=添加到收藏夹 class="bp5-button bp5-disabled bp5-minimal bp5-small" tabindex=-1><span aria-hidden=true class="bp5-icon bp5-icon-star-empty"><svg data-icon=star-empty height=14 role=img viewBox="0 0 16 16" width=14><path d="M16 6.11l-5.53-.84L8 0 5.53 5.27 0 6.11l4 4.1L3.06 16 8 13.27 12.94 16 12 10.21l4-4.1zM4.91 13.2l.59-3.62L3 7.02l3.45-.53L8 3.2l1.55 3.29 3.45.53-2.5 2.56.59 3.62L8 11.49 4.91 13.2z" fill-rule=evenodd></path></svg></span></button><button type=button class="bp5-button bp5-minimal bp5-small settings" title=快捷设置><span aria-hidden=true class="bp5-icon bp5-icon-cog"><svg data-icon=cog height=14 role=img viewBox="0 0 16 16" width=14><path d="M15.19 6.39h-1.85c-.11-.37-.27-.71-.45-1.04l1.36-1.36c.31-.31.31-.82 0-1.13l-1.13-1.13a.803.803 0 00-1.13 0l-1.36 1.36c-.33-.17-.67-.33-1.04-.44V.79c0-.44-.36-.8-.8-.8h-1.6c-.44 0-.8.36-.8.8v1.86c-.39.12-.75.28-1.1.47l-1.3-1.3c-.3-.3-.79-.3-1.09 0L1.82 2.91c-.3.3-.3.79 0 1.09l1.3 1.3c-.2.34-.36.7-.48 1.09H.79c-.44 0-.8.36-.8.8v1.6c0 .44.36.8.8.8h1.85c.11.37.27.71.45 1.04l-1.36 1.36c-.31.31-.31.82 0 1.13l1.13 1.13c.31.31.82.31 1.13 0l1.36-1.36c.33.18.67.33 1.04.44v1.86c0 .44.36.8.8.8h1.6c.44 0 .8-.36.8-.8v-1.86c.39-.12.75-.28 1.1-.47l1.3 1.3c.3.3.79.3 1.09 0l1.09-1.09c.3-.3.3-.79 0-1.09l-1.3-1.3c.19-.35.36-.71.48-1.1h1.85c.44 0 .8-.36.8-.8v-1.6a.816.816 0 00-.81-.79zm-7.2 4.6c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill-rule=evenodd></path></svg></span></button><button type=button title=关闭(Esc) class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-cross"><svg data-icon=cross height=18 role=img viewBox="0 0 16 16" width=18><path d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z" fill-rule=evenodd></path></svg></span></button></div></div><div class=bp5-collapse><div class="bp5-collapse-body sf-hidden" aria-hidden=true></div></div></div><div class=body><p>请输入需要翻译的文本。</p></div></div><div class="arrow sf-hidden"></div></div><div id=web-trs-panel></div></div></div></template></div></div><script data-template-shadow-root>(()=>{document.currentScript.remove();processNode(document);function processNode(node){node.querySelectorAll("template[shadowrootmode]").forEach(element=>{let shadowRoot = element.parentElement.shadowRoot;if (!shadowRoot) {try {shadowRoot=element.parentElement.attachShadow({mode:element.getAttribute("shadowrootmode"),delegatesFocus:element.getAttribute("shadowrootdelegatesfocus")!=null,clonable:element.getAttribute("shadowrootclonable")!=null,serializable:element.getAttribute("shadowrootserializable")!=null});shadowRoot.innerHTML=element.innerHTML;element.remove()} catch (error) {} if (shadowRoot) {processNode(shadowRoot)}}})}})()</script>
