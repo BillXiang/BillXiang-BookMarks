@@ -35,6 +35,7 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Update links
         run: |
+          echo ${{ secrets.MOONSHOT_API_KEY }}
           pr_number=${{ github.event.number }}
           files_url="https://api.github.com/repos/${{ github.repository }}/pulls/$pr_number/files"
           files_response=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $files_url)
