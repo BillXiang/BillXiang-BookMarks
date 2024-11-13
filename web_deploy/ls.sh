@@ -16,6 +16,10 @@ html_head="<!DOCTYPE html>
           s.parentNode.insertBefore(hm, s);
         })();
       </script>
+      <style type="text/css">
+        table td{word-break: keep-all;white-space:nowrap;}
+        table th{word-break: keep-all;white-space:nowrap;}
+      </style>
     </head>
     <body>
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
