@@ -112,7 +112,7 @@ echo "" > docs.html
 read_dir "."
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index.html
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html |grep -v all.html >> all.html
-cat docs.tmp > docs.html
+cat docs.tmp >> docs.html
 rm -f url.tmp
 
 echo "  </tbody>
