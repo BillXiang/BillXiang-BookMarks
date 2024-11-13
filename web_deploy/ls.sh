@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 rm -f *.tmp
 
-echo "<!DOCTYPE html>
+html_head="<!DOCTYPE html>
   <html>
     <head>
       <meta charset="UTF-8">
@@ -19,57 +19,23 @@ echo "<!DOCTYPE html>
     </head>
     <body>
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
-      <table id="myTable">
-        <thead><tr><th><a href='./index.html'>Recently Read</a></th><th>More</th><th><a href='./docs.html'>Docs</a></th></tr></thead>
-        <tbody>" > all.html
-
-echo "<!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>BillXiang</title>
-      <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-      <script>
-        var _hmt = _hmt || [];
-        (function() {
-          var hm = document.createElement('"script"');
-          hm.src = '"https://hm.baidu.com/hm.js?ec59a7c509d311b9e44b32db0e8bc394"';
-          var s = document.getElementsByTagName('"script"')[0];
-          s.parentNode.insertBefore(hm, s);
-        })();
-      </script>
-    </head>
-    <body>
-      <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
-      <table id="myTable">
-        <thead><tr><th>Recently Read</th><th><a href='./all.html'>More</a></th><th><a href='./docs.html'>Docs</a></th></tr></thead>
-        <tbody>" > index.html
+      <table id="root">
+      <tr>
+        <td><table id="sidebar"><tbody>
+          <tr><a href='./index.html'><b>Recently Read</b></a></tr>
+          <tr><a href='./all.html'><b>More</b></a></tr>
+          <tr><a href='./docs.html'><b>Docs</b></a></tr>
+        </tbody></table></td>
+        <td>
+          <table id="myTable">
+          <tbody>
+      "
         
-echo "<!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>BillXiang</title>
-      <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-      <script>
-        var _hmt = _hmt || [];
-        (function() {
-          var hm = document.createElement('"script"');
-          hm.src = '"https://hm.baidu.com/hm.js?ec59a7c509d311b9e44b32db0e8bc394"';
-          var s = document.getElementsByTagName('"script"')[0];
-          s.parentNode.insertBefore(hm, s);
-        })();
-      </script>
-    </head>
-    <body>
-      <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
-      <table id="myTable">
-        <thead><tr><th><a href='./index.html'>Recently Read</a></th><th><a href='./all.html'>More</a></th><th>Docs</th></tr></thead>
-        <tbody>" > docs.html
+echo $html_head > all.html
+
+echo $html_head > index.html
+        
+echo $html_head > docs.html
 
 read_dir(){
     for file in "$1"/*;
@@ -111,11 +77,14 @@ echo "" > url.tmp
 echo "" > docs.html
 read_dir "."
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index.html
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html |grep -v all.html >> all.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all.html
 cat docs.tmp >> docs.html
 rm -f url.tmp
 
-echo "  </tbody>
+echo "        </tbody>
+            </table>
+          </td>
+        </tr>
       </table>
       <div id="gitalk-container"></div>
       <script>
@@ -134,12 +103,18 @@ echo "  </tbody>
     </body>
 </html>" >> index.html
 
-echo "  </tbody>
+echo "        </tbody>
+            </table>
+          </td>
+        </tr>
       </table>
     </body>
 </html>" >> all.html
 
-echo "  </tbody>
+echo "        </tbody>
+            </table>
+          </td>
+        </tr>
       </table>
     </body>
 </html>" >> docs.html
