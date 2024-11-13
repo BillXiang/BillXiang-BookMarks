@@ -20,12 +20,17 @@ html_head="<!DOCTYPE html>
     <body>
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
       <table id="root">
+      <tbody>
       <tr>
-        <td><table id="sidebar"><tbody>
-          <tr><a href='./index.html'><b>Recently Read</b></a></tr>
-          <tr><a href='./all.html'><b>More</b></a></tr>
-          <tr><a href='./docs.html'><b>Docs</b></a></tr>
-        </tbody></table></td>
+        <td>
+          <table id="sidebar">
+            <tbody>
+              <tr><td><a href='./index.html'><b>Recently Read</b></a></td></tr>
+              <tr><td><a href='./all.html'><b>More</b></a></td></tr>
+              <tr><td><a href='./docs.html'><b>Docs</b></a></td></tr>
+            </tbody>
+          </table>
+        </td>
         <td>
           <table id="myTable">
           <tbody>
@@ -85,6 +90,7 @@ echo "        </tbody>
             </table>
           </td>
         </tr>
+        </tbody>
       </table>
       <div id="gitalk-container"></div>
       <script>
@@ -107,6 +113,7 @@ echo "        </tbody>
             </table>
           </td>
         </tr>
+        </tbody>
       </table>
     </body>
 </html>" >> all.html
@@ -115,6 +122,7 @@ echo "        </tbody>
             </table>
           </td>
         </tr>
+        </tbody>
       </table>
     </body>
 </html>" >> docs.html
