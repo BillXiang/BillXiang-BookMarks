@@ -20,7 +20,7 @@ echo "<!DOCTYPE html>
     <body>
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
       <table id="myTable">
-        <thead><tr><th><a href='./index.html'>Recently Read</a></th><th>All</th></tr></thead>
+        <thead><tr><th><a href='./index.html'>Recently Read</a></th><th>More</th><th><a href='./docs.html'>Docs</a></th></tr></thead>
         <tbody>" > all.html
 
 echo "<!DOCTYPE html>
@@ -44,8 +44,32 @@ echo "<!DOCTYPE html>
     <body>
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
       <table id="myTable">
-        <thead><tr><th>Recently Read</th><th><a href='./all.html'>All</a></th></tr></thead>
+        <thead><tr><th>Recently Read</th><th><a href='./all.html'>More</a></th><th><a href='./docs.html'>Docs</a></th></tr></thead>
         <tbody>" > index.html
+        
+echo "<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>BillXiang</title>
+      <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement('"script"');
+          hm.src = '"https://hm.baidu.com/hm.js?ec59a7c509d311b9e44b32db0e8bc394"';
+          var s = document.getElementsByTagName('"script"')[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      </script>
+    </head>
+    <body>
+      <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
+      <table id="myTable">
+        <thead><tr><th><a href='./index.html'>Recently Read</a></th><th><a href='./all.html'>More</a></th><th>Docs</th></tr></thead>
+        <tbody>" > docs.html
 
 read_dir(){
     for file in "$1"/*;
@@ -71,11 +95,12 @@ read_dir(){
 
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
+                    echo $a,$b,$c
                     echo "<tr><td>${a}_${b}</td><td><a href='$ori_url'>原文链接</a></td> <td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><strong>$name</strong></a></td></tr>" >> url.tmp
                     echo "<tr></tr>" >> url.tmp
                 done
             else
-                echo "<tr><td>____________________</td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> url.tmp
+                echo "<tr><td></td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> docs.tmp
             fi
 
         fi
@@ -83,9 +108,11 @@ read_dir(){
 }
 
 echo "" > url.tmp
+echo "" > docs.html
 read_dir "."
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index.html
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" >> all.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html |grep -v all.html >> all.html
+cat docs.tmp > docs.html
 rm -f url.tmp
 
 echo "  </tbody>
@@ -111,4 +138,9 @@ echo "  </tbody>
       </table>
     </body>
 </html>" >> all.html
+
+echo "  </tbody>
+      </table>
+    </body>
+</html>" >> docs.html
 rm -f *.tmp
