@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import sys
-print(sys.getdefaultencoding())
-
 from typing import *
 from pathlib import Path
 from openai import OpenAI
@@ -9,7 +7,7 @@ from openai.types.chat.chat_completion import Choice
 import json
 file_name = sys.argv[1]
 my_api_key = sys.argv[2]
-print(file_name)
+sys.stderr.write(file_name+"\n")
 
 client = OpenAI(
     api_key=my_api_key, # 在这里将 MOONSHOT_API_KEY 替换为你从 Kimi 开放平台申请的 API Key
@@ -62,7 +60,7 @@ def main():
         choice = chat(messages)
         finish_reason = choice.finish_reason
         if finish_reason == "tool_calls":  # <-- 判断当前返回内容是否包含 tool_calls
-            print("finish_reason tool_calls")
+            sys.stderr.write("finish_reason tool_calls\n")
             messages.append(choice.message)  # <-- 我们将 Kimi 大模型返回给我们的 assistant 消息也添加到上下文中，以便于下次请求时 Kimi 大模型能理解我们的诉求
             for tool_call in choice.message.tool_calls:  # <-- tool_calls 可能是多个，因此我们使用循环逐个执行
                 tool_call_name = tool_call.function.name
@@ -81,7 +79,7 @@ def main():
                     "name": tool_call_name,
                     "content": json.dumps(tool_result),  # <-- 我们约定使用字符串格式向 Kimi 大模型提交工具调用结果，因此在这里使用 json.dumps 将执行结果序列化成字符串
                 })
-    print("finish_reason "+finish_reason) # <-- finish_reason 是 "stop"，则表示聊天已经结束，循环将终止。
+    sys.stderr.write("finish_reason "+finish_reason+"\n") # <-- finish_reason 是 "stop"，则表示聊天已经结束，循环将终止。
     print(choice.message.content)  # <-- 在这里，我们才将模型生成的回复返回给用户
 
 
