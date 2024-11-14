@@ -29,8 +29,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Get PR info
         id: get_pr_info
         run: |
@@ -40,10 +38,19 @@ jobs:
           echo $LAST_COMMIT_URL
           curl -s $LAST_COMMIT_URL -o commit0-content
           FILENAME=`jq -r '.files[0].filename' commit0-content`
+          if echo $file | grep -q -E '\.kimi$'
+          then
+            echo "filename=kimi" >> $GITHUB_OUTPUT
+          fi
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
+      - name: Checkout
+        uses: actions/checkout@v4
+        if: ${{ steps.get_pr_info.outputs.filename != 'kimi' }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        if: ${{ steps.get_pr_info.outputs.filename != 'kimi' }}
       - name: Update links
+        if: ${{ steps.get_pr_info.outputs.filename != 'kimi' }}
         run: |
           file="${{ steps.get_pr_info.outputs.filename }}"
           echo $file
@@ -59,13 +66,24 @@ jobs:
             touch "./${file}.kimi"
             ls -l "./${file}.kimi"
             python3 ./web_deploy/kimi.py "$name" ${{ secrets.MOONSHOT_API_KEY }} > "./${file}.kimi"
+            git add "./${file}.kimi"
+            git commit -m "./${file}.kimi"
+            echo "hasChange=true" >> $GITHUB_OUTPUT
           fi
           bash ./web_deploy/ls.sh;cat index.html
+      - name: Push kimi
+        uses: ad-m/github-push-action@master
+        if: ${{ steps.commit-files.outputs.hasChange == 'true' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        if: ${{ steps.get_pr_info.outputs.filename != 'kimi' }}
         with:
           # Upload entire repository
           path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        if: ${{ steps.get_pr_info.outputs.filename != 'kimi' }}
