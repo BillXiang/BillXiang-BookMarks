@@ -45,7 +45,7 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Update links
         run: |
-          file=${{ steps.get_pr_info.outputs.filename }}
+          file="${{ steps.get_pr_info.outputs.filename }}"
           echo $file
           if echo $file | grep -q -E '\.html$'
           then
