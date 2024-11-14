@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+import sys
+reload(sys) 
+sys.setdefaultencoding('utf-8')
+
 from typing import *
 from pathlib import Path
 from openai import OpenAI
 from openai.types.chat.chat_completion import Choice
-import sys
 import json
 file_name = sys.argv[1]
 my_api_key = sys.argv[2]
