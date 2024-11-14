@@ -38,13 +38,21 @@ jobs:
           LAST_COMMIT_URL=`jq -r '.[0].url' commit0`
           echo $LAST_COMMIT_URL
           curl -s $LAST_COMMIT_URL -o commit0-content
-          jq -r '.files[0].filename' commit0-content
+          FILENAME=`jq -r '.files[0].filename' commit0-content`
+          echo "filename=$FILENAME" >> $GITHUB_OUTPUT
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Update links
         run: |
-          pip3 install --upgrade 'openai>=1.0'
-          python3 ./web_deploy/kimi.py kimi ${{ secrets.MOONSHOT_API_KEY }}
+          file=${{ steps.commit-files.outputs.filename }}
+          if echo $file | grep -q -E '\.html$'
+          then
+            ori_url=`head -n 3 "$file"|tail -n 1`
+            ori_url=${ori_url:6}
+            echo $ori_url
+            pip3 install --upgrade 'openai>=1.0'
+            python3 ./web_deploy/kimi.py $ori_url ${{ secrets.MOONSHOT_API_KEY }} > ./$file.kimi
+          fi
           bash ./web_deploy/ls.sh;cat index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
