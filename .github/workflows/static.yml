@@ -58,7 +58,7 @@ jobs:
             pip3 install --upgrade 'openai>=1.0'
             touch "./${file}.kimi"
             ls -l "./${file}.kimi"
-            python3 ./web_deploy/kimi.py $name ${{ secrets.MOONSHOT_API_KEY }} > "./${file}.kimi“
+            python3 ./web_deploy/kimi.py $name ${{ secrets.MOONSHOT_API_KEY }} > "./${file}.kimi"
           fi
           bash ./web_deploy/ls.sh;cat index.html
       - name: Upload artifact
