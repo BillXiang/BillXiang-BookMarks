@@ -79,10 +79,9 @@ read_dir(){
                     <tr><td>${a} ${b} <a href='$ori_url'>原文链接</a></td></tr><table><tbody>" >> url.tmp
                     #echo "<tr></tr>" >> url.tmp
                 done
-            else if [[ "$kimi" -ne 1 ]];then
+            elif [[ "$kimi" -ne 1 ]];then
                 echo "<tr><td></td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> docs.tmp
             fi
-
         fi
     done
 }
