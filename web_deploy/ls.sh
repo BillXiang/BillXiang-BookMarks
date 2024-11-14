@@ -59,6 +59,7 @@ read_dir(){
             fi
         else
             html=$(echo $file|grep "html$"|wc -l)
+            kimi=$(echo $file|grep "kimi$"|wc -l)
             
             name=${file/\.\//}
             name=${name/书签工具栏/}
@@ -71,10 +72,14 @@ read_dir(){
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
                     echo $a,$b,$c
-                    echo "<tr><td>${a} ${b}</td><td><a href='$ori_url'>原文链接</a></td> <td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><strong>$name</strong></a></td></tr>" >> url.tmp
-                    echo "<tr></tr>" >> url.tmp
+                    kimi=`cat "${file}.kimi"`
+                    echo "<table><tbody> \
+                    <tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><h1>$name</h1></a></td></tr> \
+                    <tr><td>$kimi</td></tr> \
+                    <tr><td>${a} ${b} <a href='$ori_url'>原文链接</a></td></tr><table><tbody>" >> url.tmp
+                    #echo "<tr></tr>" >> url.tmp
                 done
-            else
+            else if [[ "$kimi" -ne 1 ]];then
                 echo "<tr><td></td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> docs.tmp
             fi
 
