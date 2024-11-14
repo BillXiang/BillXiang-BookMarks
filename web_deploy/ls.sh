@@ -73,8 +73,9 @@ read_dir(){
                 do
                     echo $a,$b,$c
                     kimi=`cat "${file}.kimi"`
+                    cat ${file}.kimi"
                     echo "<tr><td><table><tbody> \
-                    <tr><td>${a} ${b} <a href='$ori_url'>原文链接</a></td></tr> \
+                    <tr><td>${a}_${b} <a href='$ori_url'>原文链接</a></td></tr> \
                     <tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><h2>$name</h2></a></td></tr> \
                     <tr><td>$kimi</td></tr> \
                     </tbody></table></td></tr>" >> url.tmp
