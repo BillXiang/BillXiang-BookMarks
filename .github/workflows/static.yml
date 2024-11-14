@@ -67,6 +67,8 @@ jobs:
             ls -l "./${file}.kimi"
             python3 ./web_deploy/kimi.py "$name" ${{ secrets.MOONSHOT_API_KEY }} > "./${file}.kimi"
             git add "./${file}.kimi"
+            git config --local user.email "github-actions[kimi]@users.noreply.github.com"
+            git config --local user.name "github-actions[kimi]"
             git commit -m "./${file}.kimi"
             echo "hasChange=true" >> $GITHUB_OUTPUT
           fi
