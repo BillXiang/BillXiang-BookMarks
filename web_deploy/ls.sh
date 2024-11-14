@@ -73,11 +73,11 @@ read_dir(){
                 do
                     echo $a,$b,$c
                     kimi=`cat "${file}.kimi"`
-                    echo "<table><tbody> \
+                    echo "<tr><td><table><tbody> \
                     <tr><td>${a} ${b} <a href='$ori_url'>原文链接</a></td></tr> \
-                    <tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><h1>$name</h1></a></td></tr> \
+                    <tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><h2>$name</h2></a></td></tr> \
                     <tr><td>$kimi</td></tr> \
-                    <table><tbody>" >> url.tmp
+                    </tbody></table></td></tr>" >> url.tmp
                     #echo "<tr></tr>" >> url.tmp
                 done
             elif [[ "$kimi" -ne 1 ]];then
