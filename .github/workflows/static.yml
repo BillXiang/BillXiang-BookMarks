@@ -50,6 +50,7 @@ jobs:
         uses: actions/configure-pages@v5
         if: ${{ steps.get_pr_info.outputs.filename != 'kimi' }}
       - name: Update links
+        id: update_links
         if: ${{ steps.get_pr_info.outputs.filename != 'kimi' }}
         run: |
           file="${{ steps.get_pr_info.outputs.filename }}"
@@ -75,7 +76,7 @@ jobs:
           bash ./web_deploy/ls.sh;cat index.html
       - name: Push kimi
         uses: ad-m/github-push-action@master
-        if: ${{ steps.commit-files.outputs.hasChange == 'true' }}
+        if: ${{ steps.update_links.outputs.hasChange == 'true' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
