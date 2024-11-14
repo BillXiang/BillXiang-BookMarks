@@ -56,7 +56,8 @@ jobs:
             name=${name/书签工具栏/}
             name=${name/(*).html/}
             pip3 install --upgrade 'openai>=1.0'
-            echo ./${file}.kimi
+            touch ./${file}.kimi
+            ls -l ./${file}.kimi
             python3 ./web_deploy/kimi.py $name ${{ secrets.MOONSHOT_API_KEY }} > ./${file}.kimi
           fi
           bash ./web_deploy/ls.sh;cat index.html
