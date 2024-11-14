@@ -51,8 +51,7 @@ def main():
     messages = [
         {"role": "system", "content": "你是 Kimi。"},
         #{"role": "system", "content": file_content,},
-        {"role": "user", "content": "请搜索 "+file_name+", 并给出100字摘要"}
-        # {"role": "user", "content": "请搜索 Moonshot AI Context Caching 技术，并告诉我它是什么。"}
+        {"role": "user", "content": "请搜索 "+file_name+", 并直接给出100字摘要"}
     ]
 
     finish_reason = None
