@@ -1,10 +1,4 @@
 #!/usr/bin/bash
-pr_number=${{ github.event.number }}
-files_url="https://api.github.com/repos/${{ github.repository }}/pulls/$pr_number/files"
-files_response=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $files_url)
-files_changed=$(echo "$files_response" | jq -r '.[].filename')
-echo "PR files: $files_changed"
-
 rm -f *.tmp
 
 html_head="<!DOCTYPE html>
