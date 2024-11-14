@@ -52,8 +52,12 @@ jobs:
             ori_url=`head -n 3 "$file"|tail -n 1`
             ori_url=${ori_url:6}
             echo $ori_url
+            name=${file/\.\//}
+            name=${name/书签工具栏/}
+            name=${name/(*).html/}
             pip3 install --upgrade 'openai>=1.0'
-            python3 ./web_deploy/kimi.py $ori_url ${{ secrets.MOONSHOT_API_KEY }} > ./$file.kimi
+            echo ./${file}.kimi
+            python3 ./web_deploy/kimi.py $name ${{ secrets.MOONSHOT_API_KEY }} > ./${file}.kimi
           fi
           bash ./web_deploy/ls.sh;cat index.html
       - name: Upload artifact
