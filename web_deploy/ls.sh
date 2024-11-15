@@ -21,7 +21,7 @@ html_head="<!DOCTYPE html>
         table th{word-break: keep-all;white-space:nowrap;}
       </style>
     </head>
-    <body>
+    <body width="95%">
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
       <table id="root">
       <tbody>
@@ -36,7 +36,7 @@ html_head="<!DOCTYPE html>
           </table>
         </td>
         <td>
-          <table id="myTable">
+          <table id="myTable" style="border-collapse: separate;border-spacing: 5px 20px;">
           <tbody>
       "
         
@@ -75,9 +75,10 @@ read_dir(){
                     kimi=`cat "${file}.kimi"`
                     cat "${file}.kimi"
                     echo "<tr><td><table><tbody> \
-                    <tr><td>${a}_${b} <a href='$ori_url'>原文链接</a></td></tr> \
-                    <tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><h2>$name</h2></a></td></tr> \
-                    <tr><td>$kimi</td></tr> \
+                    <tr><td>${a}_${b}</td></tr> \
+                    <tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><b>$name</b></a></td></tr> \
+                    <tr><td>Kimi: $kimi</td></tr> \
+                    <tr><td><a href='$ori_url'>原文链接</a></td></tr> \
                     </tbody></table></td></tr>" >> url.tmp
                     #echo "<tr></tr>" >> url.tmp
                 done
