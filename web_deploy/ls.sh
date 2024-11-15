@@ -36,7 +36,7 @@ html_head="<!DOCTYPE html>
           </table>
         </td>
         <td>
-          <table id="myTable" style="border-collapse: separate;border-spacing: 5px 20px;">
+          <table id="myTable">
           <tbody>
       "
         
