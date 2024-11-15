@@ -21,7 +21,7 @@ html_head="<!DOCTYPE html>
         table th{word-break: keep-all;white-space:nowrap;}
       </style>
     </head>
-    <body width="95%">
+    <body>
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
       <table id="root">
       <tbody>
