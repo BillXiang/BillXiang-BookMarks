@@ -22,8 +22,8 @@ html_head="<!DOCTYPE html>
       <table id="root">
       <tbody>
       <tr>
-        <td valign="top">
-          <table id="sidebar">
+        <td valign="top" width="20%">
+          <table id="sidebar" style='margin-top: 20px;margin-bottom: 20px;'>
             <tbody>
               <tr><td><a href='./index.html'><b>Recently Read</b></a></td></tr>
               <tr><td><a href='./all.html'><b>More</b></a></td></tr>
@@ -32,7 +32,7 @@ html_head="<!DOCTYPE html>
           </table>
         </td>
         <td>
-          <table id="myTable">
+          <table id="myTable" style='margin-top: 20px;margin-bottom: 20px;width:80%;'>
           <tbody>
       "
         
@@ -70,7 +70,7 @@ read_dir(){
                     echo $a,$b,$c
                     kimi=`cat "${file}.kimi"`
                     cat "${file}.kimi"
-                    echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
+                    echo "<tr><td><table><tbody> \
                     <tr><td>${a}_${b}</td></tr> \
                     <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><b>$name</b></a></td></tr> \
                     <tr><td>Kimi: $kimi</td></tr> \
