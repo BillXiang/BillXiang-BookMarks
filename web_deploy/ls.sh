@@ -32,7 +32,7 @@ html_head="<!DOCTYPE html>
           </table>
         </td>
         <td>
-          <table id="myTable" style='margin-top: 20px;margin-bottom: 20px;width:80%;'>
+          <table id="myTable">
           <tbody>
       "
         
@@ -70,7 +70,7 @@ read_dir(){
                     echo $a,$b,$c
                     kimi=`cat "${file}.kimi"`
                     cat "${file}.kimi"
-                    echo "<tr><td><table><tbody> \
+                    echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
                     <tr><td>${a}_${b}</td></tr> \
                     <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><b>$name</b></a></td></tr> \
                     <tr><td>Kimi: $kimi</td></tr> \
