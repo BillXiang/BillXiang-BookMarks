@@ -53,7 +53,8 @@ jobs:
         id: update_links
         if: ${{ steps.get_pr_info.outputs.filename != 'kimi' }}
         run: |
-          file="${{ steps.get_pr_info.outputs.filename }}"
+          # can not use kimi without money
+          # file="${{ steps.get_pr_info.outputs.filename }}"
           echo $file
           if echo $file | grep -q -E '\.html$'
           then
