@@ -74,7 +74,7 @@ read_dir(){
                     cat "${file}.kimi"
                     echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
                     <tr><td>${a}_${b}</td></tr> \
-                    <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><b>$name</b></a></td></tr> \
+                    <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><b>$c</b></a></td></tr> \
                     <tr><td>$kimi</td></tr> \
                     <tr><td><a href='$ori_url'>原文链接</a></td></tr> \
                     </tbody></table></td></tr>" >> url.tmp
