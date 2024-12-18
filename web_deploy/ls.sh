@@ -100,6 +100,7 @@ echo "        </tbody>
             </table>
           </td>
         </tr>
+        <tr><td><a href='https://github.com/gildas-lormeau/SingleFile'><b>Saved by SingleFile</b></a></td></tr>
         </tbody>
       </table>
       <div id="gitalk-container"></div>
@@ -123,6 +124,7 @@ echo "        </tbody>
             </table>
           </td>
         </tr>
+        <tr><td><a href='https://github.com/gildas-lormeau/SingleFile'><b>Saved by SingleFile</b></a></td></tr>
         </tbody>
       </table>
     </body>
