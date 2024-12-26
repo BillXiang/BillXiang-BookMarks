@@ -1,0 +1,218 @@
+<!DOCTYPE html> <html lang=zh-CN><!--
+ Page saved with SingleFile 
+ url: https://cn.linux-console.net/?p=22760 
+ saved date: Thu Dec 26 2024 20:02:02 GMT+0800 (中国标准时间)
+--><meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>进程同步中的Petersons算法</title>
+<style>/*!
+ * Bootstrap v4.1.1 (https://getbootstrap.com/)
+ * Copyright 2011-2018 The Bootstrap Authors
+ * Copyright 2011-2018 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */:root{--blue:#007bff;--indigo:#6610f2;--purple:#6f42c1;--pink:#e83e8c;--red:#dc3545;--orange:#fd7e14;--yellow:#ffc107;--green:#28a745;--teal:#20c997;--cyan:#17a2b8;--white:#fff;--gray:#6c757d;--gray-dark:#343a40;--primary:#007bff;--secondary:#6c757d;--success:#28a745;--info:#17a2b8;--warning:#ffc107;--danger:#dc3545;--light:#f8f9fa;--dark:#343a40;--breakpoint-xs:0;--breakpoint-sm:576px;--breakpoint-md:768px;--breakpoint-lg:992px;--breakpoint-xl:1200px;--font-family-sans-serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";--font-family-monospace:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}*,::after,::before{box-sizing:border-box}html{font-family:sans-serif;line-height:1.15;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;-ms-overflow-style:scrollbar;-webkit-tap-highlight-color:transparent}@-ms-viewport{width:device-width}footer{display:block}body{margin:0;font-size:1rem;font-weight:400;line-height:1.5;color:#212529;text-align:left;background-color:#fff}[tabindex="-1"]:focus{outline:0!important}hr{box-sizing:content-box;height:0;overflow:visible}h1,h2,h3{margin-top:0}p{margin-bottom:1rem}ul{margin-top:0;margin-bottom:1rem}b{font-weight:bolder}a{color:#007bff;text-decoration:none;background-color:transparent;-webkit-text-decoration-skip:objects}a:hover{color:#0056b3;text-decoration:underline}a:not([href]):not([tabindex]){color:inherit;text-decoration:none}a:not([href]):not([tabindex]):focus,a:not([href]):not([tabindex]):hover{color:inherit;text-decoration:none}a:not([href]):not([tabindex]):focus{outline:0}code,pre{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}pre{margin-top:0;margin-bottom:1rem;overflow:auto;-ms-overflow-style:scrollbar}svg:not(:root){overflow:hidden}button{border-radius:0}button:focus{outline:1px dotted;outline:5px auto -webkit-focus-ring-color}button{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button{overflow:visible}button{text-transform:none}html [type=button]{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{padding:0;border-style:none}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}template{display:none}h1,h2,h3{margin-bottom:.5rem;font-family:inherit;font-weight:500;line-height:1.2;color:inherit}h1{font-size:2.5rem}h2{font-size:2rem}h3{font-size:1.75rem}hr{margin-top:1rem;margin-bottom:1rem;border:0;border-top:1px solid rgba(0,0,0,.1)}pre{display:block;font-size:87.5%;color:#212529}pre code{font-size:inherit;word-break:normal}.container{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto}@media (min-width:576px){.container{max-width:540px}}@media (min-width:768px){.container{max-width:720px}}@media (min-width:992px){.container{max-width:960px}}@media (min-width:1200px){.container{max-width:1140px}}.row{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;margin-right:-15px;margin-left:-15px}.col-md-10{position:relative;width:100%;min-height:1px;padding-right:15px;padding-left:15px}@media (min-width:576px){}@media (min-width:768px){.col-md-10{-ms-flex:0 0 83.333333%;flex:0 0 83.333333%;max-width:83.333333%}}@media (min-width:992px){.offset-lg-1{margin-left:8.333333%}}@media (min-width:1200px){}@media (max-width:575.98px){}@media (max-width:767.98px){}@media (max-width:991.98px){}@media (max-width:1199.98px){}@media screen and (prefers-reduced-motion:reduce){}@media (min-width:576px){}@media screen and (prefers-reduced-motion:reduce){}@media screen and (prefers-reduced-motion:reduce){}.collapse:not(.show){display:none}@media screen and (prefers-reduced-motion:reduce){}.dropdown{position:relative}.dropdown-toggle::after{display:inline-block;width:0;height:0;margin-left:.255em;vertical-align:.255em;content:"";border-top:.3em solid;border-right:.3em solid transparent;border-bottom:0;border-left:.3em solid transparent}.dropdown-toggle:empty::after{margin-left:0}.nav-link{display:block;padding:.5rem 1rem}.nav-link:focus,.nav-link:hover{text-decoration:none}.navbar{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-ms-flex-align:center;align-items:center;-ms-flex-pack:justify;justify-content:space-between;padding:.5rem 1rem}.navbar>.container{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-ms-flex-align:center;align-items:center;-ms-flex-pack:justify;justify-content:space-between}.navbar-brand{display:inline-block;padding-top:.3125rem;padding-bottom:.3125rem;margin-right:1rem;font-size:1.25rem;line-height:inherit;white-space:nowrap}.navbar-brand:focus,.navbar-brand:hover{text-decoration:none}.navbar-nav{display:-ms-flexbox;display:flex;-ms-flex-direction:column;flex-direction:column;padding-left:0;margin-bottom:0;list-style:none}.navbar-nav .nav-link{padding-right:0;padding-left:0}.navbar-collapse{-ms-flex-preferred-size:100%;flex-basis:100%;-ms-flex-positive:1;flex-grow:1;-ms-flex-align:center;align-items:center}@media (max-width:575.98px){}@media (min-width:576px){}@media (max-width:767.98px){}@media (min-width:768px){}@media (max-width:991.98px){.navbar-expand-lg>.container{padding-right:0;padding-left:0}}@media (min-width:992px){.navbar-expand-lg{-ms-flex-flow:row nowrap;flex-flow:row nowrap;-ms-flex-pack:start;justify-content:flex-start}.navbar-expand-lg .navbar-nav{-ms-flex-direction:row;flex-direction:row}.navbar-expand-lg .navbar-nav .nav-link{padding-right:.5rem;padding-left:.5rem}.navbar-expand-lg>.container{-ms-flex-wrap:nowrap;flex-wrap:nowrap}.navbar-expand-lg .navbar-collapse{display:-ms-flexbox!important;display:flex!important;-ms-flex-preferred-size:auto;flex-basis:auto}}@media (max-width:1199.98px){}@media (min-width:1200px){}.navbar-dark .navbar-brand{color:#fff}.navbar-dark .navbar-brand:focus,.navbar-dark .navbar-brand:hover{color:#fff}.navbar-dark .navbar-nav .nav-link{color:rgba(255,255,255,.5)}.navbar-dark .navbar-nav .nav-link:focus,.navbar-dark .navbar-nav .nav-link:hover{color:rgba(255,255,255,.75)}@media (min-width:576px){}@media (min-width:576px){}@media (min-width:576px){}@media (min-width:576px){}@-webkit-keyframes progress-bar-stripes{from{background-position:1rem 0}to{background-position:0 0}}@keyframes progress-bar-stripes{from{background-position:1rem 0}to{background-position:0 0}}@media screen and (prefers-reduced-motion:reduce){}@media screen and (prefers-reduced-motion:reduce){}@media (min-width:576px){}@media (min-width:992px){}@media screen and (prefers-reduced-motion:reduce){}@supports ((-webkit-transform-style:preserve-3d) or (transform-style:preserve-3d)){.carousel-item-next.carousel-item-left,.carousel-item-prev.carousel-item-right{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}}@supports ((-webkit-transform-style:preserve-3d) or (transform-style:preserve-3d)){.active.carousel-item-right,.carousel-item-next{-webkit-transform:translate3d(100%,0,0);transform:translate3d(100%,0,0)}}@supports ((-webkit-transform-style:preserve-3d) or (transform-style:preserve-3d)){.active.carousel-item-left,.carousel-item-prev{-webkit-transform:translate3d(-100%,0,0);transform:translate3d(-100%,0,0)}}@supports ((-webkit-transform-style:preserve-3d) or (transform-style:preserve-3d)){.carousel-fade .active.carousel-item-left,.carousel-fade .active.carousel-item-prev,.carousel-fade .carousel-item-next,.carousel-fade .carousel-item-prev,.carousel-fade .carousel-item.active{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}}.bg-dark{background-color:#343a40!important}@media (min-width:576px){}@media (min-width:768px){}@media (min-width:992px){}@media (min-width:1200px){}@media (min-width:576px){}@media (min-width:768px){}@media (min-width:992px){}@media (min-width:1200px){}@media (min-width:576px){}@media (min-width:768px){}@media (min-width:992px){}@media (min-width:1200px){}.fixed-top{position:fixed;top:0;right:0;left:0;z-index:1030}@supports ((position:-webkit-sticky) or (position:sticky)){.sticky-top{position:-webkit-sticky;position:sticky;top:0;z-index:1020}}.m-0{margin:0!important}.py-3{padding-top:1rem!important}.py-3{padding-bottom:1rem!important}.ml-auto{margin-left:auto!important}@media (min-width:576px){}@media (min-width:768px){}@media (min-width:992px){}@media (min-width:1200px){}.text-center{text-align:center!important}@media (min-width:576px){}@media (min-width:768px){}@media (min-width:992px){}@media (min-width:1200px){}.text-white{color:#fff!important}</style>
+<style>@media only screen and (min-width:48em){}</style>
+<style>@media screen and (prefers-color-scheme:dark){}@media (min-width:1024px){}@media (min-width:1024px){}@media screen and (prefers-color-scheme:dark){}@media (min-width:1024px){}@media screen and (prefers-color-scheme:dark){}@media (min-width:1024px){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media (min-width:1024px){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media (min-width:768px){}@media (min-width:768px){}@media screen and (prefers-color-scheme:dark){}@media (min-width:768px){}@media screen and (prefers-color-scheme:dark){}@media (min-width:768px){}@media (min-width:768px){}@media (min-width:1024px){}@media (min-width:1024px){}@media (min-width:1024px){}@media (min-width:1024px){}@media (min-width:1024px){}@media screen and (prefers-color-scheme:dark){}@media (min-width:768px){}@media screen and (min-width:768px) and (prefers-color-scheme:dark){}@media (min-width:768px){}@media (min-width:481px){}@media screen and (prefers-color-scheme:dark){}@media (min-width:768px){}@media screen and (min-width:768px) and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media (min-width:1024px){}@media (min-width:768px){}@media screen and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}@media (min-width:768px){}@media (min-width:768px){}@media screen and (min-width:768px) and (prefers-color-scheme:dark){}@media screen and (prefers-color-scheme:dark){}</style>
+<style>pre code.hljs{display:block;overflow-x:auto;padding:1em}.hljs{background:#fff;color:#000}.hljs-comment{color:green}.hljs-keyword{color:#00f}.hljs-literal,.hljs-type{color:#a31515}</style>
+<style>body{padding-top:54px;font-family:Open Sans}@media (min-width:992px){body{padding-top:56px}}pre,li{max-width:918px}@media screen and (min-width:768px) and (max-width:918px){pre,li{max-width:768px}}@media screen and (max-width:768px){pre,li{max-width:300px}}p{text-align:justify;margin-top:1em}li{text-align:justify}@media only screen and (min-width:1200px){.container{max-width:1500px}pre{max-width:1400px}}</style>
+<meta name=referrer content=no-referrer><link type=image/x-icon rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAFw8SAPLy8gDHx8cA+/v7AB15xwAkHyEA2dnZAM7OzQAds/8AHbH8AB11wQD9/f0AHHjIAOTk5AAugKsA7e3tAL/AvwAXERMA////ANTU1AAotv8AOTU3AFvI/wA2MzQA+Pj4ABgTFQAZDQ0AFRESAB2y/wCFgoMAv7/AAB2w/AD6+voAGxUXAB6D2ADw7+4ApKSkACev6gAUEBMAt7a2ADIuLwAhjOcAOjc4ACe1/wD08/MAHqD6AC4pKwAdlOoANzI0AB2o8AAYEhUAHpLuAPX19QD+/v4AJyIkAE+OwwAaoucAGhQXACAXGAAXEhQAGBIUAB2x/gAyLS8AI6X8AEJPXQCRkZEAGRQWAB4VFAAdsf0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUwCwAAAAAjDQAAAAAAAAo+CSoENQ5EHSA5AAAAAAAsHQkbExMTCB0JRQAAAAAAABUmEBMTEyguATQAAAAAAABBNhMHExMTJDo9AAAAAAAALyETFBMTExkYPAAAAAAAAAA/EwwTEzYeKwAAAAAAAAAAKQITEzYDBkMAAAAAAAAAAAAfExMTLUMAAAAAAAAAAAAAABE4IRwAAAAAAAAAAAAAAABAFzISAAAAAAAAAAAAAAAAOw8nGgAAAAAAAAAAAAAAAEIzJRoAAAAAAAAAAAAAAAA3IhYzAAAAAAAAAAAAAAAAADEAAAAAAAAAAP//AADjzwAAwAcAAMAHAADgBwAA4AcAAOAHAADwDwAA8A8AAPgfAAD8PwAA/D8AAPw/AAD8PwAA/D8AAP7/AAA="><style>.sf-hidden{display:none!important}</style><link rel=canonical href="https://cn.linux-console.net/?p=22760"><meta http-equiv=content-security-policy content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;"></head>
+ <body>
+ 
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+ <div class=container>
+ <a class="navbar-brand offset-lg-1" href=https://cn.linux-console.net/>Linux-Console.net</a>
+ <button class="navbar-toggler sf-hidden" type=button data-toggle=collapse data-target=#navbarResponsive aria-controls=navbarResponsive aria-expanded=false aria-label="Toggle navigation">
+ 
+ </button>
+ <div class="collapse navbar-collapse" id=navbarResponsive>
+ <ul class="navbar-nav ml-auto">
+ 
+ <li class="nav-item dropdown">
+ <a style=color:#ff3131 class="nav-link dropdown-toggle" href=https://cn.science-news.dev/ target=_blank>科学新闻</a>
+ </li>
+ 
+ <li class="nav-item dropdown">
+ <a style=color:#7fff00 class="nav-link dropdown-toggle" href=https://cn.a-d.site/?all target=_blank>Active Directory / PowerShell</a>
+ </li>
+ <li class="nav-item dropdown">
+ <a class="nav-link dropdown-toggle" href=https://cn.linux-console.net/?all id=navbarDropdownMenuLink aria-haspopup=true aria-expanded=false>
+ 所有文章
+ </a>
+ </li>
+ <li class="nav-item dropdown">
+ <a class="nav-link dropdown-toggle" href=# id=navbarDropdownMenuLink data-toggle=dropdown aria-haspopup=true aria-expanded=false>
+ Linux发行版
+ </a>
+ <div class="dropdown-menu sf-hidden" aria-labelledby=navbarDropdownMenuLink>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </div>
+ </li>
+ <li class="nav-item dropdown">
+ <a class="nav-link dropdown-toggle" href=# id=navbarDropdownMenuLink data-toggle=dropdown aria-haspopup=true aria-expanded=false>
+ 网站部分 </a>
+ <div class="dropdown-menu sf-hidden" aria-labelledby=navbarDropdownMenuLink>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </div>
+ </li>
+ <li class="nav-item dropdown">
+ <a class="nav-link dropdown-toggle" href=# id=navbarDropdownMenuLink data-toggle=dropdown aria-haspopup=true aria-expanded=false>
+ Windows </a>
+ <div class="dropdown-menu sf-hidden" aria-labelledby=navbarDropdownMenuLink>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </div>
+ </li>
+ </ul>
+ </div>
+ </div>
+ </nav>
+ 
+ <div class=container>
+ 
+ <p><b>网站搜索</b></p>
+<div class=gcse-search></div>
+ 
+ 
+ <div class=row>
+ <div class="col-md-10 offset-lg-1">
+ 
+<ins class=adsbygoogle style=display:block data-ad-client=ca-pub-6366716774018597 data-ad-slot=7945691679 data-ad-format=link data-full-width-responsive=true></ins>
+ 
+ <div class=container><div class=row><div id=content><h1>进程同步中的Petersons算法</h1><hr>
+<ins class=adsbygoogle style=display:block;text-align:center data-ad-layout=in-article data-ad-format=fluid data-ad-client=ca-pub-6366716774018597 data-ad-slot=1534813108></ins>
+<p>协调并发运行的进程的操作是进程同步的核心问题，是计算机科学中的一个基本问题。互斥问题是进程同步的重要组成部分，Peterson 算法中有一个众所周知的解决方案。这种互斥算法由 Gary Peterson 于 1981 年开发，是最简单、最流行的算法之一。本文将彻底研究 Peterson 算法，包括其描述、准确性的理由、优点和缺点、与其他算法的比较、应用和结论。<h2 style=text-align:justify>彼得森算法</h2><ul class=list><li><p>将turn设置为0或1，指示哪个进程可以首先进入其临界区。</p><li><p>无限重复−</p><li><p>将flag[i]设置为true，表示进程i要进入其临界区。</p><li><p>将turn 设置为j，即另一个进程索引。</p><li>
+<ins class=adsbygoogle style=display:block;text-align:center data-ad-layout=in-article data-ad-format=fluid data-ad-client=ca-pub-6366716774018597 data-ad-slot=9552189218></ins>
+<p>当 flag[j] 为 true 并且turn 等于j 时，请等待。</p><li><p>进入临界区。</p><li><p>将 flag[i] 设置为 false，表示进程 i 已完成其关键部分。</p><li><p>余数部分。</p></ul><h2 style=text-align:justify>算法描述</h2><p>互斥问题有一种基于软件的解决方案，称为彼得森算法，该算法旨在保证其关键区域中只存在一个进程。两个共享变量、一个标志数组和一个轮变量构成了该算法的基础。标志数组中的每个进程都会分配一个标志，其中包含布尔值来表示进程是否有兴趣访问其关键区域。轮次变量是一个数字，指示在发生争议时哪个进程应该先进行。<p>进程每次希望进入或离开其关键扇区时都会调用算法的两个 lock() 和unlock() 方法。 lock() 方法的实现如下 -<pre><code class="hljs language-powershell">void lock(int i) {
+   flag[<span class=hljs-type>i</span>] = true;
+   turn = j; //j is the other <span class=hljs-keyword>process</span>
+   <span class=hljs-keyword>while</span> (flag[<span class=hljs-type>j</span>] &amp;&amp; turn == j);
+}
+</code></pre><p>unlock() 方法更容易使用 -<pre><code class="hljs language-undefined">void unlock(int i) {
+   flag[i] = false;
+} 
+</code></pre><p>lock() 方法通过首先将调用进程的标志设置为 true 来表明调用进程有兴趣访问其关键部分。如果两个进程都想同时访问它们的关键部分，那么它将把turn变量设置为另一个进程的索引（j），表明另一个进程应该首先继续。之后，该函数进入忙等待循环，反复检查其他进程的标志是否为真，以及现在是否轮到到达关键区域。如果不满足这些要求之一，则循环继续。满足这两个要求后，循环结束，调用过程转到其关键部分。<p>通过使用unlock()方法简单地将其标志更改为false，调用进程可以离开其关键区域并且不再有兴趣进入该区域。<h3 style=text-align:justify>句法</h3><pre><code class="hljs language-powershell">int turn = <span class=hljs-number>0</span>;          // shared variable
+bool flag[<span class=hljs-number>2</span>] = {false, false}; // shared variable
+
+<span class=hljs-keyword>Process</span> <span class=hljs-number>0</span>:
+<span class=hljs-keyword>while</span> (true) {
+   flag[<span class=hljs-number>0</span>] = true;
+   turn = <span class=hljs-number>1</span>;
+   <span class=hljs-keyword>while</span> (flag[<span class=hljs-number>1</span>] &amp;&amp; turn == <span class=hljs-number>1</span>) {} // busy wait
+   // critical section
+   flag[<span class=hljs-number>0</span>] = false;
+   // remainder section
+}
+
+<span class=hljs-keyword>Process</span> <span class=hljs-number>1</span>:
+<span class=hljs-keyword>while</span> (true) {
+   flag[<span class=hljs-number>1</span>] = true;
+   turn = <span class=hljs-number>0</span>;
+   <span class=hljs-keyword>while</span> (flag[<span class=hljs-number>0</span>] &amp;&amp; turn == <span class=hljs-number>0</span>) {} // busy wait
+   // critical section
+   flag[<span class=hljs-number>1</span>] = false;
+   // remainder section
+}
+</code></pre><h2 style=text-align:justify>证明的正确性</h2><p>互斥问题在 Peterson 算法中有一个有效的解决方案，它满足下面列出的标准 -<h3 style=text-align:justify>相互排斥</h3>
+<ins class=adsbygoogle style=display:block data-ad-client=ca-pub-6366716774018597 data-ad-slot=1482127509 data-ad-format=auto data-full-width-responsive=true></ins>
+<p>在任何时刻，可能只有一个进程处于关键部分。<h3 style=text-align:justify>进步</h3><p>如果当前没有进程位于其关键部分并且任意数量的进程希望这样做，则其中一个进程最终将进入其关键部分。<h3 style=text-align:justify>有限等待</h3><p>其他进程阻止进程访问其关键阶段的频率是有限的。<p>不变量或在算法执行之前、期间和之后成立的特征用于证明 Peterson 算法的准确性。该证明包含以下不变量 -<ul class=list><li><p>如果一个进程想要访问其重要部分，则该进程的标志为 true。</p><li><p>如果一个进程不想进入其关键部分，则该进程的标志为假。</p><li><p>如果进程位于其临界区，则其轮次变量将等于其索引。</p></ul><p>这些不变量可用于证明互斥属性是有效的，因为如果两个进程试图同时进入其关键部分，忙等待循环需要至少一个处理器等待，直到另一个处理器完成运行。进度属性为真，因为turn变量保证至少一个进程总是能够进入其临界区，因此即使没有进程位于其临界区并且其中一个或多个进程希望进入它们，最终也是其中之一将会成功。忙等待循环确保每个进程最终都会轮到访问其关键部分，即使其他进程也有兴趣这样做，这就是有界等待属性有效的原因。<h2 style=text-align:justify>不同的方法</h2><p>针对进程同步中关键部分问题的一个众所周知的补救方法是 Peterson 算法。它用于确保一次只有一个进程可以访问共享资源。彼得森算法有多个版本，其实现方式各不相同，但都遵循相同的基本思想。<p>以下是将彼得森算法付诸实践的三种典型方法 -<h3 style=text-align:justify>方法 1：使用标志</h3>
+<ins class=adsbygoogle style=display:block;text-align:center data-ad-layout=in-article data-ad-format=fluid data-ad-client=ca-pub-6366716774018597 data-ad-slot=9360617528></ins>
+<p>此方法中的每个进程都拥有一个布尔标志，指示它是否想要访问共享资源。这就是算法的运作方式 -<pre><code class="hljs language-powershell">boolean flag[<span class=hljs-number>2</span>] = {false, false};
+int turn = <span class=hljs-number>0</span>;
+
+/* <span class=hljs-keyword>Process</span> <span class=hljs-number>0</span> */
+flag[<span class=hljs-number>0</span>] = true;
+turn = <span class=hljs-number>1</span>;
+<span class=hljs-keyword>while</span> (flag[<span class=hljs-number>1</span>] &amp;&amp; turn == <span class=hljs-number>1</span>);
+/* critical section */
+flag[<span class=hljs-number>0</span>] = false;
+
+/* <span class=hljs-keyword>Process</span> <span class=hljs-number>1</span> */
+flag[<span class=hljs-number>1</span>] = true;
+turn = <span class=hljs-number>0</span>;
+<span class=hljs-keyword>while</span> (flag[<span class=hljs-number>0</span>] &amp;&amp; turn == <span class=hljs-number>0</span>);
+/* critical section */
+flag[<span class=hljs-number>1</span>] = false;
+</code></pre><p>这种方法使用称为 flag 的布尔变量数组来指示进程是否想要访问关键区域。首先进入临界区的程序由整型变量turn决定。该算法确保如果一个进程希望进入，另一个进程必须等待直到轮流通过，从而防止两个进程同时进入要害部分。<h3 style=text-align:justify>方法 2：仅使用turn 变量</h3><p>在这种方法中，用于确定哪个进程可以访问关键部分的单个变量称为轮次。这就是算法的运作方式 -<pre><code class="hljs language-sql"><span class=hljs-type>int</span> turn <span class=hljs-operator>=</span> <span class=hljs-number>0</span>;
+
+<span class=hljs-comment>/* Process 0 */</span>
+turn <span class=hljs-operator>=</span> <span class=hljs-number>1</span>;
+while (turn <span class=hljs-operator>=</span><span class=hljs-operator>=</span> <span class=hljs-number>1</span>);
+<span class=hljs-comment>/* critical section */</span>
+turn <span class=hljs-operator>=</span> <span class=hljs-number>1</span>;
+
+<span class=hljs-comment>/* Process 1 */</span>
+turn <span class=hljs-operator>=</span> <span class=hljs-number>0</span>;
+while (turn <span class=hljs-operator>=</span><span class=hljs-operator>=</span> <span class=hljs-number>0</span>);
+<span class=hljs-comment>/* critical section */</span>
+turn <span class=hljs-operator>=</span> <span class=hljs-number>0</span>;
+</code></pre><p>在这个实现中使用变量turn来选择哪个进程可以访问关键部分。如果turn等于进程ID，则进程可以访问关键部分。如果轮次与进程 ID 不同，则进程必须等待，直到轮到它。<h3 style=text-align:justify>方法 3：使用锁变量</h3><p>该方法使用一个锁变量来显示关键部分是否被锁定。这就是算法的运作方式 -<pre><code class="hljs language-sql"><span class=hljs-type>boolean</span> lock <span class=hljs-operator>=</span> <span class=hljs-literal>false</span>;
+
+<span class=hljs-comment>/* Process 0 */</span>
+while (lock);
+lock <span class=hljs-operator>=</span> <span class=hljs-literal>true</span>;
+<span class=hljs-comment>/* critical section */</span>
+lock <span class=hljs-operator>=</span> <span class=hljs-literal>false</span>;
+
+<span class=hljs-comment>/* Process 1 */</span>
+while (lock);
+lock <span class=hljs-operator>=</span> <span class=hljs-literal>true</span>;
+<span class=hljs-comment>/* critical section */</span>
+lock <span class=hljs-operator>=</span> <span class=hljs-literal>false</span>;
+</code></pre><p>在此实现中，关键部分的锁定状态由变量lock 显示。关键部分被锁定，如果 lock 等于 true，则进程必须等待直到它变为 false。如果lock 设置为true，则进程可以访问关键区域并锁定它；如果lock 等于false。当重要部分完成后，该过程通过将 lock 设置为 false 来解锁它。<h2 style=text-align:justify>应用领域</h2><p>多个计算机科学领域，特别是操作系统和分布式系统，都使用彼得森算法。在代码的关键部分，例如文件系统操作、网络连接和共享内存访问，该技术可用于保证互斥。在分布式系统中，例如具有分布式数据库和消息队列的系统，该技术还可以用于协调对共享资源的访问。<h2 style=text-align:justify>结论</h2><p>总之，彼得森算法是一种众所周知且仍在使用的解决互斥问题的方法。该方法简单易懂，这使其成为小型系统的理想选择。该算法也有一些缺点，包括繁忙等待的倾向和对公共变量的依赖。尽管存在这些缺点，彼得森算法在计算机科学中仍有多种用途，特别是在操作系统和分布式系统中。总的来说，Peterson 算法标志着进程同步发展的一个重要转折点，并且仍然是保证当代计算系统中互斥的有效方法。</p></div></div></div><h2>相关文章:</h2><ul><li><a href="https://cn.linux-terminal.com/?p=7968">[解决方法] Apt 警告：签名密钥使用弱算法</a><li><a href="https://cn.linux-console.net/?p=34316">在 Python 中使用不同的遗传算法表示</a><li><a href="https://cn.linux-console.net/?p=34037">使用 PyGAD 的 5 个遗传算法应用</a><li><a href="https://cn.linux-console.net/?p=28018">滑动窗口算法指南以及如何在 Go 中实现它</a><li><a href="https://cn.linux-console.net/?p=27921">7 个练习数据结构和算法编码挑战的网站</a><li><a href="https://cn.linux-console.net/?p=26844">机器学习中的 Find S 算法</a><li><a href="https://cn.linux-console.net/?p=26619">使用 Networxx 模块的超链接诱导主题搜索 (HITS) 算法 - Python</a><li><a href="https://cn.linux-console.net/?p=26556">使用 Python 的 SPSA（同时扰动随机逼近）算法</a><li><a href="https://cn.linux-console.net/?p=26441">OpenCV Python 中使用分水岭算法进行图像分割</a><li><a href="https://cn.linux-console.net/?p=25826">机器学习算法统计比较</a><li><a href="https://cn.linux-console.net/?p=25686">使用YOLO算法构建实时物体检测系统</a><li><a href="https://cn.linux-console.net/?p=25548">Python 中的 k 最近邻算法</a><li><a href="https://cn.linux-console.net/?p=23396">操作系统中的死锁检测算法</a><li><a href="https://cn.linux-console.net/?p=23393">进程同步中的 Dekker 算法</a><li><a href="https://cn.linux-console.net/?p=23379">进程同步中的烘焙算法</a></ul>
+ 
+<ins class=adsbygoogle style=display:block data-ad-format=autorelaxed data-ad-client=ca-pub-6366716774018597 data-ad-slot=9511294053></ins>
+<hr>
+<ins class=adsbygoogle style=display:block data-ad-client=ca-pub-6366716774018597 data-ad-slot=3562404162 data-ad-format=auto data-full-width-responsive=true></ins>
+ 
+ 
+ 
+ </div>
+ </div>
+ 
+ 
+ </div>
+ 
+ 
+ <footer class="py-3 bg-dark">
+ <div class=container>
+ <p class="m-0 text-center text-white">版权所有。 © Linux-Console.net • 2019-2024</p>
+ </div>
+ 
+ </footer>
+ 
+ 
+ 
+ 
+<noscript><div><img src="https://mc.yandex.ru/watch/53753182" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+ 
+<div style=all:initial><div style=all:initial id=__hcfy__><template shadowrootmode=open><style class=sf-hidden>#root{-webkit-text-size-adjust:100%;box-sizing:border-box;font-size:14px;font-weight:400;letter-spacing:0;line-height:1.28581;text-transform:none;color:#182026;font-family:-apple-system,"BlinkMacSystemFont","Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Open Sans","Helvetica Neue","Icons16",sans-serif;touch-action:manipulation}#root>.bp5-portal{z-index:9999999999}</style><style class=sf-hidden>#translate-panel{background-color:#f6f7f9;display:flex;flex-direction:column;padding-bottom:8px}.bp5-dark #translate-panel{background-color:#252a31}#translate-panel .fixed{flex-shrink:0;margin-bottom:10px}#translate-panel .body{flex-grow:1;overflow:auto;overscroll-behavior:contain}#translate-panel .body::-webkit-scrollbar{width:8px;background-color:rgba(0,0,0,0);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar:hover{background-color:rgba(0,0,0,.09)}#translate-panel .body::-webkit-scrollbar-thumb:vertical{background:rgba(0,0,0,.5);-webkit-border-radius:100px}#translate-panel .body::-webkit-scrollbar-thumb:vertical:active{background:rgba(0,0,0,.61);-webkit-border-radius:100px}#translate-panel.size-small,#translate-panel.size-small h6.bp5-heading,#translate-panel.size-small .bp5-control.bp5-large,#translate-panel.size-small textarea.bp5-input.bp5-small{font-size:14px}#translate-panel.size-small .phonetic-item,#translate-panel.size-small .quick-settings a{font-size:12px}#translate-panel.size-middle,#translate-panel.size-middle h6.bp5-heading,#translate-panel.size-middle .bp5-control.bp5-large,#translate-panel.size-middle textarea.bp5-input{font-size:18px}#translate-panel.size-middle .phonetic-item,#translate-panel.size-middle .quick-settings a{font-size:14px}#translate-panel.size-large,#translate-panel.size-large h6.bp5-heading,#translate-panel.size-large .bp5-control.bp5-large,#translate-panel.size-large textarea.bp5-input.bp5-large{font-size:22px}#translate-panel.size-large .source,#translate-panel.size-large .phonetic-item,#translate-panel.size-large .quick-settings a{font-size:18px}#translate-panel .bp5-button.bp5-small,#translate-panel .bp5-small .bp5-button{min-height:20px;min-width:20px}#translate-panel .header{display:flex;align-items:center;padding:4px 6px 4px 10px;border-bottom:1px solid #d1d1d1}.bp5-dark #translate-panel .header{border-bottom-color:rgba(17,20,24,.4)}#translate-panel .header .drag-block{min-width:5px;flex-shrink:0;flex-grow:1;align-self:stretch}#translate-panel .header .left{flex-shrink:0;display:flex}#translate-panel .header .right{flex-shrink:0;display:flex;align-items:center}#translate-panel .header .right .bp5-icon-arrow-right{flex-shrink:0;margin:0 5px}#translate-panel .header .right>.bp5-button{flex-shrink:0;margin:0 1px}#translate-panel .header .right>.bp5-button:last-child{margin-right:0}#translate-panel .quick-settings{padding:4px 9px;margin:0 1px}#translate-panel .quick-settings>div{margin-bottom:5px}#translate-panel .quick-settings .bp5-control{margin-bottom:0}#translate-panel .query-text{position:relative;padding:10px 10px 2px 10px}#translate-panel .query-text textarea.bp5-input{min-height:44px;font-family:system-ui,-apple-system,"Segoe UI","Roboto","Ubuntu","Cantarell","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";overscroll-behavior:contain}#translate-panel .query-text .translate-btn{position:absolute;opacity:.6}#translate-panel .query-text .translate-btn:hover{opacity:1}#translate-panel .body{padding:0 10px}#translate-panel .body .bp5-card:first-child{margin-top:1px}#translate-panel .body .bp5-card:last-child{margin-bottom:1px}#translate-panel .body .no-api{margin:20px 0}.result-block{margin:8px 0;padding:2px 5px}.result-block .bp5-button{visibility:hidden}.result-block .error .bp5-button,.result-block:hover .bp5-button{visibility:visible}.result-block .legend{display:flex;align-items:center;justify-content:space-between}.result-block .legend .legend-left{display:flex;align-items:center}.result-block .legend .api-ico,.result-block .legend .bp5-heading{flex-shrink:0;white-space:nowrap}.result-block .legend .api-ico{display:inline-block;width:14px;height:14px;background-size:contain;margin-right:3px}.result-block .legend .bp5-heading{margin-bottom:0;margin-right:10px}.result-block .legend .source{cursor:pointer;font-size:12px;display:inline-flex;align-items:center}.result-block .legend .source .source-text{overflow:hidden}.result-block .legend .source .bp5-icon{position:relative;top:-1px;margin-left:1px}.result-block .phonetic{display:flex;flex-wrap:wrap}.result-block .phonetic .phonetic-item{display:flex;align-items:center;font-size:12px}.result-block .phonetic .phonetic-item:not(:last-child){margin-right:12px}.result-block .common-result p{line-height:1.3;margin:2px 0;overflow-wrap:break-word}.result-block .common-result .dict a{text-decoration:underline}.result-block .error{font-size:12px;padding:5px 10px}.result-block .dict-pos{margin-right:5px}.external-translators{margin-bottom:3px;padding:0;display:flex;flex-wrap:wrap}.external-translators>div{margin:0 5px 5px 0}.quick-links a{margin:0 5px 5px 0}#popper-container{width:250px;max-width:100%;position:absolute;left:0;top:0;z-index:9999999998;touch-action:none;transition:opacity .2s;background-color:#f6f7f9}.bp5-dark #popper-container{background-color:#252a31}#popper-container.show{opacity:1;pointer-events:auto;-moz-user-select:auto;user-select:auto}#popper-container,#popper-container[data-popper-reference-hidden=true]{opacity:0;pointer-events:none;-moz-user-select:none;user-select:none}#popper-container .drag-block{cursor:-webkit-grab;cursor:grab}#popper-container.pin{position:fixed}#popper-container.pin .arrow{display:none}#popper-container .arrow,#popper-container .arrow::before{position:absolute;width:8px;height:8px;z-index:-1}#popper-container .arrow::before{content:"";transform:rotate(45deg);background:#f6f7f9}.bp5-dark #popper-container .arrow::before{background-color:#252a31}#popper-container .arrow{display:none}#popper-container.show[data-popper-placement]:not([data-popper-reference-hidden=true]) .arrow{display:block}#popper-container[data-popper-placement^=top] .arrow{bottom:-5px}#popper-container[data-popper-placement^=top] .arrow::before{border-right:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#popper-container[data-popper-placement^=bottom] .arrow{top:-5px}#popper-container[data-popper-placement^=bottom] .arrow::before{border-left:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=left] .arrow{right:-5px}#popper-container[data-popper-placement^=left] .arrow::before{border-right:1px solid #d1d1d1;border-top:1px solid #d1d1d1}#popper-container[data-popper-placement^=right] .arrow{left:-5px}#popper-container[data-popper-placement^=right] .arrow::before{border-left:1px solid #d1d1d1;border-bottom:1px solid #d1d1d1}#translate-btn{display:none;position:absolute;z-index:9999999999;left:0;top:0}#translate-btn .bp5-button{padding:2px;min-width:0;min-height:0}#translate-btn .btn-icon{width:18px;height:18px;background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logo.png);background-size:contain}.bp5-dark #translate-btn .btn-icon{background-image:url(moz-extension://19651fe5-a2eb-4315-b2c9-0ae3c022c917/logowhite36.png)}#translate-btn.show{display:block}.translate-type-selector .bp5-label{display:inline}.translate-type-selector .bp5-radio{margin-bottom:0}#ocr-container{position:fixed;z-index:99999999999999;left:0;top:0;right:0;bottom:0}#ocr-container .toolbar{display:none;position:absolute;z-index:1}#ocr-container img{max-width:100%}#app{cursor:default}.switch-pin{flex-shrink:0;cursor:pointer}.switch-pin .bp5-icon-pin{transition:transform .2s,color .2s;transform:rotate(-45deg)}.pin .switch-pin .bp5-icon-pin{transform:rotate(-70deg)}.cut-btn{margin-left:2px}.app-toaster-container{position:fixed!important;z-index:9999999999!important}.app-toaster-container .bp5-toast{min-width:auto}#web-trs-panel .app-toaster-container{padding-right:0;padding-left:0}#web-trs-panel .page-trs-form-group{margin:0 0 0 0;align-items:center}#web-trs-panel .page-trs-form-group>label{width:70px}</style><div id=root dir=ltr><div id=app><div id=translate-btn class=sf-hidden></div><div id=popper-container style=width:290px;transform:translate(0px) class=bp5-elevation-4><div id=translate-panel class=size-small><div class=fixed><div class=header><div class=left><div class=switch-pin><button type=button class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-pin"><svg data-icon=pin height=14 role=img viewBox="0 0 16 16" width=14><path d="M9.41.92c-.51.51-.41 1.5.15 2.56L4.34 7.54C2.8 6.48 1.45 6.05.92 6.58l3.54 3.54-3.54 4.95 4.95-3.54 3.54 3.54c.53-.53.1-1.88-.96-3.42l4.06-5.22c1.06.56 2.04.66 2.55.15L9.41.92z" fill-rule=evenodd></path></svg></span></button></div><button type=button title=图片翻译 class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-media"><svg data-icon=media height=14 role=img viewBox="0 0 16 16" width=14><path d="M11.99 6.99c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3-5h-14c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-10c0-.55-.45-1-1-1zm-1 9l-5-3-1 2-3-4-3 5v-7h12v7z" fill-rule=evenodd></path></svg></span></button><button type=button title=语音翻译 class="bp5-button bp5-minimal bp5-small"><span class=bp5-icon><svg version=1.1 id=Capa_1 width=14 height=14 xmlns=http://www.w3.org/2000/svg xmlns:xlink=http://www.w3.org/1999/xlink x=0px y=0px viewBox="0 0 490.9 490.9" xml:space=preserve><g><g><path d="M245.5,322.9c53,0,96.2-43.2,96.2-96.2V96.2c0-53-43.2-96.2-96.2-96.2s-96.2,43.2-96.2,96.2v130.5 C149.3,279.8,192.5,322.9,245.5,322.9z M173.8,96.2c0-39.5,32.2-71.7,71.7-71.7s71.7,32.2,71.7,71.7v130.5 c0,39.5-32.2,71.7-71.7,71.7s-71.7-32.2-71.7-71.7V96.2z"></path><path d="M94.4,214.5c-6.8,0-12.3,5.5-12.3,12.3c0,85.9,66.7,156.6,151.1,162.8v76.7h-63.9c-6.8,0-12.3,5.5-12.3,12.3 s5.5,12.3,12.3,12.3h152.3c6.8,0,12.3-5.5,12.3-12.3s-5.5-12.3-12.3-12.3h-63.9v-76.7c84.4-6.3,151.1-76.9,151.1-162.8 c0-6.8-5.5-12.3-12.3-12.3s-12.3,5.5-12.3,12.3c0,76.6-62.3,138.9-138.9,138.9s-138.9-62.3-138.9-138.9 C106.6,220,101.2,214.5,94.4,214.5z"></path></g></g></svg></span></button></div><div class=drag-block title=按住不放可以拖动></div><div class=right><button type=button disabled title=添加到收藏夹 class="bp5-button bp5-disabled bp5-minimal bp5-small" tabindex=-1><span aria-hidden=true class="bp5-icon bp5-icon-star-empty"><svg data-icon=star-empty height=14 role=img viewBox="0 0 16 16" width=14><path d="M16 6.11l-5.53-.84L8 0 5.53 5.27 0 6.11l4 4.1L3.06 16 8 13.27 12.94 16 12 10.21l4-4.1zM4.91 13.2l.59-3.62L3 7.02l3.45-.53L8 3.2l1.55 3.29 3.45.53-2.5 2.56.59 3.62L8 11.49 4.91 13.2z" fill-rule=evenodd></path></svg></span></button><button type=button class="bp5-button bp5-minimal bp5-small settings" title=快捷设置><span aria-hidden=true class="bp5-icon bp5-icon-cog"><svg data-icon=cog height=14 role=img viewBox="0 0 16 16" width=14><path d="M15.19 6.39h-1.85c-.11-.37-.27-.71-.45-1.04l1.36-1.36c.31-.31.31-.82 0-1.13l-1.13-1.13a.803.803 0 00-1.13 0l-1.36 1.36c-.33-.17-.67-.33-1.04-.44V.79c0-.44-.36-.8-.8-.8h-1.6c-.44 0-.8.36-.8.8v1.86c-.39.12-.75.28-1.1.47l-1.3-1.3c-.3-.3-.79-.3-1.09 0L1.82 2.91c-.3.3-.3.79 0 1.09l1.3 1.3c-.2.34-.36.7-.48 1.09H.79c-.44 0-.8.36-.8.8v1.6c0 .44.36.8.8.8h1.85c.11.37.27.71.45 1.04l-1.36 1.36c-.31.31-.31.82 0 1.13l1.13 1.13c.31.31.82.31 1.13 0l1.36-1.36c.33.18.67.33 1.04.44v1.86c0 .44.36.8.8.8h1.6c.44 0 .8-.36.8-.8v-1.86c.39-.12.75-.28 1.1-.47l1.3 1.3c.3.3.79.3 1.09 0l1.09-1.09c.3-.3.3-.79 0-1.09l-1.3-1.3c.19-.35.36-.71.48-1.1h1.85c.44 0 .8-.36.8-.8v-1.6a.816.816 0 00-.81-.79zm-7.2 4.6c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill-rule=evenodd></path></svg></span></button><button type=button title=关闭(Esc) class="bp5-button bp5-minimal bp5-small"><span aria-hidden=true class="bp5-icon bp5-icon-cross"><svg data-icon=cross height=18 role=img viewBox="0 0 16 16" width=18><path d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z" fill-rule=evenodd></path></svg></span></button></div></div><div class=bp5-collapse><div class="bp5-collapse-body sf-hidden" aria-hidden=true></div></div></div><div class=body><p>请输入需要翻译的文本。</p></div></div><div class="arrow sf-hidden"></div></div><div id=web-trs-panel></div></div></div></template></div></div><script data-template-shadow-root>(()=>{document.currentScript.remove();processNode(document);function processNode(node){node.querySelectorAll("template[shadowrootmode]").forEach(element=>{let shadowRoot = element.parentElement.shadowRoot;if (!shadowRoot) {try {shadowRoot=element.parentElement.attachShadow({mode:element.getAttribute("shadowrootmode"),delegatesFocus:element.getAttribute("shadowrootdelegatesfocus")!=null,clonable:element.getAttribute("shadowrootclonable")!=null,serializable:element.getAttribute("shadowrootserializable")!=null});shadowRoot.innerHTML=element.innerHTML;element.remove()} catch (error) {} if (shadowRoot) {processNode(shadowRoot)}}})}})()</script>
