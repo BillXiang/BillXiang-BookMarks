@@ -91,7 +91,7 @@ echo "" > docs.tmp
 mkdir tags
 read_dir "."
 find ./tags -type f |xargs -i mv {} {}.html
-wc -l tags/*|sort -r|tail -n +2|head -n 10|awk '{print "<a href=./"$2">"$2,$1"篇</a><br>"}' | tee -a all.html index.html docs.html
+wc -l tags/*|sort -r|tail -n +2|head -n 10|awk -F'[/. ]' '{print "<a herf=./tags/"$10".html>"$10,"</a>$8篇<br>"}' | tee -a all.html index.html docs.html
 echo $html_mid | tee -a all.html index.html docs.html
 
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index.html
