@@ -91,7 +91,8 @@ echo "" > url.tmp
 echo "" > docs.tmp
 mkdir tags
 read_dir "."
-wc -l tmp/*|sort -r|tail -n +2|head -n 10>> index.html
+find ./tags -type f |xargs -i mv {} {}.html
+wc -l tags/*|sort -r|tail -n +2|head -n 10 >> index.html
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index.html
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all.html
 cat docs.tmp | grep -v "web_deploy" | grep -v README.md  |grep -v url.tmp |grep -v docs.tmp >> docs.html
