@@ -47,12 +47,10 @@ echo $html_head > docs.html
 read_dir(){
     for file in "$1"/*;
     do
-        #echo $file"####"
         if [ -d "$file" ]
         then
             if [[ $file != '.' && $file != '..' ]]
             then
-                #echo "DIR"
                 read_dir "$file"
             fi
         else
@@ -70,27 +68,30 @@ read_dir(){
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
                     echo $a,$b,$c
-                    tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf "/"}else{printf "\n"}}}}')
+                    tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf " "}else{printf "\n"}}}}')
                     kimi=`cat "${file}.kimi"`
-                    cat "${file}.kimi"
+                    cd tags
                     echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
                     <tr><td>${a}_${b}</td></tr> \
                     <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><b>$c</b></a></td></tr> \
                     <tr><td>$kimi</td></tr> \
                     <tr><td><a href='$ori_url'>原文链接</a> TAGs:$tags</td></tr> \
-                    </tbody></table></td></tr>" >> url.tmp
-                    #echo "<tr></tr>" >> url.tmp
+                    </tbody></table></td></tr>" | tee -a ../url.tmp $tags
+                    cd ..
                 done
             elif [[ "$kimi" -ne 1 ]];then
                 echo "<tr><td></td><td></td><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$name</a></td></tr>" >> docs.tmp
             fi
         fi
     done
+    
 }
 
 echo "" > url.tmp
 echo "" > docs.tmp
+mkdir tags
 read_dir "."
+wc -l tmp/*|sort -r|tail -n +2|head -n 10>> index.html
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index.html
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all.html
 cat docs.tmp | grep -v "web_deploy" | grep -v README.md  |grep -v url.tmp |grep -v docs.tmp >> docs.html
