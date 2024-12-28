@@ -91,9 +91,9 @@ echo "" > docs.tmp
 mkdir tags
 read_dir "."
 find ./tags -type f |xargs -i mv {} {}.html
-wc -l tags/*|sort -r|tail -n +2|head -n 10|awk -F'[/.[:space:]]' '{print "<a herf=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' | tee -a all.html index.html docs.html
-wc -l tags/*|sort -r|tail -n +2|awk -F'[/.[:space:]]' '{print "<a herf=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' >> all_tags.html
-echo "<a herf=./all_tags.html>All TAGs</a><br>" | tee -a all.html index.html docs.html
+wc -l tags/*|sort -r|tail -n +2|head -n 10|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' | tee -a all.html index.html docs.html
+wc -l tags/*|sort -r|tail -n +2|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' >> all_tags.html
+echo "<a href=./all_tags.html>All TAGs</a><br>" | tee -a all.html index.html docs.html
 echo $html_mid | tee -a all.html index.html docs.html
 
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index.html
