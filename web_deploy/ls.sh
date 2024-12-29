@@ -37,8 +37,6 @@ html_head="<!DOCTYPE html>
           </table>
         </td>
         <td>
-          <table id="myTable">
-          <tbody>
       "
         
 echo $html_head | tee all.html index.html docs.html
@@ -97,13 +95,21 @@ wc -l tags/*|sort -r|tail -n +2|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$
 echo "<a href=./all_tags.html>All TAGs</a><br>" | tee -a all.html index.html docs.html
 echo $html_mid | tee -a all.html index.html docs.html
 
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index.html
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all.html
-cat docs.tmp | grep -v "web_deploy" | grep -v README.md  |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs.html
+########
+echo "<table id="myTable">
+          <tbody>" | tee index_content.html all_content.html docs_content.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index_content.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all_content.html
+cat docs.tmp | grep -v "web_deploy" | grep -v README.md  |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
+echo "    </tbody>
+      </table>" | tee index_content.html all_content.html docs_content.html
 rm -f url.tmp
 
-echo "        </tbody>
-            </table>
+echo "<iframe src='./index_content.html' frameborder='0'>Your browser does't support iframe</iframe>" >> index.html
+echo "<iframe src='./all_content.html' frameborder='0'>Your browser does't support iframe</iframe>" >> all.html
+echo "<iframe src='./docs_content.html' frameborder='0'>Your browser does't support iframe</iframe>" >> docs.html
+
+echo " 
           </td>
         </tr>
         <tr><td><a href='https://github.com/gildas-lormeau/SingleFile'><b>Saved by SingleFile</b></a></td></tr>
