@@ -22,7 +22,10 @@ html_head="<!DOCTYPE html>
           document.getElementById('content-frame').style.height = screenHeight + 'px';
           document.getElementById('root-table').style.height = screenHeight + 'px';
         }
-        window.onload = setHeightToScreen; 
+        document.getElementById('content-frame').onload = function() {
+            var iframe = parent.document.getElementsByTagName('content-frame')[0];
+            iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
+        };
       </script>
     </head>
     <body>
