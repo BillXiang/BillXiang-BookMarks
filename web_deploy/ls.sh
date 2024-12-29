@@ -17,15 +17,11 @@ html_head="<!DOCTYPE html>
           var s = document.getElementsByTagName('"script"')[0];
           s.parentNode.insertBefore(hm, s);
         })();
-        function setHeightToScreen() {
-          var screenHeight = window.innerHeight;
-          document.getElementById('content-frame').style.height = screenHeight + 'px';
-          document.getElementById('root-table').style.height = screenHeight + 'px';
-        }
-        document.getElementById('content-frame').onload = function() {
-            var iframe = parent.document.getElementsByTagName('content-frame')[0];
-            iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
+        function setHeightToContent() {
+          var iframe = document.getElementsByTagName('content-frame')[0];
+          iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
         };
+        window.onload = setHeightToContent;
       </script>
     </head>
     <body>
