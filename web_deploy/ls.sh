@@ -18,7 +18,7 @@ html_head="<!DOCTYPE html>
           s.parentNode.insertBefore(hm, s);
         })();
         function setHeightToContent() {
-          var iframe = document.getElementsByTagName('content-frame')[0];
+          var iframe = document.getElementById('content-frame');
           iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
         };
         window.onload = setHeightToContent;
