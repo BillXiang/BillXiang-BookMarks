@@ -17,11 +17,16 @@ html_head="<!DOCTYPE html>
           var s = document.getElementsByTagName('"script"')[0];
           s.parentNode.insertBefore(hm, s);
         })();
+        function setHeightToScreen() {
+          var screenHeight = window.innerHeight;
+          document.getElementById('content-frame').style.height = screenHeight + 'px';
+        }
+        window.onload = setHeightToScreen; 
       </script>
     </head>
     <body>
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
-      <table id="root">
+      <table id="root" width="100%">
       <tbody>
       <tr>
         <td valign="top" width="20%">
@@ -105,9 +110,9 @@ echo "    </tbody>
       </table>" | tee -a index_content.html all_content.html docs_content.html
 rm -f url.tmp
 
-echo "<iframe src='./index_content.html' frameborder='0'>Your browser does't support iframe</iframe>" >> index.html
-echo "<iframe src='./all_content.html' frameborder='0'>Your browser does't support iframe</iframe>" >> all.html
-echo "<iframe src='./docs_content.html' frameborder='0'>Your browser does't support iframe</iframe>" >> docs.html
+echo "<iframe id='content-frame' src='./index_content.html'  frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> index.html
+echo "<iframe id='content-frame' src='./all_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> all.html
+echo "<iframe id='content-frame' src='./docs_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> docs.html
 
 echo " 
           </td>
