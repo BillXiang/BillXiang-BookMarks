@@ -20,13 +20,14 @@ html_head="<!DOCTYPE html>
         function setHeightToScreen() {
           var screenHeight = window.innerHeight;
           document.getElementById('content-frame').style.height = screenHeight + 'px';
+          document.getElementById('root-table').style.height = screenHeight + 'px';
         }
         window.onload = setHeightToScreen; 
       </script>
     </head>
     <body>
       <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
-      <table id="root" width="100%">
+      <table id="root-table" width="100%">
       <tbody>
       <tr>
         <td valign="top" width="20%">
