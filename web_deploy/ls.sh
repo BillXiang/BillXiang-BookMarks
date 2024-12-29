@@ -102,7 +102,7 @@ cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> ind
 cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all_content.html
 cat docs.tmp | grep -v "web_deploy" | grep -v README.md  |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
 echo "    </tbody>
-      </table>" | tee index_content.html all_content.html docs_content.html
+      </table>" | tee -a index_content.html all_content.html docs_content.html
 rm -f url.tmp
 
 echo "<iframe src='./index_content.html' frameborder='0'>Your browser does't support iframe</iframe>" >> index.html
