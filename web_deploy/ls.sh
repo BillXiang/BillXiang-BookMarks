@@ -74,7 +74,7 @@ read_dir(){
                     kimi=`cat "${file}.kimi"`
                     cd tags
                     echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
-                    <tr><td>${a}_${b}</td></tr> \
+                    <tr><td style="display: none;">_${a}_${b}_</td><td><>${a} ${b}</td></tr> \
                     <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\"><b>$c</b></a></td></tr> \
                     <tr><td>$kimi</td></tr> \
                     <tr><td><a href='$ori_url'>原文链接</a> TAGs:$tags</td></tr> \
@@ -106,8 +106,8 @@ echo $html_mid | tee -a all.html index.html docs.html
 ########
 echo "<table id="myTable">
           <tbody>" | tee index_content.html all_content.html docs_content.html
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 |head -n 20 >> index_content.html
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all_content.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 -k7 | head -n 20 >> index_content.html
+cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 -k7 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all_content.html
 cat docs.tmp | grep -v "web_deploy" | grep -v README.md  |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
 echo "    </tbody>
       </table>" | tee -a index_content.html all_content.html docs_content.html
