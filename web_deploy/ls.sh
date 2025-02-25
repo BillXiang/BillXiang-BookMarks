@@ -98,7 +98,7 @@ mkdir tags
 read_dir "."
 find ./tags -type f |xargs -i mv {} {}.html
 echo "<hr><h3>TAGs</h3>" | tee -a all.html index.html docs.html
-wc -l tags/*|sort -r|tail -n +2|head -n 10|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' | tee -a all.html index.html docs.html
+wc -l tags/*|sort -r|tail -n +2|head -n 20|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' | tee -a all.html index.html docs.html
 wc -l tags/*|sort -r|tail -n +2|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' >> all_tags.html
 echo "<a href=./all_tags.html>All TAGs</a><br>" | tee -a all.html index.html docs.html
 echo $html_mid | tee -a all.html index.html docs.html
