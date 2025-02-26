@@ -106,8 +106,8 @@ echo $html_mid | tee -a all.html index.html docs.html
 ########
 echo "<table id="myTable">
           <tbody>" | tee index_content.html all_content.html docs_content.html
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 -k7 | head -n 20 >> index_content.html
-cat url.tmp |LC_ALL=C  sort -t'_' -rn -k1 -k2 -k3 -k4 -k5 -k6 -k7 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all_content.html
+tr '：-' '-' < url.tmp |LC_ALL=C  sort -t'-' -rn -k1 -k2 -k3 -k4 -k5 -k6 -k7 | head -n 20 >> index_content.html
+tr '：-' '-' < url.tmp |LC_ALL=C  sort -t'-' -rn -k1 -k2 -k3 -k4 -k5 -k6 -k7 | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all_content.html
 cat docs.tmp | grep -v "web_deploy" | grep -v README.md  |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
 echo "    </tbody>
       </table>" | tee -a index_content.html all_content.html docs_content.html
