@@ -121,7 +121,11 @@ echo "<iframe id='content-frame' src='./docs_content.html' frameborder='0' width
 echo " 
           </td>
         </tr>
-        <tr><td><a href='https://github.com/gildas-lormeau/SingleFile'><b>Saved by SingleFile</b></a></td></tr>
+        <tr>
+          <td><a href='https://addons.mozilla.org/zh-CN/firefox/addon/webpage-saver'><b>Saved by X-Webpage-Conserve</b></a></td>
+          <td><a href='https://addons.mozilla.org/zh-CN/firefox/addon/orbit-summarizer'><b>Summarized by Mozilla Orbit AI</b></a></td>
+          <td><a href='https://addons.mozilla.org/zh-CN/firefox/addon/immersive-translate'><b>Translated by 【沉浸式翻译】</b></a></td>
+        </tr>
         </tbody>
       </table>
       <div id="gitalk-container"></div>
