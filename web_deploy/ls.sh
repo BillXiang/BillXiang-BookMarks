@@ -66,6 +66,7 @@ read_dir(){
             if [[ "$html" -ne 0 ]];then
                 ori_url=`head -n 3 "$file"|tail -n 1`
                 ori_url=${ori_url:6}
+                ori_url="${ori_url%"${ori_url##*[![:space:]]}"}"
                 summary=`head -n 4 "$file"|tail -n 1`
 
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
