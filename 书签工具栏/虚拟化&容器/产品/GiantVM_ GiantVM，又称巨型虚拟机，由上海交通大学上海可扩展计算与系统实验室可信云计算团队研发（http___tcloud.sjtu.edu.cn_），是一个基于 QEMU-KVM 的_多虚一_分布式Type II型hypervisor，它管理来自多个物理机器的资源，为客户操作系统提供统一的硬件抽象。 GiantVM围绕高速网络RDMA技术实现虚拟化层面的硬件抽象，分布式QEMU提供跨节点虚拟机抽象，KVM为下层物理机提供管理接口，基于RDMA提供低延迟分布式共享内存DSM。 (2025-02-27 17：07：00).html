@@ -1,0 +1,1910 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/产品/GiantVM_ GiantVM，又称巨型虚拟机，由上海交通大学上海可扩展计算与系统实验室可信云计算团队研发（http___tcloud.sjtu.edu.cn_），是一个基于 QEMU-KVM 的_多虚一_分布式Type II型hypervisor，它管理来自多个物理机器的资源，为客户操作系统提供统一的硬件抽象。 GiantVM围绕高速网络RDMA技术实现虚拟化层面的硬件抽象，分布式QEMU提供跨节点虚拟机抽象，KVM为下层物理机提供管理接口，基于RDMA提供低延迟分布式共享内存DSM。 (2025-02-27 17：07：00).html
+ Page saved with X-Webpage-Conserve 
+ url: https://gitee.com/giantvm
+ Summary: GiantVM is a distributed Type II hypervisor developed by the Shanghai Jiao Tong University Can-Extend Computing and System Experiment Laboratory Can-Trust Cloud Computing Team. It manages resources from multiple physical machines and provides a unified hardware abstraction for customer operating systems. GiantVM uses RDMA technology for hardware abstraction at the virtualization level, and provides distributed QEMU for cross-node virtual machine abstraction, KVM for lower-level physical machine management, and low-latency distributed shared memory DSM. GiantVM has two main code repositories: Linux-DSM and QEMU, each containing corresponding modifications to KVM and QEMU. To join, send an application email to xiangyuxin@sjtu.edu.cn. Gitee is a Chinese open-source code hosting platform with features like GitHub, including importing GitHub repositories and Git commands.GiantVM 是由上海交通大学 Can-Extend 计算与系统实验实验室 Can-Trust 云计算团队开发的分布式 Type II 管理程序。它管理来自多个物理机的资源，并为客户作系统提供统一的硬件抽象。GiantVM 在虚拟化级别使用 RDMA 技术进行硬件抽象，并提供分布式 QEMU 用于跨节点虚拟机抽象，KVM 用于低级物理机管理，以及低延迟分布式共享内存 DSM。GiantVM 有两个主要的代码仓库：Linux-DSM 和 QEMU，每个代码仓库都包含对 KVM 和 QEMU 的相应修改。要加入，请向 xiangyuxin@sjtu.edu.cn 发送申请电子邮件。Gitee 是一个中国开源代码托管平台，具有 GitHub 等功能，包括导入 GitHub 仓库和 Git 命令。
+-->
+<html lang="zh-CN" imt-state="dual"><head><style type="text/css">.tippy-iOS{cursor:pointer!important}.tippy-notransition{transition:none}.tippy-popper{transition-timing-function:cubic-bezier(.165,.84,.44,1);max-width:calc(100% - 10px);pointer-events:none;outline:0}.tippy-popper[x-placement^=top] .tippy-backdrop{border-radius:40% 40% 0 0}.tippy-popper[x-placement^=top] .tippy-roundarrow{bottom:-8px;-webkit-transform-origin:50% 0;transform-origin:50% 0}.tippy-popper[x-placement^=top] .tippy-roundarrow svg{position:absolute;left:0;-webkit-transform:rotate(180deg);transform:rotate(180deg)}.tippy-popper[x-placement^=top] .tippy-arrow{border-top:8px solid #333;border-right:8px solid transparent;border-left:8px solid transparent;bottom:-7px;margin:0 6px;-webkit-transform-origin:50% 0;transform-origin:50% 0}.tippy-popper[x-placement^=top] .tippy-backdrop{-webkit-transform-origin:0 25%;transform-origin:0 25%}.tippy-popper[x-placement^=top] .tippy-backdrop[data-state=visible]{-webkit-transform:scale(1) translate(-50%,-55%);transform:scale(1) translate(-50%,-55%)}.tippy-popper[x-placement^=top] .tippy-backdrop[data-state=hidden]{-webkit-transform:scale(.2) translate(-50%,-45%);transform:scale(.2) translate(-50%,-45%);opacity:0}.tippy-popper[x-placement^=top] [data-animation=shift-toward][data-state=visible]{-webkit-transform:translateY(-10px);transform:translateY(-10px)}.tippy-popper[x-placement^=top] [data-animation=shift-toward][data-state=hidden]{opacity:0;-webkit-transform:translateY(-20px);transform:translateY(-20px)}.tippy-popper[x-placement^=top] [data-animation=perspective]{-webkit-transform-origin:bottom;transform-origin:bottom}.tippy-popper[x-placement^=top] [data-animation=perspective][data-state=visible]{-webkit-transform:perspective(700px) translateY(-10px) rotateX(0);transform:perspective(700px) translateY(-10px) rotateX(0)}.tippy-popper[x-placement^=top] [data-animation=perspective][data-state=hidden]{opacity:0;-webkit-transform:perspective(700px) translateY(0) rotateX(60deg);transform:perspective(700px) translateY(0) rotateX(60deg)}.tippy-popper[x-placement^=top] [data-animation=fade][data-state=visible]{-webkit-transform:translateY(-10px);transform:translateY(-10px)}.tippy-popper[x-placement^=top] [data-animation=fade][data-state=hidden]{opacity:0;-webkit-transform:translateY(-10px);transform:translateY(-10px)}.tippy-popper[x-placement^=top] [data-animation=shift-away][data-state=visible]{-webkit-transform:translateY(-10px);transform:translateY(-10px)}.tippy-popper[x-placement^=top] [data-animation=shift-away][data-state=hidden]{opacity:0;-webkit-transform:translateY(0);transform:translateY(0)}.tippy-popper[x-placement^=top] [data-animation=scale]{-webkit-transform-origin:bottom;transform-origin:bottom}.tippy-popper[x-placement^=top] [data-animation=scale][data-state=visible]{-webkit-transform:translateY(-10px) scale(1);transform:translateY(-10px) scale(1)}.tippy-popper[x-placement^=top] [data-animation=scale][data-state=hidden]{opacity:0;-webkit-transform:translateY(-10px) scale(.5);transform:translateY(-10px) scale(.5)}.tippy-popper[x-placement^=bottom] .tippy-backdrop{border-radius:0 0 30% 30%}.tippy-popper[x-placement^=bottom] .tippy-roundarrow{top:-8px;-webkit-transform-origin:50% 100%;transform-origin:50% 100%}.tippy-popper[x-placement^=bottom] .tippy-roundarrow svg{position:absolute;left:0;-webkit-transform:rotate(0);transform:rotate(0)}.tippy-popper[x-placement^=bottom] .tippy-arrow{border-bottom:8px solid #333;border-right:8px solid transparent;border-left:8px solid transparent;top:-7px;margin:0 6px;-webkit-transform-origin:50% 100%;transform-origin:50% 100%}.tippy-popper[x-placement^=bottom] .tippy-backdrop{-webkit-transform-origin:0 -50%;transform-origin:0 -50%}.tippy-popper[x-placement^=bottom] .tippy-backdrop[data-state=visible]{-webkit-transform:scale(1) translate(-50%,-45%);transform:scale(1) translate(-50%,-45%)}.tippy-popper[x-placement^=bottom] .tippy-backdrop[data-state=hidden]{-webkit-transform:scale(.2) translate(-50%);transform:scale(.2) translate(-50%);opacity:0}.tippy-popper[x-placement^=bottom] [data-animation=shift-toward][data-state=visible]{-webkit-transform:translateY(10px);transform:translateY(10px)}.tippy-popper[x-placement^=bottom] [data-animation=shift-toward][data-state=hidden]{opacity:0;-webkit-transform:translateY(20px);transform:translateY(20px)}.tippy-popper[x-placement^=bottom] [data-animation=perspective]{-webkit-transform-origin:top;transform-origin:top}.tippy-popper[x-placement^=bottom] [data-animation=perspective][data-state=visible]{-webkit-transform:perspective(700px) translateY(10px) rotateX(0);transform:perspective(700px) translateY(10px) rotateX(0)}.tippy-popper[x-placement^=bottom] [data-animation=perspective][data-state=hidden]{opacity:0;-webkit-transform:perspective(700px) translateY(0) rotateX(-60deg);transform:perspective(700px) translateY(0) rotateX(-60deg)}.tippy-popper[x-placement^=bottom] [data-animation=fade][data-state=visible]{-webkit-transform:translateY(10px);transform:translateY(10px)}.tippy-popper[x-placement^=bottom] [data-animation=fade][data-state=hidden]{opacity:0;-webkit-transform:translateY(10px);transform:translateY(10px)}.tippy-popper[x-placement^=bottom] [data-animation=shift-away][data-state=visible]{-webkit-transform:translateY(10px);transform:translateY(10px)}.tippy-popper[x-placement^=bottom] [data-animation=shift-away][data-state=hidden]{opacity:0;-webkit-transform:translateY(0);transform:translateY(0)}.tippy-popper[x-placement^=bottom] [data-animation=scale]{-webkit-transform-origin:top;transform-origin:top}.tippy-popper[x-placement^=bottom] [data-animation=scale][data-state=visible]{-webkit-transform:translateY(10px) scale(1);transform:translateY(10px) scale(1)}.tippy-popper[x-placement^=bottom] [data-animation=scale][data-state=hidden]{opacity:0;-webkit-transform:translateY(10px) scale(.5);transform:translateY(10px) scale(.5)}.tippy-popper[x-placement^=left] .tippy-backdrop{border-radius:50% 0 0 50%}.tippy-popper[x-placement^=left] .tippy-roundarrow{right:-16px;-webkit-transform-origin:33.33333333% 50%;transform-origin:33.33333333% 50%}.tippy-popper[x-placement^=left] .tippy-roundarrow svg{position:absolute;left:0;-webkit-transform:rotate(90deg);transform:rotate(90deg)}.tippy-popper[x-placement^=left] .tippy-arrow{border-left:8px solid #333;border-top:8px solid transparent;border-bottom:8px solid transparent;right:-7px;margin:3px 0;-webkit-transform-origin:0 50%;transform-origin:0 50%}.tippy-popper[x-placement^=left] .tippy-backdrop{-webkit-transform-origin:50% 0;transform-origin:50% 0}.tippy-popper[x-placement^=left] .tippy-backdrop[data-state=visible]{-webkit-transform:scale(1) translate(-50%,-50%);transform:scale(1) translate(-50%,-50%)}.tippy-popper[x-placement^=left] .tippy-backdrop[data-state=hidden]{-webkit-transform:scale(.2) translate(-75%,-50%);transform:scale(.2) translate(-75%,-50%);opacity:0}.tippy-popper[x-placement^=left] [data-animation=shift-toward][data-state=visible]{-webkit-transform:translateX(-10px);transform:translateX(-10px)}.tippy-popper[x-placement^=left] [data-animation=shift-toward][data-state=hidden]{opacity:0;-webkit-transform:translateX(-20px);transform:translateX(-20px)}.tippy-popper[x-placement^=left] [data-animation=perspective]{-webkit-transform-origin:right;transform-origin:right}.tippy-popper[x-placement^=left] [data-animation=perspective][data-state=visible]{-webkit-transform:perspective(700px) translateX(-10px) rotateY(0);transform:perspective(700px) translateX(-10px) rotateY(0)}.tippy-popper[x-placement^=left] [data-animation=perspective][data-state=hidden]{opacity:0;-webkit-transform:perspective(700px) translateX(0) rotateY(-60deg);transform:perspective(700px) translateX(0) rotateY(-60deg)}.tippy-popper[x-placement^=left] [data-animation=fade][data-state=visible]{-webkit-transform:translateX(-10px);transform:translateX(-10px)}.tippy-popper[x-placement^=left] [data-animation=fade][data-state=hidden]{opacity:0;-webkit-transform:translateX(-10px);transform:translateX(-10px)}.tippy-popper[x-placement^=left] [data-animation=shift-away][data-state=visible]{-webkit-transform:translateX(-10px);transform:translateX(-10px)}.tippy-popper[x-placement^=left] [data-animation=shift-away][data-state=hidden]{opacity:0;-webkit-transform:translateX(0);transform:translateX(0)}.tippy-popper[x-placement^=left] [data-animation=scale]{-webkit-transform-origin:right;transform-origin:right}.tippy-popper[x-placement^=left] [data-animation=scale][data-state=visible]{-webkit-transform:translateX(-10px) scale(1);transform:translateX(-10px) scale(1)}.tippy-popper[x-placement^=left] [data-animation=scale][data-state=hidden]{opacity:0;-webkit-transform:translateX(-10px) scale(.5);transform:translateX(-10px) scale(.5)}.tippy-popper[x-placement^=right] .tippy-backdrop{border-radius:0 50% 50% 0}.tippy-popper[x-placement^=right] .tippy-roundarrow{left:-16px;-webkit-transform-origin:66.66666666% 50%;transform-origin:66.66666666% 50%}.tippy-popper[x-placement^=right] .tippy-roundarrow svg{position:absolute;left:0;-webkit-transform:rotate(-90deg);transform:rotate(-90deg)}.tippy-popper[x-placement^=right] .tippy-arrow{border-right:8px solid #333;border-top:8px solid transparent;border-bottom:8px solid transparent;left:-7px;margin:3px 0;-webkit-transform-origin:100% 50%;transform-origin:100% 50%}.tippy-popper[x-placement^=right] .tippy-backdrop{-webkit-transform-origin:-50% 0;transform-origin:-50% 0}.tippy-popper[x-placement^=right] .tippy-backdrop[data-state=visible]{-webkit-transform:scale(1) translate(-50%,-50%);transform:scale(1) translate(-50%,-50%)}.tippy-popper[x-placement^=right] .tippy-backdrop[data-state=hidden]{-webkit-transform:scale(.2) translate(-25%,-50%);transform:scale(.2) translate(-25%,-50%);opacity:0}.tippy-popper[x-placement^=right] [data-animation=shift-toward][data-state=visible]{-webkit-transform:translateX(10px);transform:translateX(10px)}.tippy-popper[x-placement^=right] [data-animation=shift-toward][data-state=hidden]{opacity:0;-webkit-transform:translateX(20px);transform:translateX(20px)}.tippy-popper[x-placement^=right] [data-animation=perspective]{-webkit-transform-origin:left;transform-origin:left}.tippy-popper[x-placement^=right] [data-animation=perspective][data-state=visible]{-webkit-transform:perspective(700px) translateX(10px) rotateY(0);transform:perspective(700px) translateX(10px) rotateY(0)}.tippy-popper[x-placement^=right] [data-animation=perspective][data-state=hidden]{opacity:0;-webkit-transform:perspective(700px) translateX(0) rotateY(60deg);transform:perspective(700px) translateX(0) rotateY(60deg)}.tippy-popper[x-placement^=right] [data-animation=fade][data-state=visible]{-webkit-transform:translateX(10px);transform:translateX(10px)}.tippy-popper[x-placement^=right] [data-animation=fade][data-state=hidden]{opacity:0;-webkit-transform:translateX(10px);transform:translateX(10px)}.tippy-popper[x-placement^=right] [data-animation=shift-away][data-state=visible]{-webkit-transform:translateX(10px);transform:translateX(10px)}.tippy-popper[x-placement^=right] [data-animation=shift-away][data-state=hidden]{opacity:0;-webkit-transform:translateX(0);transform:translateX(0)}.tippy-popper[x-placement^=right] [data-animation=scale]{-webkit-transform-origin:left;transform-origin:left}.tippy-popper[x-placement^=right] [data-animation=scale][data-state=visible]{-webkit-transform:translateX(10px) scale(1);transform:translateX(10px) scale(1)}.tippy-popper[x-placement^=right] [data-animation=scale][data-state=hidden]{opacity:0;-webkit-transform:translateX(10px) scale(.5);transform:translateX(10px) scale(.5)}.tippy-tooltip{position:relative;color:#fff;border-radius:4px;font-size:.9rem;padding:.3rem .6rem;line-height:1.4;text-align:center;will-change:transform;background-color:#333}.tippy-tooltip[data-size=small]{padding:.2rem .4rem;font-size:.75rem}.tippy-tooltip[data-size=large]{padding:.4rem .8rem;font-size:1rem}.tippy-tooltip[data-animatefill]{overflow:hidden;background-color:transparent}.tippy-tooltip[data-interactive],.tippy-tooltip[data-interactive] path{pointer-events:auto}.tippy-tooltip[data-inertia][data-state=visible]{transition-timing-function:cubic-bezier(.54,1.5,.38,1.11)}.tippy-tooltip[data-inertia][data-state=hidden]{transition-timing-function:ease}.tippy-arrow,.tippy-roundarrow{position:absolute;width:0;height:0}.tippy-roundarrow{width:24px;height:8px;fill:#333;pointer-events:none}.tippy-backdrop{position:absolute;will-change:transform;background-color:#333;border-radius:50%;width:calc(110% + 2rem);left:50%;top:50%;z-index:-1;transition:all cubic-bezier(.46,.1,.52,.98);-webkit-backface-visibility:hidden;backface-visibility:hidden}.tippy-backdrop:after{content:"";float:left;padding-top:100%}.tippy-backdrop+.tippy-content{transition-property:opacity;will-change:opacity}.tippy-backdrop+.tippy-content[data-state=visible]{opacity:1}.tippy-backdrop+.tippy-content[data-state=hidden]{opacity:0}</style>
+<title>GiantVM: GiantVM，又称巨型虚拟机，由上海交通大学上海可扩展计算与系统实验室可信云计算团队研发（http://tcloud.sjtu.edu.cn/），是一个基于 QEMU-KVM 的"多虚一"分布式Type II型hypervisor，它管理来自多个物理机器的资源，为客户操作系统提供统一的硬件抽象。
+GiantVM围绕高速网络RDMA技术实现虚拟化层面的硬件抽象，分布式QEMU提供跨节点虚拟机抽象，KVM为下层物理机提供管理接口，基于RDMA提供低延迟分布式共享内存DSM。</title>
+<meta content="on" http-equiv="x-dns-prefetch-control">
+<link href="//e.gitee.com" rel="dns-prefetch">
+<link href="//files.gitee.com" rel="dns-prefetch">
+<link href="//toscode.gitee.com" rel="dns-prefetch">
+<link href="https://cn-assets.gitee.com" rel="dns-prefetch">
+<link href="https://portrait.gitee.com" rel="dns-prefetch">
+<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/assets/favicon_message.ico?1581387642851">
+
+<meta charset="utf-8">
+<meta content="always" name="referrer">
+<meta content="Gitee" property="og:site_name">
+<meta content="Object" property="og:type">
+<meta content="https://gitee.com/giantvm" property="og:url">
+<meta content="https://gitee.com/static/images/logo_themecolor.png" itemprop="image" property="og:image">
+<meta content="GiantVM: GiantVM，又称巨型虚拟机，由上海交通大学上海可扩展计算与系统实验室可信云计算团队研发（http://tcloud.sjtu.edu.cn/），是一个基于 QEMU-KVM 的&quot;多虚一&quot;分布式Type II型hypervisor，它管理来自多个物理机器的资源，为客户操作系统提供统一的硬件抽象。
+GiantVM围绕高速网络RDMA技术实现虚拟化层面的硬件抽象，分布式QEMU提供跨节点虚拟机抽象，KVM为下层物理机提供管理接口，基于RDMA提供低延迟分布式共享内存DSM。" itemprop="name" property="og:title">
+<meta content="GiantVM，又称巨型虚拟机，由上海交通大学上海可扩展计算与系统实验室可信云计算团队研发（http://tcloud.sjtu.edu.cn/），是一个基于 QEMU-KVM 的&quot;多虚一&quot;分布式Type II型hypervisor，它管理来自多个物理机器的资源，为客户操作系统提供统一的硬件抽象。
+GiantVM围绕高速网络RDMA技术实现虚拟化层面的硬件抽象，分布式QEMU提供跨节点虚拟机抽象，KVM为下层物理机提供管理接口，基于RDMA提供低延迟分布式共享内存DSM。" property="og:description">
+<meta content="码云,Gitee,代码托管,Git,Git@OSC,Gitee.com,开源,内源,项目管理,版本控制,开源代码,代码分享,项目协作,开源项目托管,免费代码托管,Git代码托管,Git托管服务" name="Keywords">
+<meta content="GiantVM，又称巨型虚拟机，由上海交通大学上海可扩展计算与系统实验室可信云计算团队研发（http://tcloud.sjtu.edu.cn/），是一个基于 QEMU-KVM 的&quot;多虚一&quot;分布式Type II型hypervisor，它管理来自多个物理机器的资源，为客户操作系统提供统一的硬件抽象。
+GiantVM围绕高速网络RDMA技术实现虚拟化层面的硬件抽象，分布式QEMU提供跨节点虚拟机抽象，KVM为下层物理机提供管理接口，基于RDMA提供低延迟分布式共享内存DSM。" itemprop="description" name="Description">
+<meta content="pc,mobile" name="applicable-device">
+
+<meta content="IE=edge" http-equiv="X-UA-Compatible">
+<meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="PE/jtyssti8CM6tGKF052Hf4FTepUPQ7LBEin73vfKojfkPGOn/6Nip4IkX9ywX7AW9KPzPiNRNyukHJMh8PPA==">
+
+<link rel="stylesheet" media="all" href="https://cn-assets.gitee.com/assets/application-6c81e6f16005aafaaad6f85a1273c060.css">
+<script charset="utf-8" src="https://hmcdn.baidu.com/static/tongji/plugins/UrlChangeTracker.js"></script><script src="https://hm.baidu.com/hm.js?24f17767262929947cc3631f99bfd274"></script><script>
+//<![CDATA[
+window.gon = {};gon.locale="zh-CN";gon.sentry_dsn=null;gon.baidu_register_hm_push=null;gon.info={"controller_path":"groups","action_name":"show","current_user":{"id":13248070,"name":"BillXiang","username":"billxiang2","official":false,"admin":false,"avatar_url":"https://foruda.gitee.com/avatar/1718762537041737908/13248070_billxiang2_1718762533.png"}};gon.tour_env=null;gon.enterprise_id=0;gon.group_info={"is_in_enterprise":false,"path":"giantvm","full_path":"giantvm","name":"GiantVM","full_name":"GiantVM","list_role":"visitor","all_language":true,"accesses":{"can_create_project":false,"can_create_group_project":false,"can_update_group_project":false}};
+//]]>
+</script>
+<script src="https://cn-assets.gitee.com/assets/application-1a4bf2ba7b1e19f0f3f7b1bf63122b0b.js"></script>
+<script src="https://cn-assets.gitee.com/assets/lib/jquery.timeago.zh-CN-4a4818e98c1978d2419ab19fabcba740.js"></script>
+
+
+<script type="text/x-mathjax-config;executed=true">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [["$$","$$"],["\\[","\\]"]],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+    ignoreClass: "container|files",
+    processClass: "markdown-body"
+  }
+});
+</script>
+<script src="https://cn-assets.gitee.com/uploads/resources/MathJax-2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<script>
+  (function () {
+    var messages = {
+      'zh-CN': {
+        addResult: '增加 <b>{term}</b>',
+        count: '已选择 {count}',
+        maxSelections: '最多 {maxCount} 个选择',
+        noResults: '未找到结果',
+        serverError: '连接服务器时发生错误'
+      },
+      'zh-TW': {
+        addResult: '增加 <b>{term}</b>',
+        count: '已選擇 {count}',
+        maxSelections: '最多 {maxCount} 個選擇',
+        noResults: '未找到結果',
+        serverError: '連接服務器時發生錯誤'
+      }
+    }
+  
+    if (messages[gon.locale]) {
+      $.fn.dropdown.settings.message = messages[gon.locale]
+    }
+  }());
+</script>
+
+<script>
+  var userAgent = navigator.userAgent;
+  var isLessIE11 = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1;
+  if(isLessIE11){
+    var can_access = ""
+    if (can_access != "true"){
+      window.location.href = "/incompatible.html";
+    }
+  }
+  document.addEventListener("error", function (ev) {
+    var elem = ev.target;
+    if (elem.tagName.toLowerCase() === 'img') {
+      elem.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAAAAACIM/FCAAACh0lEQVR4Ae3ch5W0OgyG4dt/mQJ2xgQPzJoM1m3AbALrxzrf28FzsoP0HykJEEAAAUQTBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEkKK0789+GK/I2ezfQB522PnS1qc8pGgXvr4tE4aY0XOUWlGImThWgyCk6DleixzE7qwBkg/MGiDPlVVAyp1VQGrPKiACDhFI6VkF5LmzCki+sg7IwDoglnVAil0IMkeG9CyUiwsxLFUVFzJJOQaKCjFCDN9RXMjIX7W6ztZXZDKKCyn8sWJvH+nca7WHDN9lROlAliPH9iRKCPI4cswFJQWxB46toLQgQ9jhn5QYZA9DOkoMUoQde5YapAxDWkoNYsOQR3KQd9CxUnIQF4S49CB9ENKlBxmDEKsFUgMCCCCAAHIrSF61f6153Ajy8nyiPr8L5MXnmm4CyT2fzN4DUvHZ+ntA2tOQBRBAAAEEEEAAAQQQ7ZBaC6TwSiDUaYHQ2yuB0MN+ft+43whyrs4rgVCjBUKTFshLC6TUAjGA3AxSaYFYLZBOC2RUAsk8h5qTg9QcbEoOsoQhQ2qQhsO5xCD5dgB5JQaZ+KBKGtKecvR81Ic0ZDjByKdDx0rSEDZ/djQbH+bkIdvfJFm98BfV8hD2zprfVdlu9PxVeyYAkciREohRAplJCaRSAplJCcQogTjSAdlyHRBvSAekJR0QRzogA+mADJkOiCPSAPEtqYBshlRAXC43hxix2QiOuEZkVERykGyNo9idIZKE0HO7XrG6OiMShlDWjstVzdPgXtUH9v0CEidAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQP4HgjZxTpdEii0AAAAASUVORK5CYII=";
+    }
+  }, true);
+</script>
+<script src="//res.wx.qq.com/open/js/jweixin-1.2.0.js"></script><script>
+  var title = document.title.replace(/( - Gitee| - 码云)$/, '')
+      imgUrl = '';
+  
+  document.addEventListener('DOMContentLoaded', function(event) {
+    var imgUrlEl = document.querySelector('.readme-box .markdown-body > img, .readme-box .markdown-body :not(a) > img');
+    imgUrl = imgUrlEl && imgUrlEl.getAttribute('src');
+  
+    if (!imgUrl) {
+      imgUrlEl = document.querySelector('meta[itemprop=image]');
+      imgUrl = imgUrlEl && imgUrlEl.getAttribute('content');
+      imgUrl = imgUrl || "https://gitee.com/static/images/logo_themecolor.png";
+    }
+  
+    wx.config({
+      debug: false,
+      appId: "wxff219d611a159737",
+      timestamp: "1740647150",
+      nonceStr: "ad2f73e922a33501624d47964d7b2fef",
+      signature: "f5e823784064a38af817dda9fcd453bc284a7c10",
+      jsApiList: [
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage'
+      ]
+    });
+  
+    wx.ready(function () {
+      wx.onMenuShareTimeline({
+        title: title, // 分享标题
+        link: "https://gitee.com/giantvm", // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: imgUrl // 分享图标
+      });
+      wx.onMenuShareAppMessage({
+        title: title, // 分享标题
+        link: "https://gitee.com/giantvm", // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        desc: document.querySelector('meta[name=Description]').getAttribute('content'),
+        imgUrl: imgUrl // 分享图标
+      });
+    });
+    wx.error(function(res){
+      console.error('err', res)
+    });
+  })
+</script><script src="https://cn-assets.gitee.com/assets/groups/app-e6d6292e80b19307156db5abc743da72.js"></script><style type="text/css">#screenShotContainer{position:absolute;top:0;left:0;cursor:crosshair}#toolPanel{height:24px;background:#fff;z-index:9999;position:absolute;top:0;left:0;padding:10px}#toolPanel .item-panel{width:24px;height:24px;margin-right:15px;float:left}#toolPanel .item-panel:last-child{margin-right:0}#toolPanel .square{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAElBMVEUAAABtbW1nZ2dmZmZmZmZmZmbm2CNMAAAABnRSTlMAHKbm/+1DRvRuAAAAQUlEQVR4AWMYToBR2QUJGAnAJURdUEAgXEIFVcIJLmGCKuEMl3BBA0RJIJw4nCVGJchOJZgJjlASxUzUuLPBMAIAmahQ49nxQhcAAAAASUVORK5CYII=);background-size:cover}#toolPanel .square:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAYElEQVR42u3WsQ2AMAxE0Rsk83s0d5khiIIOKQ7RSSD+d+/XnkREdzWFUmPxUqFWe9+Xn1/XK0Q8fn9ezIHcAnIOjM17F1ANAAAAAAAAwAt8c1XYh5d9OtrHr32+E/2vA8lyXsPJ9ILxAAAAAElFTkSuQmCC)}#toolPanel .square-active,#toolPanel .square:active{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAPJJREFUaAXtmDEOwjAMRRuEVCFWJm7D1r0cgiNxlG7chokVoU4hkTJWcdQfKCovY2x/x+9nctNwIAABCEDgnwk4a/jjzR/G8XUNeZ33fm/l14g7555BZ2jb3eV+co+c5jYXjLH4+PDw3sqrGU+g+tA7yp5z2ptcMMW6gpxPpZi9zQG+9W2mCJT0NgeYEv6lOwZY2g0cwAGRAF9IBCiX44CMUBTAARGgXI4DMkJRAAdEgHI5DsgIRQEcEAHK5TggIxQFcEAEKJev34G0aJVJzREo6V3iwDCneaUas7e5nY4r7rQlXmS9XgkEMhCAAAQgsFICb9uiLZTmm16RAAAAAElFTkSuQmCC)}#toolPanel .round{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAV1BMVEUAAACAgIBoaGhnZ2dnZ2dmZmZnZ2dqampmZmZnZ2dmZmZtbW1mZmZmZmZnZ2dpaWlmZmZmZmZmZmZmZmZmZmZra2tqampnZ2dmZmZnZ2dmZmZ2dnZmZmZwdqJ9AAAAHXRSTlMABkeVv9nzGJbx/weC9Mcu4y36qlomDK4j/XUN8jz+zUEAAADcSURBVHgB7VQDdsBQEIxt6/7XLHbjj2Ye6nmeNY1/fFeYlu24nuc6tmU+UPeDMNoRBv4H6nGSRhekSax1n0UCMk2QvIgkKEqlf9YXLRQx4i2fqm7armubutqykteRrOJ+2JihX6lEmhD3Z5zO5DRyr2RJBexsurITs4Gob4acz53nrEJx5hbXO9z5gSu3BAOb+FoMXZPAFniH+EY0aEjgCLxLfCsatCRwBd4jvhMNOhJ4zw1mEix4SnjReFvxweGrgS8fvt74AeEnij8B/M3gjwx/lfgzBt/91+Mfr97+GQDfPFmMAAAAAElFTkSuQmCC);background-size:cover}#toolPanel .round:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABJ0lEQVR42u2Wvc2DMBCGnyppSE+PRJeswQ7swQLsAENQsAJlZqDOBHykihSRIop0Jj8+ktiKPvl1+96d/Z7vBwICAnRYkVHR0TMy0tNRkbH6jvOYmoHpwRmoiT9zvqbk+ND57RwpWb9/9/1L57ezf+8dOw4q9xMTB7bLb693fw0RL9N+Ls6JhpyUiIiUnIbTnVALclHOjFuSO05CO2OVennkzzlTPGUWnI0fpZSpNu5VvOQWBrfWVe1giGNDa5SeorozI7WJlZ8Y6c7sASpBb1SSNsKistM7Qc9VAXJh0dnpvaCnqgCpsOjt9FHQI1WASFiMLgJshMXfD0jkPMnOv6nzQnPeKpw3Ow/t2vnA8TAynQ99D2uLh8XLw+roYfn1sr4HBPx/XAA8p+U+DU7i1gAAAABJRU5ErkJggg==)}#toolPanel .round-active,#toolPanel .round:active{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAqJJREFUaAXtWDFLHEEUfrNn3LsIIRYGOcQml8YDu0BKr7BREKzzL2wDFopt/kXqQCBdwDZgKWeTsxE5FRsREr2Eu8l8uzewCLvvzbp7q9xMM3M7b973vjdzM+89It+8B7wHvAe8B6bZA6oo8u2unr0+G3SGNNoiRSukqWn6ZqRfU9+M++bbSY2CbwvL4WG3rf4Wgf1oAguHenE0uN8lPfqoiV5JjDKgt6SCL0FY37vuqEvJmjSZ3ARav3R4c/rnkya1o7WeSwPI+q6U+q1If3799uVB750aZMmmzeUiEHn9/u6rJv0hTbHLd0XqZ1BvbOfZDWcCb34MVof/ht+N8UsuRnKyhsT5zExt42o9POZkk/NOBMaePyraeGsQSJideO+yE4FdzPU486P42BTq+SQuHAMMYCW/Z43FBOI/bDFnPssg/K+AlSWTnBMdofiqvOvlvW2SgJIxbqcgbLQkR0m0A7jnJ2U8CAIrelsEbFkCeGHxSAl0FStiMCNsRitLAOGB9IVlsJymgQlsbhFLIIptOC0lzUuwWQJRYFaSgaxaBIVM4wkgqqyqCbB5AjYkroKEAJsnUIXhFtO8anaY1vMEkIxU1y44aJ4AMqmqmgCbJ2DSwKrsRwrKYbMEkMNySsqal2CzBJCAm4jvtiwj0/QCE9hp8/Y7SyCqHpgE3C6YWG8wJZULlgAMRvUAIe6kjI/D6fqeBE9EAHE5qgcShUXIAEuSCwBLRACCKH2geoBxmQ0YwJJiiAmgboPSBxJvqXJXuXFSv+1SIxITgDHY1tqL2mYZJKATZRXp0bHOEeXEVtj2T6mw5bQDlgC8NN9qrAWK9h9zO0W3jdEBXa6et7bk2gG7GH1csXiGxd0kCYyrKq8/tMP/9h7wHvAe8B6YLg/8B7td+kBEJNs9AAAAAElFTkSuQmCC)}#toolPanel .right-top{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAxUlEQVR42u2WvRGDMAxGv4kyBZ2zQBaQ4jaejAGYwD3pWIKKBtLkAtwJKCzljkOf+/fkH+kMeDyeS+V550wDTcIa6c2PYryIXqxCBecjAbVlgv5QMFrvYCoSUDAWABQ2X5GO4CdKpoJtvIpgD68g2MeXX3KyfaYSPqkJZDygJJDw/AKAVV8M6vj1AOGsejjCAAnK1c8DhHvOavi5epu2cvxf8LEyxQPcmOIB6kzxANWmeCDeFiNMH/9V1NRxEyv/kXs8p8gHU6QbjbKE6LEAAAAASUVORK5CYII=);background-size:cover}#toolPanel .right-top:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAsUlEQVR42u2WvQ3CMBBG30RMkc4swBrcZBkgE7iHLkukShNTIAQRRi58nxDiPvfv+ed8NkQikf/KkcxKqYyNK6d+fGmMTkVuCi59gqUp2NQrKH2CpBZA+lhFToJHTCsw7QpMu0WmPWTTVlENb36COh4vQQ1/Btjdi9Ufv28g2Xdz3htI8p79s4EsZD+8+T2Rgf8eftDiYdLiYdbiYdTi4fDSwgT4u2JkZmKID3kk8hO5AUMjeGfiup/PAAAAAElFTkSuQmCC)}#toolPanel .right-top-active,#toolPanel .right-top:active{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAjBJREFUaAXtmDlLA0EUgN/brMaINiEqgoIoglEEQf+A4AXWlja2WuRPWPtPBLXywsZSS402NlYeSSPGHJt9zrisSOIeM9llR5wpsuy8zcz3vTmYXQBddAZ0BnQGdAb+cwYwKfmZG+ouPdYn69jMA2EegNgVRsGA/fJq715YrtgFcpfUT9XKFFgGA2SQCBw0TwATDDrVCoqI1dJab6a13uve9ArI1udO3heIcPMLlmXWfquMOG3ZzoWR+xUWfvGLt8YiF6Am7BLQitNRAG0rDbtHouIv1Z5VhmdENmCaBUR4lv07ICYrUFpOF8k0F2Ulkh8BlvryUvpWVgINI9kRcKeOrIQBPXduG2Gu0a+BH70KSyCUn1ZRaP3EKsBduISV7loPtSZIbAHz9mMXGDipz5m1xiEhbgdKoNgWGrsAh2/ajXMiGEYbFoMWtqHSCLjw7NiQZceDg7GBTCFoTYjuQLGNQBt8LrNxvYAN3qGfRMoWn0KRH+b84LmAW7JntWm0rAs2vQZ5HQJWXtcyfWy0hM4fkS7isPAcuH0k6F4UnrcTmYAIPO+YF1eC5f+B7VBHTq3YbyRTSAZeDNP76Y4FkoTnWh0JJA3fkYAK8NICqsBLCagELyygGryQgIrwoQVUhQ8loDJ8oIDq8L4CfwGeC7R9m+SVQ6e1Wcu2Lr5fRn6c53lcpfLrp8WGZe0wSOdNSmF4z0QOnVXHs8cfW/NX1OX5kA7oDOgM6AzoDOgMKJCBTz35SoU1TFsiAAAAAElFTkSuQmCC)}#toolPanel .brush{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAA00lEQVR42u2XIQ7CQBBFv6vEorgAaDhKUZV/NpA60DThAnCMit6jvUJFHeiaOpLFEJKWVnXHkPnr39vMfDOAxWKZGUmkZiv5YamCdxn95zVcaeI1FAN8aMVxzdePwLMJtIs0AiQeU0geZDhScTGhaAPNfkohdbDVjiskCdmccqhwWehi9hTh8T2FDv6rcBstvKdnmUaaeM+L4f8Ur9d7w7utKh6QWLE5ACAnxd8DgNxU8YAUqnhAKlU8wIcqHmCnigfkyo5PqaTgnWe3586OFItlbt6EZUdgrAGhiQAAAABJRU5ErkJggg==);background-size:cover}#toolPanel .brush:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAuklEQVR42u2XIQ7CQBBFn6vEorgAaDhKUT0FaDbhAnCMit6DvUJFHeiaOpJWQEI2bVXnGzJv/Xub2TELjuMspaCmpWSt0Qf672nYKPWSRKo3T2x5jwI9jdVbZEA+mShthhNZzSRaq9nPJWq7p51OFJab8xglgvVipglzfZqQ6H+JnUr/SWRKfc/F9f+qD66X6fdaPeTKzQE4KW8PcNPqodLqIWr18NTqodPq4UrHi0jFnTNHDv5HcZylDMAxkfDxR59FAAAAAElFTkSuQmCC)}#toolPanel .brush-active,#toolPanel .brush:active{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAA45JREFUaAXtmFtPE0EUx8/ZFuwuQS5yE9EYjJdoiLeoL2rYUpAPZXwwfgA/DiBQ1BfjXcQbKhoFREQsUXYLpXs8U9xkQzLb2d22+LDtw+zOnDPz+59zdnZagPgTRyCOQByBOAIRIoARfCO7dt2j9oKVv0lEfQxyP6npt75fw/UgE++agO5R62DegSkA6nWBEfFhU0IfmhvENbevXKuVM6jGeGvW6tlwIOuFF+twJi6uFe2x3jvUpLpuzTOwb8I6AJtwl4COyCCDZKKmGSjBF2DKDz5oJmqWgbax9W5ycIrL5Kgs8jv7RSaSqKf9HuyaZKAEX8RsEHg3E1uOfX2nMO991QW0jdB+jvwkl80x78Kq1wRw2c+2qgLas9RFYE9y5I/7QfiNcRnN+I1XTUDHOHU6G7YomxN+AL5jiJ/qjNQNP5uqCBDwxS0rGjzgXCqB/UtX8YefgITfYJixzlHqKBYZHuBkGP9tH4bXoH9xyPhabo6KCiidbQoWv2HhVLmFZeMI+BFS0L+cMeZlNt7+ipWQgN+0rEmgCPCIH4jhV001eCGkIhnozlLbhs3wAH3e6AS55t3mPdSBuZo2FoL4Rc6AgM/nrYlI8ICzqFH/z4Fg8EJopAwcGKd9+UIJ/nSQqHltueZnMUHmylDDordf9Tr0WahnhFotYHiCM6qL7bTjsnmHoJsrw/ht55jqfVLV0Gsn4G2yxrkvCvxbbY9u/jBxyTt30OvAz8Ch+9Rig3WH9/mzQRdz7RHhTSXgxXyBBAj49XWGJzjnwgRtuWZfJ5JG5Mi76yoLOJyl5n/w513nwC3Cq6RmmMsZ/B7YV+Kg9AwI+N95W5RNJPg6NMSPk2UJS6jusruQ+IG9tiXg6UKoFYQTwky9YaTLHczCzO9bQq0PaK/4lyASPMDLasFvx0Yim0+VDVtkT/B5/pLERKV7OpUyBhZNXFExDmMjzUBBs/siwSO80OuMdDXhhWCpgERRaw4TkZIPwnM9aQwsZPBn6DkUHaUCCJ1QAnhXeGZAbeCFRqkA/p8vsAB+wz7V0cjMD+OqYgAjm0nfA0RaC4CjvADDP2loMAa/XMFfyk4VMJRnANUzsFvwQr9UAO9ASiXE5/nHjXuMTK0j7yZPKgBRK1s/DP+oMaUPfjYx505Y61b6DCDhbT77aHwM4C/m+D4H6HCr5VAT906O6vVphv9Ta+h4vTgCcQTiCPw/EfgLJV9RSXPyCEcAAAAASUVORK5CYII=)}#toolPanel .mosaicPen{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAHlBMVEUAAAD///9oaGhmZmZnZ2dmZmZmZmZnZ2dmZmZtbW004KMDAAAACnRSTlMAAWXI8/8ZvbYcHEn/BAAAAF5JREFUeAFjGFZAyCQUDpwVEeJspaFIIDwBLiEeigIK4RKqqBJBcAnT0E6EuTNCg+Fs19AJCAnO0BA4OzQUSoMAkBxJElAxEBhBEpiJgVDywUxwhJIoZqLGmQ2GEwAA7OprDZR1JoIAAAAASUVORK5CYII=);background-size:cover}#toolPanel .mosaicPen:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAj0lEQVR42u2WsQ3AIAwEnzGQWI8V6ei9DwOQIhBRJMJBMiny7xL4MzISD1AUdS+HCEFBVVaBIMJp7T2y2nqsDK/rfs3+RChuEZftKyriHCBta0JQzywgtVMy39xHG149i3CNe6p+2dn6WJpzBBBAwFeAJ7OVxggggICdAPNP3zy2mAcv8+hoHn43xHeK+psOlApo2xDq5Z0AAAAASUVORK5CYII=)}#toolPanel .mosaicPen-active,#toolPanel .mosaicPen:active{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAV9JREFUaAXtmU1KBDEQhauiC9GdIih4Add6BhnmHOKhxHOoeAY9hjAgLkfcTGo6Mo2ZpivW2F3GgZdNJ5VKVfK9XuSHCAUEQAAEahJgLfnx0+c0xngnIqeaz1/Ymfg17ISbt6u9+758u33GZFtN/kTr38TOTC+b+K/5Cp3HRbxtbGdr9lVDXcA3ef4gkv2+wVbb++Tg0urb9Tt6nD+L0EXX3rZDW9G/wyavxx2nx7CAcRJ5RcECvMha40IBKykvPyjgRdYaFwpYSXn5QQEvsta4UMBKystP3U6PmfDwYS6/jddspYtl63+hogLpJDXkMDKEfBF71rn1CmABmZpVqlCgCvYsKRTIYFSpQoEq2LOkUCCDUaUKBapgz5L+cwXS1X65qNvp9DJCzeNCup8vh9B7fzqM6CPbnq+rfWHmWWvpftUFpGed9DJSelzoBvNop8mHEK49YiMmCIAACAwnsARsm0C5E2sdIAAAAABJRU5ErkJggg==)}#toolPanel .separateLine{width:1px;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAAoCAYAAADUgSt0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABlJREFUeNpi4WUQTWMAAiYGKBhl0IIBEGAA+zwA23Qf36YAAAAASUVORK5CYII=);background-size:cover}#toolPanel .text{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAANlBMVEUAAABpaWlmZmZmZmZnZ2dnZ2eAgIBmZmZ0dHRmZmZnZ2dmZmZxcXFoaGj///9nZ2dra2tnZ2e4FhbPAAAAEnRSTlMASeP/wjQE4AuETRkSRwG6Jp66pYBaAAAAcUlEQVR4Ae3POQ7DMBBD0bHl3Vrvf9kUTNSEGUhA4Ebza76CMmDWNDvaPAkPeyaE5372R7Cs24ditq2LBvaj0jo7dgWc8g3kVMDFwKWAm4GbA8QAMmDgEeABfDMIAEEaiwkgRWkqF/eu5I7HqB8Mm/UC2GYEc6RJ/NYAAAAASUVORK5CYII=);background-size:cover}#toolPanel .text:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAmElEQVR42u3WuwmAMBSF4ROws7NzASdwB7FwK+fIIJZOImSQWIhg8HkvCYqcP/39yKMIwBj7by0cvGA5tDJANn4hRHnF+iIwokZ2iK5lqDFqgQn56a625Zh0QH9xbGG9DugeA50OKB8DpRy4e1lJIkCAAIH3gSIAivhAEwBN7PEGQwAMMDHHV7C7P4RFleZ6k1x1coAx9u1mYuQiZvp4kucAAAAASUVORK5CYII=)}#toolPanel .text-active,#toolPanel .text:active{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAABFBJREFUaAXtWd1rHFUUv2e/srumSpNNUkrUirSglbwU6UulhriJglRERIVWKmgltiCITxYhhfY/EBWKDwr65ENFhWxTuwU/HsQH8aMqSMFqimmaQtLd+Whm5/ib2S7sTnYyc+/cfajsPOzMPffe3zm/c8+5XytE/+l7oO+Bvgf+lx4YPmtODc3XV4cr9ZO9JJjqGXiD3xYs7hRMrz/LnO6Vnp4QGDpnP8iC93tGM/NgtWI9d1sRIKfxWrvBrsBo9Ogh3bgjVR50LWORBcKn9RAhhlK7lh/P/9kS6XprDyG2jYMdxnuWMlNDuKd0Gd2Oo52Ay2K2XUHrG6SeGv+OC62yrrdWAiML5j4YNiEQMkEDiXnAWLOPBOVJy1oJNBrcTF6ETHfD+M3ucnVpiCJ5wLEKj6675t+CRNaL+TAEytHelani92H1snJtI+Cw9TKyNbeZ8b5x66Q1mbUQmGNOYcGKFd8s3MnxeR6S9XRYey0E3pk3noT37+2WvBsUs0ibwnhjg1xRoIWASyIieTutY0GzGLHQPOlsvXkpMYHRr6z7haBpqNkwdYaqZh4aXbCfCK2XqEhMwFl3Z28lrpRHXXZPSNgZ2lRKaRBlR5Xza7axCN8rJCVxPkM7rpQLl4O4MuVEI3DDsp5XM94zkclyxVsyxnZrm4gAjOjYNndTsJkM24tDu3/F2pHgUSZQqtT34NDyMBLYVdWPmaj47z/WC6r9vX7KBJjF0aZiVsbw+oPE8SaO2q9SEt/zNW+t10wcWvRsj7OZzMRSeeBnFQoZlU5GzXzJN57EdXhgSQXD78NiKxaPbU7D9XKp6zkiClt6BLwVtFQx/8B7ZyolDlybuePzKCVh9cML9gPsOBeJqEaDhe3X9tGNsLZhcun4hdKyZzz2PZePTRe/DAOOI18pD/wG46vAG+Sa8WKcPsE20gTI9YdbENP7c6Q+A7UMwY7oXe8boaQUQlIEtleMuzH7YOdJNzOp/ActI5K8J3KFMxiFK2Cwu3TW3C+LJUXAZn4VvkoTiU+XZuiqrLJu7S9MkoMF7bRX57ryC2NsAnt+4Cx04NQlRDrVHHbvW8fDOTqNnHKA9TTulbbJYMYm8NeK+QzCZwzgP12dLn4roySqLc7Ii5gOP8Oqlm3Y1itR7dvrYxPAfY+/70EHP+naQbR8E/m4CKcjMpfBsQiMVeyH4J1H4KU1yhc/1mJwAGRlpnAeyfw7Fsjx8wvmgUB1aDEWAYebUyfi9KPlSaqFoiWtYPGeDyGRzJEESt/wFnj/oAfMmXRTQVJDQ/rflSl8iFGo48w8VTpn7Qpp1iGOJMB14xCGdQuAL1x/bOBiR2/NhUtlWoWuT+AwEg6OqjGeaAIs/PsezEC9Sd6AkelU1teD/xQOxznsRBLAluEmrgt/uW+kcCagqyfF5encj1gov8CEYa6uiuR/TXlTmsy0poPVHG76Hq2y0lZfh/4+Rt8Dt5MH/gPfHXmcyfgZhQAAAABJRU5ErkJggg==)}#toolPanel .save{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABEUlEQVR42u2WLw7CMBjF2V1AzM5zACwBOwHJ92CXAC4wMYJYwhGQnALTSQwCwQ1YJipKMAtjsK3/EhL6PvvaX17br22v5+Tk9EGYEAMn0V7gyGgqP72QrJUUgJg0QCzWMgm4PEAKUQ66Y4+ksXZ0U0CUG7hv9y6HCilKQNLujfoK260FEB0OrR4AmW0At71E4ncAtO3QlAOdBBeMl6PmQqqTQLEcwCqgQLqYYY6UCgsAnCO/PP8+zoYB4BRUXMG3h0k1wbHmO5pNsKl18cZsgrjmi80CTjXfyfQpCisLFJrvgxyR8J4O4SGi3E4nX+lAB7pqdbLax0vmyWRadxGz8fl9TTAx+n1/u0xYp+mdnP5QD3iqMYarLOEvAAAAAElFTkSuQmCC);background-size:cover}#toolPanel .save:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAA+UlEQVR42u2WLQ7CMABG3+4CYnaeA2AJWAQ4LgFcAAFBLOEISE6B6SQGgeAGLBMVRY2wjJ/+JiT0++xrX7a1ayEmJuZVhggkSqOSgpH59MqwczOBMBYoFiYCaSEwUtRDbuxYf+yWq42iHrDTYHs2T1Hjaw22Y/O5XQRKZ9G6CYrQAhlaoH5IsNEQdF0EZwb0vzR3Edg2CkIKKnImTMmpQghOpA8m5eRbIMkaVPb2YLIUHFrcwa9g2eKWfgWrFrfyKzi2uKPvVTRuUGP/y7RkRgJAwowyzE6+sGfPxW0nS6cfhcaRKZwEIsTl97lDv9f35ssRetPHxPxf7otQ7hZUI05dAAAAAElFTkSuQmCC)}#toolPanel .save:active{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAmNJREFUaAXtWL9rFEEUft/mcne7AYuY0v8gpDsQ7A7h7oIK6bxCi5AfrZDCLoWFjX+Bhf9BijRB0wixEVOkEIykDTkuGHKbNMkpqJO3p5tsuNnM3OwMKMzBcbPvx/fe+97sG26I/Mcz4BlwxsDk5tlG8nUWgIFLLsFJ0AOn+AweuA7gGt8X4JphFb7vgIoh13rfAdcMq/B9B1QMudb7DrhmWIXvO6BiyLX+v+8ATBm6vXn+SQhx19Q/6wfQTq81UcvKdNfGHRAkTnSDKO0ETpU2OQbGBVAFSwSKc3D1xaDTchkL+g7XLY0LiOtRBwEW/8BBXIfVeMJfH4Hlw/vhvoaH1MS4gASt14jWgeA1kRj9XRLsA3oTz0Zr0sw0hYUKSGKEt6ornMiuZrxLMwB71ano2aXAcFG4gM499MdRanNC33VzYOp/jFGp3a3hXNcnz65wAQnwt2blC0GsDIKke1sW8Ur3/KhV/iwzGVU2tHfTe5y4NfFwVDA+G9b5bJi7yY9n/gbP/Ec32ch0eXkN3wsVuMsJKVzoU7/GZ8QdWRKc/GGlEs3LdEpZTl5WtlAavNNCjDE8IcJvutourE5GJsuC4Gm3juPU3sav1QKShI4b4YcA4iUNxmR6Pggmn171GuF7G0lnMawXkIDXm9EL7sDHQRH8zBNqe6YarmYD21o7KWAN+FUFtZn1r8m8L4/j8VYdP20lncUZfomz2gLrbjM6YPfpAhBark46oBXZkpEvwBKRxjC+A8bUWXL0HbBEpDFM7jkw+e5s9L+JxmmYO8q20FtzOOee/3Juzov3ATwDMgYuAKebdW38MyGrAAAAAElFTkSuQmCC)}#toolPanel .close{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAyUlEQVR42u2WwRGEIAxFLYgisBJvf+iRPiiEGc7sYXccEILGTW75HpH3RpCEbbNYLJb3wYGEjBjc6q3gEJGRcPDx9feU4Em8Rznf4ymQzomkosNXJJ4gN1OnCuwdviLzBLGbPCgGfEVkCYIbAI3isjjfUcfc5inEr0dEFGJ4YqWLIJ74Ckn8reJ//FIhgycVcnh1gfISKW+y8m86O7WCB025VCgXu3W5ntUoZrm+aziTr+A1HP2W+aDpXxTMpq99bVG/eFksFkubD7ijNamCUMb6AAAAAElFTkSuQmCC);background-size:cover}#toolPanel .close:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAu0lEQVR42u2WwQ3FIAxDPRBDhEk6KHswCBJneqkq+gv0R8S3uMcmfgLaGMDlcrk2dCCjICEsqwISCjIOvX27ngqZVgnqXadE5LtxjujtG7IOULrWMSI+7BuKDpAezW/Er31D0gHCy6BHyOBt0B6zTBGyhG8jzOzHO10t7cerMLX/QhjYrxBG9jOEoT0dQN4i8iGTP1Ph/mjkUUEedutxHffH9VfgyG7g0CPzn9CPO6FPv7bQL14ul8vV6QSg74KmDBfNdQAAAABJRU5ErkJggg==)}#toolPanel .undo-disabled{background-size:cover;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABy0lEQVR42u1WS0sCURR2YSpFu8RVkIty1b8QggiiRcvCbNG+oAciuGvTQnGh+Auqn9BGC1q0C6JA6nwjDjMGgpXTfqKx5pF3xrk2s4jmO6sL557vvO65JxQKECCAK6gRSlMRV/RICilooo4ypdXwWMZohaqtpHHuxHFCfVKHBT2UOnF+gldSIdGC5nmYCqSwjOvSR16N8BEMvJORQgKXjsa/5RoJbgJS0YHkyvyniLTITTCU8Rec0aGwRVnkcD5UFdF1FEzzT9i09owaFTLUtibKZS0YvtfUKEtTiKFm0cuPR/CGlL22cGDuKFdNy4hAHjQtG+YoUBqzBpDEedsYYkYt0HPxum266N4hTRmTXnokAW6YMdw6TKqo8dpRHknwPCWsYt0qrTV5xtGpc52g4cu0RU4naPpCQFk9mcrfJPA9RaYi1/34UPnalB+cD43bPO+osFzeoaOR+TeP7CJf6fa0S8eOLvCPa723d/WL1e60hx/OAK1ly7BrY0Oe9OjL/PJujsQfE1XBKRWwbfPpt7lWFy2GJATXa0ubY20xIM3SnQ+LlyXTE8I+3j1eHRlxVKjr4fLLjCQsLFEFF3igvra+N36xvgcI8A/xAdgOd9HtG0mSAAAAAElFTkSuQmCC)}#toolPanel .undo{background-size:cover;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAB1UlEQVR42u1WTUsCURRtYSpFu8RVkIty1b8QggiiRcuiD7jnTTkIFVaIMLs2LRQXir+g+glttKBFuyAKpCBQtEVg5bQ3/GjGyec4z5xFNPeuBt69Z9695953RkYcc8wxS6a4pRASuKJHqFCpgBylpJDiGigZW6RMOKB/yz46oRrVux1VSso+YQB6pzqVd2abf+5iClRecs1rFFfcYgCtwIoUjPhxaZr8268jfnGAOl6obCl9w0s0JwzQ5W84o0NssE0Wo/OurpQs34Kb/AlrRs7IHraOorFQFnvBYUtW9nDJ60XWcDI+EAA+pGDv0zjoZJQl0nIKVGmRtgdE5y2Sg/agjJmeU+7Ve4Gqhenmcwj3JrO/rp+TQn0BcMMFuO0dIXs6pj3VF2B/HEu0YnS2TJOmtz7XAPK2bFsW0wAK9gBsaqVU/yiA3SXSm4ycDekFaTpAgcQGTVgQiK4Kw78BR30nv2PZISHWur1m2LFpevF1rYXuaoGZ6MQQH5x2+gXDqiuyVRob0pPZrv40lX7sUxWnTMEW/9FHUUi6NCwcwLNV2YKigGzRbXsKdzYILwOPRlmUPocsHTn3SNPrEMUvl5AuNo80LuiBag35TvlfyHfHHPuH9gVuq4MuDOEQhQAAAABJRU5ErkJggg==)}#toolPanel .undo:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABnUlEQVR4Ae3YA8hdYRjA8eG7vjddhZnpZrtmO87MNRtptrfMIbvZSrNtexnP/jOPz/MO3/uvX9bBywa2mLLZbDZbEh2xEgdxFW8/u4x9WIOOqIOxemIjWuJ3lbEUbyA+vcAqlKHeKwjuox2+VId5eAsJ6Q1mIwm15DsP0B5VHIDE5Aiq+g8APMR9SMzuoqb/AN5eYhumYQRGYia2442Ph6j+qQe4hqGog1MpDMcdj98pafoBNiMFv6WxGeJgtskHeI32CNNUl9mpbPILPEA7hMnpS6wyPQbuoy2ClnYYEy9QZ3oWOo8wDYf8RkdE7gTEp1MIU8phRV+DyOXQB4M89EMJYdsO+cl+/DPNhPzkMv6ZRkJ+8tY+gP2Fog3ifTCb8jSqn/JCpp/CVkKtcZiOqG2G/MZKqDUR8tkCkMJ2WqkJkJ9sREH/QBO97hAHdzAEWb0jZfRa4C7ExVtsxTyMCniov4MqVGuJm5CY3UENRmqKs7oXW/olMAXv9K8W9b/GBjzVvdzVrw5dsAE7cQFv8BaXsT/u63WbzWaz2d4D2omvLpJYj6kAAAAASUVORK5CYII=)}#toolPanel .confirm{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAzElEQVR42u3WPQ6CQBAF4JGWW+gJuIeFLQn1PKwolgPQcwQ4hV7DeBFuICFjoZ3hJ+5MYsy8/n0PSHYDkcfj8fxZygwtdyhkZ8KjwsjCwoKLwQSHF/6eKEx5Fu5seUFry49lZsizoDLlOWyq1ul53yRGfJ2ix8TCA3KTp0e/Xon6OJjWahE8ER/WqlE8UZPwsFSP5ImIkM8TCvwSo8TPntCrGj/7Fnr8polgc9fo8YsT4RduzK8ndPmPCX2eiKg84sYP3Pnk/38ej0c9T8qbtsk88JfxAAAAAElFTkSuQmCC);background-size:cover}#toolPanel .confirm:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAtklEQVR42u3WsQ2DMBCF4T+0bJFMwB4p0iKxA4XHYASYIqwRZRE2CEKXIqkiYSx8J0XoHvX7nuXCAjwej+doqejoaTjZ8C0zgiDcLSbCF/98jS0v9La80NnyM5UlL7S2fEirlpwprPiSgQVhorY5/ZBQybqcZbOWwcNls5rFQ8EUrWfyAHWEUOBjjBK/NjHq8WsTinzKRLB5axT52ET4ixdz74Qy/zthwANcefDiyc1//zwej3reZoErqC4lD3AAAAAASUVORK5CYII=)}.ico-panel{width:0;height:0;border-right:6px solid transparent;border-left:6px solid transparent;border-top:6px solid #fff;position:absolute;top:0;left:23px;transform:rotate(180deg)}.ico-panel img{width:100%;height:100%}#optionPanel{height:20px;top:6px;left:0;border-radius:5px;background:#fff;z-index:9999;position:absolute;padding:10px}#optionPanel .brush-select-panel{height:20px;float:left}#optionPanel .brush-select-panel .item-panel{width:20px;height:20px;margin-right:18px;float:left}#optionPanel .brush-select-panel .item-panel:first-child{margin-left:2px}#optionPanel .brush-select-panel .item-panel:last-child{margin-right:0}#optionPanel .brush-select-panel .brush-small{background-size:cover;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAKlJREFUeNrs18EKgkAUhWEnwmW1amObHqKeo0ftOfIh3OSmlba0xXSEK4SICAoz4X/gINwL8sE4C533Pok5myTyAAQIECBAgAAB/jdwO/cFO3dsH3v1qmY2LtWHWr/9KyxQOag3Nf2ZnQ17V6vQR3zp4bqktgv+DWYjuxO3eELKkd0zBmCuNgPzxnbBgZXd1kL9WIslbnAbx38xQIAAAQIECBDgqoFfAQYAhLQbgzDvXkAAAAAASUVORK5CYII=)}#optionPanel .brush-select-panel .brush-small-active,#optionPanel .brush-select-panel .brush-small:active,#optionPanel .brush-select-panel .brush-small:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALhJREFUeNpi/P//P8NgBkwMgxyMOnDUgaMOHHXgqANHHTjqwFEHDm0HslBqAB+jGIhSBeIOIHaBCu8B4gogvv3p/yuKzGektMEKdKA6kDoBxAJoUh+A2ALowJsDHcVtWBzHABVro9RwaoTgRxCFQ/oLMAR5R3MxAbAHj9yuweDAamiGYMCSSaoHgwNvgHIrEK8D4s9QvA4qdmPAM8loVTfqwFEHjjpw1IGjDhx14KgDRx04pB0IEGAAHeMoHW2kl/cAAAAASUVORK5CYII=)}#optionPanel .brush-select-panel .brush-medium{background-size:cover;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAS9JREFUeNrs2EsLgkAQB/BWupQQHXpczbp36/EB6ptH1M2D17RLhx6XQG9lszCBxEa5zoTQDPxvjv52RR1UWZbVqlxOreIlQAEKUID/Dqx/e2BL9d4t0MP0IS7kBkkgZ0iMub82XrMjLdBQGjXTdgO6jRlpC2QDiX51ixVkClkacMbNhyywR/0COIGMLfrG2MsK9C1xeaTPBdTHzgkezHmR6zoFd88lAOpzDDmAHuHrzeMA9giBXQ5ggxDY5ADeq/4tTgmvm3IAL4TAEwcwJgTGHMAdTillK8FzsTwkawLgGkcylm+xXnlQAhcU2T3baWYLCS36QuzlmahzpX/mrCAHnPE+zYRXhO1strzMRK0n5D0OEQNIJzdMPEf+CGHWL3klf7cEKEABClCApeohwADD8zb9WRTsHgAAAABJRU5ErkJggg==)}#optionPanel .brush-select-panel .brush-medium-active,#optionPanel .brush-select-panel .brush-medium:active,#optionPanel .brush-select-panel .brush-medium:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAU9JREFUeNpi/P//P8NgBkwMgxyMOnDUgaMOHHXgSHcgC7EK+RjFsAmzAXEAFFsCsRQQ/wLiJ0B8HojXA/FGqBgK+PT/FVH2MhJb1WFxYCAQdwGxCgGtd4C4HIjXkeNAcqKYGYg7oRaqEKEepGYtVA8zzaIYCbQBcRkZ+mB6ymmZSULIdByyI0NI0UBKGgRliLtALENhxnwKxErANPiL2iEYSgXHgYA0EIfRIooDqFi8BdDCgaZUdKAJLRwoQUUHStLCgb8YBgCQ4sDnVLT3OS0ceImKDjxDCwduoKIDN9DCgauhrRRKwVOoWTTJJEVUcGAhEP+kVV0M8nk3BY7rJiX0yG1uVQLxFDL0TYXqpXmT/y8Q50JbJXeIUH8HWo/nQPWSBChpUcOa/KHQ1rUxtCEAywhnoU3+1XRp8o/26kYdOOrAUQeOOnDUgVgBQIABAPYuSgtJpajwAAAAAElFTkSuQmCC)}#optionPanel .brush-select-panel .brush-big{background-size:cover;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAaNJREFUeNrcmMFKw0AQhpOqRdGUCloD2lMv1T6B6RMI4sOK4BM0b1Clh56skFahpVaUaln/wBQkzKYmTbJTB75TSPJlN7uzM7ZSypIc9sYIVuxa0nsdUAcuqIIDUKZrczADExCAJ/CW5OFTNUolaIMGaIGThB80BF3QByoPwVPQptFaJ8JR7YDnrAS3gAfOM/69HoEPFusI7oIrcJzTGngB9+AzjWAod5PBlP5lym+jkqsEt8E1qBW0m4Q2d+A7KljS3OAVKGfRuzzuQkmzWpsG9uQmvTtW0KatxFS0yUEr2ChgUcRFlRy0ghcC0m9LJ+hQXjUdYQqtcIJ1QYeYM07QFSTocoKHggSrnOC+IEGHEywLEtyJyySi4rfgXJDXFyf4LkhwxgmOBQmOOcFAkGDACQ4ECQ44wamQURySC7vNPAgQ7MYdt/pUxJiKCTloBRUV1abCj3YduEwSVvw9A3I9bqHqUl2HSsGiYqSbuY0t3JexR62Po5zkXqn18ZG2N7PsMlxaQptH0TrBs7Jpv/mrMte/bGByx/LiWsBSQ7zgjwADAPqYqQ1c9nN+AAAAAElFTkSuQmCC)}#optionPanel .brush-select-panel .brush-big-active,#optionPanel .brush-select-panel .brush-big:active,#optionPanel .brush-select-panel .brush-big:hover{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAhRJREFUeNrUmLtPAkEQh+/UghCxw06JNuCjJURBK+OjsNVEW4KF6P+iYKGF9rYWhmClKKGg8wGNRu2kA4M25PyNGRKFPb0Fjlsm+SKG3MyXLLezs7phGJrK0acpHgP1D0P6sOyzY2AJRMAE8AEPf1cBz+ABZEAKPMkkLxtv33/1+hJbFOwHayAOZuh5i/WoSBYkwSmo2SG4ABIg0OaqFcAOuLAiaOU36AKHIN0BOY1zpDmnq92XxAsuQcyG33+Mc3tbFaQHr0DQxpc0yDW8soJucAb8XdhJ/FzLLSO4B0Jd3O5CXNOSIL2tUQf25CjX/lOQ/t93sHEkeK81FVznruBUBLgRmApuK9B+42aC1FtnFRCkFjouElyW6K12hs6HkCbBsEKnrLBIcEohwUmR4IhCgj6RoEchwcGeOfL/FKwo5PUuEnxVSPBFJHivkOCdSDCjkOC1SDDF05fTYbBLk+AjuFFAMMsuwm3mQAHB5K/G3DAX02HxtkPjZasz8zQN9mZzcY2Haqdit/HWQdRJaOI/cUDumAd6S1MdnWpzXZTLma2cmWAVrIJiF+SKXKsqe7NQAvMgb6NcnmuUWrn6oKBXaQ4c2SBHOSNcQ2tVkOIDbIHFDi15kXNRzk+Z49Z/keaxYIN3e9m2SM9sco605QlK8oZVaxhTV3iZaGMfpTT8XZmPTAU+hJxr7V4B98KJWsn4EmAAKPJ2SXt/mW0AAAAASUVORK5CYII=)}#optionPanel .right-panel{float:left;display:flex;align-items:center;margin-left:39px}#optionPanel .right-panel .color-panel{width:72px;display:flex;justify-content:center;flex-wrap:wrap;background:#fff;border:1px solid #e5e6e5;border-radius:5px;position:absolute;top:-225px;right:28px}#optionPanel .right-panel .color-panel .color-item{width:62px;height:20px;margin-bottom:5px}#optionPanel .right-panel .color-panel .color-item:first-child{margin-top:5px;background:#f53440}#optionPanel .right-panel .color-panel .color-item:nth-child(2){background:#f65e95}#optionPanel .right-panel .color-panel .color-item:nth-child(3){background:#d254cf}#optionPanel .right-panel .color-panel .color-item:nth-child(4){background:#12a9d7}#optionPanel .right-panel .color-panel .color-item:nth-child(5){background:#30a345}#optionPanel .right-panel .color-panel .color-item:nth-child(6){background:#facf50}#optionPanel .right-panel .color-panel .color-item:nth-child(7){background:#f66632}#optionPanel .right-panel .color-panel .color-item:nth-child(8){background:#989998}#optionPanel .right-panel .color-panel .color-item:nth-child(9){background:#000}#optionPanel .right-panel .color-panel .color-item:nth-child(10){border:1px solid #e5e6e5;background:#feffff}#optionPanel .right-panel .color-select-panel{width:62px;height:20px;background:#f53340;border:1px solid #e5e6e5}#optionPanel .right-panel .pull-down-arrow{width:15px;height:8px;margin-left:10px;background-size:cover;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAQCAYAAAABOs/SAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAANNJREFUeNq01TEKwjAUxvHXOAhKJ3Fwc9PVzbWipxCdHLyMV9AD6A2EegRdvYBOnd3E70ELIcT2JU0C/1BI4AeB8pKUhlMiOqAtKijuGqEj2ne61D/jY1V2QZ+IaI7maKywrdETzdAVDSKi/Lp3tGP4hRYRcRPlly1Uech4FgG3onygtEvvwDijNxtqwiHxCp3YUBscAm9E/8FtcBFaB/vgYrQJdsGdUAkswZ1RKVyH6+hDivJKMCTa/CY9DV26DBlX2MTJB/WFK/yEvmjjM05/AgwANuZSRB8r5twAAAAASUVORK5CYII=)}#textInputPanel{min-width:20px;min-height:30px;line-height:30px;padding:5px;box-sizing:border-box;position:absolute;outline:none;top:0;left:0;color:red;border:1px solid red}</style><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+
+
+
+
+
+<body class="git-group ui_basic ff" id="groups-show" style=""><div id="MathJax_Message" style="display: none;"></div>
+<header class="common-header fixed noborder" id="git-header-nav">
+<div class="ui container">
+<div class="ui menu header-menu header-container">
+<div class="git-nav-expand-bar">
+<i class="iconfont icon-mode-table"></i>
+</div>
+<div class="gitee-nav__sidebar">
+<div class="gitee-nav__sidebar-container">
+<div class="gitee-nav__sidebar-top">
+<div class="gitee-nav__avatar-box">
+<a href="/billxiang2"><img class="ui avatar image billxiang2-avatar" src="https://foruda.gitee.com/avatar/1718762537041737908/13248070_billxiang2_1718762533.png" alt="13248070 billxiang2 1718762533">
+</a></div>
+<div class="gitee-nav__info-box">
+<a href="/billxiang2">BillXiang</a>
+</div>
+</div>
+<div class="gitee-nav__sidebar-middle">
+<div class="gitee-nav__sidebar-list">
+<ul>
+<li class="gitee-nav__sidebar-item">
+<a href="/billxiang2"><i class="iconfont icon-ic-dashboard"></i>
+<span class="gitee-nav__sidebar-name">个人主页</span>
+</a></li>
+<li class="gitee-nav__sidebar-item">
+<a href="/explore"><i class="iconfont icon-ic-discover"></i>
+<span class="gitee-nav__sidebar-name">开源</span>
+</a></li>
+<li class="gitee-nav__sidebar-item">
+<a href="/enterprises"><i class="iconfont icon-ic-enterprise"></i>
+<span class="gitee-nav__sidebar-name">企业版</span>
+</a></li>
+<li class="gitee-nav__sidebar-item">
+<a href="/education"><i class="iconfont icon-ic-education"></i>
+<span class="gitee-nav__sidebar-name">高校版</span>
+</a></li>
+<li class="gitee-nav__sidebar-item split-line"></li>
+<li class="gitee-nav__sidebar-item">
+<a href="/search"><i class="iconfont icon-ic-search"></i>
+<span class="gitee-nav__sidebar-name">搜索</span>
+</a></li>
+<li class="gitee-nav__sidebar-item">
+<a href="/help"><i class="iconfont icon-help-circle"></i>
+<span class="gitee-nav__sidebar-name">帮助中心</span>
+</a></li>
+<li class="gitee-nav__sidebar-item">
+<a href="/terms"><i class="iconfont icon-file"></i>
+<span class="gitee-nav__sidebar-name">使用条款</span>
+</a></li>
+<li class="gitee-nav__sidebar-item">
+<a href="/about_us"><i class="iconfont icon-issuepx"></i>
+<span class="gitee-nav__sidebar-name">关于我们</span>
+</a></li>
+<li class="gitee-nav__sidebar-item">
+<a href="/profile/account_information"><i class="iconfont icon-edit"></i>
+<span class="gitee-nav__sidebar-name">设置</span>
+</a></li>
+<li class="gitee-nav__sidebar-item">
+<a rel="nofollow" data-method="delete" href="/logout"><i class="iconfont icon-ic-logout"></i>
+<span class="gitee-nav__sidebar-name">
+退出
+</span>
+</a></li>
+</ul>
+</div>
+</div>
+<div class="gitee-nav__sidebar-bottom">
+<div class="gitee-nav__sidebar-close-button">
+<i class="fa fa-angle-double-left"></i>
+</div>
+</div>
+</div>
+</div>
+
+<!-- /todo 10周年活动结束后 恢复 -->
+<div class="item gitosc-logo">
+<a href="https://gitee.com"><img alt="Gitee - 基于 Git 的代码托管和研发协作平台" class="ui inline image" height="28" src="/static/images/logo.svg?t=158106664" title="Gitee - 基于 Git 的代码托管和研发协作平台" width="95">
+<img alt="Gitee - 基于 Git 的代码托管和研发协作平台" class="ui inline black image" height="28" src="/static/images/logo-black.svg?t=158106664" title="Gitee - 基于 Git 的代码托管和研发协作平台" width="95">
+</a></div>
+<a title="开源" class="item " href="/explore">开源
+</a><a title="企业版" class="item " href="/enterprises">企业版
+</a><a title="高校版" class="item " href="/education">高校版
+</a><a title="私有云" class="item" target="_blank" href="https://gitee.cn?utm_source=giteecom">私有云
+</a><a title="Gitee AI" class="item mr-3" id="gitee-blog" target="_blank" href="https://ai.gitee.com/?utm_sources=site_nav">Gitee AI
+<sup class="ui red label">
+NEW
+</sup>
+</a><div class="dropdown item ui" id="my-gitee-dropdown" tabindex="0">
+<a href="/">我的</a>
+<i class="dropdown icon"></i>
+<div class="menu" tabindex="-1">
+<div class="ui active dimmer inverted js-my-gitee-dropdown-loader">
+<div class="ui loader"></div>
+</div>
+<div class="header user-enterprises">
+<a class="pull-right" target="_blank" href="/billxiang2/dashboard/enterprises">全部</a>
+企业
+<span class="count"></span>
+</div>
+<div class="disabled item tip user-enterprises">
+无企业
+</div>
+<div class="header user-groups">
+<a class="pull-right" target="_blank" href="/billxiang2/dashboard/groups">全部</a>
+组织
+<span class="count"></span>
+</div>
+<div class="disabled item tip user-groups">
+无组织
+</div>
+<div class="header user-programs">
+项目
+<span class="count"></span>
+</div>
+<div class="disabled item tip user-programs">
+<span class="translation_missing" title="translation missing: zh-CN.layouts.header.empty_programs">Empty Programs</span>
+</div>
+<div class="header user-projects">
+<a class="pull-right" target="_blank" href="/billxiang2/projects">全部</a>
+仓库
+<span class="count"></span>
+</div>
+<div class="disabled item tip user-projects">
+无项目
+</div>
+</div>
+</div>
+<div class="center responsive-logo">
+<a href="https://gitee.com"><img alt="Gitee - 基于 Git 的代码托管和研发协作平台" class="ui inline image" height="24" src="/static/images/logo.svg?t=158106664" title="Gitee - 基于 Git 的代码托管和研发协作平台" width="85">
+<img alt="Gitee - 基于 Git 的代码托管和研发协作平台" class="ui inline black image" height="24" src="/static/images/logo-black.svg?t=158106664" title="Gitee - 基于 Git 的代码托管和研发协作平台" width="85">
+</a></div>
+<div class="right menu userbar right-header" id="git-nav-user-bar">
+<form class="ui item" id="navbar-search-form" data-text-require="搜索关键字不能少于1个" data-text-filter="搜索格式不正确" action="/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="✓">
+<input type="hidden" name="type" id="navbar-search-type">
+<input type="hidden" name="fork_filter" id="fork_filter" value="on">
+<div class="ui search header-search">
+<input type="text" name="q" id="navbar-search-input" value="" class="prompt" placeholder="搜开源" autocomplete="off">
+<div class="results"></div></div>
+</form>
+
+<script>
+  var can_search_in_repo = 0,
+      repo = "",
+      reponame = "";
+  
+  $(function() {
+    var $search = $('#navbar-search-form .ui.search');
+    $search.search({
+      apiSettings: {
+        url: '/search/relative_project?q={query}',
+        onResponse: function (res) {
+          if (res && res.status === 200 && res.data) {
+            var query = htmlSafe($search.search('get value'));
+  
+            res.data.map(function (item) {
+              item.path_ns = '/' + item.path_ns;
+              item.icon = 'iconfont icon-project-public';
+            });
+            res.data.unshift({
+              name_ns: "在全站搜索 <b class='hl'>" + query +"</b> 相关项目",
+              path_ns: '/search?fork_filter=on&q=' + query,
+              icon: 'iconfont icon-search'
+            });
+            return res;
+          } else {
+            return { data: [] };
+          }
+        }
+      },
+      fields: {
+        results: 'data',
+        description: 'name_ns',
+        url: 'path_ns',
+        icon: 'icon'
+      },
+      minCharacters: 1,
+      maxResults: 10,
+      searchDelay: 250,
+      showNoResults: false,
+      transition: 'fade'
+    });
+  });
+</script>
+
+<div class="item ui dropdown empty" data-count-path="/notifications/unread_count" data-enable="" data-mark-notice-path="/notifications/mark" id="notice-dropdown" tabindex="0">
+<a class="remind-button" href="/notifications"><i class="iconfont icon-remind"></i>
+<div class="notice-count total visible">99<span style="position: relative;top: -1px;">+</span></div>
+</a><div class="notice-dropdown-panel menu" style="left: -192.3px;" tabindex="-1">
+<div class="notice-dropdown-panel-header">
+<div class="tab active" data-data-path="/notifications/notices?scope=referer" data-html-path="/notifications/referer" data-scope="referer">
+<div class="content">
+@ 我
+<div class="notice-count referer"></div>
+</div>
+</div>
+<div class="tab" data-data-path="/notifications/notices?scope=infos" data-html-path="/notifications/infos" data-scope="infos">
+<div class="content">
+通知
+<div class="notice-count infos visible">99<span style="position: relative;top: -1px;">+</span></div>
+</div>
+</div>
+<div class="tab" data-data-path="/notifications/notices?scope=messages" data-html-path="/notifications/messages" data-scope="messages">
+<div class="content">
+私信
+<div class="notice-count messages"></div>
+</div>
+</div>
+</div>
+<div class="item notice-dropdown-panel-container">
+<div class="ui dimmer over active">
+<div class="ui loader"></div>
+</div>
+<div class="notice-list"></div>
+<div class="notice-dropdown-panel-blank">
+暂没有新消息
+</div>
+</div>
+<div class="notice-dropdown-panel-footer">
+<div class="action">
+<div class="side left">
+<a class="mark-notices" href="javascript: void(0);">当前标记为已读
+</a></div>
+<div class="side right">
+<a class="load-all" target="_blank" href="javascript: void(0);">查看全部
+</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="ui item" id="feature-update-notice">
+<div class="notice-update-icon">
+<a class="notice-update-popup click-knowed" title="" href="https://help.gitee.com/issue/templates"><img alt="功能更新" title="" class="bubl_icon bubl-off-icon" src="https://cn-assets.gitee.com/assets/bulb_off-24ee940be20998aace89a3f040cbc704.svg" style="display: none;">
+<img alt="功能更新" title="" class="bubl_icon bubl-on-icon" src="https://cn-assets.gitee.com/assets/bulb_on-3986b1dc417285398e3d15671bd8f261.svg" style="display: block;">
+</a></div>
+<div class="feature-update-notice-panel menu" style="left: -131.3px;">
+<div class="notice-img">
+<img alt="" title="" class="notice-img-show" src="https://foruda.gitee.com/images/1686912374721555501/639dc6e9_551147.png">
+</div>
+<div class="notice-update-title">Issue 表单模式来袭</div>
+<div class="notice-update-des"><ul>
+<li>提交 Issue，填表就好</li>
+<li>内容必填选填？你说了算！</li>
+<li>精准反馈，高效沟通</li>
+</ul></div>
+<div class="notice-btn-list d-flex-between">
+<button name="button" type="button" class="ui basic orange button btn-notice btn-knowed click-knowed" style="margin-right: 0">我知道了</button>
+<a class="ui button orange btn-notice btn-details click-knowed" target="_blank" href="https://help.gitee.com/issue/templates">查看详情</a>
+</div>
+</div>
+</div>
+
+<div class="ui dropdown link item" id="git-nav-create" tabindex="0">
+<i class="iconfont icon-add-thin"></i>
+<div class="right menu" tabindex="-1">
+<a class="item" href="/projects/new"><i class="add square icon"></i>
+新建仓库
+</a><a class="item" href="/organizations/new"><i class="group icon"></i>
+创建组织
+</a><a class="item" href="/enterprises/new"><i class="icon iconfont icon-enterprise"></i>
+开通企业版
+</a><a class="item" href="/projects/import/url"><i class="github icon"></i>
+从 GitHub / GitLab 导入仓库
+</a><a class="item" href="/billxiang2/codes/new"><i class="code icon"></i>
+发布代码片段
+</a></div>
+</div>
+<div class="ui dropdown item" id="git-nav-user" tabindex="0">
+<img class="ui avatar image" src="https://foruda.gitee.com/avatar/1718762537041737908/13248070_billxiang2_1718762533.png!avatar30" alt="13248070 billxiang2 1718762533">
+<i class="dropdown icon"></i>
+<div class="right menu" tabindex="-1">
+<a class="item" href="/billxiang2"><i class="iconfont icon-ic-home"></i>
+个人主页
+</a><a class="item" href="/billxiang2/starred"><i class="iconfont icon-star"></i>
+我的星选集
+</a><a class="item" href="/profile/cps/overview"><img src="https://cn-assets.gitee.com/assets/cps_icon-9c17338b5d65451ce5190ddb75fce3c7.svg" alt="Cps icon">
+成为推荐官
+</a><a class="item" href="/profile/account_information"><div class="mayun-icon my-ic-edit my-ic-edit-dims"></div>
+设置
+</a><div class="divider"></div>
+<a class="item" target="_blank" href="https://help.gitee.com"><div class="mayun-icon my-ic-help my-ic-help-dims"></div>
+帮助
+</a><div class="divider"></div>
+<a class="item destroy-user-session" rel="nofollow" data-method="delete" href="/logout"><div class="mayun-icon my-ic-exit my-ic-exit-dims"></div>
+退出
+</a></div>
+</div>
+<script>
+  $('.destroy-user-session').on('click', function() {
+    $.cookie('access_token', null, { path: '/' });
+  })
+</script>
+
+</div>
+</div>
+</div>
+</header>
+<script>
+  Gitee.initNavbar()
+  Gitee.initRepoRemoteWay()
+  $.cookie('user_locale',null)
+</script>
+
+<div class="fixed-notice-infos">
+<div class="all-messages">
+</div>
+<div class="ui container">
+<div class="flash-messages" id="messages-container"></div>
+</div>
+<script>
+  (function() {
+    $(function() {
+      var $error_box, alertTip, notify_content, notify_options, template;
+      template = '<div data-notify="container" class="ui {0} message" role="alert">' + '<i data-notify="dismiss" class="close icon"></i>' + '<span data-notify="message">{2}</span>' + '</div>';
+      notify_content = null;
+      notify_options = {};
+      alertTip = '';
+      $error_box = $(".flash_error.flash_error_box");
+      if (notify_options.type === 'error' && $error_box.length > 0 && !$.isEmptyObject(notify_content.message)) {
+        if (notify_content.message === 'captcha_fail') {
+          alertTip = "验证码不正确";
+        } else if (notify_content.message === 'captcha_expired') {
+          alertTip = "验证码已过期，请点击刷新";
+        } else if (notify_content.message === 'not_found_in_database') {
+          alertTip = "帐号或者密码错误";
+        } else if (notify_content.message === 'not_found_and_show_captcha') {
+          alertTip = "帐号或者密码错误";
+        } else if (notify_content.message === 'phone_captcha_fail') {
+          alertTip = "手机验证码不通过";
+        } else {
+          alertTip = notify_content.message;
+        }
+        return $error_box.html(alertTip).show();
+      } else if (notify_content) {
+        if ("show" === 'third_party_binding') {
+          return $('#third_party_binding-message').html(notify_content.message).addClass('ui message red');
+        }
+        notify_options.delay = 3000;
+        notify_options.template = template;
+        notify_options.offset = {
+          x: 10,
+          y: 30
+        };
+        notify_options.element = '#messages-container';
+        return $.notify(notify_content, notify_options);
+      }
+    });
+  
+  }).call(this);
+</script>
+
+</div>
+<script>
+  (function() {
+    $(function() {
+      var setCookie;
+      setCookie = function(name, value) {
+        $.cookie(name, value, {
+          path: '/',
+          expires: 365
+        });
+      };
+      $('#remove-bulletin, #remove-bulletin-dashboard').on('click', function() {
+        setCookie('remove_bulletin', "gitee-maintain-1739032092");
+        $('#git-bulletin').hide();
+      });
+      $('#remove-member-bulletin').on('click', function() {
+        setCookie('remove_member_bulletin', "gitee_member_bulletin");
+        $(this).parent().hide();
+      });
+      return $('#remove-gift-bulletin').on('click', function() {
+        setCookie('remove_gift_bulletin', "gitee-gift-bulletin");
+        $(this).parent().hide();
+      });
+    });
+  
+  }).call(this);
+</script>
+<script>
+  function closeMessageBanner(pthis, type, val) {
+    var json = {}
+  
+    val = typeof val === 'undefined' ? null : val
+    $(pthis).parent().remove()
+    if (type === 'out_of_enterprise_member') {
+      json = {type: type, data: val}
+    } else if (type === 'enterprise_overdue') {
+      json = {type: type, data: val}
+    }
+    $.post('/profile/close_flash_tip', json)
+  }
+</script>
+
+<div class="site-content">
+<div class="git-group-header">
+<div class="ui container">
+<div class="big git-group-header-content">
+<div class="git-group-avatar git-avatar-container">
+<a href="/giantvm"><img class="avatar current-group-avatar" src="https://portrait.gitee.com/uploads/avatars/namespace/2481/7445349_giantvm_1615777071.png!avatar100" alt="7445349 giantvm 1615777071">
+</a><div class="clearfix"></div>
+</div>
+<div class="git-group-info-wrapper">
+<div class="git-group-info">
+<div class="content">
+<div class="group-title"><h2 class="group-name">
+<a class="color-unset" href="/giantvm">GiantVM</a><div class="d-inline-block ml-1">
+<div class="d-flex-center">
+</div>
+</div>
+</h2></div>
+<div class="group-desc">
+GiantVM，又称巨型虚拟机，由上海交通大学上海可扩展计算与系统实验室可信云计算团队研发（http://tcloud.sjtu.edu.cn/），是一个基于 QEMU-KVM 的"多虚一"分布式Type II型hypervisor，它管理来自多个物理机器的资源，为客户操作系统提供统一的硬件抽象。
+GiantVM围绕高速网络RDMA技术实现虚拟化层面的硬件抽象，分布式QEMU提供跨节点虚拟机抽象，KVM为下层物理机提供管理接口，基于RDMA提供低延迟分布式共享内存DSM。
+</div>
+</div>
+<div class="group-meta">
+<div class="meta">
+<i class="iconfont icon-url"></i>
+<a target="_blank" class="website-url" only_path="false" rel="nofollow" href="/link?target=https%3A%2F%2Fgiantvm.github.io">https://giantvm.github.io</a>
+</div>
+<div class="meta">
+<i class="iconfont icon-message message"></i>
+<a class="email-message" href="mailto:xiangyuxin@sjtu.edu.cn">xiangyuxin@sjtu.edu.cn</a>
+</div>
+</div>
+</div>
+</div>
+<div class="git-group-action d-flex">
+<div class="follow-action">
+<button class="ui orange button margin-0 padding-0">
+<a id="follow-group" class="ui orange button margin-0" style="" data-remote="true" rel="nofollow" data-method="post" href="/giantvm/follow"><i class="heart outline icon"></i>
+关注
+</a><a id="unfollow-group" class="ui orange button margin-0" style="display: none;" data-remote="true" rel="nofollow" data-method="post" href="/giantvm/unfollow"><i class="heart icon"></i>
+已关注
+</a><a id="followers-count" class="ui orange button margin-0" style="position: relative;" href="/organizations/giantvm/followers"><span class="vertical-bar"></span>
+<span id="follow-sum">6</span>
+</a></button>
+</div>
+</div>
+</div>
+<div class="group-nav">
+<a class="pl-0 item active" href="/giantvm"><i class="iconfont icon-ic-home"></i>
+<span class="group-overview">概览</span>
+</a><a class="item " href="/organizations/giantvm/projects"><i class="iconfont icon-projects"></i>
+<span>仓库</span>
+<span class="ui mini circular label">
+3
+</span>
+</a><a class="item " href="/organizations/giantvm/issues"><i class="iconfont icon-issue"></i>
+<span>
+Issues
+</span>
+</a><a class="item " href="/organizations/giantvm/pull_requests"><i class="iconfont icon-pull-request"></i>
+<span>Pull Requests</span>
+</a><a class="item " href="/organizations/giantvm/events"><i class="iconfont icon-activities"></i>
+<span>动态</span>
+</a><a class="item " href="/organizations/giantvm/members/list"><i class="iconfont icon-member"></i>
+<span>
+成员
+</span>
+<span class="ui mini circular label">
+1
+</span>
+</a><div class="pull-right right-operate">
+<a href="javascript:void(0)" id="apply-to-join" class="">申请加入组织</a>
+</div>
+</div>
+</div>
+</div>
+<div class="ui modal small center" id="apply-modal">
+<i class="icon-close iconfont close"></i>
+<div class="header">
+申请加入组织
+</div>
+<div class="content ui form apply-content">
+<div class="field">
+<h3 class="apply-header">
+您正在申请加入GiantVM
+</h3>
+</div>
+<div class="field">
+<label>角色</label>
+<input type="hidden" name="apply[access]" id="apply_access" value="30">
+<div class="default-access-name">
+开发者
+</div>
+</div>
+<div class="field">
+<label>姓名</label>
+<input type="text" name="apply[name]" id="apply_name" value="BillXiang" class="inline-block" placeholder="请输入姓名">
+</div>
+<div class="field">
+<label>理由</label>
+<textarea name="apply[description]" id="apply_description" rows="2" placeholder="请输入申请理由"></textarea>
+</div>
+<div class="field error-message"></div>
+<div class="actions actions-btn-group right aligned">
+<a class="ui cancel blank button">
+取消
+</a>
+<div class="ui button orange large" id="btn-submit">
+提交
+</div>
+</div>
+</div>
+<div class="success-content">
+<img class="ui middle aligned small image success-image" src="/static/images/success_green.svg" alt="Success green">
+<h3>申请已成功提交</h3>
+<p>请等待管理员审核，审核完成后你将收到系统通知</p>
+</div>
+</div>
+<style>
+  #apply-modal .apply-content {
+    padding: 14px 36px !important; }
+  #apply-modal .apply-header {
+    margin: 10px 0; }
+  #apply-modal .field label {
+    font-size: 14px; }
+  #apply-modal .field > input, #apply-modal .field > .apply-access {
+    width: 180px; }
+  #apply-modal .field .default-access-name {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+  #apply-modal .field.error-message {
+    color: red; }
+  #apply-modal .success-content {
+    display: none;
+    text-align: center;
+    padding: 40px 0; }
+    #apply-modal .success-content .success-image {
+      width: 64px;
+      height: auto; }
+    #apply-modal .success-content h3 {
+      margin: 14px 0 0 0; }
+    #apply-modal .success-content p {
+      margin-top: 21px; }
+  #apply-modal .error_border {
+    border: 1px solid red; }
+</style>
+<script>
+  if (false) {
+    modalShow()
+  }
+  var applyModal = $('#apply-modal')
+  var applyUserName = applyModal.find('input[name="apply[name]"]')
+  var applyAccess = applyModal.find('input[name="apply[access]"]')
+  var applyRoleId = applyModal.find('input[name="apply[role_id]"]')
+  var applyDropdown = $('.apply-access').dropdown({showOnFocus: false})
+  var applyDescription = $('#apply_description')
+  var submitBtn = $('#btn-submit')
+  var submiting = false
+  var alreadySubmit = false
+  $('#apply-to-join').click(function() {
+    if(alreadySubmit) return ;
+    modalShow()
+  })
+  function modalShow() {
+    $('#apply-modal').modal({
+      closable: false
+    }).modal('show')
+  }
+  function modalHidden() {
+    $('#apply-modal').modal('hide')
+  }
+  function inputCheck() {
+    if(applyUserName.val() == '') {
+      showErrorMessage('姓名为必填项')
+      return false
+    }
+    if(applyUserName.val().length > 255) {
+      showErrorMessage('字符长度不能超过 255 个')
+      return false
+    }
+    if(applyDescription.val() == '') {
+      showErrorMessage('申请理由为必填项')
+      return false
+    }
+    if(applyDescription.val().length > 255) {
+      showErrorMessage('申请理由长度不能超过 255 个')
+      return false
+    }
+    return true
+  }
+  function sendAjax() {
+    if(!inputCheck() || submiting) return false;
+    $.ajax({
+      method: 'post',
+      url: '/invitation/Group/giantvm/apply',
+      data: {
+        applicant_name: applyUserName.val(),
+        access: applyAccess.val(),
+        role_id: applyRoleId.val(),
+        remark: applyDescription.val()
+      },
+      beforeSend: function() {
+        submitBtn.html('<i class="ui active mini inline loader"></i>')
+        $('.field.error-message').text('')
+        submiting = true
+      },
+      success: function(res) {
+        submitBtn.text("提交")
+        submiting = false
+        if(res['code'] === 200) {
+          $('.apply-content').hide()
+          $('.success-content').show()
+          $('.apply-join-btn').text("正在审核中")
+          alreadySubmit = true
+        } else {
+          modalHidden()
+          Flash.show(res['msg'])
+        }
+      },
+      error: function(err) {
+        Flash.show('提交时发生错误，请重试')
+      }
+    })
+  }
+  function showErrorMessage(content) {
+    $('.field.error-message').text(content)
+  }
+  $('#btn-submit').click(function() {
+    sendAjax()
+  })
+  
+  $('.close-button').click(function() {
+    modalHidden()
+  })
+  $('.ui.cancel.button').click(function() {
+    modalHidden()
+  })
+</script>
+
+<script>
+  var $GroupAvatarImg = $('.current-group-avatar')
+  $('.verified-label').popup({
+    content : "组织域名已通过验证",
+    position: 'bottom center'
+  });
+  
+  // follow group
+  $(function() {
+    var $followGroup = $('#follow-group');
+    var $unfollowGroup = $('#unfollow-group');
+    var $followSum = $('#follow-sum');
+    var $followAction = $('.follow-action');
+    var $followersCount = $('#followers-count');
+  
+    $followGroup.on('mouseenter', function () {
+      $(this).find('i.icon.heart').removeClass('outline');
+    }).on('mouseleave', function () {
+      $(this).find('i.icon.heart').addClass('outline');
+    });
+    $followAction.on('ajax:success', '#follow-group', function(xhr, response) {
+      $followGroup.hide();
+      $unfollowGroup.show();
+      $followSum.text(response.data.followers_count);
+      $followersCount.attr('data-tooltip', response.data.followers_count);
+    }).on('ajax:success', '#unfollow-group', function(xhr, response) {
+      $unfollowGroup.hide();
+      $followGroup.show();
+      $followSum.text(response.data.followers_count);
+      $followersCount.attr('data-tooltip', response.data.followers_count);
+    }).on('ajax:error', '#follow-group, #unfollow-group', function() {
+      // Flash.show("发生意外，请稍后重试！", 'error');
+    });
+  });
+</script>
+
+<div class="ui container" id="git-group-container">
+<style>
+  .ui.message>.close.icon {
+    top: 1em;
+  }
+</style>
+
+<div id="git-group-content">
+<div class="ui basic segment" id="git-group-project">
+<div class="group-featured-projects">
+<div class="project-title">
+<span>热门</span>
+</div>
+<div class="ui three cards" id="popular-pinned-projects">
+<div class="ui card fluid" data-project-id="14617627">
+<div class="content">
+<div class="header">
+<h4>
+<a class="pop-project-title" target="_blank" href="/giantvm/doc">Doc</a>
+</h4>
+
+</div>
+<p class="description">
+Documents for GaintVM.
+</p>
+</div>
+<div class="extra content">
+<span class="project-language">
+</span>
+<ul class="repo-stats">
+<li class="watch">
+<a href="/giantvm/doc/watchers"><i class="iconfont icon-watch"></i>
+</a><a href="/giantvm/doc/watchers">1
+</a></li>
+<li class="star">
+<a href="/giantvm/doc/stargazers"><i class="iconfont icon-star"></i>
+</a><a href="/giantvm/doc/stargazers">0
+</a></li>
+<li class="fork">
+<a href="/giantvm/doc/members"><i class="iconfont icon-fork"></i>
+</a><a href="/giantvm/doc/members">1
+</a></li>
+</ul>
+</div>
+</div>
+<div class="ui card fluid" data-project-id="14617179">
+<div class="content">
+<div class="header">
+<h4>
+<a class="pop-project-title" target="_blank" href="/giantvm/QEMU">QEMU</a>
+</h4>
+
+</div>
+<p class="description">
+QEMU is a generic and open source machine &amp; userspace emulator and virtualizer. This QEMU is modified for GaintVM implementation.
+</p>
+</div>
+<div class="extra content">
+<span class="project-language">
+<a class="ui small label" title="主要编程语言" target="_blank" href="/explore/giantvm?lang=C">C</a>
+</span>
+<ul class="repo-stats">
+<li class="watch">
+<a href="/giantvm/QEMU/watchers"><i class="iconfont icon-watch"></i>
+</a><a href="/giantvm/QEMU/watchers">1
+</a></li>
+<li class="star">
+<a href="/giantvm/QEMU/stargazers"><i class="iconfont icon-star"></i>
+</a><a href="/giantvm/QEMU/stargazers">0
+</a></li>
+<li class="fork">
+<a href="/giantvm/QEMU/members"><i class="iconfont icon-fork"></i>
+</a><a href="/giantvm/QEMU/members">1
+</a></li>
+</ul>
+</div>
+</div>
+<div class="ui card fluid" data-project-id="14617120">
+<div class="content">
+<div class="header">
+<h4>
+<a class="pop-project-title" target="_blank" href="/giantvm/Linux-DSM">Linux-DSM</a>
+</h4>
+
+</div>
+<p class="description">
+Based On Linux, Linux-DSM supports GiantVM by distributed vCPUs , distributed memory, distributed I/O and time Synchronization.
+</p>
+</div>
+<div class="extra content">
+<span class="project-language">
+<a class="ui small label" title="主要编程语言" target="_blank" href="/explore/giantvm?lang=C">C</a>
+</span>
+<ul class="repo-stats">
+<li class="watch">
+<a href="/giantvm/Linux-DSM/watchers"><i class="iconfont icon-watch"></i>
+</a><a href="/giantvm/Linux-DSM/watchers">1
+</a></li>
+<li class="star">
+<a href="/giantvm/Linux-DSM/stargazers"><i class="iconfont icon-star"></i>
+</a><a href="/giantvm/Linux-DSM/stargazers">0
+</a></li>
+<li class="fork">
+<a href="/giantvm/Linux-DSM/members"><i class="iconfont icon-fork"></i>
+</a><a href="/giantvm/Linux-DSM/members">2
+</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="ui tiny modal custom-modal">
+<i class="iconfont icon-close close"></i>
+<div class="header">
+自定义精选项目
+</div>
+<div class="ui form content">
+<div class="upto-six-projects">最多可选取 6 个公开仓库</div>
+<input class="ui" id="search-group-projects" placeholder="搜索项目">
+</div>
+<div class="content" id="all-custom-projects-content">
+<div class="all-custom-modal-projects">
+<div class="spinner loading">
+<i class="icon spinner loading"></i>
+</div>
+</div>
+</div>
+<div class="actions hide">
+<div class="left-uncheck-number">
+还能勾选
+<span>6</span>
+个
+</div>
+<input type="submit" name="commit" value="保存" id="customize-submit-tag" class="ui button orange">
+</div>
+</div>
+<script>
+  $('#customize-pinned-projects').click(function() {
+    $('.custom-modal .actions').addClass('hide');
+    $('.all-custom-modal-projects').html('<div class="spinner loading"><i class="icon spinner loading"></div>')
+    $('.custom-modal').modal('show')
+  })
+</script>
+
+<div class="ui grid page">
+<div class="column twelve wide">
+<div id="group-readme">
+<div class="ui flat nopadding segment file_holder">
+<div class="ui inverted dimmer">
+<div class="ui loader"></div>
+</div>
+<div class="file_title">
+<i class="iconfont icon-readme"></i>
+<span class="file_name">组织介绍</span>
+</div>
+<div class="file_content markdown-body">
+<h3>
+<a id="user-content-组织介绍" class="anchor" href="#%E7%BB%84%E7%BB%87%E4%BB%8B%E7%BB%8D"></a>组织介绍</h3>
+<p>GiantVM，又称巨型虚拟机，由上海交通大学上海可扩展计算与系统实验室可信云计算团队研发（<a href="https://gitee.com/link?target=http%3A%2F%2Ftcloud.sjtu.edu.cn%2F%25EF%25BC%2589%25EF%25BC%258C%25E6%2598%25AF%25E4%25B8%2580%25E4%25B8%25AA%25E5%259F%25BA%25E4%25BA%258E">http://tcloud.sjtu.edu.cn/），是一个基于</a> QEMU-KVM 的"多虚一"分布式Type II型hypervisor，它管理来自多个物理机器的资源，为客户操作系统提供统一的硬件抽象。</p>
+<p>GiantVM围绕高速网络RDMA技术实现虚拟化层面的硬件抽象，分布式QEMU提供跨节点虚拟机抽象，KVM为下层物理机提供管理接口，基于RDMA提供低延迟分布式共享内存DSM。</p>
+<p>GaintVM 主要有两个代码仓库：</p>
+<ol>
+<li>Linux-DSM: <a href="https://gitee.com/giantvm/Linux-DSM">https://gitee.com/giantvm/Linux-DSM</a>
+</li>
+<li>QEMU: <a href="https://gitee.com/giantvm/Linux-DSM">https://gitee.com/giantvm/QEMU</a>
+</li>
+</ol>
+<p>两个仓库分别包含了对 KVM 与 QEMU 的对应修改。</p>
+<h3>
+<a id="user-content-如何加入" class="anchor" href="#%E5%A6%82%E4%BD%95%E5%8A%A0%E5%85%A5"></a>如何加入</h3>
+<p>请发送申请邮件至 <a href="xiangyuxin@sjtu.edu.cn">xiangyuxin@sjtu.edu.cn</a></p>
+<h3>
+<a id="user-content-联系" class="anchor" href="#%E8%81%94%E7%B3%BB"></a>联系</h3>
+<p>网站: <a href="https://gitee.com/link?target=https%3A%2F%2Fgiantvm.github.io">GaintVM</a><br>
+Github: <a href="https://gitee.com/link?target=https%3A%2F%2Fgithub.com%2FGiantVM">https://github.com/GiantVM</a><br>
+邮箱: <a href="xiangyuxin@sjtu.edu.cn">xiangyuxin@sjtu.edu.cn</a></p>
+</div>
+</div>
+</div>
+
+</div>
+<div class="column four group-right-sidebar ml-3 wide">
+<div class="git-group-achievement">
+<div class="row header">
+成就
+</div>
+<div class="achievement-item__list mb-2">
+<a class="achievement-item mr-2" title="组织下的所有仓库总数" href="/organizations/giantvm/projects"><div class="count">
+3
+</div>
+<div class="text-muted">
+仓库
+</div>
+</a><a class="achievement-item" title="组织下所有仓库的 PR 总数" href="/organizations/giantvm/pull_requests?status=all"><div class="count">
+0
+</div>
+<div class="text-muted">
+PR
+</div>
+</a></div>
+<div class="achievement-item__list">
+<div class="achievement-item mr-2" title="组织下的所有仓库被 Star 的总数">
+<div class="count">
+0
+</div>
+<div class="text-muted">
+Star
+</div>
+</div>
+<div class="achievement-item" title="组织下的所有仓库被 Fork 的总数">
+<div class="count">
+4
+</div>
+<div class="text-muted">
+Fork
+</div>
+</div>
+</div>
+</div>
+<div id="popular-languages">
+<div class="row header">
+仓库语言
+</div>
+<div class="ui grid">
+<div class="row language-row pt-0 pb-1">
+<div class="six wide column pr-0 pl-0 lang-name">
+<a title="C" href="/organizations/giantvm/projects?lang=C"><strong>C</strong>
+</a></div>
+<div class="seven wide column pr-0">
+<div class="language-bar" style="width: 100.0%;"></div>
+</div>
+<div class="three wide column pr-0">100%</div>
+</div>
+</div>
+</div>
+<div id="git-group-member-list">
+<div class="row header">
+成员（1）
+</div>
+<div class="member-image-list">
+<div class="member-item" data-username="xiangyuxin">
+<div class="js-popover-card">
+<a class="ui avatar image" target="_blank" href="/xiangyuxin"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAD70lEQVR4Xu2aTUgVURiGP/sxQUnoB4kKIylBQiQ0wrAwIlwI0SLCNrVpEbiJFtmiRbSoFtVGaOGmNkW0iEhCKpKSRFREJAQLK6ko6Q8joR/64QhX7ly/ud2ZO77zDb0udc688z3nndfvnDMFHS13/gh/5p1AAUHPO+MZAYLGcCZoEGeCJmgUAZAOM5qgQQRAMnQ0QYMIgGToaIIGEQDJ0NEEDSIAkqGjCRpEACRDRxM0iABIho4maBABkAwdTdAgAiAZOpqgQQRAMnQ0QYMIgGToaIIGEQDJ0NH/A+iVFaXSfHKrLCxcMFvurx+/5UH7sEwMToZGUNm4VhoOb/KMf9bzRh5eGgl9z3wHxu7o6ub1suVApaeO6U/f5Fprd6ja3OQ1Ha+TJSWLZ8d/nPgiN088DnW/qAbFDtoV0tRWJ2uqV3hqejkwKfcvDgWuc++ZbbK8fOnsuO9ff0rXuQF5Pz4V+F5RDjAB2hXU0t4oxcuKPLX1Xx2Tkc7nOde740i1bGhY7bm+p+OJjHW/yvke83WhGdDltWWys7XGk9dB3Ggxl9MnzQxo91D1h6qkane5x1STY5/l9qm+rEazmstmQbsHy8xY97vhW+MyeP2pL2yruWwatObObC3frqObZV1dmclcNg3aPZzW8k29nZYbxx55gGrXxd0v+712pjI6/SE1p6ZD1BY7FvrlxIH2a/nuXRiaWTUmIZfNR0fqAbWWz0XIi/53UrOnwnwuJwa0X8uX+XpazeVEgfZr+VJFWM7lxIHWWj5XRJCVY9YVD+CPZruOzNq1jad8dvkAbD0SiQCt9cupKl6PfJCuswNoboH1zIP2i430SoPu8gWmFMEA86Az+2UXF0UlhXNOZTpP98W+55xtPkyD1vaXnXsLixfN6aO1JXoERozsFmZBa/vL6Xms7fJZ7qdNgtZy2UWGO9pKHUn5ZbeVE5XMV8EkaM2tGkC/g930CYns3c/zRuZAa7mcLRK0/jqXU5k8uQUebgq0lsu5/JPTDnb/dSoTmFSeA8yA9jtZyaVtcxNUf7Aq8g9x8mRrc2Wo5XKQhYgWObm8DVHCNN9Ha5DCLK33nd8upauKPfWG/RAn6gmIPTq0XA67WaQdbzlgFlq+WEH75XLvldHQXxfV7t84Z9VoYTs1VtBaLo/enZDey6N5vblayxf3AUFsoLVcjgqG36oxikkM64DYQId94KSOI2jQzBE0QYMIgGToaIIGEQDJ0NEEDSIAkqGjCRpEACRDRxM0iABIho4maBABkAwdTdAgAiAZOpqgQQRAMnQ0QYMIgGToaIIGEQDJ0NEEDSIAkqGjCRpEACRDRxM0iABIho4Ggf4LNIBv48j4qXcAAAAASUVORK5CYII=" alt="XiangYuxin-xiangyuxin"></a>
+<!-- /10th-todo:判断src -->
+</div>
+<span class="member-user-name js-popover-card">
+XiangYuxin
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<footer id="git-footer-main">
+<div class="ui container">
+<div class="logo-row">
+<a href="https://gitee.com"><img alt="Gitee - 基于 Git 的代码托管和研发协作平台" class="logo-img" src="/static/images/logo-black.svg?t=158106666">
+</a></div>
+<div class="name-important">
+深圳市奥思网络科技有限公司版权所有
+</div>
+<div class="ui two column grid d-flex-center">
+<div class="eight wide column git-footer-left">
+<div class="ui four column grid" id="footer-left">
+<div class="column">
+<div class="ui link list">
+<div class="item">
+<a class="item" href="/all-about-git">Git 大全</a>
+</div>
+<div class="item">
+<a class="item" rel="nofollow" href="https://help.gitee.com/learn-Git-Branching/">Git 命令学习</a>
+</div>
+<div class="item">
+<a class="item" rel="nofollow" href="https://copycat.gitee.com/">CopyCat 代码克隆检测</a>
+</div>
+<div class="item">
+<a class="item" href="/appclient">APP与插件下载</a>
+</div>
+</div>
+</div>
+<div class="column">
+<div class="ui link list">
+<div class="item">
+<a class="item" href="/gitee_reward">Gitee Reward</a>
+</div>
+<div class="item">
+<a class="item" href="/gitee-stars">Gitee 封面人物</a>
+</div>
+<div class="item">
+<a class="item" href="/gvp">GVP 项目</a>
+</div>
+<div class="item">
+<a class="item" rel="nofollow" href="https://blog.gitee.com/">Gitee 博客</a>
+</div>
+<div class="item">
+<a class="item" href="/enterprises#nonprofit-plan">Gitee 公益计划</a>
+</div>
+<div class="item">
+<a class="item" href="https://gitee.com/features/gitee-go">Gitee 持续集成</a>
+</div>
+</div>
+</div>
+<div class="column">
+<div class="ui link list">
+<div class="item">
+<a class="item" href="/api/v5/swagger">OpenAPI</a>
+</div>
+<div class="item">
+<a class="item" href="https://help.gitee.com">帮助文档</a>
+</div>
+<div class="item">
+<a class="item" href="/self_services">在线自助服务</a>
+</div>
+<div class="item">
+<a class="item" href="/help/articles/4378">更新日志</a>
+</div>
+</div>
+</div>
+<div class="column">
+<div class="ui link list">
+<div class="item">
+<a class="item" href="/about_us">关于我们</a>
+</div>
+<div class="item">
+<a class="item" rel="nofollow" href="https://www.oschina.net/news/131099/oschina-hiring">加入我们</a>
+</div>
+<div class="item">
+<a class="item" href="/terms">使用条款</a>
+</div>
+<div class="item">
+<a class="item" href="/oschina/git-osc/issues">意见建议</a>
+</div>
+<div class="item">
+<a class="item" href="/links.html">合作伙伴</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="eight wide column right aligned followus git-footer-right">
+<div class="qrcode mr-1">
+<div class="qrcode-box">
+<img alt="技术交流QQ群" src="https://cn-assets.gitee.com/assets/contact_qr-5e2c2a8da453396590e56a545bce4974.jpg">
+</div>
+<p class="mt-1 mini_app-text">技术交流QQ群</p>
+</div>
+<div class="qrcode">
+<div class="qrcode-box">
+<img alt="微信服务号" class="weixin-qr" src="https://cn-assets.gitee.com/assets/qrcode-weixin@2x-b74cc97a2ea80123ea53a737f709836d.png">
+</div>
+<p class="mt-1 weixin-text">微信服务号</p>
+</div>
+<div class="phone-and-qq column">
+<div class="ui list official-support-container">
+<div class="item"></div>
+<div class="item mail-and-zhihu">
+<a rel="nofollow" href="mailto: client@oschina.cn"><i class="iconfont icon-msg-mail"></i>
+<span id="git-footer-email">client@oschina.cn</span>
+</a></div>
+<div class="item tel">
+<a>
+<i class="iconfont icon-tel"></i>
+<span>企业版在线使用：400-606-0201</span>
+</a>
+</div>
+<div class="item tel">
+<a class="d-flex">
+<i class="iconfont icon-tel mt-05 mr-05"></i>
+<span>专业版私有部署：</span>
+<div>
+<div>13670252304</div>
+<div>13352947997</div>
+</div>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bottombar">
+<div class="ui container">
+<div class="ui d-flex d-flex-between">
+<div class="seven wide column partner d-flex">
+<div class="open-atom d-flex-center">
+<img class="logo-openatom mr-1" alt="开放原子开源基金会" src="https://cn-assets.gitee.com/assets/logo-openatom-d083391cc8a54e283529f3fc11cc38ca.svg">
+<a target="_blank" rel="nofollow" href="https://www.openatom.org/">开放原子开源基金会</a>
+<div class="sub-title ml-1">合作代码托管平台</div>
+</div>
+<div class="report-12377 d-flex-center ml-3">
+<img class="report-12377__logo mr-1" alt="违法和不良信息举报中心" src="https://cn-assets.gitee.com/assets/12377@2x-1aa42ed2d2256f82a61ecf57be1ec244.png">
+<a target="_blank" rel="nofollow" href="https://12377.cn">违法和不良信息举报中心</a>
+</div>
+<div class="copyright ml-3">
+<a rel="nofollow" href="http://beian.miit.gov.cn/">粤ICP备12009483号</a>
+</div>
+</div>
+<div class="nine wide column right aligned">
+<i class="icon world"></i>
+<a href="/language/zh-CN">简 体</a>
+/
+<a href="/language/zh-TW">繁 體</a>
+/
+<a href="/language/en">English</a>
+</div>
+</div>
+</div>
+</div>
+</footer>
+
+<script>
+  var officialEmail = $('#git-footer-email').text()
+  $('#git-footer-main .icon-popup').popup({ position: 'bottom center' })
+  $('#git-footer-email').text(officialEmail.replace('#', '@'))
+  window.gon.popover_card_locale = {
+    follow:"关注",
+    unfollow:"已关注",
+    gvp_title: "GVP - Gitee 最有价值开源项目",
+    project: "项目",
+    org: "开源组织",
+    member: "",
+    author: "作者",
+    user_blocked: "该用户已被屏蔽或已注销",
+    net_error: "网络错误",
+    unknown_exception: "未知异常"
+  }
+  window.gon.select_message = {
+    placeholder: "请输入个人空间地址或完整的邮箱地址"
+  }
+</script>
+<script src="https://cn-assets.gitee.com/webpacks/popover_card-ca6b9a20ba5353733d61.bundle.js"></script>
+<link rel="stylesheet" media="all" href="https://cn-assets.gitee.com/webpacks/css/gitee_nps-ae0dbee40f6ddc72015a.css">
+<script src="https://cn-assets.gitee.com/webpacks/gitee_nps-30c2a3673b61c539fcf7.bundle.js"></script>
+<script src="https://cn-assets.gitee.com/webpacks/gitee_icons-0340f9dc8fc1dfbb9937.bundle.js"></script>
+
+
+
+<div class="side-toolbar">
+<div class="button toolbar-help">
+<i class="iconfont icon-help"></i>
+</div>
+<div class="ui popup left center dark">点此查找更多帮助</div>
+<div class="toolbar-help-dialog">
+<div class="toolbar-dialog-header">
+<h3 class="toolbar-dialog-title">搜索帮助</h3>
+<form class="toolbar-help-search-form" action="/help/load_keywords_data" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="✓">
+<div class="ui icon input fluid toolbar-help-search">
+<input name="keywords" placeholder="请输入产品名称或问题" type="text">
+<i class="icon search"></i>
+</div>
+</form>
+
+<i class="iconfont icon-close toolbar-dialog-close-icon"></i>
+</div>
+<div class="toolbar-dialog-content">
+<div class="toolbar-help-hot-search">
+<div class="toolbar-roll">
+<a class="" title="Git 命令在线学习" href="https://oschina.gitee.io/learn-git-branching/?utm_source==gitee-help-widget"><i class="Blue icon icon-command iconfont"></i>
+<span>Git 命令在线学习</span>
+</a><a class="active" title="如何在 Gitee 导入 GitHub 仓库" href="https://gitee.com/help/articles/4261?utm_source==gitee-help-widget"><i class="icon icon-clipboard iconfont orange"></i>
+<span>如何在 Gitee 导入 GitHub 仓库</span>
+</a></div>
+<div class="toolbar-list">
+<div class="toolbar-list-item">
+<a href="/help/articles/4114">Git 仓库基础操作</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4166">企业版和社区版功能对比</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4191">SSH 公钥设置</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4194">如何处理代码冲突</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4232">仓库体积过大，如何减小？</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4279">如何找回被删除的仓库数据</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4283">Gitee 产品配额说明</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4284">GitHub仓库快速导入Gitee及同步更新</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4328">什么是 Release（发行版）</a>
+</div>
+<div class="toolbar-list-item">
+<a href="/help/articles/4354">将 PHP 项目自动发布到 packagist.org</a>
+</div>
+</div>
+</div>
+<div class="toolbar-help-search-reseult"></div>
+</div>
+</div>
+<script>
+  var opt = { position: 'left center'};
+  var $helpSideToolbar = $('.button.toolbar-help');
+  var $toolbarRoll = $('.toolbar-roll');
+  
+  $(function() {
+    if (true) {
+      $helpSideToolbar.popup(opt).popup({lastResort:'left center'})
+    } else {
+      $helpSideToolbar.popup({lastResort:'left center'}).popup('show', opt);
+      setTimeout(function() {
+        $helpSideToolbar.popup('hide', opt);
+      }, 3000);
+    }
+  
+    if ($toolbarRoll.length) {
+      setInterval(function() {
+        var $nextActiveLink = $toolbarRoll.find('a.active').next();
+        if (!$nextActiveLink.length) {
+          $nextActiveLink = $toolbarRoll.find('a:first-child');
+        }
+        $nextActiveLink.attr('class', 'active').siblings().removeClass('active init');
+      }, 5000);
+    }
+  })
+</script>
+
+<div class="ui popup dark left center transition hidden js-feedback-popup">发送反馈</div>
+<div class="button" id="feedback-btn">
+<i class="iconfont icon-feedback"></i>
+</div>
+<div class="button gotop popup" id="gotop">
+<i class="iconfont icon-top"></i>
+</div>
+<div class="ui popup dark">回到顶部</div>
+</div>
+<style>
+  .side-toolbar .bdsharebuttonbox a {
+    font-size: 24px;
+    color: white !important;
+    opacity: 0.9;
+    margin: 6px 6px 0px 6px;
+    background-image: none;
+    text-indent: 0;
+    height: auto;
+    width: auto;
+  }
+</style>
+<style>
+  #udesk_btn a {
+    margin: 0px 20px 217px 0px !important;
+  }
+  #ent-sale-img-wrap {
+    margin: 0px 15px 294px 0px !important;
+  }
+</style>
+<script>
+  (function() {
+    $('#project-user-message').popup({
+      position: 'left center'
+    });
+  
+  }).call(this);
+</script>
+<script>
+  Gitee.initSideToolbar({})
+</script>
+<link rel="stylesheet" media="all" href="https://cn-assets.gitee.com/webpacks/css/side_toolbar_feedback-5dcc1be9cca438cc952f.css">
+<script src="https://cn-assets.gitee.com/webpacks/side_toolbar_feedback-f6a366a5816022cb4a0a.bundle.js"></script>
+
+
+
+
+
+<script src="https://cn-assets.gitee.com/webpacks/mermaid_render-669e055f02596b5d8886.bundle.js"></script>
+
+
+<div class="star-collection-popup d-none" style="display: none;">
+                  <div class="star-collection-popup__header d-flex-between">
+                    <div class="star-collection-popup__header__left">已成功 Star，添加到以下星选集：</div>
+                    <div class="star-collection-popup__header__right"><i class="iconfont icon-close js-close-popup cursor-pointer hover-color"></i></div>
+                  </div>
+                  <div class="star-collection-popup__body">
+                    <div class="blank-message d-none">点击下方新建星选集</div>
+                    <div class="star-collection-popup__search ui input small icon">
+                      <input type="text" class="js-star-collection-search" placeholder="快速搜索">
+                      <i class="iconfont icon-search"></i>
+                    </div>
+                    <div class="star-collection-popup__scroll">
+                      <div class="star-collection-popup__list js-star-collection-popup__list">
+
+                      </div>
+                    </div>                    
+                  </div>
+                  <div class="star-collection-popup__footer js-star-collection-popup__footer">
+                    <div class="star-collection-popup__footer--normal js-new-star-collection-btn cursor-pointer hover-color">新建星选集</div>
+                    <div class="star-collection-popup__footer--new d-flex-between">
+                      <input class="star-collection-popup__footer__new-input js-star-collection-popup__footer__new-input" maxlength="35" type="text" placeholder="请输入星选集名称">
+                      <div class="star-collection-popup__footer__add-btn js-star-collection-popup__footer__add-btn cursor-pointer hover-color disabled">新建</div>
+                    </div>
+                  </div>
+                 </div><div class="feedback-screenshot-tip">按下并拖动鼠标开始截图</div><div></div><orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
