@@ -1,0 +1,1374 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/书/清华大学出版社-图书详情-《深入浅出系统虚拟化：原理与实践》 (2025-02-27 17：36：45).html
+ Page saved with X-Webpage-Conserve 
+ url: http://www.tup.tsinghua.edu.cn/booksCenter/book_09086901.html
+ Summary: This book is a professional text on system virtualization. It covers the principles and practices of system virtualization, including its history, trends, and main functions and classifications. The book also introduces various types of virtualization systems, such as openEuler, and explains how they implement CPU and interrupt virtualization using QEMU/KVM and GiantVM. The book is written by Qi Zhengwei, a professor at Shanghai Jiao Tong University, and is aimed at readers with a basic understanding of hardware architecture and operating systems. It is a comprehensive resource for understanding system virtualization technology.
+
+The book begins with an overview of system virtualization, including its basic concepts, historical development, and trends. It then delves into CPU virtualization, explaining the role of sensitive non-privileged instructions, virtual machine context switching, and interrupt virtualization. The book also covers Intel VT-x hardware-assisted virtualization and its implementation in QEMU/KVM. The book includes experiments and exercises to help readers understand the concepts.
+
+Later chapters cover memory virtualization, I/O virtualization, and ARM virtualization, among other topics. The book also discusses the basics of StratoVirt, a lightweight virtualization platform, and provides a detailed explanation of its architecture and implementation. The book concludes with a discussion of the importance of understanding virtualization technology and its role in the development of cloud computing, big data, mobile internet, and industrial internet industries.
+
+The book is written by Qi Zhengwei, a professor at Shanghai Jiao Tong University, and has been endorsed by prominent computer scientists such as Edmund Clarke, a Turing Award laureate. It has been recognized with several awards, including the China-Pub Bestseller Award and the IBM Publishing Plan Grant. The book is a valuable resource for anyone interested in virtualization technology and its applications.
+
+The book covers the following topics:
+
+* System virtualization basics and history
+* CPU virtualization and Intel VT-x hardware-assisted virtualization
+* Memory virtualization and I/O virtualization
+* ARM virtualization and StratoVirt
+* Virtualization trends and applications
+
+The book includes exercises and experiments to help readers understand the concepts and apply them in practice. It is a comprehensive and valuable resource for anyone interested in virtualization technology and its applications.本书是一本关于系统虚拟化的专业书籍。它涵盖了系统虚拟化的原理和实践，包括其历史、趋势以及主要功能和分类。该书还介绍了各种类型的虚拟化系统，例如 openEuler，并解释了它们如何使用 QEMU/KVM 和 GiantVM 实现 CPU 和中断虚拟化。该书由上海交通大学教授齐正伟撰写，面向对硬件架构和作系统有基本了解的读者。它是了解系统虚拟化技术的综合资源。本书首先概述了系统虚拟化，包括其基本概念、历史发展和趋势。然后，它深入探讨了 CPU 虚拟化，解释了敏感的非特权指令、虚拟机上下文切换和中断虚拟化的作用。该书还介绍了英特尔 VT-x 硬件辅助虚拟化及其在 QEMU/KVM 中的实施。本书包括实验和练习，以帮助读者理解这些概念。后面的章节涵盖了内存虚拟化、I/O 虚拟化和 ARM 虚拟化等主题。本书还讨论了轻量级虚拟化平台 StratoVirt 的基础知识，并详细介绍了其架构和实现。本书最后讨论了了解虚拟化技术的重要性及其在云计算、大数据、移动互联网和工业互联网行业发展中的作用。该书由上海交通大学教授齐正伟撰写，并得到了图灵奖获得者埃德蒙·克拉克 （Edmund Clarke） 等著名计算机科学家的认可。 它已获得多个奖项，包括 China-Pub 畅销书奖和 IBM 出版计划资助。对于任何对虚拟化技术及其应用程序感兴趣的人来说，这本书都是宝贵的资源。本书涵盖以下主题： * 系统虚拟化基础知识和历史 * CPU 虚拟化和英特尔 VT-x 硬件辅助虚拟化 * 内存虚拟化和 I/O 虚拟化 * ARM 虚拟化和 StratoVirt * 虚拟化趋势和应用 本书包括练习和实验，以帮助读者理解概念并在实践中应用它们。对于任何对虚拟化技术及其应用程序感兴趣的人来说，它都是一份全面而宝贵的资源。
+-->
+<html lang="en" imt-state="dual"><head id="Head1"><meta charset="UTF-8"><title>
+	清华大学出版社-图书详情-《深入浅出系统虚拟化：原理与实践》
+</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=8"><meta http-equiv="X-UA-Compatible" content="chrome=1"><link rel="stylesheet" type="text/css" href="../css/style.css?v=1.005"><link rel="stylesheet" type="text/css" href="../css/books.css?v=1.005">
+    <script type="text/javascript" src="../js/xslb/jquery-1.4.2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../member/js/Dialogalert.css">
+    <script type="text/javascript" src="../member/js/Dialogalert.js"></script>
+    <script type="text/javascript" src="../js/main.js"></script>
+    <script type="text/javascript" src="../js/mating_books.js"></script>
+    <style type="text/css">
+        .wordbreak
+        {
+            text-indent: 2em;
+            word-break:break-all; /*支持IE，chrome，FF不支持*/
+　          word-wrap:break-word;/*支持IE，chrome，FF*/
+        }
+    </style>
+<script src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=483512"></script><link rel="stylesheet" href="http://bdimg.share.baidu.com/static/api/css/share_style0_16.css?v=8105b07e.css"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+<body>
+    <div class="nav">
+        
+        <div class="logo">
+            
+<div class="logo1">
+    <ul>
+       
+         <li class="logozc" style="display:none"><a href="../member/register.aspx">注册</a></li>
+        <li>
+            <div class="logofh">
+                +</div>
+            &nbsp;<a href="https://jiaoxue.wqxuetang.com" target="_blank">申领样书</a></li>     
+        
+    </ul>
+</div>
+<div class="logo2">
+    <a href="../index.html"><div class="logo21">
+        <img src="../img/logo.jpg" alt=""></div></a>
+    <div class="logo22" style="width:250px;">
+       <div class="logo22-1 bxs" style=" display:none">
+            </div>
+        <div class="logo22-2 bxs" style=" display:none">
+            站内搜索</div>
+        <div class="logo22-3">
+            <input type="text" mtitle="1" id="input_key" class="input_test" value="请输入关键字"></div>
+        <div class="logo22-4">
+            <input type="image" src="../img/ssan.jpg"></div>
+    </div>
+</div>
+
+        </div>
+        
+        <div class="dhkj">
+            
+<div class="dhjz" id="topmenu">
+    <li class="wleft wtacent xgyt bxs"><a href="../index.html">首页</a></li>
+    <li class="wleft wtacent xgyt bxs"><a href="#">关于我们</a>
+        <div class="dhxlcd">
+            <div class="myxtw wid2">
+                <p>
+                    <a href="../aboutus/szzc.html" target="">董事长致辞</a></p>
+                <p>
+                    <a href="../aboutus/qyjj.html" target="">企业简介</a></p>
+                <p>
+                    <a href="../aboutus/zzjg.html" target="">组织机构</a></p>
+                <p>
+                    <a href="../aboutus/hwhz.html" target="">海外合作</a></p>
+                <p>
+                    <a href="../aboutus/qyry.html" target="">企业荣誉</a></p>
+                <p>
+                    <a href="../aboutus/swwyh.html" target="">社务委员会</a></p>
+            </div>
+        </div>
+    </li>
+    <li class="wleft wtacent xgyt bxs"><a href="../newsCenter/news_index.html" target="">
+        新闻</a>
+        <div class="dhxlcd">
+            <div class="myxtw wid2">
+            </div>
+        </div>
+    </li>
+    <li class="wleft wtacent xgyt bxs"><a href="../booksCenter/books_index.html">图书</a>
+        <div class="dhxlcd">
+            <div class="myxtw wid2">
+                <p>
+                    <a href="../booksCenter/books_index.html" target="">纸质书</a></p>
+                <p>
+                    <a href="https://wqbook.wqxuetang.com" target="">电子书</a></p>
+                <p>
+                    <a href="http://www.wqketang.com" target="">在线课程</a></p>
+            </div>
+        </div>
+    </li>
+    <li class="wleft wtacent xgyt bxs"><a href="https://www.tsinghuajournals.com/cn/home" target="_blank">期刊</a>
+        <div class="dhxlcd">
+            <div class="myxtw wid2">
+            </div>
+        </div>
+    </li>
+    <li class="wleft wtacent xgyt bxs"><a href="../activityCenter/activity_index.html">会议活动</a>
+        <div class="dhxlcd">
+            <div class="myxtw wid2">
+            </div>
+        </div>
+    </li>
+    <li class="wleft wtacent xgyt bxs"><a href="#">分社导航</a>
+        <div class="dhxlcd">
+            <div class="myxtw wid1">
+                <p>
+                    <a href="../subpress.html?id=2" target="">计算机与信息分社</a></p>
+                <p>
+                    <a href="../subpress.html?id=1" target="">理工分社</a></p>
+                <p>
+                    <a href="../subpress.html?id=3" target="">经管人文分社</a></p>
+                <p>
+                    <a href="../subpress.html?id=4" target="">外语分社</a></p>
+                <p>
+                    <a href="https://www.wqxuetang.com/aboutus.html" target="">音像电子与数字出版分社</a></p>
+                <p>
+                    <a href="../subpress.html?id=6" target="">职业教育分社</a></p>
+                <p><a href="../subpress.html?id=Y">生命科学与医学分社</a></p>
+                <p>
+                    <a href="../subpress.html?id=F" target="">基础教育分社</a></p>
+                <p>
+                    <a href="../subpress.html?id=7" target="">学术出版中心</a></p>
+            </div>
+        </div>
+    </li>
+    <li class="wleft wtacent xgyt bxs"><a href="#">直属事业部</a>
+        <div class="dhxlcd" style="display: none;">
+            <div class="myxtw wid2">
+              <p style="background: rgb(101, 54, 134);">
+                            <a href="http://www.tupwk.com.cn/" target="_blank">第五事业部</a></p>
+                <p style="background: rgb(101, 54, 134);">
+                    <a href="http://weibo.com/qinghuashejingguan" target="_blank">第八事业部</a></p>
+    
+            </div>
+        </div>
+    </li>
+     <li class="wleft wtacent xgyt bxs"><a href="https://www.wqxueshu.cn/" target="_blank">重点实验室</a>
+        <div class="dhxlcd">
+            <div class="myxtw wid2">
+            </div>
+        </div>
+    </li>
+    <li class="wleft wtacent xgyt bxs"><a href="../contactus/contact.html">联系我们</a>
+        <div class="dhxlcd" style="display: none;">
+            <div class="myxtw wid1">
+                <p>
+                    <a href="../contactus/reader_server.html" target="">读者服务</a></p>
+                <p>
+                    <a href="../contactus/welcome.html" target="">欢迎投稿</a></p>
+                <p>
+                    <a href="../contactus/library.html" target="">院系/图书馆服务</a></p>
+                <p>
+                    <a href="../contactus/dealer.html" target="">经销商服务</a></p>
+                <p>
+                    <a href="../contactus/copyright.html" target="">版权贸易</a></p>
+                <p>
+                    <a href="../contactus/recruit.html" target="">人才招聘</a></p>
+                 <p>
+                    <a href="../contactus/sqscx.html?id=0" target="">授权书查询</a></p>
+            </div>
+        </div>
+    </li>
+    <li class="wleft wtacent xgyt bxs" style="display: none"><a href="#">会员</a> </li>
+    <li class="wright wtarig bxs"><a href="../en/index.html">ENGLISH</a></li>
+</div>
+<script type="text/javascript">
+    function GetSimpleUrl(url) {
+        var tmp = new Array();
+        tmp = url.split("/"); //按照"/"分割 
+        var pp = tmp[tmp.length - 1]; //获取最后一部分，即文件名和参数 
+        tmp = pp.split("?"); //把参数和文件名分割开 #dcdcd
+        return tmp[0];
+
+    }
+    $(document).ready(function () {
+        var tmp = GetSimpleUrl(window.location.href);
+        var links = $("#topmenu a")
+        var l = links.length;
+        var link = "";
+        for (var i = 0; i < l; i++) {
+            var link = GetSimpleUrl(links.eq(i).attr("href"));
+            if (link == tmp) {
+                links.eq(i).closest("li").children("a").eq(0).addClass("on");
+                break;
+            }
+
+        }
+    });  
+
+             
+</script>
+
+        </div>
+    </div>
+    <div class="main_activity">
+        <h2>
+            <a href="../index.html">首页</a> &gt; <a href="books_index.html">图书中心</a> &gt;图书详情</h2>
+        
+                <div class="book_main b_m_h1">
+                    <div class="book_left">
+                        <ul class="b_l_top">
+                            <li class="on">
+                                <img src="../upload/bigbookimg/090869-01.jpg" alt="" width="276" height="372"></li>
+                            <li>
+                                <img src="../upload/bigbookimg2/090869-01.jpg" alt="" width="276" height="372"></li>
+                            <li>
+                                <img src="../upload/bigbookimg3/090869-01.jpg" alt="" width="276" height="372"></li>
+                        </ul>
+                        <ul class="b_l_bottom">
+                            <li class="on"><a href="javascript:;">
+                                <img src="../upload/smallbookimg/090869-01.jpg" alt="" width="65" height="95"></a></li>
+                            <li><a href="javascript:;">
+                                <img src="../upload/smallbookimg2/090869-01.jpg" alt="" width="65" height="95"></a></li>
+                            <li><a href="javascript:;">
+                                <img src="../upload/smallbookimg3/090869-01.jpg" alt="" width="65" height="95"></a></li>
+                        </ul>
+                    </div>
+                    <div class="book_right">
+                        <h4 class="b_r_tit" style="height: 70px; overflow: hidden" title="深入浅出系统虚拟化：原理与实践">
+                            深入浅出系统虚拟化：原理与实践</h4>
+                        <p class="b_r_tit1" style="height: 50px; color: Red; overflow: hidden">
+                            华为公司官方出品！华为技术有限公司计算产品线总裁邓泰华、华中科技大学教授/IEEE Fellow联袂作序</p>
+                        <p class="ft_b_r_c">
+                            <em>作者：戚正伟、管海兵</em><br>
+                            丛书名：<a href="cs_product.html?id=3994" target="_blank" title="华为智能计算技术丛书">华为智能计算技术丛书</a><br>
+                            定价：<span>99</span>元<br>
+                            印次：1-4<br>
+                            ISBN：9787302589419<br>
+
+                            出版日期：2021.10.01<br>
+                            印刷日期：2024.01.02</p>
+                        <div class="ft_b_r_c1">
+                            <div class="tshmjsmfs" id="buylink">
+                                在线购买
+                                <div class="zxgmxlklbbc" style="display: none;">
+                                   
+                             <a id="buyjd" href="https://item.jd.com/10099917622577.html?sdx=ehi-lLxFuZiE6JnJYYNci8cmtzmZDg8rsmpIsapEaN-NPe_RLJxZ5XzjrU3rXm6R" title="10099917622577" class="on" target="_blank"> <p>京东</p></a>
+                             <a id="buytm" href="http://detail.tmall.com/item.htm?spm=a1z10.1-b.w9858442-8055933095.4.fH3HiL&amp;id=658930388119" title="658930388119" class="on" target="_blank"> <p>天猫</p></a>
+                                   
+                                        <a href="http://www.wqbook.com/books/booksn/090869-01" target="_blank"> <p>电子书</p></a>
+                                </div>
+                            </div>
+                            <a class="tshmjsmfs" href="http://www.wqbook.com/books/booksn/090869-01" target="_blank">试读</a>
+                            <a href="javascript:;" id="yssq" style="display: none" class="tshmjsmfs">样书申请</a>
+                           
+                            <a href="#" id="favorite" class="tshmjsmfs">收藏</a> <a class="tshmjsmfs ft_share" href="#">分享</a>
+                        </div>
+                        <ul class="share_content bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1740648963429" style="display: none;">
+                            <li><a href="#" class="bds_tsina" data-cmd="tsina"></a></li>
+                            <li><a href="#" class="bds_sqq" data-cmd="sqq"></a></li>
+                            <li><a href="#" class="bds_qzone" data-cmd="qzone"></a></li>
+                            <li><a href="#" class="bds_tqq" data-cmd="tqq"></a></li>
+                            <li><a href="#" class="bds_weixin" data-cmd="weixin"></a></li>
+                            <li><a href="#" class="bds_douban" data-cmd="douban"></a></li>
+                            <li><a href="#" class="bds_renren" data-cmd="renren"></a></li>
+                        </ul>
+                        <ul class="content_intro_list clear">
+                            <li><a href="#" class="">内容简介</a></li>
+                            <li><a href="#" class="on">前言/序言</a></li>
+                            <li><a href="#">资源下载</a></li>
+                            <li><a href="#">版权信息</a></li>
+                        </ul>
+                        <div class="content_intro">
+                            <div class="c_i_list on" style="display: none;">
+                                <p>
+                                    本书是一本论述系统虚拟化原理与实践的专业图书。全书分为6章,第1章概述系统虚拟化的基本
+概念、发展历史、趋势展望、主要功能和分类,以及目前典型的虚拟化系统,并介绍openEuler操作系统的虚
+拟化技术。第2~4章分别介绍系统虚拟化的三大组成部分: CPU 虚拟化、内存虚拟化和I/O 虚拟化的相
+关原理,并配备相应实验便于读者理解。第5章介绍基于ARMv8的鲲鹏虚拟化架构,并概述其CPU、中
+断、内存、I/O 和时钟虚拟化的基本原理。第6章结合代码讲解轻量级虚拟化平台StratoVirt的基本原理
+和技术特点,读者可以跟随本书从零开始打造一个具备基本功能的轻量级虚拟化平台。
+为便于读者高效学习、深入掌握系统虚拟化的基本原理,本书的源代码及安装运行说明均保存于
+GiantVM 和 StratoVirt开源社区。后续将通过开源社区进行代码更新和线上交流。
+本书可作为相关领域工程技术人员的参考书,也可作为高年级本科生和研究生的学习用书,还可作为
+对虚拟化技术感兴趣的爱好者的自学用书。</p>
+                                <a href="bookbrief.html?id=09086901" target="_blank" class="ft_more7">more &gt;</a>
+                            </div>
+                            <div class="c_i_list" style="display: block;">
+                                <p>
+                                    PREFACE
+
+前言
+
+
+虚拟化技术是一门“古老”的新技术。早在1959年，牛津大学Christopher Strachey就提出了具有虚拟化概念的高效分时复用方案，意在解决当时大型机器使用效率低下的问题。到20世纪60至70年代，虚拟化研究进入了第一个高速发展时期，出现了以IBM CP67/CMS为代表的大型机虚拟化技术，并提出了硬件架构可虚拟化的理论和准则（如敏感指令应属于特权指令）。但到了20世纪80年代，随着操作系统的成熟，资源管理不再以虚拟化为中心，MIPS和x86等CPU厂商出于成本和商业考虑，设计的硬件架构不再满足可虚拟化准则，形成了所谓的“虚拟化漏洞”（例如，x86有5类共17条敏感指令，但不属于特权指令）。随着个人计算机的普及，研究者提出了一系列弥补x86架构“虚拟化漏洞”的方法，代表性的技术有斯坦福大学Mendel Rosenblum等在SOSP 1997国际学术会议发表的DISCO系统，虚拟化技术重新兴起。随后，Intel和AMD等硬件厂商提出了硬件辅助虚拟化，使得x86硬件平台满足可虚拟化准则。从2006年亚马逊以虚拟机形式向企业提供IaaS（Infrastructure as a Service，基础设施即服务）平台开始，虚拟化技术成为当前支撑云计算、大数据、移动互联网和工业互联网等新型计算和应用模型的关键“根技术”。
+回顾虚拟化的发展历史，可得出一些重要启示。一是基础研究对于计算机系统非常重要，不少关键技术的突破首先来自学术界和工业界的前沿研究； 二是最新的技术未必用于产品，成本和市场也是重要考量（ARM和RISCV初期也不是可虚拟化硬件架构，如ARMv6有4大类24条敏感非特权指令）。因此，深入理解虚拟化技术，把握其内在的发展规律，对于虚拟化的创新发展有重要作用。
+系统虚拟化作为物理硬件层的虚拟化，在计算机硬件和操作系统之间引入一个系统软件抽象层，向下管理硬件资源，向上对操作系统提供虚拟机接口，其目标可概括为“功能不缺失、性能不损失”。因此，系统虚拟化涉及操作系统和硬件接口，技术体系比较复杂，对初学者来说是一个很大的挑战。读者如果不了解虚拟化技术的基本原理而去直接翻阅源代码，例如开源的QEMU/KVM，很容易抓不住主线，迷失在庞大的代码中（QEMU源代码已超过150万行）。然而要把源代码涉及的方方面面都讲清楚需要极大的篇幅。因此，本书借鉴学习操作系统（Linux内核源代码已超过2700万行）的方法，借助实验把重要概念涉及的主干技术路径叙述清楚，读者可以通过调试和打印直观理解虚拟化场景的“现场”，使静态的代码变得鲜活生动。其次，类似于代码量约1万行的Linux 0.11，“麻雀虽小、五脏俱全”，本书第6章从零开始构建一个用户态轻量级虚拟化平台，逐步展现虚拟机的构建过程，掌握系统虚拟化技术的关键“基因图谱”。
+基于在虚拟化领域的长期研究和实践积累，以及和华为虚拟化团队在openEuler开源操作系统上的合作研究，本书试图从庞大的虚拟化技术中厘清关键路径，并配以相关实验，帮助读者了解系统虚拟化技术的来龙去脉，理解基本原理，掌握核心方法，为进一步的研究打下基础。
+本书定位为计算机系统虚拟化领域的专业图书，面向工程科技类普通读者。读者除了需要具备基本的硬件体系结构和操作系统知识外，无须其他先修课程。此外，本书受众还包括有志于计算机系统软件领域深耕的研发人员以及对虚拟化感兴趣的技术爱好者。
+全书分6章，内容涵盖系统虚拟化的基本概念和实现方法，将系统虚拟化技术分为目前主流的“一虚多”（把单物理机器抽象成若干虚拟机器）和新型的“多虚一”（把多物理机抽象成单一虚拟机）。对于传统“一虚多”技术，本书基于开源QEMU/KVM和x86平台深入介绍了CPU、内存和I/O虚拟化的基本原理，并配备了相关实验。针对新型“多虚一”技术，本书介绍了开源项目GiantVM的CPU、内存和I/O“多虚一”的基本实现方法。此外，针对ARM虚拟化，本书专门介绍基于ARMv8的鲲鹏虚拟化架构。最后，本书基于内存安全的Rust语言从零开始打造一个具备基本功能的轻量级虚拟化平台StratoVirt，逐步提供CPU、内存和I/O的虚拟化能力。从开始运行一段汇编代码到最终能够运行Linux客户机操作系统，读者可以完整经历虚拟化从设计到实现的全部流程。同时，读者可以参考华为产品级StratoVirt的源代码，领略基于Rust语言实现的前沿轻量级虚拟化技术。
+
+
+
+感谢实验室同学和华为公司对本书撰写工作做出的重要贡献，其中第1章主要由戚正伟撰写，第2章主要由余博识撰写，第3章主要由贾兴国撰写，第4章主要由张正君撰写，第5章主要由余博识、贾兴国、张正君和杨铭合作撰写，第6章由徐飞、张亮、杨晓鹤、高炜、杨铭、吴斌、王志钢撰写，全书由戚正伟、管海兵修改和审阅。写作过程中参考了实验室GiantVM项目的代码和文档（主要来自陈育彬、丁卓成、张晋）。项羽心、张晋、邓天迈等同学仔细阅读了本书，并提供了宝贵的修改意见。特别感谢贾兴国等对本书插图的精心绘制，使得比较复杂的概念更为直观清晰。虚拟化团队技术专家胡欣蔚、范良、章晓峰、吴斌、王志钢在本书写作过程中提供了大量的资源和支持。本书最后一章的动手实践思路主要来自王志钢。感谢清华大学出版社盛东亮老师和钟志芳老师等的大力支持，经过多轮修改，使本书质量大为提高。
+由于虚拟化技术发展很快，已经深入计算机系统的方方面面，加之作者水平有限，书中难免有疏漏和不足之处，恳请读者批评指正！
+
+
+作者
+2021年5月
+
+
+
+
+                                </p>
+                                <a href="preface.html?id=09086901" target="_blank" class="ft_more7">more &gt;</a>
+                            </div>
+                            <div class="c_i_list" style="display: none;">
+                                <ul class="r_c_list">
+                                    <li><a href="javascript:alert('暂无课件！')">
+                                        <img src="../img/r_ico1.png"></a> <a href="javascript:alert('暂无课件！')">
+                                            暂无课件</a> </li>
+                                    <li><a href="../upload/books/yz/090869-01.txt">
+                                        <img src="../img/r_ico2.png"></a> <a href="../upload/books/yz/090869-01.txt">
+                                            样章下载</a> </li>
+                                    <li><a href="javascript:alert('暂无网络资源！')">
+                                        <img src="../img/r_ico3.png"></a> <a href="javascript:alert('暂无网络资源！')">
+                                            暂无网络资源
+                                        </a></li>
+                                </ul>
+                                <dl class="scan_code">
+                                    <dt>
+                                        <img src="../img/wx2.jpg"></dt>
+                                    <dd>
+                                        扫描二维码<br>
+                                        下载APP了解更多</dd>
+                                </dl>
+                            </div>
+                            <div class="c_i_list" style="display: none;">
+                                <p>
+                                    <a href="javascript:alert('暂无版权图片链接！')">
+                                        版权图片链接</a> 
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+        <div class="book_main clear">
+            <div class="b_m_left">
+                <div id="same_product" class="same_product" display="none">
+                </div>
+                <div id="cs_product" class="same_product"><h4 class="b_m_l_tit">同系列产品<a href="cs_product.html?id=3994">more &gt;</a></h4><dl class="b_m_product"><dt><img src="../upload/smallbookimg/093878-01.jpg" width="64" height="92"></dt><dd><span title="毕昇编译器原理与实践">毕昇编译器原理与实践</span><p>华保健 高耀清<i></i><br>定 价：79元</p><a href="book_09387801.html" target="_blank"> 查看详情</a></dd></dl><dl class="b_m_product"><dt><img src="../upload/smallbookimg/090402-01.jpg" width="64" height="92"></dt><dd><span title="数据库原理及应用实验——基于GaussDB的实现方法">数据库原理及应用实验——基于Gaus...</span><p>李雁翎<i></i><br>定 价：66元</p><a href="book_09040201.html" target="_blank"> 查看详情</a></dd></dl><dl class="b_m_product"><dt><img src="../upload/smallbookimg/092962-01.jpg" width="64" height="92"></dt><dd><span title="昇腾AI处理器CANN架构与编程">昇腾AI处理器CANN架构与编程</span><p>苏统华、杜鹏、周斌<i></i><br>定 价：89元</p><a href="book_09296201.html" target="_blank"> 查看详情</a></dd></dl><dl class="b_m_product"><dt><img src="../upload/smallbookimg/095680-01.jpg" width="64" height="92"></dt><dd><span title="openEuler操作系统（第2版）">openEuler操作系统（第2版）</span><p>任炬、张尧学<i></i><br>定 价：109元</p><a href="book_09568001.html" target="_blank"> 查看详情</a></dd></dl><dl class="b_m_product"><dt><img src="../upload/smallbookimg/092970-01.jpg" width="64" height="92"></dt><dd><span title="MindSpore深度学习高阶技术">MindSpore深度学习高阶技术</span><p>陈雷<i></i><br>定 价：99元</p><a href="book_09297001.html" target="_blank"> 查看详情</a></dd></dl></div>
+                <div class="search_box">
+                    <input type="text" id="search_input" class="input_test" value="按ISBN/书名/作者搜索">
+                    <span id="searchbook"></span>
+                </div>
+                <div class="book_classify">
+                    <span>图书分类</span><a href="allbooks.html" target="_blank">全部图书</a>
+                </div>
+                <div id="bookcate" class="book_classify_list">
+                <ul class="books_menu_list"><li><a href="allbooks.html?id=2000&amp;year=2025" title="计算机与电子信息">计算机与电子信息</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=50&amp;year=2025" title="计算机基础" class="on_hover">计算机基础</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=70&amp;year=2025" title="计算机文化基础">计算机文化基础</a></li><li><a href="allbooks.html?id=71&amp;year=2025" title="办公自动化">办公自动化</a></li><li><a href="allbooks.html?id=86&amp;year=2025" title="应用基础">应用基础</a></li><li><a href="allbooks.html?id=87&amp;year=2025" title="公共基础">公共基础</a></li><li><a href="allbooks.html?id=88&amp;year=2025" title="软件技术基础">软件技术基础</a></li><li><a href="allbooks.html?id=610&amp;year=2025" title="计算机导论">计算机导论</a></li><li><a href="allbooks.html?id=1150&amp;year=2025" title="计算思维">计算思维</a></li></ul></li><li><a href="allbooks.html?id=51&amp;year=2025" title="计算机组成与原理" class="on_hover">计算机组成与原理</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=72&amp;year=2025" title="计算机组成">计算机组成</a></li><li><a href="allbooks.html?id=73&amp;year=2025" title="计算机原理">计算机原理</a></li><li><a href="allbooks.html?id=74&amp;year=2025" title="接口技术">接口技术</a></li><li><a href="allbooks.html?id=75&amp;year=2025" title="操作系统">操作系统</a></li><li><a href="allbooks.html?id=891&amp;year=2025" title="计算机硬件">计算机硬件</a></li><li><a href="allbooks.html?id=910&amp;year=2025" title="嵌入式">嵌入式</a></li><li><a href="allbooks.html?id=1110&amp;year=2025" title="单片机">单片机</a></li></ul></li><li><a href="allbooks.html?id=52&amp;year=2025" title="算法与程序设计" class="on_hover">算法与程序设计</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=76&amp;year=2025" title="C程序设计">C程序设计</a></li><li><a href="allbooks.html?id=77&amp;year=2025" title="数据结构">数据结构</a></li><li><a href="allbooks.html?id=78&amp;year=2025" title="C++语言">C++语言</a></li><li><a href="allbooks.html?id=79&amp;year=2025" title="编译原理">编译原理</a></li><li><a href="allbooks.html?id=80&amp;year=2025" title="Visual Basic">Visual Basic</a></li><li><a href="allbooks.html?id=81&amp;year=2025" title="Java">Java</a></li><li><a href="allbooks.html?id=82&amp;year=2025" title="汇编语言">汇编语言</a></li><li><a href="allbooks.html?id=83&amp;year=2025" title="FoxPro">FoxPro</a></li><li><a href="allbooks.html?id=84&amp;year=2025" title="Delphi">Delphi</a></li><li><a href="allbooks.html?id=85&amp;year=2025" title="算法">算法</a></li><li><a href="allbooks.html?id=350&amp;year=2025" title="pb">pb</a></li><li><a href="allbooks.html?id=890&amp;year=2025" title="其他">其他</a></li><li><a href="allbooks.html?id=930&amp;year=2025" title="C#">C#</a></li><li><a href="allbooks.html?id=1011&amp;year=2025" title="JSP">JSP</a></li></ul></li><li><a href="allbooks.html?id=53&amp;year=2025" title="计算机技术及应用" class="on_hover">计算机技术及应用</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=150&amp;year=2025" title="计算机技术及应用">计算机技术及应用</a></li></ul></li><li><a href="allbooks.html?id=54&amp;year=2025" title="计算机网络" class="on_hover">计算机网络</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=89&amp;year=2025" title="Internet">Internet</a></li><li><a href="allbooks.html?id=90&amp;year=2025" title="TCP/IP">TCP/IP</a></li><li><a href="allbooks.html?id=91&amp;year=2025" title="计算机网络">计算机网络</a></li><li><a href="allbooks.html?id=92&amp;year=2025" title="网页制作">网页制作</a></li><li><a href="allbooks.html?id=93&amp;year=2025" title="电子商务">电子商务</a></li><li><a href="allbooks.html?id=94&amp;year=2025" title="网络安全">网络安全</a></li><li><a href="allbooks.html?id=911&amp;year=2025" title="网络工程">网络工程</a></li><li><a href="allbooks.html?id=950&amp;year=2025" title="物联网">物联网</a></li><li><a href="allbooks.html?id=1050&amp;year=2025" title="网站开发">网站开发</a></li><li><a href="allbooks.html?id=1130&amp;year=2025" title="移动互联">移动互联</a></li></ul></li><li><a href="allbooks.html?id=55&amp;year=2025" title="图形图像与多媒体" class="on_hover">图形图像与多媒体</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=95&amp;year=2025" title="图形学">图形学</a></li><li><a href="allbooks.html?id=96&amp;year=2025" title="多媒体">多媒体</a></li><li><a href="allbooks.html?id=411&amp;year=2025" title="图形图像">图形图像</a></li><li><a href="allbooks.html?id=970&amp;year=2025" title="摄影">摄影</a></li></ul></li><li><a href="allbooks.html?id=56&amp;year=2025" title="计算机辅助设计" class="on_hover">计算机辅助设计</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=97&amp;year=2025" title="计算机辅助设计">计算机辅助设计</a></li><li><a href="allbooks.html?id=98&amp;year=2025" title="AutoCAD">AutoCAD</a></li><li><a href="allbooks.html?id=99&amp;year=2025" title="CATIA">CATIA</a></li></ul></li><li><a href="allbooks.html?id=57&amp;year=2025" title="数据库" class="on_hover">数据库</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=100&amp;year=2025" title="SQL Server">SQL Server</a></li><li><a href="allbooks.html?id=101&amp;year=2025" title="FoxPro">FoxPro</a></li><li><a href="allbooks.html?id=102&amp;year=2025" title="Access">Access</a></li><li><a href="allbooks.html?id=103&amp;year=2025" title="Oracle">Oracle</a></li><li><a href="allbooks.html?id=104&amp;year=2025" title="数据库原理">数据库原理</a></li><li><a href="allbooks.html?id=410&amp;year=2025" title="数据挖掘">数据挖掘</a></li><li><a href="allbooks.html?id=412&amp;year=2025" title="PowerBuilder">PowerBuilder</a></li><li><a href="allbooks.html?id=1010&amp;year=2025" title="数据统计">数据统计</a></li><li><a href="allbooks.html?id=1090&amp;year=2025" title="数据检索">数据检索</a></li></ul></li><li><a href="allbooks.html?id=58&amp;year=2025" title="软件工程" class="on_hover">软件工程</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=105&amp;year=2025" title="软件工程导论">软件工程导论</a></li><li><a href="allbooks.html?id=106&amp;year=2025" title="软件工程">软件工程</a></li><li><a href="allbooks.html?id=990&amp;year=2025" title="软件测试">软件测试</a></li></ul></li><li><a href="allbooks.html?id=60&amp;year=2025" title="信息安全" class="on_hover">信息安全</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=110&amp;year=2025" title="密码学">密码学</a></li><li><a href="allbooks.html?id=111&amp;year=2025" title="概论">概论</a></li><li><a href="allbooks.html?id=112&amp;year=2025" title="病毒防护">病毒防护</a></li><li><a href="allbooks.html?id=1131&amp;year=2025" title="网络信息安全">网络信息安全</a></li></ul></li><li><a href="allbooks.html?id=61&amp;year=2025" title="电子信息" class="on_hover">电子信息</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=62&amp;year=2025" title="电子信息基础">电子信息基础</a></li><li><a href="allbooks.html?id=63&amp;year=2025" title="通信工程">通信工程</a></li><li><a href="allbooks.html?id=64&amp;year=2025" title="微电子">微电子</a></li><li><a href="allbooks.html?id=65&amp;year=2025" title="光电子">光电子</a></li><li><a href="allbooks.html?id=66&amp;year=2025" title="自动化">自动化</a></li><li><a href="allbooks.html?id=332&amp;year=2025" title="电子信息与计算机">电子信息与计算机</a></li></ul></li><li><a href="allbooks.html?id=67&amp;year=2025" title="计算机--其他" class="on_hover">计算机--其他</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=151&amp;year=2025" title="其他">其他</a></li></ul></li></ul></div></li><li><a href="allbooks.html?id=2010&amp;year=2025" title="理工">理工</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=59&amp;year=2025" title="数理基础" class="on_hover">数理基础</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=107&amp;year=2025" title="数字逻辑">数字逻辑</a></li><li><a href="allbooks.html?id=108&amp;year=2025" title="离散数学">离散数学</a></li><li><a href="allbooks.html?id=109&amp;year=2025" title="线性代数">线性代数</a></li><li><a href="allbooks.html?id=152&amp;year=2025" title="数理基础">数理基础</a></li></ul></li><li><a href="allbooks.html?id=270&amp;year=2025" title="数学" class="on_hover">数学</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=283&amp;year=2025" title="基础数学教材">基础数学教材</a></li><li><a href="allbooks.html?id=284&amp;year=2025" title="数学专业及研究生教材">数学专业及研究生教材</a></li><li><a href="allbooks.html?id=285&amp;year=2025" title="教辅及考研图书">教辅及考研图书</a></li><li><a href="allbooks.html?id=286&amp;year=2025" title="引进图书">引进图书</a></li><li><a href="allbooks.html?id=287&amp;year=2025" title="专著、工具书及其他参考书">专著、工具书及其他参考书</a></li><li><a href="allbooks.html?id=288&amp;year=2025" title="多媒体课件及网络教学资源">多媒体课件及网络教学资源</a></li></ul></li><li><a href="allbooks.html?id=271&amp;year=2025" title="物理" class="on_hover">物理</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=289&amp;year=2025" title="基础物理教材">基础物理教材</a></li><li><a href="allbooks.html?id=290&amp;year=2025" title="物理专业及研究生教材">物理专业及研究生教材</a></li><li><a href="allbooks.html?id=291&amp;year=2025" title="教辅及考研图书">教辅及考研图书</a></li><li><a href="allbooks.html?id=292&amp;year=2025" title="引进图书">引进图书</a></li><li><a href="allbooks.html?id=293&amp;year=2025" title="专著、工具书及其他参考书">专著、工具书及其他参考书</a></li><li><a href="allbooks.html?id=294&amp;year=2025" title="多媒体课件及网络教学资源">多媒体课件及网络教学资源</a></li></ul></li><li><a href="allbooks.html?id=272&amp;year=2025" title="力学" class="on_hover">力学</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=295&amp;year=2025" title="基础力学教材">基础力学教材</a></li><li><a href="allbooks.html?id=296&amp;year=2025" title="力学专业及研究生教材">力学专业及研究生教材</a></li><li><a href="allbooks.html?id=297&amp;year=2025" title="教辅及考研图书">教辅及考研图书</a></li><li><a href="allbooks.html?id=298&amp;year=2025" title="引进图书">引进图书</a></li><li><a href="allbooks.html?id=299&amp;year=2025" title="专著、工具书及其他参考书">专著、工具书及其他参考书</a></li><li><a href="allbooks.html?id=300&amp;year=2025" title="多媒体课件及网络教学资源">多媒体课件及网络教学资源</a></li></ul></li><li><a href="allbooks.html?id=273&amp;year=2025" title="化学化工" class="on_hover">化学化工</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=301&amp;year=2025" title="基础化学">基础化学</a></li><li><a href="allbooks.html?id=302&amp;year=2025" title="化学">化学</a></li><li><a href="allbooks.html?id=303&amp;year=2025" title="化工">化工</a></li><li><a href="allbooks.html?id=304&amp;year=2025" title="引进图书">引进图书</a></li><li><a href="allbooks.html?id=305&amp;year=2025" title="专著、工具书及其他参考书">专著、工具书及其他参考书</a></li><li><a href="allbooks.html?id=306&amp;year=2025" title="多媒体课件及网络教学资源">多媒体课件及网络教学资源</a></li></ul></li><li><a href="allbooks.html?id=274&amp;year=2025" title="机械材料汽车能源" class="on_hover">机械材料汽车能源</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=307&amp;year=2025" title="机械">机械</a></li><li><a href="allbooks.html?id=308&amp;year=2025" title="仪器仪表">仪器仪表</a></li><li><a href="allbooks.html?id=309&amp;year=2025" title="材料">材料</a></li><li><a href="allbooks.html?id=310&amp;year=2025" title="汽车">汽车</a></li><li><a href="allbooks.html?id=311&amp;year=2025" title="能源与动力工程">能源与动力工程</a></li><li><a href="allbooks.html?id=312&amp;year=2025" title="引进图书">引进图书</a></li><li><a href="allbooks.html?id=313&amp;year=2025" title="专著、工具书及其他参考书">专著、工具书及其他参考书</a></li><li><a href="allbooks.html?id=314&amp;year=2025" title="多媒体课件及网络教学资源">多媒体课件及网络教学资源</a></li></ul></li><li><a href="allbooks.html?id=275&amp;year=2025" title="工业工程" class="on_hover">工业工程</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=315&amp;year=2025" title="国外大学优秀教材-工业工程系列(影印版)">国外大学优秀教材-工业工程系列(影印版)</a></li><li><a href="allbooks.html?id=670&amp;year=2025" title="国外大学优秀教材-工业工程系列(翻译版)">国外大学优秀教材-工业工程系列(翻译版)</a></li><li><a href="allbooks.html?id=671&amp;year=2025" title="物流供应链丛书">物流供应链丛书</a></li><li><a href="allbooks.html?id=672&amp;year=2025" title="其他">其他</a></li><li><a href="allbooks.html?id=850&amp;year=2025" title="普通高等学校物流管理专业系列教材">普通高等学校物流管理专业系列教材</a></li></ul></li><li><a href="allbooks.html?id=276&amp;year=2025" title="工业设计" class="on_hover">工业设计</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=316&amp;year=2025" title="工业设计">工业设计</a></li></ul></li><li><a href="allbooks.html?id=277&amp;year=2025" title="建筑土木水利" class="on_hover">建筑土木水利</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=317&amp;year=2025" title="建筑学（教材）">建筑学（教材）</a></li><li><a href="allbooks.html?id=318&amp;year=2025" title="建筑设计">建筑设计</a></li><li><a href="allbooks.html?id=319&amp;year=2025" title="土木工程">土木工程</a></li><li><a href="allbooks.html?id=320&amp;year=2025" title="水利工程">水利工程</a></li><li><a href="allbooks.html?id=321&amp;year=2025" title="工程管理">工程管理</a></li><li><a href="allbooks.html?id=1030&amp;year=2025" title="装饰装修">装饰装修</a></li><li><a href="allbooks.html?id=1031&amp;year=2025" title="建筑文化">建筑文化</a></li><li><a href="allbooks.html?id=2771&amp;year=2025" title="风景园林">风景园林</a></li><li><a href="allbooks.html?id=2772&amp;year=2025" title="城市规划">城市规划</a></li></ul></li><li><a href="allbooks.html?id=278&amp;year=2025" title="环境与给排水" class="on_hover">环境与给排水</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=322&amp;year=2025" title="环境科学与环境工程">环境科学与环境工程</a></li><li><a href="allbooks.html?id=323&amp;year=2025" title="给排水">给排水</a></li><li><a href="allbooks.html?id=324&amp;year=2025" title="引进图书">引进图书</a></li><li><a href="allbooks.html?id=325&amp;year=2025" title="专著、工具书及其他参考书">专著、工具书及其他参考书</a></li><li><a href="allbooks.html?id=326&amp;year=2025" title="多媒体课件及网络教学资源">多媒体课件及网络教学资源</a></li></ul></li><li><a href="allbooks.html?id=280&amp;year=2025" title="电工基础与电气工程" class="on_hover">电工基础与电气工程</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=330&amp;year=2025" title="电工基础">电工基础</a></li><li><a href="allbooks.html?id=331&amp;year=2025" title="电气工程">电气工程</a></li><li><a href="allbooks.html?id=333&amp;year=2025" title="专著、工具书及其他参考书">专著、工具书及其他参考书</a></li><li><a href="allbooks.html?id=334&amp;year=2025" title="多媒体课件及网络教学资源">多媒体课件及网络教学资源</a></li></ul></li><li><a href="allbooks.html?id=831&amp;year=2025" title="航空航天" class="on_hover">航空航天</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=832&amp;year=2025" title="航空航天">航空航天</a></li></ul></li><li><a href="allbooks.html?id=2012&amp;year=2025" title="科幻漫画">科幻漫画</a></li><li><a href="allbooks.html?id=2773&amp;year=2025" title="质量管理">质量管理</a></li><li><a href="allbooks.html?id=2775&amp;year=2025" title="科幻小说">科幻小说</a></li></ul></div></li><li><a href="allbooks.html?id=2020&amp;year=2025" title="经管与人文">经管与人文</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=170&amp;year=2025" title="经济管理" class="on_hover">经济管理</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=174&amp;year=2025" title="人力资源管理">人力资源管理</a></li><li><a href="allbooks.html?id=175&amp;year=2025" title="物流">物流</a></li><li><a href="allbooks.html?id=179&amp;year=2025" title="工商管理">工商管理</a></li><li><a href="allbooks.html?id=184&amp;year=2025" title="市场营销">市场营销</a></li><li><a href="allbooks.html?id=187&amp;year=2025" title="经济学">经济学</a></li><li><a href="allbooks.html?id=189&amp;year=2025" title="经济读物">经济读物</a></li><li><a href="allbooks.html?id=190&amp;year=2025" title="金融学">金融学</a></li><li><a href="allbooks.html?id=192&amp;year=2025" title="财政学">财政学</a></li><li><a href="allbooks.html?id=198&amp;year=2025" title="国际经济贸易">国际经济贸易</a></li><li><a href="allbooks.html?id=201&amp;year=2025" title="会计学">会计学</a></li><li><a href="allbooks.html?id=204&amp;year=2025" title="旅游管理">旅游管理</a></li><li><a href="allbooks.html?id=205&amp;year=2025" title="公共管理">公共管理</a></li><li><a href="allbooks.html?id=207&amp;year=2025" title="电子商务">电子商务</a></li><li><a href="allbooks.html?id=213&amp;year=2025" title="考试用书">考试用书</a></li><li><a href="allbooks.html?id=214&amp;year=2025" title="其他">其他</a></li><li><a href="allbooks.html?id=590&amp;year=2025" title="管理科学与工程">管理科学与工程</a></li></ul></li><li><a href="allbooks.html?id=171&amp;year=2025" title="人文社科" class="on_hover">人文社科</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=226&amp;year=2025" title="伦理学">伦理学</a></li><li><a href="allbooks.html?id=227&amp;year=2025" title="教育学">教育学</a></li><li><a href="allbooks.html?id=229&amp;year=2025" title="心理学">心理学</a></li><li><a href="allbooks.html?id=230&amp;year=2025" title="哲学">哲学</a></li><li><a href="allbooks.html?id=231&amp;year=2025" title="语言文学">语言文学</a></li><li><a href="allbooks.html?id=232&amp;year=2025" title="史学">史学</a></li><li><a href="allbooks.html?id=233&amp;year=2025" title="新闻传播学">新闻传播学</a></li><li><a href="allbooks.html?id=234&amp;year=2025" title="体育">体育</a></li><li><a href="allbooks.html?id=235&amp;year=2025" title="其他">其他</a></li><li><a href="allbooks.html?id=550&amp;year=2025" title="政治学">政治学</a></li><li><a href="allbooks.html?id=551&amp;year=2025" title="社会学">社会学</a></li><li><a href="allbooks.html?id=552&amp;year=2025" title="清华校史读物">清华校史读物</a></li><li><a href="allbooks.html?id=553&amp;year=2025" title="综合">综合</a></li></ul></li><li><a href="allbooks.html?id=830&amp;year=2025" title="社会职业培训" class="on_hover">社会职业培训</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=833&amp;year=2025" title="工程技术操作技能类">工程技术操作技能类</a></li><li><a href="allbooks.html?id=834&amp;year=2025" title="城市服务业基础技能类">城市服务业基础技能类</a></li><li><a href="allbooks.html?id=835&amp;year=2025" title="就业素质教育类">就业素质教育类</a></li><li><a href="allbooks.html?id=836&amp;year=2025" title="其他">其他</a></li></ul></li><li><a href="allbooks.html?id=5010&amp;year=2025" title="建筑人文">建筑人文</a></li></ul></div></li><li><a href="allbooks.html?id=2025&amp;year=2025" title="文化与传播">文化与传播</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=1151&amp;year=2025" title="新闻学" class="on_hover">新闻学</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=1152&amp;year=2025" title="新闻史">新闻史</a></li><li><a href="allbooks.html?id=1153&amp;year=2025" title="新闻理论">新闻理论</a></li><li><a href="allbooks.html?id=1154&amp;year=2025" title="新闻实务">新闻实务</a></li><li><a href="allbooks.html?id=1155&amp;year=2025" title="专题研究">专题研究</a></li><li><a href="allbooks.html?id=1156&amp;year=2025" title="经典文集">经典文集</a></li><li><a href="allbooks.html?id=1157&amp;year=2025" title="其他">其他</a></li></ul></li><li><a href="allbooks.html?id=1160&amp;year=2025" title="传播学" class="on_hover">传播学</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=1161&amp;year=2025" title="传播史">传播史</a></li><li><a href="allbooks.html?id=1162&amp;year=2025" title="传播理论">传播理论</a></li><li><a href="allbooks.html?id=1163&amp;year=2025" title="媒介研究方法">媒介研究方法</a></li><li><a href="allbooks.html?id=1164&amp;year=2025" title="媒介文化">媒介文化</a></li><li><a href="allbooks.html?id=1165&amp;year=2025" title="国际传播">国际传播</a></li><li><a href="allbooks.html?id=1166&amp;year=2025" title="新媒体传播">新媒体传播</a></li><li><a href="allbooks.html?id=1167&amp;year=2025" title="专题研究【国家形象、传媒工作坊】">专题研究【国家形象、传媒工作坊】</a></li><li><a href="allbooks.html?id=1168&amp;year=2025" title="其他">其他</a></li></ul></li><li><a href="allbooks.html?id=1170&amp;year=2025" title="媒介艺术" class="on_hover">媒介艺术</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=1171&amp;year=2025" title="影视【影视理论、文化、产业、实务、纪录片】">影视【影视理论、文化、产业、实务、纪录片】</a></li><li><a href="allbooks.html?id=1172&amp;year=2025" title="动漫">动漫</a></li><li><a href="allbooks.html?id=1173&amp;year=2025" title="数字媒体【游戏、社交媒体、短视频、新媒体艺术】">数字媒体【游戏、社交媒体、短视频、新媒体艺术】</a></li><li><a href="allbooks.html?id=1174&amp;year=2025" title="其他">其他</a></li></ul></li><li><a href="allbooks.html?id=1175&amp;year=2025" title="文化艺术" class="on_hover">文化艺术</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=1176&amp;year=2025" title="对外汉语">对外汉语</a></li><li><a href="allbooks.html?id=1177&amp;year=2025" title="礼仪">礼仪</a></li><li><a href="allbooks.html?id=1178&amp;year=2025" title="美育【绘画、雕塑、建筑】">美育【绘画、雕塑、建筑】</a></li><li><a href="allbooks.html?id=1179&amp;year=2025" title="文学">文学</a></li><li><a href="allbooks.html?id=1180&amp;year=2025" title="中国传统文化">中国传统文化</a></li><li><a href="allbooks.html?id=1181&amp;year=2025" title="世界文化">世界文化</a></li></ul></li><li><a href="allbooks.html?id=1183&amp;year=2025" title="写作训练">写作训练</a></li><li><a href="allbooks.html?id=1184&amp;year=2025" title="生活自助类" class="on_hover">生活自助类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=1185&amp;year=2025" title="心理自助">心理自助</a></li><li><a href="allbooks.html?id=1187&amp;year=2025" title="日常护理">日常护理</a></li></ul></li><li><a href="allbooks.html?id=1190&amp;year=2025" title="专题研究" class="on_hover">专题研究</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=1191&amp;year=2025" title="清华大学校史 【清华大学史料选编（1911--1966）】">清华大学校史 【清华大学史料选编（1911--1966）】</a></li><li><a href="allbooks.html?id=1193&amp;year=2025" title="艺术与科学">艺术与科学</a></li><li><a href="allbooks.html?id=1194&amp;year=2025" title="清华美术">清华美术</a></li><li><a href="allbooks.html?id=1195&amp;year=2025" title="智库报告">智库报告</a></li><li><a href="allbooks.html?id=1197&amp;year=2025" title="国家形象">国家形象</a></li><li><a href="allbooks.html?id=1199&amp;year=2025" title="县域研究">县域研究</a></li><li><a href="allbooks.html?id=1200&amp;year=2025" title="传媒工作坊">传媒工作坊</a></li></ul></li><li><a href="allbooks.html?id=1205&amp;year=2025" title="通识教育" class="on_hover">通识教育</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=1206&amp;year=2025" title="清华通识文库">清华通识文库</a></li></ul></li><li><a href="allbooks.html?id=1215&amp;year=2025" title="其他">其他</a></li></ul></div></li><li><a href="allbooks.html?id=2030&amp;year=2025" title="法律与艺术">法律与艺术</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=172&amp;year=2025" title="法律" class="on_hover">法律</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=237&amp;year=2025" title="司法考试用书">司法考试用书</a></li><li><a href="allbooks.html?id=239&amp;year=2025" title="法律知识读物">法律知识读物</a></li><li><a href="allbooks.html?id=240&amp;year=2025" title="宪法与行政法">宪法与行政法</a></li><li><a href="allbooks.html?id=241&amp;year=2025" title="法理法史">法理法史</a></li><li><a href="allbooks.html?id=242&amp;year=2025" title="刑法">刑法</a></li><li><a href="allbooks.html?id=243&amp;year=2025" title="诉讼法">诉讼法</a></li><li><a href="allbooks.html?id=244&amp;year=2025" title="经济法">经济法</a></li><li><a href="allbooks.html?id=245&amp;year=2025" title="民商法">民商法</a></li><li><a href="allbooks.html?id=246&amp;year=2025" title="国际法">国际法</a></li><li><a href="allbooks.html?id=247&amp;year=2025" title="知识产权法">知识产权法</a></li><li><a href="allbooks.html?id=249&amp;year=2025" title="司法案例">司法案例</a></li><li><a href="allbooks.html?id=430&amp;year=2025" title="比较法">比较法</a></li></ul></li><li><a href="allbooks.html?id=173&amp;year=2025" title="艺术" class="on_hover">艺术</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=253&amp;year=2025" title="服装艺术设计">服装艺术设计</a></li><li><a href="allbooks.html?id=254&amp;year=2025" title="工业设计">工业设计</a></li><li><a href="allbooks.html?id=255&amp;year=2025" title="环境艺术设计">环境艺术设计</a></li><li><a href="allbooks.html?id=257&amp;year=2025" title="建筑">建筑</a></li><li><a href="allbooks.html?id=258&amp;year=2025" title="染织艺术设计">染织艺术设计</a></li><li><a href="allbooks.html?id=259&amp;year=2025" title="摄影艺术设计">摄影艺术设计</a></li><li><a href="allbooks.html?id=260&amp;year=2025" title="视觉传达艺术设计">视觉传达艺术设计</a></li><li><a href="allbooks.html?id=261&amp;year=2025" title="书法">书法</a></li><li><a href="allbooks.html?id=262&amp;year=2025" title="陶瓷艺术设计">陶瓷艺术设计</a></li><li><a href="allbooks.html?id=451&amp;year=2025" title="信息艺术与设计">信息艺术与设计</a></li><li><a href="allbooks.html?id=530&amp;year=2025" title="绘画">绘画</a></li><li><a href="allbooks.html?id=531&amp;year=2025" title="雕塑">雕塑</a></li><li><a href="allbooks.html?id=532&amp;year=2025" title="工艺美术">工艺美术</a></li><li><a href="allbooks.html?id=533&amp;year=2025" title="艺术设计学">艺术设计学</a></li><li><a href="allbooks.html?id=534&amp;year=2025" title="艺术类基础教学">艺术类基础教学</a></li></ul></li></ul></div></li><li><a href="allbooks.html?id=2035&amp;year=2025" title="生物与医学">生物与医学</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=327&amp;year=2025" title="医学与生物学教材">医学与生物学教材</a></li><li><a href="allbooks.html?id=328&amp;year=2025" title="教学辅导及考试用书">教学辅导及考试用书</a></li><li><a href="allbooks.html?id=329&amp;year=2025" title="引进版图书">引进版图书</a></li><li><a href="allbooks.html?id=650&amp;year=2025" title="专业工具书和手册">专业工具书和手册</a></li><li><a href="allbooks.html?id=651&amp;year=2025" title="医学专业参考书">医学专业参考书</a></li><li><a href="allbooks.html?id=652&amp;year=2025" title="生物学专业参考书">生物学专业参考书</a></li><li><a href="allbooks.html?id=653&amp;year=2025" title="大众读物">大众读物</a></li></ul></div></li><li><a href="allbooks.html?id=2040&amp;year=2025" title="语言">语言</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=370&amp;year=2025" title="非英语专业本科教材" class="on_hover">非英语专业本科教材</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=371&amp;year=2025" title="非英语专业本科教材">非英语专业本科教材</a></li></ul></li><li><a href="allbooks.html?id=372&amp;year=2025" title="非英语专业研究生教材" class="on_hover">非英语专业研究生教材</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=373&amp;year=2025" title="非英语专业研究生教材">非英语专业研究生教材</a></li></ul></li><li><a href="allbooks.html?id=374&amp;year=2025" title="专升本教材" class="on_hover">专升本教材</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=375&amp;year=2025" title="专升本教材">专升本教材</a></li></ul></li><li><a href="allbooks.html?id=376&amp;year=2025" title="英语专业教材" class="on_hover">英语专业教材</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=377&amp;year=2025" title="英语专业教材">英语专业教材</a></li></ul></li><li><a href="allbooks.html?id=378&amp;year=2025" title="选修课系列教材" class="on_hover">选修课系列教材</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=379&amp;year=2025" title="选修课系列教材">选修课系列教材</a></li></ul></li><li><a href="allbooks.html?id=380&amp;year=2025" title="专门用途英语教材" class="on_hover">专门用途英语教材</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=381&amp;year=2025" title="商务英语">商务英语</a></li><li><a href="allbooks.html?id=382&amp;year=2025" title="其他">其他</a></li></ul></li><li><a href="allbooks.html?id=390&amp;year=2025" title="娱乐休闲英语" class="on_hover">娱乐休闲英语</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=391&amp;year=2025" title="娱乐休闲英语">娱乐休闲英语</a></li></ul></li><li><a href="allbooks.html?id=392&amp;year=2025" title="英语学习方法" class="on_hover">英语学习方法</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=393&amp;year=2025" title="英语学习方法">英语学习方法</a></li></ul></li><li><a href="allbooks.html?id=394&amp;year=2025" title="非英语语种图书" class="on_hover">非英语语种图书</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=395&amp;year=2025" title="日语">日语</a></li><li><a href="allbooks.html?id=396&amp;year=2025" title="德语">德语</a></li></ul></li><li><a href="allbooks.html?id=397&amp;year=2025" title="外语--其他" class="on_hover">外语--其他</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=398&amp;year=2025" title="其他">其他</a></li></ul></li></ul></div></li><li><a href="allbooks.html?id=2050&amp;year=2025" title="科普与少儿">科普与少儿</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=281&amp;year=2025" title="科普读物" class="on_hover">科普读物</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=335&amp;year=2025" title="院士科普第一辑">院士科普第一辑</a></li><li><a href="allbooks.html?id=654&amp;year=2025" title="院士科普第二辑">院士科普第二辑</a></li><li><a href="allbooks.html?id=655&amp;year=2025" title="院士科普第三辑">院士科普第三辑</a></li><li><a href="allbooks.html?id=656&amp;year=2025" title="院士科普第四辑">院士科普第四辑</a></li><li><a href="allbooks.html?id=657&amp;year=2025" title="走进科学殿堂">走进科学殿堂</a></li><li><a href="allbooks.html?id=658&amp;year=2025" title="华裔科学家科普文集">华裔科学家科普文集</a></li><li><a href="allbooks.html?id=659&amp;year=2025" title="其他">其他</a></li></ul></li><li><a href="allbooks.html?id=1139&amp;year=2025" title="少儿" class="on_hover">少儿</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=1140&amp;year=2025" title="儿童文学">儿童文学</a></li><li><a href="allbooks.html?id=1141&amp;year=2025" title="益智游戏">益智游戏</a></li><li><a href="allbooks.html?id=1142&amp;year=2025" title="科普百科">科普百科</a></li><li><a href="allbooks.html?id=1143&amp;year=2025" title="低幼启蒙">低幼启蒙</a></li><li><a href="allbooks.html?id=1144&amp;year=2025" title="卡通动漫">卡通动漫</a></li><li><a href="allbooks.html?id=1145&amp;year=2025" title="少儿英语">少儿英语</a></li><li><a href="allbooks.html?id=1146&amp;year=2025" title="其他">其他</a></li></ul></li></ul></div></li><li><a href="allbooks.html?id=2060&amp;year=2025" title="辞书工具书学术书">辞书工具书学术书</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=282&amp;year=2025" title="辞书" class="on_hover">辞书</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=336&amp;year=2025" title="辞书">辞书</a></li></ul></li><li><a href="allbooks.html?id=383&amp;year=2025" title="学术类图书" class="on_hover">学术类图书</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=384&amp;year=2025" title="学术类图书">学术类图书</a></li></ul></li><li><a href="allbooks.html?id=388&amp;year=2025" title="工具书" class="on_hover">工具书</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=389&amp;year=2025" title="工具书">工具书</a></li></ul></li></ul></div></li><li><a href="allbooks.html?id=2070&amp;year=2025" title="考试书">考试书</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=385&amp;year=2025" title="考试类用书" class="on_hover">考试类用书</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=386&amp;year=2025" title="国内考试用书">国内考试用书</a></li><li><a href="allbooks.html?id=387&amp;year=2025" title="国外考试用书">国外考试用书</a></li></ul></li><li><a href="allbooks.html?id=630&amp;year=2025" title="计算机考试类图书" class="on_hover">计算机考试类图书</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=631&amp;year=2025" title="计算机等级考试">计算机等级考试</a></li><li><a href="allbooks.html?id=632&amp;year=2025" title="软件资格水平考试">软件资格水平考试</a></li><li><a href="allbooks.html?id=633&amp;year=2025" title="计算机类认证考试">计算机类认证考试</a></li><li><a href="allbooks.html?id=1071&amp;year=2025" title="职称考试">职称考试</a></li></ul></li></ul></div></li><li><a href="allbooks.html?id=2080&amp;year=2025" title="基础与职业教育">基础与职业教育</a><div class="b_m_bg"><ul class="b_m_l_c"><li><a href="allbooks.html?id=470&amp;year=2025" title="高职高专--公共基础课" class="on_hover">高职高专--公共基础课</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=991&amp;year=2025" title="公共基础课系列">公共基础课系列</a></li></ul></li><li><a href="allbooks.html?id=471&amp;year=2025" title="高职高专--人文社科类" class="on_hover">高职高专--人文社科类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=751&amp;year=2025" title="法律专业">法律专业</a></li><li><a href="allbooks.html?id=790&amp;year=2025" title="新闻">新闻</a></li></ul></li><li><a href="allbooks.html?id=472&amp;year=2025" title="高职高专--计算机类" class="on_hover">高职高专--计算机类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=473&amp;year=2025" title="计算机基础教育系列">计算机基础教育系列</a></li><li><a href="allbooks.html?id=474&amp;year=2025" title="计算机专业基础系列">计算机专业基础系列</a></li><li><a href="allbooks.html?id=475&amp;year=2025" title="计算机应用专业">计算机应用专业</a></li><li><a href="allbooks.html?id=476&amp;year=2025" title="网络专业">网络专业</a></li><li><a href="allbooks.html?id=477&amp;year=2025" title="软件专业">软件专业</a></li><li><a href="allbooks.html?id=478&amp;year=2025" title="数据库专业">数据库专业</a></li><li><a href="allbooks.html?id=479&amp;year=2025" title="多媒体技术专业">多媒体技术专业</a></li><li><a href="allbooks.html?id=480&amp;year=2025" title="电子商务专业">电子商务专业</a></li><li><a href="allbooks.html?id=870&amp;year=2025" title="嵌入式设计">嵌入式设计</a></li></ul></li><li><a href="allbooks.html?id=481&amp;year=2025" title="高职高专--电子信息类" class="on_hover">高职高专--电子信息类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=482&amp;year=2025" title="电子信息基础系列">电子信息基础系列</a></li><li><a href="allbooks.html?id=483&amp;year=2025" title="微电子技术专业">微电子技术专业</a></li><li><a href="allbooks.html?id=484&amp;year=2025" title="通信技术专业">通信技术专业</a></li><li><a href="allbooks.html?id=485&amp;year=2025" title="电气自动化专业">电气自动化专业</a></li><li><a href="allbooks.html?id=486&amp;year=2025" title="应用电子技术专业">应用电子技术专业</a></li></ul></li><li><a href="allbooks.html?id=489&amp;year=2025" title="高职高专--机电类" class="on_hover">高职高专--机电类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=487&amp;year=2025" title="机电一体化专业">机电一体化专业</a></li><li><a href="allbooks.html?id=488&amp;year=2025" title="汽车专业">汽车专业</a></li><li><a href="allbooks.html?id=490&amp;year=2025" title="机械基础系列">机械基础系列</a></li><li><a href="allbooks.html?id=491&amp;year=2025" title="机械设计与制造专业">机械设计与制造专业</a></li><li><a href="allbooks.html?id=492&amp;year=2025" title="数控技术专业">数控技术专业</a></li><li><a href="allbooks.html?id=493&amp;year=2025" title="模具设计与制造专业">模具设计与制造专业</a></li></ul></li><li><a href="allbooks.html?id=494&amp;year=2025" title="高职高专--工科类" class="on_hover">高职高专--工科类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=495&amp;year=2025" title="建筑专业">建筑专业</a></li><li><a href="allbooks.html?id=496&amp;year=2025" title="工程管理专业">工程管理专业</a></li></ul></li><li><a href="allbooks.html?id=497&amp;year=2025" title="高职高专--经济管理类" class="on_hover">高职高专--经济管理类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=498&amp;year=2025" title="经济管理基础系列">经济管理基础系列</a></li><li><a href="allbooks.html?id=499&amp;year=2025" title="市场营销专业">市场营销专业</a></li><li><a href="allbooks.html?id=500&amp;year=2025" title="财务会计专业">财务会计专业</a></li><li><a href="allbooks.html?id=501&amp;year=2025" title="企业管理专业">企业管理专业</a></li><li><a href="allbooks.html?id=502&amp;year=2025" title="物流管理专业">物流管理专业</a></li><li><a href="allbooks.html?id=503&amp;year=2025" title="财政金融专业">财政金融专业</a></li><li><a href="allbooks.html?id=504&amp;year=2025" title="电子商务专业">电子商务专业</a></li><li><a href="allbooks.html?id=570&amp;year=2025" title="国际商务专业">国际商务专业</a></li><li><a href="allbooks.html?id=750&amp;year=2025" title="人力资源管理专业">人力资源管理专业</a></li></ul></li><li><a href="allbooks.html?id=505&amp;year=2025" title="高职高专--服务类" class="on_hover">高职高专--服务类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=506&amp;year=2025" title="旅游专业">旅游专业</a></li><li><a href="allbooks.html?id=507&amp;year=2025" title="饭店管理专业">饭店管理专业</a></li><li><a href="allbooks.html?id=508&amp;year=2025" title="文秘专业">文秘专业</a></li><li><a href="allbooks.html?id=509&amp;year=2025" title="艺术设计专业">艺术设计专业</a></li><li><a href="allbooks.html?id=690&amp;year=2025" title="物业管理专业">物业管理专业</a></li></ul></li><li><a href="allbooks.html?id=510&amp;year=2025" title="基础教育--英语" class="on_hover">基础教育--英语</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=511&amp;year=2025" title="教材教辅">教材教辅</a></li><li><a href="allbooks.html?id=512&amp;year=2025" title="课外读物">课外读物</a></li><li><a href="allbooks.html?id=513&amp;year=2025" title="综合知识">综合知识</a></li></ul></li><li><a href="allbooks.html?id=514&amp;year=2025" title="基础教育--信息技术" class="on_hover">基础教育--信息技术</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=515&amp;year=2025" title="教材教参">教材教参</a></li><li><a href="allbooks.html?id=516&amp;year=2025" title="课外读物">课外读物</a></li><li><a href="allbooks.html?id=517&amp;year=2025" title="教师培训">教师培训</a></li><li><a href="allbooks.html?id=518&amp;year=2025" title="科普读物">科普读物</a></li></ul></li><li><a href="allbooks.html?id=710&amp;year=2025" title="中职教育--计算机类" class="on_hover">中职教育--计算机类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=731&amp;year=2025" title="计算机基础教育系列">计算机基础教育系列</a></li><li><a href="allbooks.html?id=732&amp;year=2025" title="计算机专业基础系列">计算机专业基础系列</a></li><li><a href="allbooks.html?id=733&amp;year=2025" title="计算机应用专业">计算机应用专业</a></li><li><a href="allbooks.html?id=734&amp;year=2025" title="网络专业">网络专业</a></li><li><a href="allbooks.html?id=735&amp;year=2025" title="软件专业">软件专业</a></li><li><a href="allbooks.html?id=736&amp;year=2025" title="数据库专业">数据库专业</a></li><li><a href="allbooks.html?id=737&amp;year=2025" title="多媒体技术专业">多媒体技术专业</a></li></ul></li><li><a href="allbooks.html?id=711&amp;year=2025" title="中职教育--公共课" class="on_hover">中职教育--公共课</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=730&amp;year=2025" title="公共基础课系列">公共基础课系列</a></li></ul></li><li><a href="allbooks.html?id=752&amp;year=2025" title="中职教育--经济管理类" class="on_hover">中职教育--经济管理类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=756&amp;year=2025" title="经济管理基础类">经济管理基础类</a></li><li><a href="allbooks.html?id=757&amp;year=2025" title="物流管理专业">物流管理专业</a></li><li><a href="allbooks.html?id=758&amp;year=2025" title="财政金融专业">财政金融专业</a></li><li><a href="allbooks.html?id=759&amp;year=2025" title="市场营销专业">市场营销专业</a></li><li><a href="allbooks.html?id=760&amp;year=2025" title="企业管理专业">企业管理专业</a></li><li><a href="allbooks.html?id=761&amp;year=2025" title="国际商务专业">国际商务专业</a></li><li><a href="allbooks.html?id=871&amp;year=2025" title="财务会计专业">财务会计专业</a></li></ul></li><li><a href="allbooks.html?id=753&amp;year=2025" title="中职教育--电子信息类" class="on_hover">中职教育--电子信息类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=762&amp;year=2025" title="电子信息基础系列">电子信息基础系列</a></li><li><a href="allbooks.html?id=763&amp;year=2025" title="微电子技术专业">微电子技术专业</a></li><li><a href="allbooks.html?id=764&amp;year=2025" title="通信技术专业">通信技术专业</a></li><li><a href="allbooks.html?id=765&amp;year=2025" title="电气自动化专业">电气自动化专业</a></li><li><a href="allbooks.html?id=766&amp;year=2025" title="应用电子技术专业">应用电子技术专业</a></li></ul></li><li><a href="allbooks.html?id=754&amp;year=2025" title="中职教育--机电类" class="on_hover">中职教育--机电类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=767&amp;year=2025" title="机械基础系列">机械基础系列</a></li><li><a href="allbooks.html?id=768&amp;year=2025" title="机械设计与制造专业">机械设计与制造专业</a></li><li><a href="allbooks.html?id=769&amp;year=2025" title="数控技术专业">数控技术专业</a></li><li><a href="allbooks.html?id=770&amp;year=2025" title="模具设计与制造专业">模具设计与制造专业</a></li><li><a href="allbooks.html?id=771&amp;year=2025" title="机电一体化专业">机电一体化专业</a></li><li><a href="allbooks.html?id=772&amp;year=2025" title="汽车专业">汽车专业</a></li></ul></li><li><a href="allbooks.html?id=755&amp;year=2025" title="中职教育--服务类" class="on_hover">中职教育--服务类</a><ul class="b_m_l_c_c"><li><a href="allbooks.html?id=773&amp;year=2025" title="旅游专业">旅游专业</a></li><li><a href="allbooks.html?id=774&amp;year=2025" title="饭店管理专业">饭店管理专业</a></li><li><a href="allbooks.html?id=775&amp;year=2025" title="文秘专业">文秘专业</a></li><li><a href="allbooks.html?id=776&amp;year=2025" title="艺术设计专业">艺术设计专业</a></li></ul></li></ul></div></li></ul></div>
+                <!-- END Menu -->
+            </div>
+            <div class="b_m_right">
+                <div id="zzbjcontent" class="bar_1">
+                    <ul class="b_m_r_list" id="zzbj">
+                        <li><a href="javascript:;" mtitle="bookwritersay.html?id=09086901" class="on">作者荐语</a></li>
+                        <li><a href="javascript:;" mtitle="bookeditorsay.html?id=09086901">编辑推荐</a></li>
+                    </ul>
+                    <a href="bookwritersay.html?id=09086901" id="A1" target="_blank" class="bar_more">
+                        more &gt;</a>
+                    <ul class="b_m_bar" id="zzbj2">
+                        <li class="on">
+                            <dl>
+                                <dd id="writersay" style="width: 700px">戚正伟，博士，上海交通大学电信学院/软件学院教授/博导，CCF杰出会员, CCF系统软件和理论计算机专委会委员，微软亚洲研究院访问教师、美国CMU大学访问学者(美方教授为Edmund Clarke，计算机图灵奖得主) 。2011年入选教育部新世纪优秀人才计划，获得上海市技术发明一等奖、教育部科技进步一等奖、教育部技术发明一等奖、国家科技进步奖二等奖各一项，出版译著《UNIX环境高级编程（第2版）》，为2008、2009年度畅销榜TOP50（China-Pub）。出版专著《BlewBluePill：深入理解硬件虚拟机》(（获得IBM出版计划资助）和译著《UNIX高级环境编程（第3版）》（京东计算机与互联网图书2014/2015年度销售榜Top 100）。</dd>
+                            </dl>
+                        </li>
+                        <li>
+                            <dl>
+                                <dd id="editorsay" style="width: 700px">虚拟化领域系统性教材，涵盖虚拟化历史、通用虚拟化、ARM虚拟化、鲲鹏虚拟化、新一代虚拟化原理和应用实战介绍。加速虚拟化技术落地，助力国产云计算产业发展。</dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bar_1">
+                    <ul class="b_m_r_list" id="mltswz">
+                        <li><a href="javascript:;" mtitle="bookcatalog.html?id=09086901" class="on">目录</a></li>
+                        <li><a href="javascript:;" mtitle="booktsintro.html?id=09086901">特色介绍</a></li>
+                        <li><a href="javascript:;" mtitle="bookdigest.html?id=09086901">文摘</a></li>
+                    </ul>
+                    <a href="bookcatalog.html?id=09086901" id="A2" target="_blank" class="bar_more">more
+                        &gt;</a>
+                    <ul class="b_m_bar ft_m_b">
+                        <li id="tsml" class="wordbreak on"><p></p><p></p><p>CONTENTS</p><p></p><p>目录</p><p></p><p>第1章系统虚拟化概述00</p><p></p><p>1.1系统虚拟化基本概念00</p><p></p><p>1.2系统虚拟化的发展历史和趋势展望00</p><p></p><p>1.2.1发展历史00</p><p></p><p>1.2.2趋势展望0</p><p></p><p>1.3系统虚拟化的主要功能和分类0</p><p></p><p>1.3.1虚拟化基本功能0</p><p></p><p>1.3.2虚拟化分类0</p><p></p><p>1.3.3系统虚拟化实现方式0</p><p></p><p>1.4典型虚拟化系统0</p><p></p><p>1.4.1典型虚拟化系统简介0</p><p></p><p>1.4.2openEuler的虚拟化技术0</p><p></p><p>本章小结0</p><p></p><p>第2章CPU虚拟化0</p><p></p><p>2.1CPU虚拟化概述0</p><p></p><p>2.1.1敏感非特权指令的处理0</p><p></p><p>2.1.2虚拟机上下文切换0</p><p></p><p>2.1.3中断虚拟化0</p><p></p><p>2.2Intel&nbsp;VTx硬件辅助虚拟化概述0</p><p></p><p>2.2.1VMX操作模式0</p><p></p><p>2.2.2VMCS0</p><p></p><p>2.2.3PIC&nbsp;&amp;&nbsp;APIC0</p><p></p><p>2.2.4Intel&nbsp;VTx中断虚拟化0</p><p></p><p>2.3QEMU/KVM&nbsp;CPU虚拟化实现0</p><p></p><p>2.3.1KVM模块初始化0</p><p></p><p>2.3.2虚拟机创建0</p><p></p><p>2.3.3vCPU创建0</p><p></p><p>2.3.4vCPU运行0</p><p></p><p>2.3.5实验：CPU虚拟化实例0</p><p></p><p>2.4QEMU/KVM中断虚拟化实现0</p><p></p><p>2.4.1PIC&nbsp;&amp;&nbsp;IOAPIC模拟0</p><p></p><p>2.4.2PCI设备中断0</p><p></p><p>2.4.3QEMU/KVM中断路由0</p><p></p><p>2.4.4虚拟中断注入0</p><p></p><p>2.4.5实验：e1000网卡中断虚拟化0</p><p></p><p>2.5GiantVM&nbsp;CPU虚拟化0</p><p></p><p>2.5.1...</p></li>
+                        <li id="tsjs"></li>
+                        <li id="tswz"></li>
+                    </ul>
+                </div>
+                
+                
+                
+                
+                <!--mating_recommend end -->
+                <h4 id="book_reviewh" class="versions_show">
+                    精彩书评<a href="book_review_list.html?id=09086901">more &gt;</a></h4>
+                
+                <div class="tspltj">
+                    <form id="form1" action="">
+                    <p>
+                        标题</p>
+                    <p>
+                        <input id="cbt" name="cbt" type="text" value="" required=""></p>
+                    <p>
+                        评论</p>
+                    <p>
+                        <textarea id="cnr" name="cnr" cols="20" rows="5" data-min="30" required=""></textarea></p>
+                    <p class="p5">
+                        <input type="button" id="addcomment" value="发表书评"></p>
+                    </form>
+                </div>
+                <!--b_m_right end-->
+            </div>
+        </div>
+    </div>
+    
+    
+<div class="wbxx">
+    <div class="wbyqlj">
+        <div class="wbyqljkj">
+            <div class="gwkstdleft">
+                <div class="kjljkj kjljkjkg">
+                    <div class="bktb">
+                        <p>
+                            关于我们</p>
+                    </div>
+                    <div class="gywmxm">
+                        <p>
+                            <a href="../newsCenter/news_index.html">企业新闻</a></p>
+                        <p>
+                            <a href="../aboutus/szzc.html">董事长致辞</a></p>
+                        <p>
+                            <a href="../aboutus/qyjj.html">企业简介</a></p>
+                        <p>
+                            <a href="../aboutus/zzjg.html">组织机构</a></p>
+                       
+                        <p>
+                            <a href="../aboutus/hwhz.html">海外合作</a></p>
+                        <p>
+                            <a href="../aboutus/swwyh.html">社务委员会</a></p>
+                    </div>
+                </div>
+                <div class="kjljkj kjljkjml kjljkjkg">
+                    <div class="bktb">
+                        <p>
+                            产品中心</p>
+                    </div>
+                    <div class="gywmxm">
+                        <p>
+                            <a href="../booksCenter/allbooks.html">图书</a></p>
+                        <p>
+                            <a href="https://www.tsinghuajournals.com/cn/home" target="_blank">期刊</a></p>
+                        <p>
+                            <a href="../indexExtend/Resourceslist.html?id=1">书目下载</a></p>
+                    </div>
+                </div>
+                <div class="kjljkj kjljkjml kjljkjkg1">
+                    <div class="bktb">
+                        <p>
+                            分社导航</p>
+                    </div>
+                    <div class="gywmxm">
+                        <p>
+                            <a href="../subpress.html?id=2">计算机与信息分社</a></p>
+                        <p>
+                            <a href="../subpress.html?id=1">理工分社</a></p>
+                        <p>
+                            <a href="../subpress.html?id=3">经管人文分社</a></p>
+                        <p>
+                            <a href="../subpress.html?id=4">外语分社</a></p>
+                        <p>
+                            <a href="https://www.wqxuetang.com/aboutus.html">音像电子与数字出版分社</a></p>
+                        <p>
+                            <a href="../subpress.html?id=6">职业教育分社</a></p>
+                         <p><a href="../subpress.html?id=Y">生命科学与医学分社</a></p>
+                        <p>
+                            <a href="../subpress.html?id=F">基础教育分社</a></p>
+                          <p>
+            
+                    </p></div>
+                </div>
+                <div class="kjljkj kjljkjml kjljkjkg">
+                    <div class="bktb">
+                    <p>直属事业部</p>
+                    </div>
+                    <div class="gywmxm">
+                       <p>
+                            <a href="http://www.tupwk.com.cn/" target="_blank">第五事业部</a></p>
+                        <p>
+                            <a href="http://weibo.com/qinghuashejingguan" target="_blank">第八事业部</a></p>
+          
+                    </div>
+                </div>
+                <div class="kjljkj kjljkjml kjljkjkg">
+                    <div class="bktb">
+                        <p>
+                            联系我们</p>
+                    </div>
+                    <div class="gywmxm">
+                        <p>
+                            <a href="../contactus/reader_server.html">读者服务</a></p>
+                      <p>
+                            <a href="../contactus/welcome.html">欢迎投稿</a></p>
+                        <p>
+                            <a href="../contactus/library.html">院系/图书馆服务</a></p>
+                        <p>
+                            <a href="../contactus/dealer.html">经销商服务</a></p>
+                        <p>
+                            <a href="../contactus/copyright.html">版权贸易</a></p>
+                          <p>
+                            <a href="../contactus/recruit.html">人才招聘</a></p>
+                          <p>
+                    <a href="../contactus/sqscx.html?id=0" target="">授权书查询</a></p>
+                        <p>
+                    </p></div>
+                </div>
+            </div>
+            <div class="gwkstdright">
+                <div class="wxgzs kjljkjm2">
+                    <div class="wxkjys">
+                        <div class="wxkjyss">
+                            <a href="http://qhdx.tmall.com/shop/view_shop.htm?spm=a1z10.3-b.w9858246-8055933082.1.T5pTI3" target="_blank"><img src="../img/wx1.jpg" alt=""></a>
+                        </div>
+                        <div class="wxkjysx">
+                            <p>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="wxkjys kjljkjm3">
+                        <div class="wxkjyss">
+                            <img src="../img/wx2.jpg" alt="">
+                        </div>
+                        <div class="wxkjysx">
+                            <p class="p1">
+                                +</p>
+                            <p class="p2">
+                                扫描关注官方微博</p>
+                        </div>
+                    </div>
+                    <div class="wxkjys kjljkjm3">
+                        <div class="wxkjyss">
+                            <img src="../img/wx3.jpg" alt="">
+                        </div>
+                        <div class="wxkjysx">
+                            <p class="p2">
+                                扫描关注官方微信</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="fwlx kjljkjm2">
+                    <div class="fwlxleft ">
+                        <p class="p1">
+                            访问量：</p>
+                        <p id="foot_HITS" class="p2">764010030</p>
+                    </div>
+                    <a href="../indexExtend/friendly_link.html">
+                        <div class="fwlxrig">
+                            <p>
+                                友情连接</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wbgsxx">
+        <div class="wbgsxxjz">
+            <p class="p1">
+                版权所有(C)2023 清华大学出版社有限公司 京ICP备10035462号 <span><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802042911"><img src="../img/waba.png" style=" width:12px; height:12px;">京公网安备11010802042911号</a> </span></p>
+            <p class="p2">
+                <a href="../contactus/contact.html">联系我们</a> | <a href="../indexExtend/web_map.html">
+                    网站地图</a> | <a href="../indexExtend/law_statement.html">法律声明</a> | <a href="../indexExtend/friendly_link.html">
+                        友情链接</a> | <a href="../indexExtend/pirate_report.html">盗版举报</a> | <a href="../contactus/recruit.html" class="rczp">人才招聘</a></p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(".xgyt").hover(function () {
+        $(this).find(".dhxlcd").css("display", "block");
+    }, function () {
+        $(this).find(".dhxlcd").css("display", "none");
+    })
+    $(".myxtw p").hover(function () {
+        $(this).css("background", "#512672");
+    }, function () {
+        $(this).css("background", "#653686");
+    })
+    $("#myRoundabout li").click(function () {
+        dataxw = $(this).attr("data");
+        xxtpwzs = $(".xxtpwz");
+        xxtpwzs.each(function () {
+            if ($(this).attr("data") == dataxw) {
+                $(this).css("display", "block");
+            } else {
+                $(this).css("display", "none");
+            }
+        })
+    })
+    $(".xzlbkjgk").hover(function () {
+        $(this).css("background", "#dcdcdc");
+        $(this).find(".xzxswz").css("color", "#512672");
+        $(this).find(".jqrxg").css("display", "block");
+        xds = $(this).find(".xzxstp img").attr("xd");
+        $(this).find(".xzxstp img").attr("src", xds);
+    }, function () {
+        bgs = $(this).attr("debg");
+        $(this).css("background", bgs);
+        $(this).find(".xzxswz").css("color", "#555");
+        $(this).find(".jqrxg").css("display", "none");
+        yls = $(this).find(".xzxstp img").attr("yl");
+        $(this).find(".xzxstp img").attr("src", yls);
+    });
+    $(function () {
+        $(".logo22-2").click(function () {
+            $(this).css("background", "#5c307d");
+            $(this).css("color", "#fff");
+            $(".logo22-1").css("background", "#ddd");
+            $(".logo22-1").css("color", "#a1a1a1");
+            $("#input_key").attr("mtitle", "1");
+        })
+        $(".logo22-1").click(function () {
+            $(this).css("background", "#5c307d");
+            $(this).css("color", "#fff");
+            $(".logo22-2").css("background", "#ddd");
+            $(".logo22-2").css("color", "#a1a1a1");
+            $("#input_key").attr("mtitle", "1");
+        })
+        $(".logo22-4").click(function () {
+            if ($("#input_key").attr("mtitle") == "1") {
+                var tmp = GetSimpleUrl(window.location.href);
+                if (tmp == "booklist.html") {
+                    window.location.href = "booklist.html?keyword=" + encodeURIComponent($("#input_key").val()) + "&keytm=8D393325978F926E86";
+                    return false;
+                }
+
+                window.open("../booksCenter/booklist.html?keyword=" + encodeURIComponent($("#input_key").val()) + "&keytm=8D393325978F926E86");
+                return false;
+            }
+           // else {
+                //window.open("" + $("#input_key").val() + ".html");
+              //  return false;
+
+          //  }
+
+        })
+        $('.input_test').bind({
+            focus: function () {
+                if (this.value == "请输入关键字") {
+                    this.value = "";
+
+                }
+            }, blur: function () {
+                if (this.value == "") {
+                    this.value = "请输入关键字";
+                }
+            }
+        });
+    })
+    $(".xwnrs").hover(function () {
+        $(this).css("color", "#4f608c");
+    }, function () {
+        $(this).css("color", "#280c3f");
+    })
+
+    $("#input_key").keydown(function (e) {
+        var curKey = e.which;
+        if (curKey == 13) {
+            $(".logo22-4").click();
+            return false;
+        }
+    });
+</script> 
+
+
+
+    <script type="text/javascript" src="../Member/js/jquery-html5Validate.js?v=14"></script>
+    <script type="text/javascript">
+        //if ('0' == "1")
+           // $("#yssq").show();
+
+        $("#buylink").hover(function () {
+            $(".zxgmxlklbbc").css("display", "block");
+        }, function () {
+            $(".zxgmxlklbbc").css("display", "none");
+        })
+
+        $(function () {
+            $(".thedropdown").hover(function () {
+                $(".thedropdown-cat").children("span").addClass("active");
+                $(this).children("ul").show();
+            }, function () {
+                $(".thedropdown-cat").children("span").removeClass("active");
+                $(this).children("ul").hide();
+            });
+
+            $(".video-list > ul > li").hover(function () {
+                $(this).find(".fn-player").show();
+            }, function () {
+                $(this).find(".fn-player").hide();
+            });
+
+            $('.b_l_bottom li').click(function () {
+                $(this).addClass('on').siblings().removeClass("on");
+                $(".b_l_top > li").hide().eq($('.b_l_bottom li').index(this)).show();
+            });
+
+            $('.content_intro_list li a').live("mouseover", function () {
+                $(this).addClass('on').parent().siblings().find("a").removeClass("on");
+                $(".content_intro > div").hide().eq($('.content_intro_list li a').index(this)).show();
+            });
+
+
+            $('.b_m_r_list li').click(function (e) {
+                var $this = $(this)
+                if ($this.parent().attr("id") == "zzbj") {
+                    $('#A1').attr("href", $this.children("a").eq(0).attr("mtitle"))
+                }
+                if ($this.parent().attr("id") == "mltswz") {
+                    $('#A2').attr("href", $this.children("a").eq(0).attr("mtitle"))
+                }
+
+                var index = $this.index();
+                $(this).find("a").addClass('on').parent().siblings().find("a").removeClass("on");
+                $this.parent().parent(".bar_1").find("ul.b_m_bar li").stop(true, true).not(':eq(' + index + ')').hide();
+                $this.parent().parent(".bar_1").find("ul.b_m_bar li").eq(index).show();
+            });
+
+
+            //menu_list
+            $(".books_menu_list li").hover(function () {
+                $(this).find("ul:first").show(); //鼠标滑过查找li下面的第一个ul然后显示；
+
+            }, function () {
+                $(this).find("ul:first").hide(); //鼠标离开隐藏li下面d的ul；
+                $(this).removeClass("on")
+            });
+            $("ul li ul li ul").prev().addClass("on_hover"); //给li下面ul是aaa的样式的前一个同辈元素添加css；
+
+            $('.books_menu_list li').live("mouseover", function () {
+                $(this).addClass('on').siblings().removeClass("on");
+
+            });
+
+            $('.books_menu_list li a').live("mouseover", function () {
+                $(this).addClass('on').parent().siblings().children("a").removeClass("on");
+
+            });
+
+            $('.books_menu_list li a').live("mouseout", function () {
+                $(this).removeClass('on').parent().siblings().children("a").removeClass("on");
+
+            });
+
+            $(".b_m_l_c").hover(function () {
+                $(this).parent().find("a").addClass('on');
+                $(this).parent().addClass("on");
+
+            }, function () {
+                $(this).parent().find("a").removeClass('on');
+
+            });
+
+            $(".books_menu_list li a").hover(function () {
+                $(this).parent().find(".b_m_bg").addClass('on');
+
+            }, function () {
+                $(this).parent().find(".b_m_bg").removeClass('on');
+
+            });
+
+
+            $(".b_m_bg").hover(function () {
+                $(this).parent().find("a").addClass('on');
+
+            }, function () {
+                $(this).parent().find("a").removeClass('on');
+                $(this).removeClass("on");
+
+            });
+
+           /* $('.ft_b_r_c1 a').live("mouseover", function () {
+                $(this).addClass('on').siblings().removeClass("on");
+                $(".share_content").css("display", "none");
+            }); */
+
+            $('.ft_b_r_c1 .tshmjsmfs').live("mouseover", function () {
+                $(this).addClass('on').siblings().removeClass("on");
+                $(".share_content").css("display", "none");
+            });
+
+
+
+            $(".ft_share").live("mouseover", function () {
+                $(".share_content").css("display", "block");
+            })
+
+            $(".ft_share").hover(function () {
+                $(this).parent().parent().find(".share_content").css("display", "block");
+            });
+
+            $("body").click(function () {
+                $(".share_content").css("display", "none");
+            });
+
+
+            $("#searchbook").click(function () {
+                var temp = $.trim($("#search_input").val());
+                if (temp != "") {
+                    window.open("booklist.html?keyword=" + encodeURIComponent(temp));
+                    return false;
+                }
+                else {
+                    $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '关键字不能为空！' });
+                    return false;
+                }
+
+            })
+            $("#search_input").keydown(function (e) {
+                var curKey = e.which;
+                if (curKey == 13) {
+                    $("#searchbook").click();
+                    return false;
+                }
+            });
+            $("#buyjd").click(function (event) {
+                if ($("#buyjd").attr("title") == "") {
+                    $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '京东官方旗舰店暂时没有上架链接！' });
+                    return false; //阻止链接跳转
+                }
+            });
+            $("#buytm").click(function (event) {
+                if ($("#buytm").attr("title") == "") {
+                    $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '天猫官方旗舰店暂时没有上架链接！' });
+                    return false; //阻止链接跳转
+                }
+            });
+        });
+
+        $("#yssq").click(function () {
+            var flag = "";
+            $.ajaxSetup({
+                async: false
+            });
+            $.ajax({
+                type: "POST",
+                dataType: "html",
+                url: 'allbooks/addys.ashx?cid=090869-01',      //提交 到一般处理程序请求数据  
+                success: function (result) {
+                    flag = result;
+                    return;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '网络异常请稍候再试...' });
+                    return;
+                }
+            });
+            if (flag == "0") {
+                if (confirm("教师会员登陆后，才可以申领样书，确定是否登录？")) {
+                    window.location.href = "../member/dl.aspx?returnurl=" + encodeURIComponent(window.location.href);
+                }
+                return;
+            }
+            if (flag == "2") {
+                $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '权限不足，您的帐号不是教师会员，不能申领样书' });
+                return;
+            }
+            if (flag == "3") {
+                $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '您已经申领了此图书，不能重复申领!' });
+                return;
+            }
+            if (flag == "4") {
+                $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '此书是零售图书，不能申领样书!' });
+                return;
+            }
+            if (flag == "6") {
+                $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '此书是暂时没有库存，请申领替代图书或者新版!' });
+                return;
+            }
+           if (flag == "7") {
+                 $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "警告窗口", Content: '欲申请此书，需要联系我社驻本省业务人员(<a href=\"../contactus/library.html\" style=\" color:Purple;text-decoration:underline;\"><span class=\"span2\">详见“联系我们”-“院系/图书馆服务”</span>。</a>)' });
+            sxsqlist();
+            return;
+            }
+            if (flag == "1") {
+                if (confirm("此样书已添加到申请列表中，是否到“可申领样书”提交样书？")) {
+                    window.location.href = "../member/kslys.aspx";
+                }
+               return;
+            }
+           
+        })
+        $("#favorite").click(function () {
+            var str = "";
+            if ($("#favorite").html() == "已收藏")
+                return;
+            $.ajax({
+                async: false,
+                type: "POST",
+                dataType: "html",
+                url: 'allbooks/addfa.ashx?cid=090869-01',
+                success: function (result) {
+                    str = result;
+                }
+            });
+
+            if (str == "0") {
+                if (confirm("会员未登录或者登录超时，是否登录？")) {
+                    window.location.href = "../member/dl.aspx?returnurl=" + encodeURIComponent(window.location.href);
+                }
+                return;
+            }
+            if (str == "1") {
+                $("#favorite").html("已收藏");
+                $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '收藏成功！' });
+                return;
+            }
+            if (str == "2") {
+                $("#favorite").html("已收藏");
+                $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '已收藏！' });
+                return;
+            }
+            if (str == "3") {
+                $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '网络异常，收藏失败！' });
+                return;
+            }
+        })
+        $("#addcomment").click(function () {
+
+            if ($.html5Validate.isAllpass($("#form1"))) {
+                var result = "";
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    dataType: "html",
+                    url: 'allbooks/addcomment.ashx?cid=090869-01',
+                    data: $('#form1').serialize(),
+                    success: function (data) {
+                        result = data;
+                    }
+                });
+                if (result == "0") {
+                    if (confirm("会员登录后才可以评论，是否登录？")) {
+                        window.location.href = "../member/dl.aspx?returnurl=" + encodeURIComponent(window.location.href);
+                    }
+                    return;
+                }
+                if (result == "1") {
+                    $("#cnr").val("");
+                    $("#cbt").val("");
+                    $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '书评已成功提交，等待管理员审核。' });
+                 
+                    return;
+                }
+                if (result == "2") {
+                    $.DialogBySHF.Alert({ Width: 300, Height: 180, Title: "提示窗口", Content: '没有此图书。' });
+                    return;
+                }
+            }
+        })
+    </script>
+    <script type="text/javascript">        window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": { "bdSize": 16} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+
+
+<orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
