@@ -1,0 +1,1219 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/产品/多虚一/GiantVM (2025-02-28 09：59：02).html
+ Page saved with X-Webpage-Conserve 
+ url: https://giantvm.github.io/
+ Summary: GiantVM is a distributed hypervisor that utilizes resources from multiple physical machines, offering a uniform hardware abstraction to the guest OS through techniques like IPI, interrupt, and I/O forwarding. It's based on QEMU-KVM and distributed shared memory (DSM) technology. The input includes instructions on how to install and run GiantVM on a single machine using Ubuntu 16.04.7 and Linux-DSM. The paper "GiantVM: A Type-II Hypervisor Implementing Many-to-one Virtualization" was published in the Proceedings of the 16th ACM SIGPLAN/SIGOPS International Conference on Virtual Execution Environments in 2020. The authors include Zhengwei Qi, Haibing Guan, and others from Shanghai Jiao Tong University.GiantVM 是一个分布式管理程序，它利用来自多个物理机的资源，通过 IPI、中断和 I/O 转发等技术为来宾作系统提供统一的硬件抽象。它基于 QEMU-KVM 和分布式共享内存 （DSM） 技术。输入包括有关如何使用 Ubuntu 16.04.7 和 Linux-DSM 在单台计算机上安装和运行 GiantVM 的说明。论文《GiantVM：实现多对一虚拟化的 Type-II Hypervisor》发表在 2020 年第 16 届 ACM SIGPLAN/SIGOPS 虚拟执行环境国际会议的论文集上。作者包括来自上海交通大学的 Zhengwei Qi、Haibing Guan 等人。
+-->
+<html lang="en" imt-state="dual"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Aria is a business focused HTML landing page template built with Bootstrap to help you create lead generation websites for companies and their services.">
+    <meta name="author" content="Inovatik">
+
+    <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
+	<meta property="og:site_name" content=""> <!-- website name -->
+	<meta property="og:site" content=""> <!-- website link -->
+	<meta property="og:title" content=""> <!-- title shown in the actual shared post -->
+	<meta property="og:description" content=""> <!-- description shown in the actual shared post -->
+	<meta property="og:image" content=""> <!-- image link, make sure it's jpg -->
+	<meta property="og:url" content=""> <!-- where do you want your post to link to -->
+	<meta property="og:type" content="article">
+
+    <!-- Website Title -->
+    <title>GiantVM</title>
+    
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700&amp;display=swap&amp;subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600&amp;display=swap&amp;subset=latin-ext" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/fontawesome-all.css" rel="stylesheet">
+    <link href="css/swiper.css" rel="stylesheet">
+	<link href="css/magnific-popup.css" rel="stylesheet">
+	<link href="css/styles.css" rel="stylesheet">
+	
+	<!-- Favicon  -->
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+<body data-spy="scroll" data-target=".fixed-top"><a href="body" class="back-to-top page-scroll" style="display: none;">Back to Top</a>
+    
+    <!-- Preloader -->
+	<div class="spinner-wrapper" style="display: none;">
+        <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+    </div>
+    <!-- end of preloader -->
+    
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark navbar-custom fixed-top">
+        <!-- Text Logo - Use this if you don't have a graphic logo -->
+        <!-- <a class="navbar-brand logo-text page-scroll" href="index.html">Aria</a> -->
+
+        <!-- Image Logo -->
+        <a href="index.html"><img src="images/logo.png" width="60rem" alt="alternative"></a>
+        <a style="font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;font-size: 40px;color:#f1f5f8;">  GiantVM</a>
+        <!-- Mobile Menu Toggle Button -->
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-awesome fas fa-bars"></span>
+            <span class="navbar-toggler-awesome fas fa-times"></span>
+        </button>
+        <!-- end of mobile menu toggle button -->
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link page-scroll active" href="#header">HOME <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#intro">INTRO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#patent">PATENT</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#code">CODE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#commandLine">COMMANDLINE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#publication">PUBLICATION</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#demo">DEMO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#slides">SLIDES</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#people">PEOPLE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#cooperations">COOPERATIONS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link page-scroll" href="#contact">CONTACT</a>
+                </li>
+            </ul>
+            <span class="fa-stack">
+                <a href="https://github.com/GiantVM">
+                    <i class="fab fa-github fa-stack-2x fa-inverse"></i>
+                </a>
+            </span>
+        </div>
+    </nav> <!-- end of navbar -->
+    <!-- end of navbar -->
+
+
+    <!-- Header -->
+    <header id="header" class="header">
+        <div class="header-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="text-container">
+                            <h1>GiantVM</h1>
+                            <p class="p-heading p-large">GiantVM is a distributed hypervisor that aggregates resources from multiple physical machines, 
+                                providing the guest OS with a uniform hardware abstraction.</p>
+                            <a class="btn-solid-lg page-scroll" href="#intro">DISCOVER</a>
+                        </div>
+                    </div> <!-- end of col -->
+                </div> <!-- end of row -->
+            </div> <!-- end of container -->
+        </div> <!-- end of header-content -->
+    </header> <!-- end of header -->
+    <!-- end of header -->
+
+
+    <!-- Intro -->
+    <div id="intro" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="text-container">
+                        <h1>INTRO</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                <div class="col-lg-9">
+                    <div class="text-container">
+                        <h2>What's GiantVM</h2>
+                        <p>GiantVM is a distributed hypervisor that aggregates resources from multiple physical machines, providing the guest OS with a uniform hardware abstraction.
+                             A QEMU-KVM instance runs on each node of a cluster.</p>
+                        <p>This work is supported by the NSFC Key Program (No.61732010), and National Key Research &amp; Development Program of China 2016YFB1000502.</p>
+                        <h3>About distributed QEMU</h3>
+                        <p>In QEMU-KVM virtualization, QEMU simluates guest or device I/O requests and interrupts by interception. 
+                            GiantVM is equipped IPI forwarding, interrupt forwarding and I/O forwarding techniques,
+                             which overcome the difficulties of sharing CPU and I/O devices across machines.</p> 
+                        <h3>About distributed KVM</h3>
+                            
+                        <p>KVM manages memory virtualization. At the heart of GiantVM is a distributed shared memory (DSM) based on Ivy, which enables the sharing of memory across multiple machines. GiantVM implements various techniques to overcome the challenges of integrating the DSM into virtualization environments</p>
+                        <p class="testimonial-text"></p>
+                        <div class="testimonial-author"></div>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of intro -->
+
+    <!-- Patent -->
+    <div id="patent" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="text-container">
+                        <h1>PATENT</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                <div class="col-lg-9">
+                    <div class="text-container">
+                        <h2>GIANTVM FOR RESOURCE AGGREGATION</h2>
+                        <h2>US Patent 10853119</h2>
+                        <p class="testimonial-text"></p>
+                        <div class="testimonial-author"></div>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of intro -->
+
+    <!-- Code -->
+    <div id="code" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="text-container">
+                        <h1>CODE</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                
+                <div class="col-lg-9">
+                    <div class="cards-1">
+                        <div class="container">
+                            <!-- <div class="row"> -->
+                                <!-- Card -->
+                                <div class="card">
+                                    <span class="fa-stack">
+                                        <span class="hexagon"></span>
+                                        <i class="fas fa-binoculars fa-stack-1x"></i>
+                                    </span>
+                                    <div class="card-body">
+                                        <h4 class="card-title">1. QEMU</h4>
+                                        <p>BASE QEMU branch stable-2.8<br>
+                                            <a href="https://github.com/GiantVM/QEMU.git">https://github.com/GiantVM/QEMU.git</a></p>
+                                    </div>
+                                </div>
+                                <!-- end of card -->
+
+                                <!-- Card -->
+                                <div class="card">
+                                    <span class="fa-stack">
+                                        <span class="hexagon"></span>
+                                        <i class="fas fa-list-alt fa-stack-1x"></i>
+                                    </span>
+                                    <div class="card-body">
+                                        <h4 class="card-title">2. KVM</h4>
+                                        BASE Linux Kernel branch 4.8.10<br>
+                                        <a href="https://github.com/GiantVM/Linux-DSM.git"> https://github.com/GiantVM/Linux-DSM.git</a>
+                                    </div>
+                                </div>
+                                <!-- end of card -->
+
+                                <!-- Card -->
+                                <div class="card">
+                                    <span class="fa-stack">
+                                        <span class="hexagon"></span>
+                                        <i class="fas fa-chart-pie fa-stack-1x"></i>
+                                    </span>
+                                    <div class="card-body">
+                                        <h4 class="card-title">3. sv6</h4>
+                                        BASE <a href="https://github.com/aclements/sv6">https://github.com/aclements/sv6</a> 
+                                    </div>
+                                </div>
+                            <!-- </div>  -->
+                        </div> <!--end of container-->
+                    </div> <!-- end of card -->
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of Code -->
+
+    <!-- command line -->
+    <div id="commandLine" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="text-container">
+                        <h1>COMMAND LINE</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                <div class="col-lg-9">
+                    <div id="commandLine" class="accordion">
+                        <div class="accordion-container" id="accordionTwo">
+                            <!--p>For example, run sv6 OS in GiantVM on two machines</p -->
+                            <!-- div class="item">
+                                <div id="headingOne">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
+                                        <span class="circle-numbering">1</span>
+                                        <span class="accordion-title">On machine 1 (ip 10.0.0.2), run: <br>
+                                            
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>sudo qemu-system-x86_64 -smp 2 -m 20480 -machine q35,kernel-irqchip=off -serial mon:stdio -nographic -net user -net nic,model=e1000 -device ahci,id=ahci0 -drive if=none,file=o.qemu/fs.img,format=raw,id=drive-sata0-0-0 -device ide-drive,bus=ahci0.0,drive=drive-sata0-0-0,id=sata0-0-0 -kernel o.qemu/kernel.elf --enable-kvm -local-cpu 16,start=0,iplist="10.0.0.1 10.0.0.2"
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div> 
+                        
+                            <div class="item">
+                                <div id="headingTwo">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" role="button">
+                                        <span class="circle-numbering">2</span>
+                                        <span class="accordion-title">On machine 0 (ip 10.0.0.1), run: <br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>sudo qemu-system-x86_64 -smp 2 -m 20480 -machine q35,kernel-irqchip=off -serial mon:stdio -nographic -net user -net nic,model=e1000 -device ahci,id=ahci0 -drive if=none,file=o.qemu/fs.img,format=raw,id=drive-sata0-0-0 -device ide-drive,bus=ahci0.0,drive=drive-sata0-0-0,id=sata0-0-0 -kernel o.qemu/kernel.elf --enable-kvm -local-cpu 16,start=16,iplist="10.0.0.1 10.0.0.2"
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div> 
+                        
+                            <div class="item">
+                                <div id="headingThree">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" role="button">
+                                        <span class="circle-numbering">3</span>
+                                        <span class="accordion-title">Wait for guest OS booting<br>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div --> <!-- end of item -->
+                            <p>Run GiantVM on a single machine</p>
+                            <p>ubuntu 16.04.7 linux kernel version: 4.15.0</p>
+                            <p><a href="https://github.com/GiantVM/doc/blob/master/boot.md">boot reference documentation - 1</a></p>
+                            <p><a href="https://github.com/GiantVM/doc/blob/master/boot-2-ysh.md">boot reference documentation - 2</a></p>
+                            <div class="item">
+                                <div id="headingOne">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" role="button">
+                                        <span class="accordion-title">First, change HostOS kernel to Linux-DSM. <br>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="headingOne">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" role="button">
+                                        <span class="circle-numbering">1</span>
+                                        <span class="accordion-title">Preparation<br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>sudo apt-get install build-essential openssl libncurses5-dev libssl-dev</pre>
+                                        <pre>sudo apt-get install zlibc minizip libidn11-dev libidn11 bison flex</pre>
+                                        <pre>git clone https://github.com/GiantVM/Linux-DSM.git</pre>
+                                        <pre>cd Linux-DSM</pre>
+                                        Switch the MACRO definition from USE_KRDMA_NETWORK to USE_KTCP_NETWORK in arch/x86/include/asm/kvm_host.h.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div id="headingTwo">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" role="button">
+                                        <span class="circle-numbering">2</span>
+                                        <span class="accordion-title">Enable DSM support in kernel config<br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>make menuconfig</pre>
+                                        `Virtualization` --&gt; `KVM distributed software memory support` --&gt; `press 'Y' to include the option`<br>
+                                        `Save` --&gt; `Exit`
+                                    </div>
+                                </div>
+                            </div> <!-- end of item -->
+                            <div class="item">
+                                <div id="headingThree">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" role="button">
+                                        <span class="circle-numbering">3</span>
+                                        <span class="accordion-title">Compile the kernel<br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>make -jN</pre>
+                                        N is the number of threads you'd like to run parallelly.
+                                    </div>
+                                </div>
+                            </div> <!-- end of item -->
+                            <div class="item">
+                                <div id="headingThree">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" role="button">
+                                        <span class="circle-numbering">4</span>
+                                        <span class="accordion-title">Install the kernel and reboot<br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>sudo make modules_install</pre>
+                                        <pre>sudo make install</pre>
+                                        <pre>sudo update-grub</pre>
+                                        <pre>reboot</pre>
+                                    </div>
+                                </div>
+                            </div> <!-- end of item -->  
+                            <div class="item">
+                                <div id="headingOne">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" role="button">
+                                        <span class="accordion-title">QEMU
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="headingOne">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" role="button">
+                                        <span class="circle-numbering">1</span>
+                                        <span class="accordion-title">Preparation<br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>sudo apt-get install python pkg-config libglib2.0-dev zlib1g-dev libpixman-1-dev libfdt-dev</pre>
+                                        <pre>git clone https://github.com/GiantVM/QEMU.git</pre>
+                                        <pre>cd QEMU</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="headingOne">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" role="button">
+                                        <span class="circle-numbering">2</span>
+                                        <span class="accordion-title">Configuration<br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>./configure --target-list=x86_64-softmmu --enable-kvm</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div id="headingThree">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" role="button">
+                                        <span class="circle-numbering">3</span>
+                                        <span class="accordion-title">Compilation<br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>make -jN</pre>
+                                    </div>
+                                </div>
+                            </div> <!-- end of item --> 
+                            <div class="item">
+                                <div id="headingThree">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" role="button">
+                                        <span class="circle-numbering">4</span>
+                                        <span class="accordion-title">Create hard disk image<br>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <pre>cd ..</pre>
+                                        <pre>wget http://ftp.sjtu.edu.cn/ubuntu-cd/16.04.6/ubuntu-16.04.7-server-amd64.iso</pre>
+                                        <pre>cd QEMU</pre> 
+                                        <pre>./qemu-img create -f qcow2 ubuntu-server.img 10G</pre>
+                                    </div>
+                                </div>
+                            </div> <!-- end of item --> 
+                            <div class="item">
+                                <div id="headingOne">
+                                    <span class="collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" role="button">
+                                        <span class="accordion-title">Run GiantVM on a single machine
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionOne">
+                                    <div class="accordion-body">
+                                        <p>We simulate two machines by running two QEMU processes on a single machine.<br>
+                                            First we install vncviewer to monitor the guest.</p>
+                                        <pre>wget https://www.realvnc.com/download/file/viewer.files/VNC-Viewer-6.19.325-Linux-x64.deb</pre>
+                                        <pre>sudo dpkg -i VNC-Viewer-6.19.325-Linux-x64.deb</pre>
+                                        <p>Terminal 1:</p>
+                                        <pre> sudo x86_64-softmmu/qemu-system-x86_64 --nographic -hda ubuntu-server.img -cpu host -machine kernel-irqchip=off -smp 4 -m 4096  --enable-kvm -serial mon:stdio -local-cpu 2,start=0,iplist="127.0.0.1 127.0.0.1" -vnc :0</pre>
+                                        <p>Terminal 2:</p>
+                                        <pre>sudo x86_64-softmmu/qemu-system-x86_64 --nographic -hda ubuntu-server.img -cpu host -machine kernel-irqchip=off -smp 4 -m 4096  --enable-kvm -serial mon:stdio -local-cpu 2,start=2,iplist="127.0.0.1 127.0.0.1"</pre>
+                                        <p>Terminal 3:</p>
+                                        <pre>vncviewer :0</pre>
+                                    </div>
+                                </div>
+                            </div> <!-- end of item --> 
+                        </div> <!-- end of tabs-container -->
+                    </div> <!-- end of tabs -->
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of commandline -->
+
+    <!-- publication -->
+    <div id="publication" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="text-container">
+                        <h1>PUBLICATION</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                <div class="col-lg-9">
+                    <div class="text-container">
+                        <div>
+                            <h2>
+                                <a href="https://doi.org/10.1145/3381052.3381324">
+                                    GiantVM: A Type-II Hypervisor Implementing Many-to-one Virtualization
+                                </a>
+                                <span class="fa-stack">
+                                    <a href="https://www.youtube.com/watch?v=GprmhYU1M8Q"><i class="fab fa-link"></i></a>
+                                </span>
+                            </h2>
+                            <p>
+                                <a href="#JinZhang">Jin Zhang</a>, 
+                                <a href="#ZhuochengDing">Zhuocheng Ding</a>, 
+                                <a href="#YubinChen">Yubin Chen</a>,
+                                <a href="#XingguoJia">Xingguo Jia</a>,
+                                <a href="#BoshiYu">Boshi Yu</a>,
+                                <a href="#ZhengweiQi">Zhengwei Qi</a>,
+                                <a href="#HaibingGuan">Haibing Guan</a>,
+                            </p>
+                            <p>VEE '20: Proceedings of the 16th ACM SIGPLAN/SIGOPS International Conference on Virtual Execution Environments
+                            · March 2020 · Pages 30–44
+                            </p>
+                            <p class="testimonial-text">
+                                There is a video on Youtube about this paper: <br>
+                                <a href="https://youtu.be/kB4biFRlgbI">Read a paper: GiantVM—a type-II hypervisor implementing many-to-one virtualization</a>
+                            </p>
+                            <div class="testimonial-author"></div>
+                        </div>
+                        <div>
+                            <h2>
+                                <a href="https://www.youtube.com/watch?v=GprmhYU1M8Q">Distributed QEMU</a>
+                            </h2>
+                            <p>
+                                <a href="#ZhuochengDing">Zhuocheng Ding</a>, 
+                                <a href="#YubinChen">Yubin Chen</a>
+                            </p>
+                            <p>KVM Forum 2018
+                            </p>
+                            <p class="testimonial-text"></p>
+                            <div class="testimonial-author"></div>
+                        </div>
+			<div>
+                            <h2>
+                                <a href="https://github.com/GiantVM/Book">深入浅出系统虚拟化：原理与实践</a>
+                            </h2>
+                            <p>
+                                <a href="#ZhengweiQi">Zhengwei Qi</a>,
+                                <a href="#HaibingGuan">Haibing Guan</a>
+                            </p>
+                            <p>清华大学出版社
+                            </p>
+                            <p class="testimonial-text"></p>
+                            <div class="testimonial-author"></div>
+                        </div>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of publication -->
+
+    <!-- demo -->
+    <div id="demo" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="text-container">
+                        <h1>DEMO</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                <div class="col-lg-9">
+                    <video width="800rem" height="600rem" controls="controls">
+                        <source src="video/kvm_forum_v4.mp4" type="video/mp4">
+                        <object data="kvm_forum_v4.mp4" width="800rem" height="600rem">
+                          <embed src="video/kvm_forum_v4.mp4" width="800rem" height="600rem">
+                        </object>
+                      </video>
+                    <p class="testimonial-text"></p>
+                    <div class="testimonial-author"></div>
+                    <video width="800rem" height="600rem" controls="controls">
+                        <source src="video/giantvm-demo2.mp4" type="video/mp4">
+                        <object data="giantvm-demo2.mp4" width="800rem" height="600rem">
+                          <embed src="video/giantvm-demo2.mp4" width="800rem" height="600rem">
+                        </object>
+                      </video>
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of demo -->
+
+    <!-- slides -->
+    <div id="slides" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="text-container">
+                        <h1>SLIDES</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                <div class="col-lg-9">
+                    <div class="text-container">
+                        <embed src="slides/giantvm-turing.pdf" type="application/pdf" width="800rem" height="450rem">
+                    
+                        <div class="testimonial-author"></div>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of publication --> 
+
+
+
+    <!-- Team -->
+    <div id="people" class="basic-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>PEOPLE</h1>
+                    <p class="p-heading"><a href="https://tcloud.sjtu.edu.cn">Trusted Cloud Group
+                    </a> · Shanghai Key Laboratory of Scalable Computing and Systems, Shanghai Jiao Tong University</p>
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/qizhengwei.jpeg" alt="alternative">
+                        </div> <!-- end of image-wrapper -->
+                        <p class="p-large" id="ZhengweiQi"><a href="https://dblp.uni-trier.de/pid/17/1970.html">Prof. Zhengwei Qi</a></p>
+                        <p class="job-title">qizhwei@sjtu.edu.cn</p>
+                    </div> 
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/guanhaibing.jpeg" alt="alternative">
+                        </div> <!-- end of image-wrapper -->
+                        <p class="p-large" id="HaibingGuan"><a href="http://www.cs.sjtu.edu.cn/~hbguan/">Prof. Haibing Guan</a></p>
+                        <p class="job-title">hbguan@cs.sjtu.edu.cn</p>
+                    </div> 
+                    <!-- end of team member -->
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/logo.png" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="ZhuochengDing">Zhuocheng Ding</p>
+                        <p class="job-title">tcbbd@sjtu.edu.cn</p>
+                    </div> <!-- end of team-member -->
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/chenyubin.png" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="YubinChen">Yubin Chen</p>
+                        <p class="job-title">binsschen@sjtu.edu.cn</p>
+                    </div> <!-- end of team-member -->
+                    <!-- end of team member -->
+                    
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/zhangjin.jpg" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="JinZhang">Jin Zhang</p>
+                        <p class="job-title">jzhang3002@sjtu.edu.cn</p>
+                    </div> 
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/logo.png" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="YunWang">Yun Wang</p>
+                        <p class="job-title">yunwang94@sjtu.edu.cn</p>
+                    </div> 
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/majiacheng.jpeg" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="JiachangMa">Jiacheng Ma</p>
+                        <p class="job-title">jcma@umich.edu</p>
+                    </div> 
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/yuboshi.jpg" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="BoshiYu">Boshi Yu</p>
+                        <p class="job-title">201608ybs@sjtu.edu.cn</p>
+                    </div> 
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/jiaxingguo.jpg" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="XingguoJia">Xingguo Jia</p>
+                        <p class="job-title">jiaxg1998@sjtu.edu.cn</p>
+                    </div> 
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/logo.png" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="WeiyeChen">Weiye Chen</p>
+                        <p class="job-title">jcma@umich.edu</p>
+                    </div> 
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/wuchenggang.png" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="ChenggangWu">Chenggang Wu</p>
+                        <p class="job-title">wuchenggang@sjtu.edu.cn</p>
+                    </div> 
+                    <!-- end of team member -->
+
+                    <!-- Team Member -->
+                    <div class="team-member">
+                        <div class="image-wrapper">
+                            <img class="img-fluid" src="images/xiangyuxin.jpg" alt="alternative">
+                        </div> <!-- end of image wrapper -->
+                        <p class="p-large" id="YuxinXiang">Yuxin Xiang</p>
+                        <p class="job-title">xiangyuxin@sjtu.edu.cn</p>
+                    </div> 
+                    <!-- end of team member -->
+                    
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-2 -->
+    <!-- end of team -->
+
+    <!-- cooperation -->
+    <div id="cooperations" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="text-container">
+                        <h1>COOPERATIONS</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                <div class="col-lg-8">
+                    <div class="text-container">
+                        <div>
+                            <h2>Electronics and Telecommunications Research Institute (South Korea)</h2>     
+                            <div class="testimonial-author">
+                                Baik Song An (bsahn@etri.re.kr)<br>
+                                Myung Hoon Cha (mhcha@etri.re.kr)<br>
+                                Lee (sangmin2@etri.re.kr)<br>
+                                Hong Yeon Kim (kimhy@etri.re.kr)<br>
+                            </div>
+                        </div>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of publication -->
+
+
+    <!-- Contact -->
+    <div id="contact" class="basic-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="text-container">
+                        <h1>CONTACT</h1>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+                <div class="col-lg-8">
+                    <div class="text-container">
+                        <h2>qizhwei@sjtu.edu.cn</h2>
+                        <h2>Room 5406, School of Software, </h2>
+                        <h2>Shanghai Jiao Tong University, Shanghai, 200240</h2>
+                        <p class="testimonial-text"></p>
+                        <div class="testimonial-author"></div>
+                    </div> <!-- end of text-container -->
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of basic-1 -->
+    <!-- end of contact -->
+   
+
+    <!-- Copyright -->
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <span id="busuanzi_container_site_pv" style="display: inline;">Post View:<span id="busuanzi_value_site_pv">8710</span></span>
+                    <p></p>
+                    <p class="p-small">Copyright © 2020 <a href="https://tcloud.sjtu.edu.cn">Trusted Cloud Group
+                        </a> · Shanghai Key Laboratory of Scalable Computing and Systems, Shanghai Jiao Tong University</p>
+                </div> <!-- end of col -->
+            </div> <!-- enf of row -->
+        </div> <!-- end of container -->
+    </div> <!-- end of copyright --> 
+    <!-- end of copyright -->
+    
+    	
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script> <!-- jQuery for Bootstrap's JavaScript plugins -->
+    <script src="js/popper.min.js"></script> <!-- Popper tooltip library for Bootstrap -->
+    <script src="js/bootstrap.min.js"></script> <!-- Bootstrap framework -->
+    <script src="js/jquery.easing.min.js"></script> <!-- jQuery Easing for smooth scrolling between anchors -->
+    <script src="js/swiper.min.js"></script> <!-- Swiper for image and text sliders -->
+    <script src="js/jquery.magnific-popup.js"></script> <!-- Magnific Popup for lightboxes -->
+    <script src="js/morphext.min.js"></script> <!-- Morphtext rotating text in the header -->
+    <script src="js/isotope.pkgd.min.js"></script> <!-- Isotope for filter -->
+    <script src="js/validator.min.js"></script> <!-- Validator.js - Bootstrap plugin that validates forms -->
+    <script src="js/scripts.js"></script> <!-- Custom scripts -->
+    <script async="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
