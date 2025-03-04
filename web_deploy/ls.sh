@@ -46,6 +46,8 @@ html_head="<!DOCTYPE html>
         
 echo $html_head | tee all.html index.html docs.html
 
+head index.html
+
 read_dir(){
     for file in "$1"/*;
     do
@@ -104,6 +106,8 @@ wc -l tags/*|sort -r|tail -n +2|head -n 20|awk -F'[/.[:space:]]' '{print "<a hre
 wc -l tags/*|sort -r|tail -n +2|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' >> all_tags.html
 echo "<a href=./all_tags.html>All TAGs</a><br>" | tee -a all.html index.html docs.html
 echo $html_mid | tee -a all.html index.html docs.html
+
+head index.html
 
 ########
 echo "<table id="myTable">
