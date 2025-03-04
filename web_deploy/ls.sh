@@ -43,10 +43,6 @@ html_head="<!DOCTYPE html>
         </td>
         <td>
       "
-        
-echo $html_head | tee all.html index.html docs.html
-
-head index.html
 
 read_dir(){
     for file in "$1"/*;
@@ -100,18 +96,14 @@ echo "" > url.tmp
 echo "" > docs.tmp
 mkdir tags
 read_dir "."
+echo $html_head | tee all.html index.html docs.html
+
 find ./tags -type f |xargs -i mv {} {}.html
-echo "1111111111111111111"
-head index.html
 echo "<hr><h3>TAGs</h3>" | tee -a all.html index.html docs.html
-echo "2222222222222222"
-head index.html
 wc -l tags/*|sort -r|tail -n +2|head -n 20|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' | tee -a all.html index.html docs.html
 wc -l tags/*|sort -r|tail -n +2|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' >> all_tags.html
 echo "<a href=./all_tags.html>All TAGs</a><br>" | tee -a all.html index.html docs.html
 echo $html_mid | tee -a all.html index.html docs.html
-echo "333333333333333"
-head index.html
 
 ########
 echo "<table id="myTable">
