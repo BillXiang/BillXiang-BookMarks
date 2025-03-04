@@ -80,13 +80,13 @@ read_dir(){
                     </tbody></table></td></tr>" | tee -a ../url.tmp $tags
                     cd ..
                 done
+                rm "$file"
             elif [[ "$kimi" -ne 1 ]];then
                 file_name=$(echo $file | awk -F'/' '{print $NF}')
                 tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf " "}else{printf "\n"}}}}')
                 echo "<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$file_name</a></td></tr>" >> docs.tmp
                 echo "<tr style='margin-bottom: 20px;'><td>TAGs:$tags</td></tr>" >> docs.tmp
             fi
-            rm "$file"
         fi
     done
     
