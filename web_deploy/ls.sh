@@ -87,7 +87,7 @@ read_dir(){
                 echo "<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$file_name</a></td></tr>" >> docs.tmp
                 echo "<tr style='margin-bottom: 20px;'><td>TAGs:$tags</td></tr>" >> docs.tmp
             fi
-            rm $file
+            rm "$file"
         fi
     done
     
