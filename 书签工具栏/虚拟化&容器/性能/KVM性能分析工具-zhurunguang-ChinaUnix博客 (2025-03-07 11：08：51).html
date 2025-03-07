@@ -1,0 +1,2064 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/性能/KVM性能分析工具-zhurunguang-ChinaUnix博客 (2025-03-07 11：08：51).html
+ Page saved with X-Webpage-Conserve 
+ url: http://blog.chinaunix.net/uid-29141031-id-5090821.html
+ Summary: This text is about an announcement on a Chinese tech blog, "ChinaUnix," regarding temporary service disruptions for blogging due to server migration from September 30 to October 4, 2025. The blog post also includes statistics on KVM performance events and their analysis. The blog is written by a user named "zhurunguang" and has 123 articles, 0 blog points, and 11 technical points. The blog's categories include virtualization, Linux commands, MySQL, shell scripts, and KVM performance analysis. The text also includes code snippets for enabling and disabling KVM tracing and analyzing KVM performance data.本文是关于中国科技博客“ChinaUnix”上的公告，该公告涉及 2025 年 9 月 30 日至 10 月 4 日期间由于服务器迁移而导致博客服务临时中断。该博客文章还包括有关 KVM 性能事件及其分析的统计数据。该博客由一位名为“zhurunguang”的用户撰写，有 123 篇文章，0 个博客点，11 个技术点。该博客的类别包括虚拟化、Linux 命令、MySQL、shell 脚本和 KVM 性能分析。该文本还包括用于启用和禁用 KVM 跟踪以及分析 KVM 性能数据的代码片段。
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" imt-state="dual"><head>
+<script>
+var ua = navigator.userAgent.toLowerCase();
+if(ua.match(/MicroMessenger/i)=="micromessenger") {
+    location.href='http://blog.chinaunix.net/article.php?url='+ window.location.href;
+}
+</script>
+        <style>
+    .Blog_nav1_2 a em { display:inline-block; width:16px; height:13px; background:url(/image/v.jpg) no-repeat; overflow:hidden;}
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="/css/default/style.css">
+<link rel="stylesheet" type="text/css" href="/css/qqface/qqFace.css">
+<link rel="stylesheet" type="text/css" href="/css/asyncbox/skins/Chrome/asyncbox.css">
+<link rel="stylesheet" type="text/css" href="/assets/3ad80e72/pager.css">
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.cookies.min.js"></script>
+<script type="text/javascript" src="/js/AsyncBox.v1.4.5.js"></script>
+<title>KVM性能分析工具-zhurunguang-ChinaUnix博客</title>
+<meta name="description" content="
+	跟踪KVM事件
+
+
+	
+
+# echo 1 >/sys/kernel/debug/tracing/events/kvm/enable
+# cat /sys/kernel/debug/tracing/trace_pipe
+">
+<script type="text/javascript" src="http://168.it168.com/a/h600.js"></script><script type="text/javascript" src="http://img.168.it168.com/168/a/b/h600.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))){
+	try{
+		if(!/iPad/i.test(navigator.userAgent)){
+			var oldurl=window.location.href;
+			if(window.location.hostname.indexOf('m.blog.chinaunix.net')==-1){
+			var wapUrl= oldurl.replace('blog.chinaunix.net', "m.blog.chinaunix.net") ;
+			window.location.href = wapUrl;
+			}
+		}
+	}catch(e){}
+}
+</script>
+
+
+<script language="javascript">
+//用户是否在线
+var isOnLine = '';
+
+//消息通知显示和隐藏控制
+function showMenu(){
+	$('#show_message_slide_button').hover(
+		function(){
+			$('#message_slide_div').slideDown(100);
+		},
+		function(){
+
+		}
+	);
+
+	$('#message_slide_div').hover(
+		function(){
+
+		},
+		function(){
+			$('#message_slide_div').slideUp(100);
+		}
+	);
+}
+$(document).ready(function(){
+	var blog = {'name': '', 'name_url': '', 'brief': ''};
+
+	//编辑博客名
+	$('#editbna').click(function(){
+		blog.name = $('#bnaspan a').text();
+		var val = '<input id="bnainput" type="text" style="float:left" value="" rel="' +$(this).attr('rel') + '" /><input id="bnasub" type="button" style="float:left" class="btn1"><input id="bnacanl" type="button" style="float:left" class="btn2"><div class="clear"></div>';
+		$('#bnaspan').html(val);
+		$('#bnainput').val(blog.name);
+		$(this).parent().hide();
+	});
+
+	$('#bnasub').live('click', function(){
+	    var rel = eval('({' + $('#bnainput').attr('rel') + '})');
+		var name = $('#bnainput').val();
+		if(name != blog.name){
+	        $.ajax({
+			    type: "POST",
+			    url: rel.url,
+			    data: {
+				    'name' : name
+			    },
+			    success:function(data){
+				    if(data == 0){
+						$('#bnaspan').html(blog.name);
+						$('#bnaspan').html('<a href="' + rel.href + '">' + $('#bnaspan').html() + '</a>');
+				    }else if(data == -1){
+                                        showErrorMsg('名称中含有违禁词，请重新编辑!', '消息提示');
+                                    }else{
+						$('#bnaspan').html(data);
+						$('#bnaspan').html('<a href="' + rel.href + '">' + $('#bnaspan').html() + '</a>');
+				    }
+					$('#editbna').parent().show();
+				}
+			});
+		}else{
+		    $('#bnaspan').text(blog.name).html();
+			$('#bnaspan').html('<a href="' + rel.href + '">' + $('#bnaspan').html() + '</a>');
+			$('#editbna').parent().show();
+		}
+	});
+
+	$('#bnacanl').live('click', function(){
+		var rel = eval('({' + $('#bnainput').attr('rel') + '})');
+		$('#bnaspan').html('<a href="' + rel.href + '">' + blog.name + '</a>');
+		$('#editbna').parent().show();
+	});
+
+	//编辑签名
+	$('#editbrief').click(function(){
+	    blog.brief = $('#briefem').text();
+		var val = '<input id="brfinput" type="text" style="float:left" value="" rel="' + $(this).attr('rel') + '" /><input id="brfsub" style="float:left"  type="button" class="btn1"><input style="float:left"  id="brfcanl" type="button" class="btn2"><div class="clear"></div>';
+		$('#briefem').html(val);
+		$('#brfinput').val(blog.brief);
+		$(this).parent().hide();
+	});
+
+	$('#brfsub').live('click', function(){
+	    var url = $('#brfinput').attr('rel');
+		var brief = $('#brfinput').val();
+		if(brief != blog.brief){
+	        $.ajax({
+			    type: "POST",
+			    url: url,
+			    data: {
+				    'brief' : brief
+			    },
+			    success:function(data){
+				    if(data == 0){
+				        $('#briefem').html(blog.brief);
+				    }else if(data == -1){
+                                        showErrorMsg('签名中含有违禁词，请重新编辑!', '消息提示');
+                                    }else{
+						$('#briefem').html(data);
+				    }
+					$('#editbrief').parent().show();
+				}
+			});
+		}else{
+		    $('#briefem').text(blog.brief).html();
+			$('#editbrief').parent().show();
+		}
+	});
+
+	$('#brfcanl').live('click', function(){
+		$('#briefem').html(blog.brief);
+		$('#editbrief').parent().show();
+	});
+
+});
+</script>
+<script src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=483698"></script><link rel="stylesheet" href="http://bdimg.share.baidu.com/static/api/css/share_style0_16.css?v=8105b07e.css"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>.Blog_nav1_2 a em { display: inline-block; width: 16px; height: 13px; background: url("/image/v.jpg") no-repeat; overflow: hidden; }</style><style>body, h1, h2, h3, h4, h5, h6, hr, p, dl, dt, dd, ul, ol, li, pre, form, button, input, textarea, th, td { margin: 0px; padding: 0px; }body, button, input, select, textarea { font: 12px / 1 "宋体", Arial; }ul, ol, li { list-style: none; }img { border: 0px; max-width: 100%; }em { font-style: normal; }a { text-decoration: none; color: rgb(86, 86, 86); }a:hover { text-decoration: underline; color: rgb(86, 86, 86); }.clear { clear: both; height: 0px; overflow: hidden; }.clearfix::after { content: "."; display: block; height: 0px; clear: both; visibility: hidden; }.clearfix { display: inline-block; }.clearfix { display: block; }.mt8 { margin-top: 8px; }.mt10 { margin-top: 10px; }.Blog_append_a1, .Blog_append_a2, .Blog_nav1_2 span.Blog_span2, .Blog_btn1, .Blog_span3, .Blog_a3, .Blog_header1_3 span, .Blog_ul2 li input, .Blog_tit1, .Blog_jia1, .Blog_jian1, .Blog_ul5 li a.Blog_a4, .Blog_ul5 li a.Blog_a5, .Blog_span5, .Blog_a6, .Blog_a7, ul.yiiPager .previous a, ul.yiiPager .next a, .Blog_right1_9 .div3_1 span, .Blog_right1_9 .div3_2 .Blog_a11, .Blog_right1_9 .div3_2 .Blog_a12, .Blog_a13, .Blog_a14, .Blog_tit4 b, .Blog_tit4 span a, .Blog_more1 li span.Blog_span8, .Blog_more1 li span.Blog_span9, .Blog_more1 li span.Blog_span10, .Blog_right1_6 a.Blog_a15, .Blog_con3_3 div span, .Blog_con3_3 div a, .Blog_span6, .Blog_span7, .HT_tit1, .Blog_p4 span, a.HT_here1 span, .HT_con2_1 a.HT_a1, .HT_con2_1 a.HT_a2, .HT_tit4 a, .HT_a3, .HT_a4, .HT_a5, .HT_a6, .HT_a7, .HT_btn3, .HT_btn4, .HT_btn5, .HT_btn6, .HT_btn1, .HT_a8, .HT_a9, .HT_btn2, .HT_con7_1 li a, .HT_btn7, .Blog_tab1 li a, .Blog_tab1 li a.here, .Blog_a11, .Blog_a12, .HT_con6_1 p span a, .HT_tit6_1 span, .Blog_nav1_2 span.Blog_span1, .Blog_b1, .Blog_b2, .landing_btn1, .landing_con3 p, .HT_layer1_1 a, .login_btn1, .HT_layer3_1 span.login_span1, .HT_layer3_1 span.login_span2, .message_btn1, .nologin_btn1, .nologin_btn2 { background-image: url("/image/default/bg.png"); background-repeat: no-repeat; }.Blog_nav1, .Blog_tit2, .Blog_line3, .HT_line3 { background-image: url("/image/default/linebg.png"); background-repeat: repeat-x; }body { background: rgb(243, 247, 249); }.box { text-align: left; color: rgb(86, 86, 86); max-width: 1000px; margin: 0px auto; }.Blog_contain { margin: 0px 5px; min-width: 1000px; }.Blog_nav1 { background-position: 0px 0px; height: 51px; line-height: 51px; z-index: 1; }.Blog_nav1_2 { padding-left: 17px; }.Blog_nav1_2_2 { width: 940px; margin: 0px auto; text-align: left; padding: 0px 20px; position: relative; }.Blog_nav1_2 img { vertical-align: -18px; margin-right: 39px; }.Blog_nav1_2 a.Blog_a1, .Blog_nav1_2 a.Blog_a2 { color: rgb(18, 90, 148); }.Blog_nav1_2 a.Blog_a2 { text-decoration: underline; }.Blog_nav1_2 span.Blog_span1 { background-position: -427px 0px; width: 1px; height: 17px; display: inline-block; vertical-align: -4px; margin: 0px 10px; }.Blog_nav1_2 span.Blog_span2 { background-position: 0px 0px; width: 9px; height: 5px; display: inline-block; margin-left: 5px; }.Blog_nav1_3 { float: right; padding-right: 30px; }.Blog_txt1 { width: 204px; height: 18px; line-height: 18px; padding-left: 2px; border: 1px solid rgb(187, 187, 187); vertical-align: middle; }.Bolg_sel1 { height: 20px; vertical-align: middle; }.Blog_btn1 { background-position: 0px -73px; width: 45px; height: 20px; border: 0px; cursor: pointer; vertical-align: middle; }.Blog_nav1_layer1 { background: rgb(255, 255, 255); border: 1px solid rgb(192, 202, 213); width: 105px; height: 100px; line-height: 25px; text-align: center; position: absolute; left: 500px; top: 50px; z-index: 99999999; }.Blog_header1 { background: url("/image/default/bg_1.png") center top no-repeat; height: 224px; clear: both; position: relative; z-index: 1; }.Blog_header1_1 { margin: 40px 0px 0px 20px; }.Blog_header1_1 p a { color: rgb(48, 103, 160); }.Blog_header1_1 p span a { color: rgb(170, 170, 170); font-size: 12px; margin-left: 20px; font-family: "宋体"; }.Blog_p1 { font-size: 14px; }.Blog_p1 em { font-family: "微软雅黑", "黑体", "Verdana"; font-size: 30px; display: block; margin-bottom: 8px; }.Blog_p2 { margin-top: 24px; font-size: 14px; }.Blog_header1_2 { width: 380px; height: 25px; line-height: 25px; color: rgb(108, 106, 61); position: absolute; left: 0px; top: -62px; padding-left: 10px; overflow: hidden; z-index: 100; }.Blog_header1_2 span { float: left; }.Blog_span3 { background-position: -500px 0px; width: 19px; height: 16px; margin: 5px 11px 0px 0px; }.float_div1 { float: left; margin-top: 2px; }.Blog_a3 { background-position: -25px 0px; width: 15px; height: 15px; float: right; position: absolute; right: 5px; top: 5px; }.Blog_header1_3 { padding: 80px 0px 0px 20px; height: 31px; line-height: 31px; }.Blog_header1_3 span { float: right; background-position: 0px -122px; width: 97px; height: 31px; margin-right: 31px; display: inline; text-indent: -9999px; }.Blog_header1_3 a { display: inline-block; margin-top: 10px; }.Blog_here1 { color: rgb(18, 90, 148); }.Blog_left { float: left; width: 220px; }.Blog_bg1 { background: rgb(255, 255, 255); overflow: hidden; border: 1px solid rgb(194, 217, 232); }.Blog_left1 { padding-bottom: 10px; }.Blog_left1_1 { text-align: center; margin: 16px auto 0px; padding-bottom: 15px; width: 200px; }.Blog_left1_1 img { border: 1px solid rgb(218, 218, 218); padding: 3px; }.Blog_left1_1 p { margin-top: 10px; }.Blog_left1_1 p a { color: rgb(48, 103, 160); font-weight: bold; font-size: 14px; }.Blog_ul1 { width: 200px; margin: 15px auto 0px; }.Blog_ul1 li { width: 180px; margin: 0px auto 6px; line-height: 18px; }.Blog_ul2 { width: 172px; margin: 15px auto 0px; }.Blog_ul2 li { float: left; width: 76px; height: 27px; margin: 5px; display: inline; }.Blog_ul2 li input { display: block; background-position: 0px -94px; width: 76px; height: 27px; line-height: 27px; text-align: center; color: rgb(3, 89, 175); border: 0px; cursor: pointer; }.Blog_p3 { width: 200px; margin: 4px auto; line-height: 24px; overflow-wrap: break-word; }.Blog_left2 { margin-top: 8px; padding-bottom: 10px; }.Blog_tit1 { background-position: 0px -154px; height: 25px; line-height: 25px; padding: 0px 10px; color: rgb(255, 255, 255); font-weight: bold; }.Blog_tit1 span { float: right; }.Blog_tit1 span a { font-weight: normal; color: rgb(255, 255, 255); text-decoration: underline; }.Blog_left2_1 { width: 190px; margin: 8px auto; }.Blog_p4 { width: 190px; margin: 15px 0px 12px; }.Blog_p4 a { font-weight: bold; }.Blog_jia1, .Blog_jian1 { background-position: 0px -6px; width: 9px; height: 9px; display: inline-block; vertical-align: middle; margin-right: 10px; }.Blog_jian1 { background-position: 0px -16px; }.Blog_left2_1 li { margin-bottom: 12px; padding-left: 24px; }.Blog_left2_1 li span.Blog_span4 { background: none; }.Blog_left2_1 li p { padding: 8px 0px 0px 30px; }.Blog_left2_1 li p a { font-weight: normal; }.Blog_span5 { background-position: 0px -16px; width: 9px; height: 9px; display: inline-block; vertical-align: middle; margin-right: 10px; }.Blog_left2_1 li a { font-weight: bold; }.Blog_ul3 li { padding-left: 43px; }.Blog_ul4 { width: 186px; margin: 0px auto; padding-bottom: 10px; overflow: hidden; }.Blog_ul4 li { float: left; width: 52px; height: 75px; overflow: hidden; margin: 12px 5px 0px; }.Blog_ul4 li img { padding: 2px; border: 1px solid rgb(218, 218, 218); width: 48px; height: 48px; }.Blog_ul4 li p { margin-top: 5px; text-align: center; }.Blog_ul5 { width: 186px; margin: 15px auto 0px; }.Blog_ul5 li { padding-bottom: 9px; }.Blog_ul5 li a.Blog_a4 { background-position: -77px -94px; width: 60px; height: 23px; display: block; }.Blog_ul5 li a.Blog_a5 { background-position: -46px -73px; width: 103px; height: 16px; display: block; }.Blog_ul6 { width: 206px; margin: 10px auto 0px; }.Blog_ul6 li { line-height: 26px; height: 26px; }.Blog_ul6 li.no_line1 { border-bottom: 0px; }.Blog_left3 { padding-bottom: 5px; }.Blog_noline1 { border: 0px; }.Blog_right1 { margin: 0px 0px 0px 230px; min-width: 770px; }.Blog_right1_1 { border: 1px solid rgb(194, 217, 232); background: rgb(255, 255, 255); padding: 30px 0px 10px; }.Blog_right1_2 { width: 92%; margin: 0px auto; }.Blog_tit2 { background-position: 0px -52px; height: 23px; line-height: 23px; color: rgb(25, 89, 155); padding-left: 10px; font-weight: bold; }.Blog_right1_3 { color: rgb(25, 89, 155); padding: 28px 0px 28px 10px; border-bottom: 1px solid rgb(203, 220, 229); }.Bolg_sel2 { width: 85px; height: 20px; line-height: 20px; border: 1px solid rgb(187, 187, 187); vertical-align: middle; }.Blog_txt2 { width: 188px; height: 18px; line-height: 18px; border: 1px solid rgb(187, 187, 187); vertical-align: middle; }.Blog_btn2 { vertical-align: middle; }.Blog_table1 { line-height: 34px; margin-top: 3px; }.Blog_table1 th { color: rgb(25, 89, 155); background: rgb(238, 244, 246); line-height: 26px; height: 26px; text-align: center; }.Blog_table1 th.Blog_th1 { text-align: left; padding-left: 35px; }.Blog_table1 td { text-align: center; border-bottom: 1px dashed rgb(185, 185, 185); }.Blog_table1 td.Blog_td2 a { color: rgb(25, 89, 155); text-decoration: underline; }.Blog_table1 td.Blog_td1 { text-align: left; padding-left: 10px; }.Blog_ck1 { vertical-align: -2px; margin-right: 10px; }.Blog_right1_4 { padding: 10px 0px 12px 10px; text-align: center; border-bottom: 1px solid rgb(203, 220, 229); overflow: hidden; }.Blog_right1_4 p { color: rgb(25, 89, 155); text-align: left; clear: left; }.Blog_right1_5 { float: left; }.Blog_right1_5 a { color: rgb(25, 89, 155); }.Blog_a6 { background-position: 0px -51px; width: 69px; height: 21px; display: inline-block; vertical-align: -6px; margin-left: 24px; }.Blog_right1_4 span { color: rgb(25, 89, 155); }.Blog_right1_4 b { margin-right: 18px; font-weight: normal; }.Blog_txt3 { width: 22px; }.Blog_right1_6 { padding: 31px 0px 20px 16px; text-align: center; }.Blog_a7 { float: left; background-position: -70px -51px; width: 74px; height: 21px; }.Blog_right1_7 { margin-top: 38px; }.Blog_tit3 { background: rgb(230, 240, 243); padding-left: 31px; font-weight: bold; color: rgb(25, 89, 155); height: 26px; line-height: 26px; }.Blog_right1_8 { margin: 20px 32px 0px; overflow: hidden; }.Blog_right_img1 { float: left; width: 50px; }.Blog_right_img1 img { border: 1px solid rgb(202, 220, 227); width: 48px; height: 48px; }.Blog_right_font1 { margin-left: 66px; padding-right: 30px; height: 100%; }.Blog_p5 { color: rgb(171, 171, 171); line-height: 14px; }.Blog_p5 span { color: rgb(255, 144, 0); margin-right: 30px; }.Blog_p6 { margin-top: 15px; color: rgb(102, 102, 102); line-height: 16px; overflow-wrap: break-word; }.Blog_right_font1 .div1 { text-align: right; margin-top: 16px; height: 14px; line-height: 14px; }a.Blog_a10 { color: rgb(25, 89, 155); }a.Blog_a10:hover { color: rgb(25, 89, 155); }.Blog_right1_9 .div2 { margin: 7px 0px 9px; float: left; width: 100%; }.Blog_ar1 { width: 99%; height: 65px; padding: 10px 0px 0px 12px; color: rgb(171, 171, 171); }.Blog_right1_9 .div3_1 span { background-position: 0px -26px; width: 20px; height: 20px; float: left; vertical-align: -3px; margin-right: 6px; }.Blog_right1_9 .div3_1 a { vertical-align: -5px; color: rgb(25, 89, 155); }.div3_2 { float: right; }.Blog_right1_9 .div3_2 { color: rgb(139, 139, 139); }.Blog_right1_9 .div3_2 span { font-family: Arial; font-size: 16px; font-weight: bold; margin: 0px 5px; }.Blog_right1_9 .div3_2 .Blog_a11, .Blog_right1_9 .div3_2 .Blog_a12 { background-position: -138px -94px; width: 50px; height: 23px; display: inline-block; vertical-align: middle; margin-left: 10px; border: 0px; }.Blog_right1_9 .div3_2 .Blog_a12 { background-position: -189px -94px; }.Blog_line1 { background: url("/image/default/22.png") repeat-x; height: 2px; margin-top: 18px; }.Blog_p7 { background: rgb(255, 255, 255); border: 1px solid rgb(206, 224, 234); margin-top: 10px; padding: 14px; color: rgb(25, 89, 155); line-height: 16px; overflow-wrap: break-word; }.Blog_p8 { margin-top: 10px; line-height: 16px; overflow-wrap: break-word; }.Blog_p8 span { float: right; margin-right: 85px; height: 13px; }.span_text1 { display: block; text-align: right; }.Blog_line2 { margin-top: 10px; }.Blog_right_font1 .div1_margin1 { margin-top: 9px; }.Blog_right1_10 { margin-top: 28px; }.Blog_con1 { text-align: right; color: rgb(25, 89, 155); margin-bottom: 7px; line-height: 14px; }.Blog_con1 span { color: rgb(255, 144, 0); }.Blog_right1_9 .div4 { margin-top: 0px; }.div3_3 { margin-top: 10px; }.Blog_a13, .Blog_a14, .Blog_append_a1, .Blog_append_a2 { background-position: -98px -122px; width: 82px; height: 26px; display: inline-block; vertical-align: middle; border: 0px; }.Blog_a14 { background-position: -181px -122px; margin-left: 14px; }.Blog_line3 { background-position: 0px -76px; height: 1px; margin-top: 20px; }.Blog_right_font2 { padding-right: 0px; }.Blog_rihgtcon1 { margin-top: 20px; padding-left: 6px; color: rgb(171, 171, 171); }.Blog_append_a1 { background-position: -545px -122px; margin-right: 10px; }.Blog_append_a2 { background-position: -629px -122px; }.Blog_footer { margin-top: 90px; border-top: 1px solid rgb(191, 207, 221); text-align: center; color: rgb(128, 158, 188); line-height: 24px; padding-bottom: 20px; }.Blog_footer div { margin-top: 10px; }.Blog_footer div a { color: rgb(128, 158, 188); }.Blog_right1_11 { padding: 20px 0px 17px; margin-bottom: 10px; }.Blog_tit4 { border-bottom: 1px dashed rgb(184, 184, 184); padding: 0px 10px 11px 0px; }.Blog_tit4 a { font-family: "微软雅黑", "黑体", "Verdana"; font-size: 20px; color: rgb(25, 89, 155); }.Blog_tit4 b { background-position: -150px -73px; width: 38px; height: 18px; display: inline-block; margin-right: 9px; vertical-align: -2px; }.Blog_tit4 span { float: right; background-position: -500px -25px; width: 49px; height: 20px; display: inline-block; background-image: url("/image/default/bg.png"); background-repeat: no-repeat; cursor: pointer; }.Blog_con2 { color: rgb(102, 102, 102); line-height: 26px; }.Blog_p9 { margin-top: 4px; }.Blog_p10 { margin-top: 9px; }.Blog_p10 a { color: rgb(25, 89, 155); }.Blog_con2_1 { margin-top: 9px; position: relative; }.Blog_con2_1 a { color: rgb(25, 89, 155); }.Blog_more1 { position: absolute; left: 285px; top: 10px; width: 56px; height: 74px; border: 1px solid rgb(189, 214, 230); padding-bottom: 5px; z-index: 1000; background: rgb(255, 255, 255); }.Blog_more1 ul { width: 52px; margin: 0px auto; }.Blog_more1 li { border-bottom: 1px dashed rgb(185, 185, 185); }.Blog_more1 li.Blog_noline1 { border: 0px; }.Blog_more1 li a { color: rgb(0, 93, 190); }.Blog_more1 li span { float: left; margin: 6px 8px 0px 5px; width: 13px; height: 13px; vertical-align: middle; display: inline; }.Blog_more1 li span.Blog_span8 { background-position: -41px 0px; }.Blog_more1 li span.Blog_span9 { background-position: -55px 0px; margin-top: 7px; }.Blog_more1 li span.Blog_span10 { background-position: -69px 0px; width: 16px; height: 15px; margin: 5px 6px 0px 2px; vertical-align: -3px; }.Blog_right_1_12 { padding: 13px 0px 32px 16px; }.Blog_right1_6 a.Blog_a15 { background-position: -269px -51px; }.Blog_wz1 { font-size: 16px; }.Blog_wz1 ul li { list-style: outside; }.Blog_wz1 ol li { list-style: decimal; }.Blog_tit5 { border-bottom: 0px; padding-right: 0px; }.Blog_tit5 em { margin-left: 22px; color: rgb(187, 186, 186); font-family: Arial; }.Blog_con3 { margin-top: 10px; line-height: 22px; }.Blog_con3 p { color: rgb(25, 89, 155); }.Blog_con3 span { color: rgb(187, 186, 186); margin-right: 25px; }.Blog_wz1 p { margin: 5px 0px; }.Blog_wz1 p a { color: rgb(25, 89, 155); }.Blog_p11 { margin-top: 40px; }.Blog_con3_1 { color: rgb(187, 186, 186); margin-top: 40px; }.Blog_con3_2 { line-height: 22px; margin-top: 50px; }.Blog_con3_2 div { height: 30px; }.Blog_con3_3 { line-height: 20px; margin-top: 18px; color: rgb(25, 89, 155); }.Blog_con3_3 div { float: right; padding-right: 10px; color: rgb(102, 102, 102); }.Blog_con3_3 div span { background-position: 0px -180px; width: 46px; height: 36px; line-height: 36px; text-align: center; display: inline-block; color: rgb(101, 101, 101); font-weight: bold; font-size: 14px; vertical-align: middle; }.Blog_con3_3 div a { background-position: -47px -180px; width: 56px; height: 36px; display: inline-block; vertical-align: middle; margin-right: 7px; }.Blog_tit6 { margin-top: 45px; }.Blog_con3_4 { overflow: hidden; }.Blog_con3_4 ul { width: 98%; margin: 19px auto; }.Blog_con3_4 li { float: left; width: 33%; margin-bottom: 11px; overflow: hidden; }.Blog_span6, .Blog_span7 { background-position: -86px 0px; width: 17px; height: 17px; display: inline-block; margin-right: 6px; vertical-align: -4px; }.Blog_span7 { background-position: -104px 0px; }.Blog_tit7 { margin-top: 10px; }.Blog_con3_5 li { width: 25%; line-height: 20px; margin-bottom: 5px; }.Blog_con3_4 ul.Blog_ul7 { float: left; width: 100%; padding-left: 12px; }.Blog_con3_4 ul.Blog_ul7 li { float: none; width: 100%; }.Blog_tit4 b.Blog_b1 { background-position: -150px -73px; }.Blog_tit4 b.Blog_b2 { background-position: -383px -28px; }.Blog_tit4 b.Blog_b3 { background-position: -344px -28px; }.Blog_con6 dl { border-bottom: 1px solid rgb(203, 220, 229); padding: 22px 0px 24px 9px; }.Blog_con6 dl.noline1 { border-bottom: 0px; }.Blog_con6 dt { font-weight: bold; color: rgb(25, 89, 155); }.Blog_con6 dd { margin-top: 18px; overflow-wrap: break-word; }.HT_line3 { background-position: 0px -76px; height: 1px; width: 205px; margin: 0px auto; }.HT_line3_1 { margin-top: 15px; }.HT_line4 { width: 100%; }.landing_con1 { height: 115px; background-position: 0px -109px; }.landing_con2 { width: 530px; margin: 45px auto 23px; }.landing_con2 li { margin-bottom: 6px; color: rgb(18, 90, 148); height: 40px; line-height: 40px; overflow: hidden; }.landing_con2 li b { float: left; width: 54px; line-height: 40px; vertical-align: middle; }.landing_con2 li input { vertical-align: middle; }.landing_con2 li a { text-decoration: underline; margin: 0px 10px; }.landing_con2 li a.landing_a1 { color: rgb(0, 102, 204); }.landing_con2 li a.landing_a1:hover { color: rgb(0, 102, 204); }.landing_con2 li img { vertical-align: middle; margin: 0px 15px; }.landing_txt1 { width: 267px; height: 22px; line-height: 22px; padding-left: 5px; }.landing_txt2 { width: 132px; height: 22px; line-height: 22px; padding-left: 5px; }.landing_con2 li input.landing_ck1 { vertical-align: -2px; }@media (min-width: 0px) {
+  .landing_con2 li input.landing_ck1 { }
+}.landing_btn1 { background-position: -396px -96px; width: 71px; height: 25px; border: 0px; margin-right: 32px; color: rgb(255, 255, 255); font-weight: bold; cursor: pointer; }.landing_con3 { width: 530px; margin: 45px auto 23px; }.landing_con3 li { color: rgb(18, 90, 148); margin-bottom: 30px; }.landing_con3 p { background-position: -312px -99px; width: 83px; height: 22px; line-height: 23px; text-align: center; font-weight: bold; margin-bottom: 13px; }.HT_layer1 { border: 1px solid rgb(189, 214, 230); width: 396px; background: rgb(255, 255, 255); }.HT_layer1_1 { line-height: 25px; height: 25px; background: rgb(245, 245, 245); border-bottom: 1px solid rgb(189, 214, 230); padding-left: 21px; color: rgb(25, 89, 155); }.HT_layer1_1 a { background-position: -41px -14px; width: 7px; height: 8px; float: right; margin: 9px 11px 0px 0px; display: inline; }.HT_layer1_2 { width: 358px; margin: 26px auto; }.HT_font2 { color: rgb(25, 89, 155); }.HT_font2 span { color: rgb(86, 86, 86); }.HT_font2 p { height: 25px; line-height: 25px; }.HT_sel5 { width: 170px; height: 20px; border: 1px solid rgb(187, 187, 187); line-height: 20px; padding-left: 2px; color: rgb(171, 171, 171); margin-top: 2px; vertical-align: middle; }.HT_btn2 { background-position: -240px -94px; width: 50px; height: 23px; cursor: pointer; border: 0px; vertical-align: middle; }.login_btn1 { background-position: -440px -154px; width: 50px; height: 23px; border: 0px; cursor: pointer; }.HT_layer3_1 span.login_span1, .HT_layer3_1 span.login_span2 { background-position: -529px -51px; width: 26px; height: 27px; display: inline-block; float: none; vertical-align: -8px; margin-right: 10px; }.HT_layer3_1 span.login_span2 { background-position: -503px -51px; }.HT_layer2 { overflow: hidden; height: 100%; width: 100%; }.HT_layer3 { width: 320px; }.HT_layer3_1 { width: 272px; margin: 24px auto; }.HT_layer3_1 li { margin-bottom: 13px; }.HT_layer3_1 li.HT_li1 { text-align: center; margin-top: 20px; padding-left: 30px; }.HT_layer3_1 span { float: left; width: 100px; text-align: right; height: 18px; line-height: 18px; color: rgb(25, 89, 155); }.HT_sel7, .HT_txt5 { width: 170px; vertical-align: middle; color: rgb(171, 171, 171); line-height: 18px; border: 1px solid rgb(187, 187, 187); height: 18px; }.HT_txt5 { padding-left: 2px; width: 165px; }.HT_btn4, .HT_btn5 { background-position: -138px -94px; width: 50px; height: 23px; display: inline-block; vertical-align: middle; margin-left: 10px; border: 0px; cursor: pointer; }.HT_btn5 { background-position: -189px -94px; }.HT_layer3_2 { text-align: center; line-height: 22px; color: rgb(25, 89, 155); margin: 18px auto; }.HT_layer3_2 p { text-align: center; line-height: 22px; color: rgb(25, 89, 155); padding: 0px 20px; }.HT_layer3_2 li.HT_li1 { text-align: center; margin-top: 10px; padding-left: 0px; }.login_con1 { width: 268px; height: 140px; }.add_friend { width: 485px; }.add_friend1 { width: 450px; margin: 22px auto; overflow: hidden; }.add_friend1_img1 { width: 49px; height: 49px; float: left; border: 1px solid rgb(188, 215, 225); margin-right: 10px; }.add_friend1_font1 { float: left; width: 380px; }.add_friend1_font1 li { color: rgb(25, 89, 155); padding: 6px 0px 5px; }.add_friend1_font1 li span { color: rgb(255, 144, 0); }.add_friend1_font1 li input.add_friend_int1 { width: 330px; height: 20px; line-height: 20px; padding-left: 2px; color: rgb(171, 171, 171); }.add_friend1_con1 { margin-top: 5px; color: rgb(171, 171, 171); padding-left: 45px; }.add_friend1_con2 { color: rgb(25, 89, 155); margin-top: 10px; }.add_friend1_con2 select { width: 170px; color: rgb(171, 171, 171); }.add_friend1_con2 input, .add_friend1_con2 select { vertical-align: middle; }.add_friend1_con2 input.HT_btn2 { width: 50px; height: 23px; }.message_con { width: 504px; height: 245px; }.HT_con5 { margin: 24px auto; width: 468px; }.HT_con5 div { margin-bottom: 11px; line-height: 1.5; }.HT_con5 div b { float: left; font-weight: normal; text-align: right; width: 50px; margin-top: 5px; }.HT_txt2 { width: 215px; height: 20px; line-height: 20px; }.HT_con5 div em { color: rgb(255, 72, 0); }.Blog_right1_9_1 { margin-left: 50px; }.Blog_right1_9 .div2 { margin: 7px 0px 9px; float: left; width: 100%; }.Blog_ar1 { width: 404px; height: 97px; padding: 10px 0px 0px 12px; color: rgb(171, 171, 171); }.Blog_right1_9 .div3_1 a { vertical-align: -5px; color: rgb(25, 89, 155); }.div3_2 { float: right; }.Blog_right1_9 .div3_2 { color: rgb(139, 139, 139); }.Blog_right1_9 .div3_2 span { font-family: Arial; font-size: 16px; font-weight: bold; margin: 0px 5px; }.message_btn1 { background-position: -494px -122px; width: 50px; height: 23px; border: 0px; cursor: pointer; vertical-align: middle; }.message_height1 { height: 150px; }.Blog_right1_9 .div3_1 span.HT_span4 { background-position: -291px -94px; }.wg_con1 { width: 378px; height: 220px; padding-bottom: 15px; }.wg_con1_1 { width: 340px; margin: 18px auto; }.wg_con1_1 p { line-height: 24px; color: rgb(25, 89, 155); }.wg_con1_1 p span { color: rgb(171, 171, 171); }.wg_txter { width: 330px; margin-top: 5px; height: 60px; padding: 5px; color: rgb(171, 171, 171); }.wg_con1_2 { margin-top: 12px; text-align: right; }.wg_sel1 { width: 170px; color: rgb(171, 171, 171); vertical-align: middle; float: left; }.classify_con1 { width: 670px; overflow: hidden; height: 424px; }.classify_con1_1 { background: none; border: 0px; }.classify_con1_2 { width: 630px; margin: 0px auto; }.classify_con1_2 ul { float: left; width: 125px; }.classify_tit1, .classify_tit2 { color: rgb(25, 89, 155); font-weight: bold; line-height: 14px; }.classify_tit2 { margin-top: 45px; }.classify_con1_2 li { margin-top: 17px; color: rgb(25, 89, 155); }@media (min-width: 0px) {
+  .classify_con1_2 li { }
+}.classify_con1_2 li input { vertical-align: -2px; }.nologin_con1 { border: 1px solid rgb(171, 171, 171); padding: 10px; height: 115px; background: rgb(255, 255, 255); color: rgb(171, 171, 171); }.nologin_con1 p { margin-top: 10px; }.nologin_con1 p a { color: rgb(0, 93, 190); text-decoration: underline; }.nologin_con2 { margin-top: 10px; }.nologin_btn1, .nologin_btn2 { width: 82px; height: 26px; display: inline-block; background-position: -470px -180px; cursor: pointer; border: 0px; }.nologin_btn2 { background-position: -553px -180px; margin-left: 14px; }.Blog_ar1_1 { width: 98%; height: 136px; padding: 10px 0px 0px 12px; color: rgb(171, 171, 171); }#bnainput { width: 210px; height: 20px; line-height: 20px; padding: 0px 2px 0px 3px; border: 1px solid rgb(194, 194, 194); }#brfinput { width: 331px; height: 20px; line-height: 20px; padding: 0px 2px 0px 3px; border: 1px solid rgb(194, 194, 194); }.btn1 { margin-left: 10px; width: 44px; height: 22px; background: url("/image/default/input1031_03.png") no-repeat; cursor: pointer; border: 0px; }.btn2 { margin-left: 10px; width: 44px; height: 22px; background: url("/image/default/input1031_03.png") -54px 0px no-repeat; cursor: pointer; border: 0px; }#bnaspan a { font-size: 30px; color: rgb(48, 103, 160); font-family: "微软雅黑"; margin-left: 0px; }.Blog_left1_1, .Blog_right1_2 { position: relative; }.img { position: absolute; top: 98px; left: 144px; width: 53px; height: 79px; background: url("/image/default/z1.png") no-repeat; }.img1 { position: absolute; top: 55px; right: 287px; width: 110px; z-index: -1; height: 110px; background: url("/image/default/z2.png") no-repeat; }.Blog_wz1 .none_number, .Blog_wz1 .none_number li { list-style: none; }#noticev2 li a { color: rgb(239, 124, 0); }.img0307 { width: 91px; height: 34px; background: url("/image/default/z3.png") no-repeat; margin-bottom: 8px; }.tit0307 { font-family: microsoft yahei, arial; font-size: 20px; line-height: 30px; position: relative; padding-right: 100px; }.tit0307 a { color: rgb(25, 89, 155); }.tit0307 span { position: absolute; right: 0px; top: 4px; width: 76px; height: 23px; display: block; background: url("/image/default/bg.png") -500px -25px no-repeat; overflow: hidden; cursor: pointer; }.tit0307_1 { height: 18px; line-height: 18px; margin: 10px 0px 15px; }.tit0307_1 b { display: inline-block; width: 38px; height: 18px; margin-right: 15px; background: url("/image/default/bg.png") -150px -73px no-repeat; vertical-align: middle; }.tit0307_1 b.yuanchuang { background-position: -150px -73px; }.tit0307_1 b.zhuanzai { background-position: -383px -28px; }.tit0307_1 b.fanyi { background-position: -344px -28px; }.tit0307_1 p { display: inline-block; margin-right: 15px; color: rgb(187, 186, 186); line-height: 18px; }.tit0307_1 p span { color: rgb(25, 89, 155); }</style><style>.qqFace { background: rgb(255, 255, 255); padding: 8px; border: 1px solid rgb(223, 230, 246); }.qqFace table td { padding: 2px; }.qqFace table td img { cursor: pointer; border: 1px solid rgb(255, 255, 255); }.qqFace table td img:hover { border: 1px solid rgb(0, 102, 204); }</style><style>html { }body { margin: 0px; }#asyncbox_cover, #asyncbox_focus, .asyncbox_max { position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; }#asyncbox_cover, #asyncbox_focus, #asyncbox_clone { display: none; overflow: hidden; }#asyncbox_cover div, #asyncbox_cover iframe, .asyncbox_select, #asyncbox_focus { position: absolute; width: 100%; height: 100%; opacity: 0; background: rgb(255, 255, 255); }.asyncbox_select { z-index: -1; }#asyncbox_focus { z-index: 3000; position: fixed; }#asyncbox_clone { z-index: 3000; position: absolute; border: 1px dashed rgb(0, 0, 102); }#asyncbox_load { background: url("images/asyncbox_bg.gif"); }#asyncbox_load div { background: url("images/asyncbox_title_bottom.gif"); }#asyncbox_load span { background: url("images/asynctips_bg.gif"); }.asyncbox_wait { position: absolute; text-indent: 3px; overflow: hidden; color: rgb(0, 51, 51); height: 14px; padding: 4px; line-height: 15px; opacity: 0.8; bottom: 4px; left: 4px; background: url("images/wait_bg.gif") 100% 0px no-repeat; }.asyncbox_wait span { float: left; width: 16px; height: 16px; background: url("images/wait.gif") no-repeat; }.asyncbox_auto, .asyncbox_normal, .asyncbox_max { position: absolute; font: 12px Tahoma, sans-serif; }.asyncbox_auto table, .asyncbox_normal table, .asyncbox_max table { margin: 0px; padding: 0px; }.asyncbox_auto ul, .asyncbox_normal ul, .asyncbox_max ul { margin: 0px; padding: 0px; list-style: none; }.asyncbox_max { position: fixed; }.asyncbox_table { width: 100%; height: 100%; }.asyncbox_auto .asyncbox_table { width: auto; height: auto; }.b_t_l, .b_t_r, .b_tipsbar_l, .b_tipsbar_r, .b_m_l, .b_m_r, .b_btnsbar_l, .b_btnsbar_r, .b_b_l, .b_b_r { background: rgb(131, 158, 196); }.b_t_m, .asyncbox_title li { height: 25px; line-height: 25px; }.b_t_m, .b_b_m { background: rgb(131, 158, 196); }.b_t_l, .b_t_r { width: 4px; background-position: -11px -41px; }.b_t_r { background-position: -16px -41px; }.a_m_m, .b_m_m { background: rgb(244, 244, 244); vertical-align: top; }.b_m_m { background: rgb(255, 255, 255); }.b_m_l, .b_m_r, .b_tipsbar_l, .b_tipsbar_r, .b_btnsbar_l, .b_btnsbar_r { background-repeat: repeat-y; }.b_m_r, .b_tipsbar_r, .b_btnsbar_r { background-position: -5px 0px; }.b_b_l { background-position: -11px -67px; }.b_b_m { height: 4px; background-position: 0px -26px; }.b_b_r { background-position: -16px -67px; }.b_tipsbar_m { height: 60px; background: rgb(234, 236, 233) url("images/asyncbox_tipsbar_bg.gif") 100% 100% no-repeat; }.b_tipsbar_layout { padding: 10px 10px 10px 60px; background: url("images/asyncbox_tipsbar_icon.gif") 15px 15px no-repeat; }.b_tipsbar_title { color: rgb(0, 0, 0); text-align: left; }.b_tipsbar_content { color: rgb(119, 119, 119); text-indent: 2em; line-height: 16px; text-align: left; }.asyncbox_title li { float: left; }.asyncbox_title_icon { width: 14px; background: url("images/icon.gif") 0px 7px no-repeat; margin: 0px 2px; }.asyncbox_title_tips { color: rgb(255, 255, 255); cursor: default; padding-right: 20px; overflow: hidden; }.asyncbox_close { line-height: 60px; cursor: default; border: medium; margin: 0px; padding: 0px; overflow: hidden; position: absolute; top: 0px; right: 4px; width: 25px; height: 24px; background: url("images/close.gif"); }.asyncbox_close:hover { background: url("images/close.gif"); cursor: pointer; }.asyncbox_alert, .asyncbox_confirm, .asyncbox_success, .asyncbox_warning, .asyncbox_error { color: rgb(0, 51, 51); margin: 12px; line-height: 18px; padding-left: 40px; text-align: left; }.asyncbox_alert span, .asyncbox_confirm span, .asyncbox_success span, .asyncbox_warning span, .asyncbox_error span { width: 32px; height: 32px; position: absolute; top: 35px; left: 15px; background: url("images/asyncbox_bg.gif") -58px -4px no-repeat; }.asyncbox_confirm span { background-position: -90px -4px; }.asyncbox_success span { background-position: -122px -4px; }.asyncbox_warning span { background-position: -154px -4px; }.asyncbox_error span { background-position: -186px -4px; }.asyncbox_error { color: rgb(255, 0, 0); }.asyncbox_prompt { color: rgb(0, 51, 51); padding: 0px 10px; }.asyncbox_prompt li { margin-top: 8px; }.asyncbox_prompt input, .asyncbox_prompt textarea { color: rgb(102, 102, 102); margin: 0px; padding: 3px; border: 1px solid rgb(90, 126, 173); font: 12px / 1.3em Verdana, sans-serif; resize: none; }.asyncbox_prompt input { height: 15px; }.a_btnsbar_m, .b_btnsbar_m { height: 40px; background: rgb(244, 244, 244); }.b_btnsbar_m { height: 38px; border-top: 1px solid rgb(255, 204, 204); }.a_btnsbar_m .asyncbox_btn_layout { padding-right: 10px; text-align: right; }.b_btnsbar_m .asyncbox_btn_layout { padding-right: 8px; text-align: right; }.asyncbox_btn { margin: 0px 0px 0px 10px; padding: 0px; display: inline-block; border: medium; text-decoration: none; height: 22px; cursor: default; background: url("images/asyncbox_bg.gif") -21px -40px no-repeat; }.asyncbox_btn span { background: url("images/asyncbox_bg.gif") 100% -40px no-repeat; color: rgb(68, 68, 68); padding: 3px 11px 3px 0px; margin-left: 12px; float: left; height: 16px; }.asyncbox_btn:hover { background-position: -21px -62px; text-decoration: none; }.asyncbox_btn:hover span { background-position: 100% -62px; }.asynctips { position: absolute; top: 0px; left: 0px; z-index: 3000; height: 38px; overflow: hidden; }.asynctips table { margin: 0px; padding: 0px; }.asynctips_left, .asynctips_middle, .asynctips_right, .asynctips_alert, .asynctips_success, .asynctips_error, .asynctips_wait { height: 38px; background: url("images/asynctips_bg.gif") no-repeat; }.asynctips_left { width: 5px; background-position: 0px -26px; }.asynctips_middle { color: rgb(85, 85, 85); padding: 0px 4px; background-repeat: repeat-x; background-position: 0px -64px; font: bold 14px Tahoma, sans-serif; }.asynctips_right { width: 5px; background-position: -73px -26px; }.asynctips_alert, .asynctips_success, .asynctips_error, .asynctips_wait { width: 26px; background-repeat: repeat-x; background-position: 0px -64px; }.asynctips_alert span, .asynctips_success span, .asynctips_error span, .asynctips_wait span { display: block; width: 26px; height: 26px; background: url("images/asynctips_bg.gif") no-repeat; }.asynctips_success span { background-position: -26px 0px; }.asynctips_error span { background-position: -52px 0px; }.asynctips_wait span { background: url("images/wait.gif") 6px center no-repeat; }</style><style>ul.yiiPager { line-height: 100%; display: inline; }ul.yiiPager li { display: inline; margin: 0px 3px; }ul.yiiPager .page { width: 15px; height: 20px; line-height: 20px; }ul.yiiPager .page a { display: inline-block; font-weight: bold; width: 15px; height: 20px; line-height: 20px; border: 1px solid rgb(255, 255, 255); color: rgb(65, 62, 62); }ul.yiiPager .page a { border: 1px solid rgb(243, 247, 249); }ul.yiiPager .page a:hover { border: 1px solid rgb(217, 217, 217); text-decoration: none; background: rgb(255, 255, 255); }ul.yiiPager .selected a { border: 1px solid rgb(217, 217, 217); background: rgb(255, 255, 255); }ul.yiiPager .selected a { border: 1px solid rgb(217, 217, 217); background: rgb(255, 255, 255); }ul.yiiPager .hidden a { color: rgb(136, 136, 136); }ul.yiiPager .first, ul.yiiPager .last { display: none; width: 0px; height: 0px; }ul.yiiPager .previous a, ul.yiiPager .next a { background: url("/image/default/17.png") no-repeat; width: 61px; height: 21px; text-indent: -9999px; vertical-align: 4px; display: inline-block; }ul.yiiPager .next a { background: url("/image/default/18.png") no-repeat; }</style><style>.bor13221 { border: 1px solid rgb(187, 187, 187); width: 206px; position: absolute; top: 34px; left: 0px; background: rgb(255, 255, 255); z-index: 9999; display: none; }.bor13221 li { height: 26px; line-height: 26px; padding-left: 6px; color: rgb(85, 85, 85); font-size: 14px; cursor: pointer; }.here { background: rgb(243, 243, 243); }</style><style>.syntaxhighlighter a, .syntaxhighlighter div, .syntaxhighlighter code, .syntaxhighlighter table, .syntaxhighlighter table td, .syntaxhighlighter table tr, .syntaxhighlighter table tbody, .syntaxhighlighter table thead, .syntaxhighlighter table caption, .syntaxhighlighter textarea { border-radius: 0px !important; background: none !important; border: 0px !important; inset: auto !important; float: none !important; height: auto !important; line-height: 1.1em !important; margin: 0px !important; outline: 0px !important; overflow: visible !important; padding: 0px !important; position: static !important; text-align: left !important; vertical-align: baseline !important; width: auto !important; box-sizing: content-box !important; font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important; font-weight: normal !important; font-style: normal !important; font-size: 1em !important; min-height: auto !important; }.syntaxhighlighter { width: 100% !important; margin: 1em 0px !important; position: relative !important; overflow: auto !important; font-size: 1em !important; }.syntaxhighlighter.source { overflow: hidden !important; }.syntaxhighlighter .bold { font-weight: bold !important; }.syntaxhighlighter .italic { font-style: italic !important; }.syntaxhighlighter .line { white-space: pre !important; }.syntaxhighlighter table { width: 100% !important; }.syntaxhighlighter table caption { text-align: left !important; padding: 0.5em 0px 0.5em 1em !important; }.syntaxhighlighter table td.code { width: 100% !important; }.syntaxhighlighter table td.code .container { position: relative !important; }.syntaxhighlighter table td.code .container textarea { box-sizing: border-box !important; position: absolute !important; left: 0px !important; top: 0px !important; width: 100% !important; height: 100% !important; border: medium !important; background: white !important; padding-left: 1em !important; overflow: hidden !important; white-space: pre !important; }.syntaxhighlighter table td.gutter .line { text-align: right !important; padding: 0px 0.5em 0px 1em !important; }.syntaxhighlighter table td.code .line { padding: 0px 1em !important; }.syntaxhighlighter.nogutter td.code .container textarea, .syntaxhighlighter.nogutter td.code .line { padding-left: 0em !important; }.syntaxhighlighter.show { display: block !important; }.syntaxhighlighter.collapsed table { display: none !important; }.syntaxhighlighter.collapsed .toolbar { padding: 0.1em 0.8em 0em !important; font-size: 1em !important; position: static !important; width: auto !important; height: auto !important; }.syntaxhighlighter.collapsed .toolbar span { display: inline !important; margin-right: 1em !important; }.syntaxhighlighter.collapsed .toolbar span a { padding: 0px !important; display: none !important; }.syntaxhighlighter.collapsed .toolbar span a.expandSource { display: inline !important; }.syntaxhighlighter .toolbar { position: absolute !important; right: 1px !important; top: 1px !important; width: 11px !important; height: 11px !important; font-size: 10px !important; z-index: 10 !important; }.syntaxhighlighter .toolbar span.title { display: inline !important; }.syntaxhighlighter .toolbar a { display: block !important; text-align: center !important; text-decoration: none !important; padding-top: 1px !important; }.syntaxhighlighter .toolbar a.expandSource { display: none !important; }.syntaxhighlighter.ie { font-size: 0.9em !important; padding: 1px 0px !important; }.syntaxhighlighter.ie .toolbar { line-height: 8px !important; }.syntaxhighlighter.ie .toolbar a { padding-top: 0px !important; }.syntaxhighlighter.printing .line.alt1 .content, .syntaxhighlighter.printing .line.alt2 .content, .syntaxhighlighter.printing .line.highlighted .number, .syntaxhighlighter.printing .line.highlighted.alt1 .content, .syntaxhighlighter.printing .line.highlighted.alt2 .content { background: none !important; }.syntaxhighlighter.printing .line .number { color: rgb(187, 187, 187) !important; }.syntaxhighlighter.printing .line .content { color: black !important; }.syntaxhighlighter.printing .toolbar { display: none !important; }.syntaxhighlighter.printing a { text-decoration: none !important; }.syntaxhighlighter.printing .plain, .syntaxhighlighter.printing .plain a { color: black !important; }.syntaxhighlighter.printing .comments, .syntaxhighlighter.printing .comments a { color: rgb(0, 130, 0) !important; }.syntaxhighlighter.printing .string, .syntaxhighlighter.printing .string a { color: blue !important; }.syntaxhighlighter.printing .keyword { color: rgb(0, 102, 153) !important; font-weight: bold !important; }.syntaxhighlighter.printing .preprocessor { color: gray !important; }.syntaxhighlighter.printing .variable { color: rgb(170, 119, 0) !important; }.syntaxhighlighter.printing .value { color: rgb(0, 153, 0) !important; }.syntaxhighlighter.printing .functions { color: rgb(255, 20, 147) !important; }.syntaxhighlighter.printing .constants { color: rgb(0, 102, 204) !important; }.syntaxhighlighter.printing .script { font-weight: bold !important; }.syntaxhighlighter.printing .color1, .syntaxhighlighter.printing .color1 a { color: gray !important; }.syntaxhighlighter.printing .color2, .syntaxhighlighter.printing .color2 a { color: rgb(255, 20, 147) !important; }.syntaxhighlighter.printing .color3, .syntaxhighlighter.printing .color3 a { color: red !important; }.syntaxhighlighter.printing .break, .syntaxhighlighter.printing .break a { color: black !important; }</style><style>.syntaxhighlighter { background-color: white !important; }.syntaxhighlighter .line.alt1 { background-color: white !important; }.syntaxhighlighter .line.alt2 { background-color: white !important; }.syntaxhighlighter .line.highlighted.alt1, .syntaxhighlighter .line.highlighted.alt2 { background-color: rgb(224, 224, 224) !important; }.syntaxhighlighter .line.highlighted.number { color: black !important; }.syntaxhighlighter table caption { color: black !important; }.syntaxhighlighter .gutter { color: rgb(175, 175, 175) !important; }.syntaxhighlighter .gutter .line { border-right: 3px solid rgb(108, 226, 108) !important; }.syntaxhighlighter .gutter .line.highlighted { background-color: rgb(108, 226, 108) !important; color: white !important; }.syntaxhighlighter.printing .line .content { border: medium !important; }.syntaxhighlighter.collapsed { overflow: visible !important; }.syntaxhighlighter.collapsed .toolbar { color: blue !important; background: white !important; }.syntaxhighlighter.collapsed .toolbar a { color: blue !important; }.syntaxhighlighter.collapsed .toolbar a:hover { color: red !important; }.syntaxhighlighter .toolbar { color: white !important; border: medium !important; }.syntaxhighlighter .toolbar a { color: white !important; }.syntaxhighlighter .toolbar a:hover { color: black !important; }.syntaxhighlighter .plain, .syntaxhighlighter .plain a { color: black !important; }.syntaxhighlighter .comments, .syntaxhighlighter .comments a { color: rgb(0, 130, 0) !important; }.syntaxhighlighter .string, .syntaxhighlighter .string a { color: blue !important; }.syntaxhighlighter .keyword { color: rgb(0, 102, 153) !important; }.syntaxhighlighter .preprocessor { color: gray !important; }.syntaxhighlighter .variable { color: rgb(170, 119, 0) !important; }.syntaxhighlighter .value { color: rgb(0, 153, 0) !important; }.syntaxhighlighter .functions { color: rgb(255, 20, 147) !important; }.syntaxhighlighter .constants { color: rgb(0, 102, 204) !important; }.syntaxhighlighter .script { font-weight: bold !important; color: rgb(0, 102, 153) !important; }.syntaxhighlighter .color1, .syntaxhighlighter .color1 a { color: gray !important; }.syntaxhighlighter .color2, .syntaxhighlighter .color2 a { color: rgb(255, 20, 147) !important; }.syntaxhighlighter .color3, .syntaxhighlighter .color3 a { color: red !important; }.syntaxhighlighter .keyword { font-weight: bold !important; }</style><style>* { overflow-wrap: break-word; }p { padding: 0px; }.Bold { font-weight: bold; }.Title { font-weight: bold; font-size: 18px; color: rgb(204, 51, 0); }.codeHead { font-weight: bold; font-size: 12px; padding: 5px 5px 5px 15px; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(221, 221, 221); }.code { border: 1px solid rgb(221, 221, 221); width: 98%; overflow: auto; margin: 0px 0px 1.1em; padding: 0px; word-break: break-all; letter-spacing: 0.1px; background: rgb(255, 255, 255); font: 12px "Consolas", monospace; }.codeheads { background: rgb(242, 242, 242) 0px 0px; border-bottom: 1px solid rgb(221, 221, 221); font-size: 12px; line-height: 25px; font-weight: bold; height: 25px; padding: 0px; width: 98%; }.codeheads p { padding-left: 30px; }.codeText { border: 1px solid rgb(221, 221, 221); width: 98%; overflow: auto; margin: 0px 0px 1.1em; padding: 0px; word-break: break-all; letter-spacing: 0.1px; background: rgb(255, 255, 255); font: 12px "Consolas", monospace; }.codeText ol { margin: 0px 1px; color: rgb(92, 92, 92); background: rgb(255, 255, 255); line-height: 1.3; }.codeText ol li { padding-left: 10px; background: rgb(255, 255, 255); }.codeText ol li.alt { background: rgb(255, 255, 255); }.codeText ol li span { color: rgb(0, 0, 0); }.codeText .comment, .codeText .comments { color: rgb(0, 130, 0); }.codeText .string { color: blue; }.codeText .keyword { color: rgb(0, 102, 153); font-weight: bold; }.codeText .preprocessor { color: gray; }.dp-c .comment { color: green; }.dp-c .string { color: blue; }.dp-c .preprocessor { color: gray; }.dp-c .keyword { color: blue; }.dp-c .vars { color: rgb(221, 0, 0); }.dp-vb .comment { color: green; }.dp-vb .string { color: blue; }.dp-vb .preprocessor { color: gray; }.dp-vb .keyword { color: blue; }.dp-sql .comment { color: green; }.dp-sql .string { color: red; }.dp-sql .keyword { color: rgb(127, 0, 85); }.dp-sql .func { color: rgb(255, 20, 147); }.dp-sql .op { color: blue; }.dp-xml .cdata { color: rgb(255, 20, 147); }.dp-xml .comments { color: green; }.dp-xml .tag { font-weight: bold; color: blue; }.dp-xml .tag-name { color: rgb(127, 0, 85); font-weight: bold; }.dp-xml .attribute { color: red; }.dp-xml .attribute-value { color: blue; }.dp-delphi .comment { color: rgb(0, 130, 0); font-style: italic; }.dp-delphi .string { color: blue; }.dp-delphi .number { color: blue; }.dp-delphi .directive { color: rgb(0, 130, 132); }.dp-delphi .keyword { font-weight: bold; color: navy; }.dp-delphi .vars { color: rgb(0, 0, 0); }.dp-py .comment { color: green; }.dp-py .string { color: red; }.dp-py .docstring { color: green; }.dp-py .keyword { color: blue; font-weight: bold; }.dp-py .builtins { color: rgb(255, 20, 147); }.dp-py .magicmethods { color: rgb(128, 128, 128); }.dp-py .exceptions { color: brown; }.dp-py .types { color: brown; font-style: italic; }.dp-py .commonlibs { color: rgb(138, 43, 226); font-style: italic; }.dp-rb .comment { color: rgb(204, 0, 0); }.dp-rb .string { color: rgb(255, 0, 204); }.dp-rb .symbol { color: rgb(2, 185, 2); }.dp-rb .keyword { color: rgb(0, 102, 153); }.dp-rb .variable { color: rgb(102, 204, 255); }.dp-css .comment { color: green; }.dp-css .string { color: red; }.dp-css .keyword { color: blue; }.dp-css .colors { color: darkred; }.dp-css .vars { color: rgb(221, 0, 0); }.dp-j .comment { color: rgb(63, 127, 95); }.dp-j .string { color: rgb(42, 0, 255); }.dp-j .keyword { color: rgb(127, 0, 85); font-weight: bold; }.dp-j .annotation { color: rgb(100, 100, 100); }.dp-j .number { color: rgb(192, 0, 0); }.dp-cpp .comment { color: rgb(238, 0, 0); }.dp-cpp .string { color: red; }.dp-cpp .preprocessor { color: rgb(205, 0, 205); font-weight: bold; }.dp-cpp .keyword { color: rgb(86, 151, 217); font-weight: bold; }.dp-cpp .datatypes { color: rgb(46, 139, 87); font-weight: bold; }</style><style>.Blog_p5 em { display: inline-block; width: 16px; height: 13px; background: url("/image/v.jpg") no-repeat; overflow: hidden; }pre { white-space: normal; background: rgb(84, 82, 82); color: rgb(238, 238, 238); }</style><style>.Blog_left1_1 p a em { display: inline-block; width: 16px; height: 13px; background: url("/image/v.jpg") no-repeat; overflow: hidden; }</style></head>
+<body>
+    <div class="Blog_nav1">
+    <div class="Blog_nav1_2 Blog_nav1_2_2">
+		<a href="/"><img src="/image/default/1.png"></a>
+		<a href="http://www.chinaunix.net" class="Blog_a1">Chinaunix首页</a> |
+		<a href="http://bbs.chinaunix.net" target="_blank">论坛</a> |
+		<a href="http://blog.chinaunix.net" target="_blank">博客</a>
+		<span class="Blog_span1"></span>
+    <a class="Blog_a1" onclick="link(this)" href="http://account.chinaunix.net/login">登录</a> | <a href="http://account.chinaunix.net/register" onclick="link(this)" class="Blog_a1">注册</a></div>
+    </div>
+    <div class="box" style="max-width: 1000px;margin: 0 auto;position: relative;">
+  <!-- 一级导航 -->
+  <div style="margin-top: 10px;">
+
+	<!--自动提示层-->
+	<style>
+	.bor13221{border:1px #bbb solid;width:206px;position:absolute;top:34px;left:0;background:#fff; z-index:9999;display:none}
+	.bor13221 li{height:26px;line-height:26px;padding-left:6px;color:#555;font-size:14px;cursor:pointer;}
+	.here{background:#f3f3f3;}
+    </style>
+
+	<!--自动提示层-->
+    <div class="Blog_nav1_3" style="position:relative; z-index:9999;">
+	 <div class="bor13221" style="display: none;">
+      <ul>
+      </ul>
+    </div>
+	  <form action="/site/search.html" method="post">
+		<input type="text" autocomplete="off" class="Blog_txt1" id="search_input_id" name="keywords">
+		<select class="Bolg_sel1" name="type" id="search_type_blog">
+		  <option value="blog">博文</option>
+		  <option value="author">博主</option>
+		</select>
+		<input type="submit" value="" name="submit" class="Blog_btn1">
+	 </form>
+    </div>
+    <div class="clear"></div>
+  </div>
+   <script type="text/javascript">
+  	$(function(){
+  	    		// 判断是否登录
+		$.post("/site/IsLogin.html", "", function(xhr){
+			var xhr = JSON.parse(xhr);
+			var topHtml = '';
+			if(xhr.code == 200){
+				var res = xhr.res;
+				topHtml += '<a href="/uid/'+res.uid+'.html" class="Blog_a1">';
+				if(res.isV){
+					var colors = ['black', '#c80000', '#f6c500'];
+					topHtml += 		'<font color="'+colors[res.renzhenguserStauts]+'">'+res.username+'</font>';
+					topHtml += 	'<em></em>';
+				} else {
+					topHtml += 		'<font color="black">'+res.username+'</font>';
+				}
+				topHtml += '</a> | ';
+				var notices = parseInt(res.newpm)+parseInt(res.newsm)+parseInt(res.newrequest)+parseInt(res.newnotice);
+				topHtml += '<a href="/message/private.html" class="Blog_a1">消息('+notices+')</a><span class="Blog_span2" id="show_message_slide_button"></span> | ';
+				topHtml += '<a href="/member/friend.html" class="Blog_a1">好友</a>| ';
+				topHtml += '<a href="/member/updateprofile.html" class="Blog_a1">个人中心</a> | ';
+				topHtml += '<a href="http://account.chinaunix.net/ucenter/user/index" target="_blank" class="Blog_a1">ChinaUnix通行证</a> | ';
+				topHtml += '<a href="http://account.chinaunix.net/login/out" class="Blog_a2" onclick="link(this)">退出</a>';
+				topHtml += '<div class="Blog_nav1_layer1" id="message_slide_div" style="display: none;">';
+				topHtml += 		'<ul>';
+				topHtml += 			'<li><a href="/message/private.html">私人消息('+res.newpm+')</a></li>';
+				topHtml += 			'<li><a href="/message/system.html">系统消息('+res.newsm+')</a></li>';
+				topHtml +=  		'<li><a href="/member/request.html">好友请求('+res.newrequest+')</a></li>';
+				topHtml +=  		'<li><a href="/member/notification.html">通知管理('+res.newnotice+')</a></li>';
+				topHtml +=  	'</ul>';
+				topHtml += '</div>';
+			} else {
+				topHtml +=  '<a class="Blog_a1" onclick="link(this)" href="http://account.chinaunix.net/login">登录</a> | ';
+				topHtml += '<a href="http://account.chinaunix.net/register" onclick="link(this)" class="Blog_a1">注册</a>';
+			}
+			$(".Blog_nav1_2").append(topHtml);
+			showMenu();
+		});
+
+		//点击添加进文本框
+		$(".bor13221 li").live( 'click' , function(e){
+			if ( e && e.stopPropagation )
+			{
+				//因此它支持W3C的stopPropagation()方法
+				e.stopPropagation();
+			}
+			else
+			{
+				//否则，我们需要使用IE的方式来取消事件冒泡
+				window.event.cancelBubble = true;
+			}
+			$('#search_input_id').val($(this).text());
+			$(".bor13221 ul").html('');
+			$(".bor13221").hide();
+		});
+		$(".bor13221 ul li").live({
+			mouseenter:
+			function()
+			{
+				$(".bor13221 ul li").removeClass("here");
+				$(this).addClass('here');
+			},
+			mouseleave:
+			function()
+			{
+				$(".bor13221 ul li").removeClass("here");
+				$(this).removeClass('here');
+			}
+		});
+		//自动提示
+		$('#search_input_id').keyup(function(event){
+			//取消博主的提示
+			var search_type_blog = $('#search_type_blog').val();
+			if(search_type_blog == 'author') return false;
+
+			var key = $(this).val();
+			//获取键值
+			var keycode = event.which; //38 上 40 下
+			var count = $('.bor13221 ul li').length;
+			if(key != '' && keycode != 38 && keycode != 40)
+			{
+				$.getJSON("http://api.sou.it168.com/autoWenKuCloud?jsoncallback=?",{"ty":"json","offset":"0","limit":"10","q":key}, function(result)
+					{
+						var arr = result.data;
+
+						var html ='';
+						for (i=0;i<arr.length ;i++ )
+						{
+							html += '<li>'+arr[i]+'</li>';
+						}
+
+						$('.bor13221 ul').html(html);
+						(arr.length > 1) ?  $(".bor13221").show() : $(".bor13221").hide();
+					}
+				);
+			}
+			else if(keycode == 38)
+			{
+				if(count > 0)
+				{
+					//遍历li
+					var curr_li_num;
+					$('.bor13221 ul li').each(function(index , dom){
+						if($(dom).attr('class') == 'here')
+						{
+							curr_li_num = index;
+							return false;
+						}
+					});
+					var next_li_num;
+					if(typeof(curr_li_num) == 'undefined')
+					{
+						next_li_num = count - 1;
+					}
+					else
+					{
+						if(curr_li_num == 0)
+						{
+							next_li_num = count - 1;
+						}
+						else
+						{
+							next_li_num = curr_li_num - 1;
+						}
+					}
+					$(".bor13221 ul li").removeClass("here");
+					$(".bor13221 ul li:eq(" + next_li_num + ")").addClass("here");
+					$('#search_input_id').val($(".bor13221 ul li:eq(" + next_li_num + ")").text());
+				}
+			}
+			else if(keycode == 40)
+			{
+				if(count > 0)
+				{
+					//遍历li
+					var curr_li_num;
+					$('.bor13221 ul li').each(function(index , dom){
+						if($(dom).attr('class') == 'here')
+						{
+							curr_li_num = index;
+							return false;
+						}
+					});
+					var next_li_num;
+					if(typeof(curr_li_num) == 'undefined')
+					{
+						next_li_num = 0;
+					}
+					else
+					{
+						if(curr_li_num == count - 1)
+						{
+							next_li_num = 0;
+						}
+						else
+						{
+							next_li_num = curr_li_num + 1;
+						}
+					}
+					$(".bor13221 ul li").removeClass("here");
+					$(".bor13221 ul li:eq(" + next_li_num + ")").addClass("here");
+					$('#search_input_id').val($(".bor13221 ul li:eq(" + next_li_num + ")").text());
+				}
+			}
+		});
+		$(document).click(function(e){
+			$(".bor13221").hide();
+		});
+
+	});
+  </script>
+    <!-- 头 -->
+  <!-- 推荐博客-->
+  <div class="Blog_header1">
+	    <div class="Blog_header1_1">
+      <p class="Blog_p1"><em><a href="/uid/29141031.html">zhurunguang的ChinaUnix博客</a></em><!--      <p class="Blog_p2" style="color:#125A94">暂无签名</p>-->
+    </p></div>
+        <div class="Blog_header1_2" id="hide_div1">
+    	<span class="Blog_span3"></span>
+    	<div class="float_div1" style="white-space:nowrap;" onmouseover="javascript:isMove=false" onmouseout="javascript:isMove=true">
+	    <ul id="noticev2" style="line-height: 25px; margin-top: -50px;">
+		    		    <li><a href="http://blog.chinaunix.net/uid-29568843-id-5875696.html" target="_blank">4月28日14:30-20:30机房服务器迁移，暂停博客使用</a></li>
+		    		    <li><a href="http://blog.chinaunix.net/uid-31509949-id-5825708.html" target="_blank">9/30日 14:00 -10/4日 08:00暂时无法发布内容！</a></li>
+		    		    <li><a href="http://blog.chinaunix.net/uid-31509949-id-5825708.html" target="_blank">9/30日 14:00 -10/4日 08:00暂时无法发布内容！</a></li>
+		    	    </ul>
+	    </div>
+    </div>
+            <div class="Blog_header1_3"><a href="/uid/29141031.html">首页</a>　| 　<a href="/uid/29141031/abstract/1.html">博文目录</a>　| 　<a href="/member/profile/uid/29141031.html">关于我</a></div>
+  </div>
+  
+  <!-- 内容部分 -->
+  	<script type="text/javascript" src="/highlight/scripts/XRegExp.js"></script> <!-- XRegExp is bundled with the final shCore.js during build -->
+<script type="text/javascript" src="/highlight/scripts/shCore.js"></script>
+<script type="text/javascript" src="/highlight/scripts/shAutoloader.js"></script>
+<link type="text/css" rel="stylesheet" href="/highlight/styles/shCore.css">
+<link type="text/css" rel="Stylesheet" href="/highlight/styles/shThemeDefault.css">
+<link href="/code/css/fck_editorarea.css" rel="stylesheet" type="text/css">
+<style>
+.Blog_p5 em{ display:inline-block; width:16px; height:13px; background:url(/image/v.jpg) no-repeat; overflow:hidden;}
+pre{white-space: normal;background: #545252;color: #eee;}
+</style>
+  <div class="Blog_contain"> 
+    <!-- 左 -->
+	<div style="float:left;width:220px">
+	<style>
+    .Blog_left1_1 p a em { display:inline-block; width:16px; height:13px; background:url(/image/v.jpg) no-repeat; overflow:hidden;}
+</style>
+
+<script language="javascript">
+$(document).ready(function(){
+	$('#ConcernBtn').bind('click',function(){
+			var cuid = '29141031';
+			var url =  '/member/concern.html';
+			var type = $(this).attr('rel');
+		
+			if(type == 'addConcern'){
+				$.ajax({
+					type : 'get',
+					url  : url,
+					data : {'op' : 'ajaxadd' , 'cuid' : cuid, 'random' : Math.random()},
+					success : function(msg){	
+					   if(msg == -1){
+						   showErrorMsg('参数错误！');
+					   } else if (msg == 0){
+						   showErrorMsg('关注失败，没有该用户！');
+					   } else if (msg == 1){
+						   showErrorMsg('关注失败，您已经关注了该用户！');
+					   } else if (msg == 2){
+						   $('#ConcernBtn').val('已关注');
+						   $('#ConcernBtn').attr('rel','delConcern');
+						   showSucceedMsg('关注成功!');
+					   } else if (msg == 3){
+						   showErrorMsg('未知错误');
+					   }
+					}
+				});	
+			} else if ( type == 'delConcern'){
+				$.ajax({
+					type : 'get',
+					url  : url,
+					data : {'op' : 'ajaxdel' , 'cuid' : cuid, 'random' : Math.random()},
+					success : function(msg){
+					   if(msg == 0){
+						   showErrorMsg('参数错误！','消息提示');
+					   } else if (msg == 1){
+						   showErrorMsg('操作失败，请尝试刷新页面重试！','消息提示');
+					   } else if (msg == 2){
+						   $('#ConcernBtn').val('加关注');
+						   $('#ConcernBtn').attr('rel','addConcern');
+						   showSucceedMsg('成功取消关注！','消息提示');
+					   } else if (msg == 3){
+						   showErrorMsg('未知错误！','消息提示'); 
+					   }
+					}
+				});	
+			}
+	});					   
+});
+
+//加好友
+function addFriend(fuid, url){
+	if(fuid == '' || fuid.length == 0){
+		showErrorMsg('缺少参数！','信息提示');
+		return false;
+	}
+	$.ajax({
+		   type : 'get',
+		   url : url,
+		   data : {'op' : 'add', 'fuid' : fuid , 'random' : Math.random()},
+		   success : function(msg){
+				if(msg == -1){
+					showErrorMsg('参数错误！','消息提示');
+				} else if (msg == -2){
+					showErrorMsg('添加好友失败,没有该用户的信息！','消息提示');
+				} else if (msg == -3){
+					showErrorMsg('添加好友失败,你不能添加自己为好友！','消息提示');
+				} else if (msg == -4){
+					showErrorMsg('添加好友未知错误,该错误已被记录！','消息提示');
+				} else if (msg == -5){
+					showErrorMsg('添加好友失败,你之前已经发送过好友请求,请耐心等待对方同意申请！','消息提示');
+				} else if (msg == -6){
+					showErrorMsg('添加好友失败,你们已经是好友了！','消息提示');
+				} else {
+					$.cover(true);
+					asyncbox.open({
+						id : 'addFriend',
+						title : '添加好友',
+						url : url,
+						data : {'op' : 'add', 'fuid' : fuid , 'random' : Math.random()},
+						width : 490,
+						height : 180,
+						scroll : 'no',
+						callback : function(action) {
+							if (action == 'close'){
+								$.cover(false);
+							}	
+						}
+					});	
+				}
+		   }
+	});	
+	
+}
+
+//发送短消息
+function postMessage(msguid, url){
+	if(msguid == '' || msguid.length == 0){
+		showErrorMsg('缺少参数！','信息提示');
+		return false;
+	}
+	
+	$.ajax({
+		   type : 'post',
+		   url : url,
+		   data : {'op' : 'ajaxpost', 'msguid' : msguid , 'random' : Math.random()},
+		   success : function(msg){
+				if(msg == -1){
+					showErrorMsg('发送失败，缺少收件人对象！','消息提示');
+				} else if(msg == -2){
+					showErrorMsg('发送失败，自己不能给自己发送短消息！','消息提示');
+				} else {
+					$.cover(true);
+					asyncbox.open({
+						id : 'postMessage',
+						title : '发送短消息',
+						url : url,
+						data : {'op' : 'ajaxpost', 'msguid' : msguid , 'random' : Math.random()},
+						width : 510,
+						height : 255,
+						scroll : 'no',
+						callback : function(action) {
+							if (action == 'close'){
+								$.cover(false);
+							}	
+						}
+					});	
+				}
+		   }
+	});	
+}
+
+</script>
+<div class="Blog_left">
+      <div class="Blog_left1 Blog_bg1">
+        <div class="Blog_left1_1">
+			<!-- 专家博客-->
+			<a href="/uid/29141031.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=29141031"><!--                            <img src="http://passport.ixpub.net/avatar.php?uid=29141031&size=middle" />-->
+                        </a>
+                        <p><a href="/uid/29141031.html">zhurunguang</a></p>
+                     </div>
+        <ul class="Blog_ul1 Blog_noline1">
+          <li>博客访问： 175263 </li>
+          <li>博文数量： 123 </li>
+          <li>博客积分： 0 </li>
+          <!--<li>专家积分： 180</li>-->
+          <li>博客等级： 民兵 </li>
+		  <li>技术积分： 11 </li>
+          <li>用  户  组：  普通用户</li>
+          <li>注册时间： 2015-06-20 19:04 </li>
+                            </ul>  
+
+
+        
+                <div class="HT_line3 HT_line3_1"></div>
+        <ul class="Blog_ul2">
+          <li><input type="button" value="加关注" id="ConcernBtn" onclick="showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login')"></li>
+          <li><input type="button" value="短消息" id="postMessageBtn" onclick="showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login')"></li>
+          <li><input type="button" value="论坛" onclick="location.href='http://bbs.chinaunix.net'"></li>
+          <li><input type="button" value="加好友" id="addFriendBtn" onclick="showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login')"></li>
+        </ul>
+              </div>
+        
+         
+      <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">文章分类</div>
+        <div class="Blog_left2_1">
+          <p class="Blog_p4"><a href="/uid/29141031/list/1.html">全部博文</a>（123）</p>
+          <ul id="blogCla">
+                            <li><a href="/uid/29141031/cid--1-list-1.html" title="未分配的博文">未分配的博文</a>（123）
+                                </li>
+                      </ul>
+        </div>
+      </div>
+      	              <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">文章存档</div>
+        <div class="Blog_left2_1" id="blogdtr">
+                    <p class="Blog_p4"><span class="Blog_jia1"></span><a href="/uid/29141031/year-2015-list-1.html">2015年</a>（123）</p>
+          <ul style="display:none;" class="Blog_ul3 zk">
+                        <li><a href="/uid/29141031/year-201506-list-1.html">2015年06月</a>（123）</li>
+                      </ul>
+                  </div>
+      </div>
+      	  	        <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">我的朋友</div>
+        <ul class="Blog_ul4">
+                  </ul>
+      </div>
+	  	        <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">最近访客</div>
+        <ul class="Blog_ul4">
+                    <li><a href="/uid/21311520.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=21311520"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=21311520&size=small" />-->
+              </a>
+            <p><a href="/uid/21311520.html" title="btrace">btrace</a></p>
+          </li>
+                    <li><a href="/uid/26000137.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=26000137"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=26000137&size=small" />-->
+              </a>
+            <p><a href="/uid/26000137.html" title="heart2011">heart201</a></p>
+          </li>
+                    <li><a href="/uid/28350003.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=28350003"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=28350003&size=small" />-->
+              </a>
+            <p><a href="/uid/28350003.html" title="chen45464546">chen4546</a></p>
+          </li>
+                    <li><a href="/uid/70006719.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=70006719"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=70006719&size=small" />-->
+              </a>
+            <p><a href="/uid/70006719.html" title="Jurian">Jurian</a></p>
+          </li>
+                    <li><a href="/uid/69983015.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=69983015"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=69983015&size=small" />-->
+              </a>
+            <p><a href="/uid/69983015.html" title="ownia">ownia</a></p>
+          </li>
+                    <li><a href="/uid/69957281.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=69957281"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=69957281&size=small" />-->
+              </a>
+            <p><a href="/uid/69957281.html" title="ares">ares</a></p>
+          </li>
+                    <li><a href="/uid/31463876.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=31463876"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=31463876&size=small" />-->
+              </a>
+            <p><a href="/uid/31463876.html" title="adamsxiaomi">adamsxia</a></p>
+          </li>
+                    <li><a href="/uid/69972094.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=69972094"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=69972094&size=small" />-->
+              </a>
+            <p><a href="/uid/69972094.html" title="w170059475">w1700594</a></p>
+          </li>
+                    <li><a href="/uid/69965325.html"><img src="http://account.chinaunix.net/api/avatar.php?uid=69965325"><!--              <img src="http://passport.ixpub.net/avatar.php?uid=69965325&size=small" />-->
+              </a>
+            <p><a href="/uid/69965325.html" title="bail">bail</a></p>
+          </li>
+                  </ul>
+      </div>
+	        <!--div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">订阅</div>
+        <ul class="Blog_ul5">
+          <li><a href="/blog/rss/uid/29141031.html" class="Blog_a4"></a></li>
+          <li><a href="http://www.google.com/ig/add?feedurl=http%3A%2F%2Fblog.chinaunix.net%2Fuid%2F29141031.html" class="Blog_a5"></a></li>
+        </ul>
+      </div-->
+            <div class="Blog_left2 Blog_left3 Blog_bg1">
+        <div class="Blog_tit1">推荐博文</div>
+        <ul class="Blog_ul6">
+				  			<li>·<a href="/uid-29578485-id-5886218.html" title="Pytest框架 —— setUp()和tearDown()函数">Pytest框架 —— setUp()和te...</a></li>
+		  			<li>·<a href="/uid-70014251-id-5887188.html" title="nginx适配Overlay以及测试工具">nginx适配Overlay以及测试工...</a></li>
+		  			<li>·<a href="/uid-31526566-id-5887496.html" title="Linux命令大全之— chown">Linux命令大全之— chown...</a></li>
+		  			<li>·<a href="/uid-7655508-id-5887816.html" title="MySQL的RR模式解决不可重复读和幻读了吗？">MySQL的RR模式解决不可重复读...</a></li>
+		  			<li>·<a href="/uid-31012107-id-5885962.html" title="shell脚本的调试(trap、tee、shell选项)">shell脚本的调试(trap、tee、...</a></li>
+		  						
+        </ul>
+      </div>
+            <!--div class="Blog_left2 Blog_left3 Blog_bg1">
+        <div class="Blog_tit1">热词专题</div>
+        <ul class="Blog_ul6">
+          <!--              <li>·<a href="http://www.dataguru.cn/zhuanti/hadoop220peizhi.shtml" target='blank' title='配置hadoop2.2.0格式化namenode问题'></a></li>
+              <li>·<a href="http://www.dataguru.cn/zhuanti/hadoopshouce.shtml" target='blank' title='hadoop2.2.0安装手册'></a></li>-->
+        
+      
+	  
+</div>
+<script language="javascript">
+$(document).ready(function(){
+    /*目录树JS效果*/
+	$('#blogCla li > span').click(function(){
+		var cla = $(this).attr('class');
+		if(cla == 'Blog_jia1'){
+			//$('#blogCla li > span').removeClass('Blog_jian1').addClass('Blog_jia1');
+			//$('#blogCla li > .zk').css('display', 'none');
+				
+			$(this).removeClass('Blog_jia1').addClass('Blog_jian1');
+            $(this).parent().children('.zk').css('display', 'block');
+		}else{
+			$(this).removeClass('Blog_jian1').addClass('Blog_jia1');
+            $(this).parent().children('.zk').css('display', 'none');
+		}
+	});
+		
+	$('#blogdtr > p > span').click(function(){
+		var cla = $(this).attr('class');
+		if(cla == 'Blog_jia1'){
+			//$('#blogdtr > .Blog_p4 > span').removeClass('Blog_jian1').addClass('Blog_jia1');
+			//$('#blogdtr ul').css('display', 'none');
+				
+			$(this).removeClass('Blog_jia1').addClass('Blog_jian1');
+            $(this).parent().next().css('display', 'block');
+		}else{
+			$(this).removeClass('Blog_jian1').addClass('Blog_jia1');
+            $(this).parent().next().css('display', 'none');
+		}
+	});
+});
+</script>
+                  <div class="Blog_left2 Blog_left3 Blog_bg1" style="float:left">
+            <div class="Blog_tit1">相关博文</div>
+            <ul class="Blog_ul6" style="width:208px;padding-left:10px">
+                              <li>·<a href="https://blog.itpub.net/70014251/viewspace-3075005/" title="ISCSI数据盘的多路径配置">ISCSI数据盘的多路径配置...</a></li>
+                              <li>·<a href="https://blog.itpub.net/70043974/viewspace-3074997/" title="如何成功打造直播矩阵：亚矩阵云手机的作用与策略解析">如何成功打造直播矩阵：亚矩...</a></li>
+                              <li>·<a href="https://blog.itpub.net/70004007/viewspace-3074996/" title="上交大高金MBA2026级项目发布会（北京）隆重举行">上交大高金MBA2026级项目发布...</a></li>
+                              <li>·<a href="https://blog.itpub.net/70004007/viewspace-3074995/" title="MWC25| GTI年度大奖！爱立信5G可编程网络助力运营商差异化运营，提升网络价值">MWC25| GTI年度大奖！爱立信5...</a></li>
+                              <li>·<a href="https://blog.itpub.net/70004007/viewspace-3074994/" title="通宇通讯在巴塞罗那2025年世界移动通信大会上发布创新产品MacroWiFi">通宇通讯在巴塞罗那2025年世...</a></li>
+                              <li>·<a href="https://blog.itpub.net/70004007/viewspace-3074992/" title="舒华AI健身助手再升级！深度整合DeepSeek技术，多端口已上线">舒华AI健身助手再升级！深度...</a></li>
+                              <li>·<a href="https://blog.itpub.net/70004007/viewspace-3074991/" title="高质价比：A.O.史密斯的家庭生活革新，藏在每一杯温水与一缕清风里">高质价比：A.O.史密斯的家庭...</a></li>
+                              <li>·<a href="https://blog.itpub.net/70004007/viewspace-3074989/" title="EQUALS全球合作伙伴关系发布新愿景和使命">EQUALS全球合作伙伴关系发布...</a></li>
+                              <li>·<a href="https://blog.itpub.net/70022950/viewspace-3074979/" title="另类视角解读DeepSeek">另类视角解读DeepSeek</a></li>
+                              <li>·<a href="https://blog.itpub.net/70014251/viewspace-3074974/" title="向新向智向未来，且看天翼云！">向新向智向未来，且看天翼云...</a></li>
+                        </ul></div>
+        
+	</div>
+
+    <!-- 右 -->
+    <div class="Blog_right1">
+      <div class="Blog_right1_1 Blog_right1_11">
+          <!--推荐博文-->
+        <div class="Blog_right1_2 ">
+            <div class="tit0307">
+                <a href="/uid-29141031-id-5090821.html">KVM性能分析工具</a>
+                            </div>
+            <div class="tit0307_1">
+                                <b class="zhuanzai"></b>
+                                <p><span>分类：</span> 虚拟化</p><p>2015-06-21 11:47:21</p>
+            </div>
+      
+          <div class="Blog_con2">
+            <div class="Blog_con3">
+              
+			                <p>原文地址：<span><a href="/uid-25739055-id-4212696.html">KVM性能分析工具</a></span> 作者：<span><a href="/uid/25739055.html">embeddedlwp</a></span></p>
+			                <p></p>
+            </div>
+           <div class="Blog_wz1" style="word-wrap: break-word;">
+						<h2 style="margin:0px;padding:0px;color:#333333;font-family:Arial;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	跟踪KVM事件
+</h2>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<pre style="white-space:pre-wrap;color:#333333;font-size:14px;line-height:26px;background-color:#FFFFFF;"># echo 1 &gt;/sys/kernel/debug/tracing/events/kvm/enable
+# cat /sys/kernel/debug/tracing/trace_pipe
+[...]
+             kvm-5664  [000] 11906.220178: kvm_entry: vcpu 0
+             kvm-5664  [000] 11906.220181: kvm_exit: reason apic_access rip 0xc011518c
+             kvm-5664  [000] 11906.220183: kvm_mmio: mmio write len 4 gpa 0xfee000b0 val 0x0
+             kvm-5664  [000] 11906.220183: kvm_apic: apic_write APIC_EOI = 0x0
+             kvm-5664  [000] 11906.220184: kvm_ack_irq: irqchip IOAPIC pin 11
+             kvm-5664  [000] 11906.220185: kvm_entry: vcpu 0
+             kvm-5664  [000] 11906.220188: kvm_exit: reason io_instruction rip 0xc01e4473
+             kvm-5664  [000] 11906.220188: kvm_pio: pio_read at 0xc13e size 2 count 1
+             kvm-5664  [000] 11906.220193: kvm_entry: vcpu 0
+^D
+# echo 0 &gt;/sys/kernel/debug/tracing/events/kvm/enable</pre>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<h2 style="margin:0px;padding:0px;color:#333333;font-family:Arial;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	统计KVM事件
+</h2>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	[root@localhost win7]# perf stat -e 'kvm:*' -a sleep 1h<br>
+^Csleep: Interrupt<br>
+<br>
+&nbsp;Performance counter stats for 'sleep 1h':<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1,880 kvm:kvm_entry&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_hypercall&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_hv_hypercall&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 20 kvm:kvm_pio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_cpuid&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 596 kvm:kvm_apic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1,934 kvm:kvm_exit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 284 kvm:kvm_inj_virq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3 kvm:kvm_inj_exception&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 602 kvm:kvm_page_fault&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_msr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 102 kvm:kvm_cr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 260 kvm:kvm_pic_set_irq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 156 kvm:kvm_apic_ipi&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 292 kvm:kvm_apic_accept_irq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 292 kvm:kvm_eoi&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_pv_eoi&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_nested_vmrun&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_nested_intercepts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_nested_vmexit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_nested_vmexit_inject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_nested_intr_vmexit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_invlpga&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_skinit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 979 kvm:kvm_emulate_insn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 618 kvm:vcpu_match_mmio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 635 kvm:kvm_userspace_exit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 276 kvm:kvm_set_irq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 276 kvm:kvm_ioapic_set_irq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4 kvm:kvm_msi_set_irq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 277 kvm:kvm_ack_irq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1,627 kvm:kvm_mmio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 762 kvm:kvm_fpu&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_age_page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_try_async_get_page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_async_pf_doublefault&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_async_pf_not_present&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_async_pf_ready&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [100.00%]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 kvm:kvm_async_pf_completed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.895712367 seconds time elapsed
+</p>
+<h2 style="margin:0px;padding:0px;color:#333333;font-family:Arial;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	KVM性能数据记录与分析 (需要kernel &gt; 3.7)
+</h2>
+<h3 style="margin:0px;padding:0px;color:#333333;font-family:Arial;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+记录性能数据
+</h3>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<pre style="white-space:pre-wrap;color:#333333;font-size:14px;line-height:26px;background-color:#FFFFFF;">
+<pre style="white-space:pre-wrap;"># ./perf kvm stat record -p 26071 -o perf.data
+^C[ perf record: Woken up 9 times to write data ]
+[ perf record: Captured and wrote 24.903 MB perf.data.guest (~1088034 samples) ]
+
+</pre>
+</pre>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<h3 style="margin:0px;padding:0px;color:#333333;font-family:Arial;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	分析VMEXIT事件
+</h3>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<pre style="white-space:pre-wrap;color:#333333;font-size:14px;line-height:26px;background-color:#FFFFFF;">
+<pre style="white-space:pre-wrap;"># ./perf kvm stat report --event=vmexit
+
+Analyze events for all VCPUs:
+
+             VM-EXIT    Samples  Samples%     Time%         Avg time
+
+         APIC_ACCESS      65381    66.58%     5.95%     37.72us ( +-   6.54% )
+  EXTERNAL_INTERRUPT      16031    16.32%     3.06%     79.11us ( +-   7.34% )
+               CPUID       5360     5.46%     0.06%      4.50us ( +-  35.07% )
+                 HLT       4496     4.58%    90.75%   8360.34us ( +-   5.22% )
+       EPT_VIOLATION       2667     2.72%     0.04%      5.49us ( +-   5.05% )
+   PENDING_INTERRUPT       2242     2.28%     0.03%      5.25us ( +-   2.96% )
+       EXCEPTION_NMI       1332     1.36%     0.02%      6.53us ( +-   6.51% )
+      IO_INSTRUCTION        383     0.39%     0.09%     93.39us ( +-  40.92% )
+           CR_ACCESS        310     0.32%     0.00%      6.10us ( +-   3.95% )
+
+Total Samples:98202, Total events handled time:41419293.63us.</pre>
+</pre>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<h3 style="margin:0px;padding:0px;color:#333333;font-family:Arial;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	分析MMIO事件
+</h3>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<pre style="white-space:pre-wrap;color:#333333;font-size:14px;line-height:26px;background-color:#FFFFFF;"># ./perf kvm stat report --event=mmio
+
+Analyze events for all VCPUs:
+
+         MMIO Access    Samples  Samples%     Time%         Avg time
+
+        0xfee00380:W      58686    90.21%    15.67%      4.95us ( +-   2.96% )
+        0xfee00300:R       2124     3.26%     1.48%     12.93us ( +-  14.75% )
+        0xfee00310:W       2124     3.26%     0.34%      3.00us ( +-   1.33% )
+        0xfee00300:W       2123     3.26%    82.50%    720.68us ( +-  10.24% )
+
+Total Samples:65057, Total events handled time:1854470.45us.</pre>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<h3 style="margin:0px;padding:0px;color:#333333;font-family:Arial;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	分析IOPORT事件
+</h3>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<pre style="white-space:pre-wrap;color:#333333;font-size:14px;line-height:26px;background-color:#FFFFFF;"># ./perf kvm stat report --event=ioport
+
+Analyze events for all VCPUs:
+
+      IO Port Access    Samples  Samples%     Time%         Avg time
+
+         0xc090:POUT        383   100.00%   100.00%     89.00us ( +-  42.94% )
+
+Total Samples:383, Total events handled time:34085.56us.
+</pre>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<h3 style="margin:0px;padding:0px;color:#333333;font-family:Arial;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	针对指定的vcpu分析事件，并按照时间来排序输出结果<br>
+</h3>
+<p style="color:#333333;font-family:Arial;font-size:14px;line-height:26px;white-space:normal;background-color:#FFFFFF;">
+	<br>
+</p>
+<pre style="white-space:pre-wrap;color:#333333;font-size:14px;line-height:26px;background-color:#FFFFFF;"># ./perf kvm stat report --event=vmexit --vcpu=0 --key=time
+
+Analyze events for VCPU 0:
+
+             VM-EXIT    Samples  Samples%     Time%         Avg time
+
+                 HLT        551     5.05%    94.81%   9501.72us ( +-  12.52% )
+  EXTERNAL_INTERRUPT       1390    12.74%     2.39%     94.80us ( +-  20.92% )
+         APIC_ACCESS       6186    56.68%     2.62%     23.41us ( +-  23.62% )
+      IO_INSTRUCTION         17     0.16%     0.01%     20.39us ( +-  22.33% )
+       EXCEPTION_NMI         94     0.86%     0.01%      6.07us ( +-   7.13% )
+   PENDING_INTERRUPT        199     1.82%     0.02%      5.48us ( +-   4.36% )
+           CR_ACCESS         52     0.48%     0.00%      4.89us ( +-   4.09% )
+       EPT_VIOLATION       2057    18.85%     0.12%      3.15us ( +-   1.33% )
+               CPUID        368     3.37%     0.02%      2.82us ( +-   2.79% )
+
+Total Samples:10914, Total events handled time:5521782.02us.</pre>                                   </div>
+            <!-- <div class="Blog_con3_1">管理员在2009年8月13日编辑了该文章文章。</div> -->
+            <div class="Blog_con2_1 Blog_con3_2">
+              <div>
+			  <!--<img src="/image/default/tu_8.png">-->
+			  <!-- JiaThis Button BEGIN -->
+				<div class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1741316880451"><a class="bds_more" href="#" data-cmd="more"></a><a class="bds_qzone" title="分享到QQ空间" href="#" data-cmd="qzone"></a><a class="bds_tsina" title="分享到新浪微博" href="#" data-cmd="tsina"></a><a class="bds_tqq" title="分享到腾讯微博" href="#" data-cmd="tqq"></a><a class="bds_renren" title="分享到人人网" href="#" data-cmd="renren"></a><a class="bds_weixin" title="分享到微信" href="#" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+				<!-- JiaThis Button END -->
+			  </div>
+              阅读(1496) | 评论(0) | 转发(0) |
+			                <div class="HT_line3"></div>
+            </div>
+            
+            <div class="Blog_con3_3">
+              <div><span id="digg_num">0</span><a href="javascript:void(0)" id="digg" bid="5090821" url="/blog/digg.html"></a></div>
+              <p>上一篇：<a href="/uid-29141031-id-5090820.html">QEMU 访存机制介绍与应用</a></p>
+              <p>下一篇：<a href="/uid-29141031-id-5090822.html">qemu-kvm 命令启动时，网络的设置</a></p>    
+            </div>
+            
+          </div>
+          		  <!--
+          <div class="Blog_con3_4 Blog_con3_5">
+            <div class="Blog_tit2 Blog_tit7">热门推荐</div>
+            <ul>
+			              <li><a href="" title="" target='blank' ></a></li>
+			            </ul>
+          </div>
+		  -->
+        </div>
+      </div>
+      <div class="Blog_right1_7" id="replyList">
+		<div class="Blog_tit3">给主人留下些什么吧！~~</div>
+				<!--暂无内容-->
+				<!-- 评论分页-->
+		<div class="Blog_right1_6 Blog_right1_12">
+        		</div>
+		<!-- 评论分页-->
+        <div class="Blog_right1_10" style="display:none">
+          <div class="Blog_tit3">评论热议</div>
+		  		 <!--未登录 -->
+        <div class="Blog_right1_8">
+          <div class="nologin_con1"> 请登录后评论。
+            <p><a href="http://account.chinaunix.net/login" onclick="link(this)">登录</a> <a href="http://account.chinaunix.net/register?url=http%3a%2f%2fblog.chinaunix.net">注册</a></p>
+          </div>
+        </div>
+       
+		
+        </div>
+        <div style="text-align:center;margin-top:10px;">
+            <script type="text/javascript" smua="d=p&amp;s=b&amp;u=u3118759&amp;w=960&amp;h=90" src="//www.nkscdn.com/smu0/o.js"></script>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="hidden" id="report_url" value="/blog/ViewReport.html">
+
+<script type="text/javascript">
+  	//测试字符串的长度 一个汉字算2个字节
+	function mb_strlen(str)
+	{
+		var len=str.length;
+		var totalCount=0;
+		for(var i=0;i<len;i++)
+		{
+			var c = str.charCodeAt(i);
+			if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {
+				totalCount++;
+			}else{
+				totalCount+=2;
+			}
+		}
+		return totalCount;
+	}
+	/*
+	var Util = {};
+	Util.calWbText = function (text, max){
+		if(max === undefined)
+			max = 500;
+		var cLen=0;
+		var matcher = text.match(/[^\x00-\xff]/g),
+			wlen  = (matcher && matcher.length) || 0;
+		//匹配url链接正则 http://***
+		var pattern = /http:\/\/([\w-]+\.)+[\w-]+(\/*[\w-\.\/\?%&=][^\s^\u4e00-\u9fa5]*)?/gi;
+		//匹配的数据存入数组
+		var arrPt = new Array();
+		var i = 0;
+		while((result = pattern.exec(text)) != null){
+			arrPt[i] = result[0];
+			i++;
+		}
+		//替换掉原文本中的链接
+		for(var j = 0;j<arrPt.length;j++){
+			text = text.replace(arrPt[j],"");
+		}
+		//减掉链接所占的长度
+		return Math.floor((max*2 - text.length - wlen)/2 - 12*i);
+	};
+	*/
+	var allowComment = '0';
+	
+	//举报弹出层
+	function showJuBao(url, cid){
+		
+			$.cover(false);
+			asyncbox.open({
+				id  : 'report_thickbox',
+				url : url,
+				title : '举报违规',
+				width : 378,
+				height : 240,
+				scroll : 'no',
+				data : {
+					'cid'	 : cid,
+					'idtype' : 2 ,
+                                        'blogurl' : window.location.href
+				},
+				callback : function(action){
+					if(action == 'close'){
+						$.cover(false);
+					}
+				}
+			});
+	}
+
+	$(function(){
+
+		//创建管理员删除的弹出层
+		$('#admin_article_del').click(function(){
+			$.cover(false);
+			asyncbox.open({
+				id : 'class_thickbox',
+				html : '<div class="HT_layer3_1"><ul><li class="HT_li1">操作原因：<select class="HT_sel7" id="del_type" name="del_type"><option value="广告文章">广告文章</option><option value="违规内容">违规内容</option><option value="标题不明">标题不明</option><option value="文不对题">文不对题</option></select></li><li class="HT_li1" ><input class="HT_btn4" id="admin_delete"  type="button" /></li></ul></div>',
+				title : '选择类型',
+				width : 300,
+				height : 150,
+				scroll : 'no',
+				callback : function(action){
+					if(action == 'close'){
+						$.cover(false);
+					}
+				}
+			});
+		});
+		$('#admin_delete').live('click' , function(){
+			///blog/logicdel/id/3480184/url/%252Fblog%252Findex.html.html
+			var type = $('#del_type').val();
+			var url = '/blog/logicdel/id/5090821/url/%252Fuid%252F29141031.html.html';
+			window.location.href= url + '?type=' + type;
+		});
+
+
+		//顶  js中暂未添加&过滤 
+		$('#digg').live('click' , function(){
+
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+				return false;
+			}
+
+			var bid = $('#digg').attr('bid');
+			var url = $('#digg').attr('url');
+
+			var digg_str = $.cookie('digg_id');
+			if(digg_str != null)
+			{
+				var arr= new Array(); //定义一数组
+
+				arr = digg_str.split(","); //字符分割     
+				for( i=0 ; i < arr.length ; i++ )   
+				{   
+					if(bid == arr[i])
+					{
+						showErrorMsg('已经赞过该文章', '消息提示'); 
+						return false;
+					}
+				} 
+			}
+			$.ajax({
+				type:"POST",
+				url:url,	
+				data: {
+					'bid' : bid 
+				},
+				dataType: 'json',
+				success:function(msg){
+					if(msg.error == 0)
+					{
+						var num = parseInt($('#digg_num').html(),10);
+						num += 1;
+						$('#digg_num').html(num);
+						$('#digg').die();
+
+						if(digg_str == null)
+						{
+							$.cookie('digg_id', bid, {expires: 30 , path: '/'});
+						}
+						else
+						{
+							$.cookie('digg_id', digg_str + ',' + bid, {expires: 30 , path: '/'});
+						}
+						showSucceedMsg('谢谢' , '消息提示');
+					}
+					else if(msg.error == 1)
+					{
+						//showErrorMsg(msg.error_content , '消息提示'); 
+						showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+					}
+					else if(msg.error == 2)
+					{
+						showErrorMsg(msg.error_content , '消息提示'); 
+					}
+				}
+			});
+		});
+		//举报弹出层
+		/*$('.box_report').live('click' , function(){
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+				return false;
+			}
+			var url = $('#report_url').val();
+			var cid = $(this).attr('cid');
+			$.cover(false);
+			asyncbox.open({
+				id  : 'report_thickbox',
+				url : url,
+				title : '举报违规',
+				width : 378,
+				height : 240,
+				scroll : 'no',
+				data : {
+					'cid'	 : cid,
+					'idtype' : 2 
+				},
+				callback : function(action){
+					if(action == 'close'){
+						$.cover(false);
+					}
+				}
+			});
+		});*/
+
+
+		//评论相关代码
+		
+		//点击回复显示评论框
+		$('.Blog_a10').live('click' , function(){
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+				return false;
+			}
+
+			if(allowComment == 1)
+			{
+				showErrorMsg('该博文不允许评论' , '消息提示'); 
+				return false;
+			}
+			var tid = $(this).attr('toid');//留言作者id
+			var bid = $(this).attr('bid');//blogid
+			var cid = $(this).attr('cid');//留言id
+			var tname = $(this).attr('tname');
+                         			var tpl  = '<div class="Blog_right1_9">';
+				tpl +=	 '<div class="div2">';
+				tpl +=     '<textarea name="" cols="" rows="" class="Blog_ar1_1" id="rmsg">文明上网，理性发言...</textarea>';
+				tpl +=	 '</div>';
+				tpl +=   '<div class="div3">';
+				tpl +=		'<div class="div3_2"><a href="javascript:void(0);" class="Blog_a11" id="quota_sbumit" url="/Comment/PostComment.html" tid="'+tid+'" bid="'+bid+'" cid="'+cid+'" tname="'+tname+'" ></a><a href="javascript:void(0)" id="qx_comment" class="Blog_a12"></a></div>';
+				tpl +=		'<div class="div3_1"><a href="javascript:void(0);" id="mface"><span></span>表情</a></div>';
+				tpl +=		'<div class="clear"></div>';
+				tpl +=	 '</div>';
+				tpl +=  '</div>';
+                                 			$('.z_move_comment').html('');
+			$(this).parents('.Blog_right1_8').find('.z_move_comment').html(tpl).show();
+		});
+		//引用的评论提交
+		$('#quota_sbumit').live('click' , function(){
+
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+				return false;
+			}
+
+			var bid   = $(this).attr('bid');
+			var tid   = $(this).attr('tid');//被引用人的id
+			var qid   = $(this).attr('cid');//引用的id
+			var url = $(this).attr('url');
+			var text = $('#rmsg').val();
+			var tname = $(this).attr('tname');
+			if(text == '' || text=='文明上网，理性发言...')
+			{
+				showErrorMsg('评论内容不能为空！' , '消息提示'); 
+				return false;
+			}
+			else
+			{
+				if(mb_strlen(text) > 1000){
+					showErrorMsg('评论内容不能超过500个汉字' , '消息提示'); 
+					return false;
+				}
+			}
+		    $.ajax({
+		        type: "post",
+			    url: url ,
+			    data: {'bid': bid , 'to' : tid , 'qid' : qid , 'text': text , 'tname' : tname },
+				dataType: 'json',
+			    success: function(data){
+				    if(data.code == 1){
+						var tpl =  '<div class="Blog_right1_8">';
+							tpl+=     '<div class="Blog_right_img1"><a href="' +data.info.url+ '" >' + data.info.header + '</a></div>';
+							tpl+=     '<div class="Blog_right_font1">';
+							tpl+=         '<p class="Blog_p5"><span><a href="' +data.info.url+ '" >' + data.info.username + '</a></span>' + data.info.dateline + '</p>';
+							tpl+=         '<p class="Blog_p7"><a href="' + data.info.quota.url + '">' + data.info.quota.username + '</a>：'+ data.info.quota.content + '</p>';
+							tpl+=         '<p class="Blog_p8">' + data.info.content + '</p><span class="span_text1"><a href="javascript:void(0);" class="Blog_a10" toid=' + data.info.fuid + ' bid=' + data.info.bid + ' cid=' + data.info.cid + '  tname = ' + data.info.username + ' >回复</a> | 　<a class="comment_del_mark" style="cursor:pointer" url="' + data.info.delurl + '" >删除</a>　| 　<a href="javascript:showJuBao(\'/blog/ViewReport.html\','+data.info.cid+')" class="box_report" cid="' + data.info.cid + '" >举报</a></span></div>';
+							tpl+=         '<div class="z_move_comment" style="display:none"></div>';
+							tpl+=	      '<div class="Blog_line1"></div></div>';
+							$('#replyList .Blog_right1_8:first').before(tpl);
+							$('.z_move_comment').html('').hide();
+				    }
+					else if(data.code == -1){
+						//showErrorMsg(data.info , '消息提示'); 
+						showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+			        }
+                },
+			    error: function(){//请求出错处理
+                        
+                }
+			});
+		});
+		//底部发表评论
+		$('#submitmsg').click(function(){
+			if(allowComment == 1)
+			{
+				showErrorMsg('该博文不允许评论' , '消息提示'); 
+				return false;
+			}
+			var bid   = $(this).attr('bid');
+			var toid  = $(this).attr('toid');
+			var text = $('#reply').val();
+			var url = $(this).attr('url');
+			if(text == '' || text=='文明上网，理性发言...')
+			{
+				showErrorMsg('评论内容不能为空！' , '消息提示'); 
+				return false;
+			}
+			else
+			{
+				if(mb_strlen(text) > 1000){
+					showErrorMsg('评论内容不能超过500个汉字' , '消息提示'); 
+					return false;
+				}
+			}
+		    $.ajax({
+		        type: "post",
+			    url: url ,
+			    data: {'bid': bid , 'to' : toid ,'text': text},
+				dataType: 'json',
+			    success: function(data){
+				    if(data.code == 1)
+					{
+						var tpl   = '<div class="Blog_right1_8">';
+							tpl  +=   '<div class="Blog_right_img1"><a href="' +data.info.url+ '" >' + data.info.header + '</a></div>';
+							tpl  +=	  '<div class="Blog_right_font1">';
+							tpl  +=       '<p class="Blog_p5"><span><a href="' +data.info.url+ '" >' + data.info.username + '</a></span>' + data.info.dateline + '</p>';
+							tpl  +=       '<p class="Blog_p6">' + data.info.content + '</p>';
+							tpl  +=		  '<div class="div1"><a href="javascript:void(0);" class="Blog_a10"  toid=' + data.info.fuid + ' bid=' + data.info.bid + ' cid=' + data.info.cid + '>回复</a> | 　<a class="comment_del_mark" style="cursor:pointer" url="' + data.info.delurl + '">删除</a>　| 　<a href="javascript:showJuBao(\'/blog/ViewReport.html\','+data.info.cid+')" class="box_report" cid="' + data.info.cid + '">举报</a></div>';
+							tpl  +=		  '<div class="z_move_comment" style="display:none"></div>';
+							tpl  +=    '</div><div class="Blog_line1"></div></div>';
+							$('.Blog_tit3:first').after(tpl);
+							$('#reply').val('文明上网，理性发言...');
+					}
+					else if(data.code == -1)
+					{
+						showErrorMsg(data.info , '消息提示'); 
+			        }
+                },
+			    error: function(){//请求出错处理
+                        
+                }
+		    });
+			
+		});
+		//底部评论重置
+		$('#reset_comment').click(function(){
+			$('#reply').val('文明上网，理性发言...');
+		});
+		//取消回复
+		$('#qx_comment').live('click' , function(){
+			$('.z_move_comment').html('').hide();
+		});
+
+
+		$('#rmsg, #reply').live({
+		    focus:function(){
+			    if($(this).val() == '文明上网，理性发言...'){
+			        $(this).val('');
+			    }
+			},
+			blur:function(){
+		        if($(this).val() == ''){
+			        $(this).val('文明上网，理性发言...');
+			    }
+			}
+		});
+		//删除留言确认
+		$('.comment_del_mark').live('click' , function(){
+			var url = $(this).attr('url');
+			asyncbox.confirm('删除留言','确认', function(action){
+				if(action == 'ok')
+				{
+					location.href = url;
+				}
+			});
+		});
+		//删除时间确认
+		$('.del_article_id').click(function(){
+			var delurl = $(this).attr('delurl');
+			asyncbox.confirm('删除文章','确认', function(action){
+				if(action == 'ok')
+				{
+					location.href = delurl;
+				}
+			});
+		});
+		/*
+		//字数限制
+		$('#rmsg, #reply').live('keyup', function(){
+			var id = $(this).attr('id');
+			var left = Util.calWbText($(this).val(), 500);
+			var eid = '#errmsg';
+			
+			if(id == 'reply') eid =  '#rerrmsg';
+			if (left >= 0)
+		        $(eid).html('您还可以输入<span>' + left + '</span>字');
+		    else
+		        $(eid).html('<font color="red">您已超出<span>' + Math.abs(left) + '</span>字 </font>');
+		});
+		*/
+		//加载表情
+	    $('#face').qqFace({id : 'facebox1', assign : 'reply', path : '/image/qqface/'});
+	    $('#mface').qqFace({id : 'facebox', assign : 'rmsg', path:'/image/qqface/'});
+	    
+		/*
+		$('#class_one_id').change(function(){
+			alert(123213);
+			var id = parseInt($(this).val() , 10);
+			if(id == 0) return false;
+			$('.hidden_son_class span').each(function( index , dom ){
+				if( dom.attr('cid')  == id )
+				{
+				}
+			});
+		});
+		*/
+		//转载文章
+		var turn_url = "/blog/viewClassPart.html";
+		$('#repost_bar').click(function(){
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+				return false;
+			}
+			var id = $(this).attr('bid');
+			asyncbox.open({
+				id  : 'turn_class_thickbox',
+				url : turn_url,
+				title : '转载文章',
+				width : 330,
+				height : 131,
+				scroll : 'no',
+				data : {
+					'id'	 : id
+				},
+				callback : function(action){
+					if(action == 'close'){
+						$.cover(false);
+					}
+				}
+			});
+		});
+		/*
+	    //转发文章
+	    $('#repost_bar').live('click' , function(){
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+				return false;
+			}
+	    	var bid  = $(this).attr('bid');
+	    	var url  = $(this).attr('url');
+	    	asyncbox.confirm('转载文章','确认', function(action){
+	    	  if(action == 'ok'){
+	    	    $.ajax({
+				type:"POST",
+				url:url,	
+				data: {
+					'bid' : bid 
+				},
+				dataType: 'json',
+				success:function(msg){
+				  if(msg.error == 0){
+				    showSucceedMsg('转发成功！', '消息提示');
+				  }else if(msg.error == 1){
+				    //location.href = '/index.php?r=site/login';
+					showErrorMsg('操作失败,您需要先登录!', '消息提示', 'http://account.chinaunix.net/login');
+				  }else{
+				    showErrorMsg(msg.error_content, '消息提示');
+			      }
+				}
+			  });
+	    	  }
+	    	});
+
+		});
+		*/
+
+	});
+</script>
+<!--该部分应该放在输出代码块的后面才起作用 -->
+<script type="text/javascript">
+
+SyntaxHighlighter.autoloader(
+	'applescript			/highlight/scripts/shBrushAppleScript.js',
+	'actionscript3 as3		/highlight/scripts/shBrushAS3.js',
+	'bash shell				/highlight/scripts/shBrushBash.js',
+	'coldfusion cf			/highlight/scripts/shBrushColdFusion.js',
+	'cpp c					/highlight/scripts/shBrushCpp.js',
+	'c# c-sharp csharp		/highlight/scripts/shBrushCSharp.js',
+	'css					/highlight/scripts/shBrushCss.js',
+	'delphi pascal			/highlight/scripts/shBrushDelphi.js',
+	'diff patch pas			/highlight/scripts/shBrushDiff.js',
+	'erl erlang				/highlight/scripts/shBrushErlang.js',
+	'groovy					/highlight/scripts/shBrushGroovy.js',
+	'java					/highlight/scripts/shBrushJava.js',
+	'jfx javafx				/highlight/scripts/shBrushJavaFX.js',
+	'js jscript javascript	/highlight/scripts/shBrushJScript.js',
+	'perl pl				/highlight/scripts/shBrushPerl.js',
+	'php					/highlight/scripts/shBrushPhp.js',
+	'text plain				/highlight/scripts/shBrushPlain.js',
+	'py python				/highlight/scripts/shBrushPython.js',
+	'ruby rails ror rb		/highlight/scripts/shBrushRuby.js',
+	'scala					/highlight/scripts/shBrushScala.js',
+	'sql					/highlight/scripts/shBrushSql.js',
+	'vb vbnet				/highlight/scripts/shBrushVb.js',
+	'xml xhtml xslt html	/highlight/scripts/shBrushXml.js'
+);
+SyntaxHighlighter.all();
+
+
+function code_hide(id){
+	var code = document.getElementById(id).style.display;
+	if(code == 'none'){
+		document.getElementById(id).style.display = 'block';
+	}else{
+		document.getElementById(id).style.display = 'none';
+	}
+}
+</script>
+<!--回顶部js2011.12.30-->
+<script language="javascript">
+ lastScrollY=0;
+ function heartBeat(){
+ var diffY;
+ if (document.documentElement && document.documentElement.scrollTop)
+     diffY = document.documentElement.scrollTop;
+ else if (document.body)
+     diffY = document.body.scrollTop
+ else
+     {/*Netscape stuff*/}
+ percent=.1*(diffY-lastScrollY);
+ if(percent>0)percent=Math.ceil(percent);
+ else percent=Math.floor(percent);
+ document.getElementById("full").style.top=parseInt(document.getElementById("full").style.top)+percent+"px";
+ lastScrollY=lastScrollY+percent;
+ if(lastScrollY<200)
+ {
+ document.getElementById("full").style.display="none";
+ }
+ else
+ {
+ document.getElementById("full").style.display="block";
+ }
+ }
+ var gkuan=document.body.clientWidth;
+ var ks=(gkuan-960)/2-30;
+ suspendcode="<div id=\"full\" style='right:-30px;POSITION:absolute;TOP:500px;z-index:100;width:26px; height:86px;cursor:pointer;'><a href=\"javascript:void(0)\" onclick=\"window.scrollTo(0,0);\"><img src=\"\/image\/top.png\" /></a></div>"
+ document.write(suspendcode);
+ window.setInterval("heartBeat()",1);
+ </script><div id="full" style="right: -30px; position: absolute; top: 500px; z-index: 100; width: 26px; height: 86px; cursor: pointer; display: none;"><a href="javascript:void(0)" onclick="window.scrollTo(0,0);"><img src="/image/top.png"></a></div>
+  <!-- footer -->
+  <div class="Blog_footer" style="clear:both">
+    <div><a href="http://www.chinaunix.net/about/index.shtml" target="_blank" rel="nofollow">关于我们</a> | <a href="http://www.it168.com/bottomfile/it168.shtml" target="_blank" rel="nofollow">关于IT168</a> | <a href="http://www.chinaunix.net/about/connect.html" target="_blank" rel="nofollow">联系方式</a> | <a href="http://www.chinaunix.net/about/service.html" target="_blank" rel="nofollow">广告合作</a> | <a href="http://www.it168.com//bottomfile/flgw/fl.htm" target="_blank" rel="nofollow">法律声明</a> | <a href="http://account.chinaunix.net/register?url=http%3a%2f%2fblog.chinaunix.net" target="_blank" rel="nofollow">免费注册</a>
+      <p>Copyright  2001-2010 ChinaUnix.net All Rights Reserved 北京皓辰网域网络信息技术有限公司. 版权所有 </p>
+      <div>感谢所有关心和支持过ChinaUnix的朋友们
+        <p><a href="http://beian.miit.gov.cn/">16024965号-6 </a></p>
+      </div>
+    </div>
+  </div>
+</div>
+<script language="javascript">
+
+//全局错误提示弹出框
+function showErrorMsg(content, title, url){
+	var url = url || '';
+	var title = title || '消息提示';
+	var html = '';
+	html += '<div class="HT_layer3_1 HT_layer3_2"><ul><li><p><span class="login_span1"></span>' + content + '</p></li>';
+	if(url == '' || url.length == 0){
+		html += '<li class="HT_li1"><input type="button" class="HT_btn2"  onclick=\'close_windows("error_msg")\'></li>';
+	} else {
+		html += '<li class="HT_li1"><input type="button" class="login_btn1" onclick="location.href=\'' + url + '\'"></li>';
+	}
+	html += '</ul></div>';
+	$.cover(true);
+	   asyncbox.open({
+		 id: 'error_msg',
+		 title : title,
+		 html : html,
+		 'callback' : function(action){
+			 if(action == 'close'){
+				 $.cover(false);
+			 }
+		 }
+	});
+}
+
+//全局正确提示
+function showSucceedMsg(content, title , url ){
+	var url = url || '';
+	var title = title || '消息提示';
+	var html = '';
+	html += '<div class="HT_layer3_1 HT_layer3_2"><ul><li><p><span class="login_span2"></span>' + content + '</p></li>';
+	if(url == '' || url.length == 0){
+		html += '<li class="HT_li1"><input type="button" class="HT_btn2"  onclick=\'close_windows("error_msg")\'></li>';
+	} else {
+		html += '<li class="HT_li1"><input type="button" class="HT_btn2" onclick="location.href=\'' + url + '\'"></li>';
+	}
+	html += '</ul></div>';
+	$.cover(true);
+	asyncbox.open({
+		 id: 'error_msg',
+		 title : title,
+		 html : html,
+		 'callback' : function(action){
+			 if(action == 'close'){
+				 $.cover(false);
+			 }
+		 }
+	});
+}
+
+//关闭指定id的窗口
+function close_windows(id){
+	$.cover(false);
+	$.close(id);
+}
+
+
+//公告
+var tID;
+var tn;                        // 高度
+var nStopTime = 5000;        // 不同行间滚动时间隔的时间，值越小，移动越快
+var nSpeed = 50;            // 滚动时，向上移动一像素间隔的时间，值越小，移动越快
+var isMove = true;
+var nHeight = 25;
+var nS = 0;
+var nNewsCount = 3;
+
+/**
+ * n 用于表示是否为第一次运行
+ **/
+function moveT(n)
+{
+    clearTimeout(tID)
+    var noticev2 = document.getElementById("noticev2")
+    nS = nSpeed;
+
+    // 只在第一次调用时运行，初始化环境（有没有参数）
+    if (n)
+    {
+        // 设置行高
+        noticev2.style.lineHeight = nHeight + "px";
+        // 初始化显示位置
+        tn = 0;
+        // 刚进入时在第一行停止时间
+        nS = nStopTime;
+    }
+
+    // 判断鼠标是否指向层
+    if (isMove)
+    {
+        // 向上移动一像素
+        tn--;
+        // 如果移动到最下面一行了，则移到顶行
+        if (Math.abs(tn) == nNewsCount * nHeight)
+        {
+            tn = 0;
+        }
+        // 设置位置
+        noticev2.style.marginTop = tn + "px";
+        // 完整显示一行时，停止一段时间
+        if (tn % nHeight == 0)
+        {
+            nS = nStopTime;
+        }
+    }
+
+    tID = setTimeout("moveT()", nS);
+}
+moveT(1);    // 此处可以传入任何参数
+</script>
+<script type="text/javascript">
+//  var _gaq = _gaq || [];
+//  _gaq.push(['_setAccount', 'UA-20237423-2']);
+//  _gaq.push(['_setDomainName', '.chinaunix.net']);
+//  _gaq.push(['_trackPageview']);
+//
+//  (function() {
+//    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+//    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+//    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+//  })();
+
+</script>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0ee5e8cdc4d43389b3d1bfd76e83216b' type='text/javascript'%3E%3C/script%3E"));
+
+function link(t){
+     var href= $(t).attr('href');
+     href+="?url="+encodeURIComponent(location.href);
+     $(t).attr('href',href);
+    //setCookie("returnOutUrl", location.href, 60, "/");
+}
+</script><script src=" http://hm.baidu.com/h.js?0ee5e8cdc4d43389b3d1bfd76e83216b" type="text/javascript"></script>
+<script type="text/javascript" src="/js/jquery.qqFace.js"></script>
+
+
+<div id="asyncbox_cover" unselectable="on" style="opacity:0.1;filter:alpha(opacity=10);background:#000"></div><div id="asyncbox_clone"></div><div id="asyncbox_focus"></div><div id="asyncbox_load"><div><span></span></div></div><orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
