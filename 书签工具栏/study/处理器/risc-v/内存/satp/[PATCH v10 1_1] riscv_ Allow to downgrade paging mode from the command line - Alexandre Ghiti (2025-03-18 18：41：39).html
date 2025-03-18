@@ -1,0 +1,1156 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/内存/satp/[PATCH v10 1_1] riscv_ Allow to downgrade paging mode from the command line - Alexandre Ghiti (2025-03-18 18：41：39).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/all/20230424092313.178699-2-alexghiti@rivosinc.com/
+ Summary: This is an email discussing a patch for the RISC-V Linux kernel that adds two early command line parameters to allow downgrading the satp (Supervisor Access Control Tags) mode from the command line. The patch also includes modifications to the kernel build system and various source files to support these new parameters. The patch was tested and reviewed by Björn Töpel.这是一封讨论 RISC-V Linux 内核补丁的电子邮件，该补丁添加了两个早期命令行参数，以允许从命令行降级 satp（主管访问控制标签）模式。该补丁还包括对内核构建系统和各种源文件的修改，以支持这些新参数。该补丁由 Björn Töpel 进行测试和审查。
+-->
+<html imt-state="dual"><head><title>[PATCH v10 1/1] riscv: Allow to downgrade paging mode from the command line - Alexandre Ghiti</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?67c636a2" media="screen,print"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20230424092425"><b>All of lore.kernel.org</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Alexandre Ghiti &lt;alexghiti@rivosinc.com&gt;
+To: "Jonathan Corbet" &lt;corbet@lwn.net&gt;,
+	"Paul Walmsley" &lt;paul.walmsley@sifive.com&gt;,
+	"Palmer Dabbelt" &lt;palmer@dabbelt.com&gt;,
+	"Albert Ou" &lt;aou@eecs.berkeley.edu&gt;,
+	"Conor Dooley" &lt;conor@kernel.org&gt;,
+	"Ard Biesheuvel" &lt;ardb@kernel.org&gt;,
+	"Björn Töpel" &lt;bjorn@kernel.org&gt;,
+	<a href="../../linux-doc/?t=20230424092425">linux-doc@vger.kernel.org</a>, <a href="../../lkml/?t=20230424092425">linux-kernel@vger.kernel.org</a>,
+	<a href="../../linux-riscv/?t=20230424092425">linux-riscv@lists.infradead.org</a>
+Cc: "Alexandre Ghiti" &lt;alexghiti@rivosinc.com&gt;,
+	"Björn Töpel" &lt;bjorn@rivosinc.com&gt;
+Subject: <a href="#r" id="t">[PATCH v10 1/1] riscv: Allow to downgrade paging mode from the command line</a>
+Date: Mon, 24 Apr 2023 11:23:13 +0200	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20230424092313.178699-2-alexghiti@rivosinc.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20230424092313.178699-1-alexghiti@rivosinc.com/">20230424092313.178699-1-alexghiti@rivosinc.com</a>&gt;
+
+Add 2 early command line parameters that allow to downgrade satp mode
+(using the same naming as x86):
+- "no5lvl": use a 4-level page table (down from sv57 to sv48)
+- "no4lvl": use a 3-level page table (down from sv57/sv48 to sv39)
+
+Note that going through the device tree to get the kernel command line
+works with ACPI too since the efi stub creates a device tree anyway with
+the command line.
+
+In KASAN kernels, we can't use the libfdt that early in the boot process
+since we are not ready to execute instrumented functions. So instead of
+using the "generic" libfdt, we compile our own versions of those functions
+that are not instrumented and that are prefixed so that they do not
+conflict with the generic ones. We also need the non-instrumented versions
+of the string functions and the prefixed versions of memcpy/memmove.
+
+This is largely inspired by commit aacd149b6238 ("arm64: head: avoid
+relocating the kernel twice for KASLR") from which I removed compilation
+flags that were not relevant to RISC-V at the moment (LTO, SCS). Also
+note that we have to link with -z norelro to avoid ld.lld to throw a
+warning with the new .got sections, like in commit 311bea3cb9ee ("arm64:
+link with -z norelro for LLD or aarch64-elf").
+
+Signed-off-by: Alexandre Ghiti &lt;alexghiti@rivosinc.com&gt;
+Tested-by: Björn Töpel &lt;bjorn@rivosinc.com&gt;
+Reviewed-by: Björn Töpel &lt;bjorn@rivosinc.com&gt;
+---
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1admin-guide:kernel-parameters.txt" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1admin-guide:kernel-parameters.txt">.../admin-guide/kernel-parameters.txt</a>         |  5 +-
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:Makefile" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:Makefile">arch/riscv/Makefile</a>                           |  3 +-
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:Makefile" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:Makefile">arch/riscv/kernel/Makefile</a>                    |  2 +
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:Makefile" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:Makefile">arch/riscv/kernel/pi/Makefile</a>                 | 39 ++++++++++++
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:cmdline_early.c" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:cmdline_early.c">arch/riscv/kernel/pi/cmdline_early.c</a>          | 62 +++++++++++++++++++
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:vmlinux.lds.S" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:vmlinux.lds.S">arch/riscv/kernel/vmlinux.lds.S</a>               | 11 +++-
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memcpy.S" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memcpy.S">arch/riscv/lib/memcpy.S</a>                       |  2 +
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memmove.S" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memmove.S">arch/riscv/lib/memmove.S</a>                      |  2 +
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:strlen.S" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:strlen.S">arch/riscv/lib/strlen.S</a>                       |  1 +
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:mm:init.c" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:mm:init.c">arch/riscv/mm/init.c</a>                          | 36 +++++++++--
+ 10 files <a href="#related">changed</a>, 154 insertions(+), 9 deletions(-)
+ create mode 100644 arch/riscv/kernel/pi/Makefile
+ create mode 100644 arch/riscv/kernel/pi/cmdline_early.c
+
+<span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1admin-guide:kernel-parameters.txt" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1admin-guide:kernel-parameters.txt">diff</a> --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 6221a1d057dd..accc400b43f1 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+</span><span class="hunk">@@ -3576,7 +3576,10 @@
+</span> 			emulation library even if a 387 maths coprocessor
+ 			is present.
+ 
+<span class="del">-	no5lvl		[X86-64] Disable 5-level paging mode. Forces
+</span><span class="add">+	no4lvl		[RISCV] Disable 4-level and 5-level paging modes. Forces
++			kernel to use 3-level paging instead.
++
++	no5lvl		[X86-64,RISCV] Disable 5-level paging mode. Forces
+</span> 			kernel to use 4-level paging instead.
+ 
+ 	nofsgsbase	[X86] Disables FSGSBASE instructions.
+<span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:Makefile" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:Makefile">diff</a> --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 7dc6904a6836..6eef6b33795d 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+</span><span class="hunk">@@ -7,8 +7,9 @@
+</span> #
+ 
+ OBJCOPYFLAGS    := -O binary
+<span class="add">+LDFLAGS_vmlinux := -z norelro
+</span> ifeq ($(CONFIG_RELOCATABLE),y)
+<span class="del">-	LDFLAGS_vmlinux += -shared -Bsymbolic -z notext -z norelro --emit-relocs
+</span><span class="add">+	LDFLAGS_vmlinux += -shared -Bsymbolic -z notext --emit-relocs
+</span> 	KBUILD_CFLAGS += -fPIE
+ endif
+ ifeq ($(CONFIG_DYNAMIC_FTRACE),y)
+<span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:Makefile" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:Makefile">diff</a> --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index 4cf303a779ab..aa22f87faeae 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+</span><span class="hunk">@@ -89,3 +89,5 @@ obj-$(CONFIG_EFI)		+= efi.o
+</span> obj-$(CONFIG_COMPAT)		+= compat_syscall_table.o
+ obj-$(CONFIG_COMPAT)		+= compat_signal.o
+ obj-$(CONFIG_COMPAT)		+= compat_vdso/
+<span class="add">+
++obj-$(CONFIG_64BIT)		+= pi/
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:Makefile" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:Makefile">diff</a> --git a/arch/riscv/kernel/pi/Makefile b/arch/riscv/kernel/pi/Makefile
+new file mode 100644
+index 000000000000..5d7cb991f2b8
+--- /dev/null
++++ b/arch/riscv/kernel/pi/Makefile
+</span><span class="hunk">@@ -0,0 +1,39 @@
+</span><span class="add">+# SPDX-License-Identifier: GPL-2.0
++# This file was copied from arm64/kernel/pi/Makefile.
++
++KBUILD_CFLAGS	:= $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) -fpie \n+		   -Os -DDISABLE_BRANCH_PROFILING $(DISABLE_STACKLEAK_PLUGIN) \n+		   $(call cc-option,-mbranch-protection=none) \n+		   -I$(srctree)/scripts/dtc/libfdt -fno-stack-protector \n+		   -D__DISABLE_EXPORTS -ffreestanding \n+		   -fno-asynchronous-unwind-tables -fno-unwind-tables \n+		   $(call cc-option,-fno-addrsig)
++
++KBUILD_CFLAGS	+= -mcmodel=medany
++
++CFLAGS_cmdline_early.o += -D__NO_FORTIFY
++CFLAGS_lib-fdt_ro.o += -D__NO_FORTIFY
++
++GCOV_PROFILE	:= n
++KASAN_SANITIZE	:= n
++KCSAN_SANITIZE	:= n
++UBSAN_SANITIZE	:= n
++KCOV_INSTRUMENT	:= n
++
++$(obj)/%.pi.o: OBJCOPYFLAGS := --prefix-symbols=__pi_ \n+			       --remove-section=.note.gnu.property \n+			       --prefix-alloc-sections=.init
++$(obj)/%.pi.o: $(obj)/%.o FORCE
++	$(call if_changed,objcopy)
++
++$(obj)/lib-%.o: $(srctree)/lib/%.c FORCE
++	$(call if_changed_rule,cc_o_c)
++
++$(obj)/string.o: $(srctree)/lib/string.c FORCE
++	$(call if_changed_rule,cc_o_c)
++
++$(obj)/ctype.o: $(srctree)/lib/ctype.c FORCE
++	$(call if_changed_rule,cc_o_c)
++
++obj-y		:= cmdline_early.pi.o string.pi.o ctype.pi.o lib-fdt.pi.o lib-fdt_ro.pi.o
++extra-y		:= $(patsubst %.pi.o,%.o,$(obj-y))
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:cmdline_early.c" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:cmdline_early.c">diff</a> --git a/arch/riscv/kernel/pi/cmdline_early.c b/arch/riscv/kernel/pi/cmdline_early.c
+new file mode 100644
+index 000000000000..05652d13c746
+--- /dev/null
++++ b/arch/riscv/kernel/pi/cmdline_early.c
+</span><span class="hunk">@@ -0,0 +1,62 @@
+</span><span class="add">+// SPDX-License-Identifier: GPL-2.0-only
++#include &lt;linux/types.h&gt;
++#include &lt;linux/init.h&gt;
++#include &lt;linux/libfdt.h&gt;
++#include &lt;linux/string.h&gt;
++#include &lt;asm/pgtable.h&gt;
++#include &lt;asm/setup.h&gt;
++
++static char early_cmdline[COMMAND_LINE_SIZE];
++
++/*
++ * Declare the functions that are exported (but prefixed) here so that LLVM
++ * does not complain it lacks the 'static' keyword (which, if added, makes
++ * LLVM complain because the function is actually unused in this file).
++ */
++u64 set_satp_mode_from_cmdline(uintptr_t dtb_pa);
++
++static char *get_early_cmdline(uintptr_t dtb_pa)
++{
++	const char *fdt_cmdline = NULL;
++	unsigned int fdt_cmdline_size = 0;
++	int chosen_node;
++
++	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
++		chosen_node = fdt_path_offset((void *)dtb_pa, "/chosen");
++		if (chosen_node &gt;= 0) {
++			fdt_cmdline = fdt_getprop((void *)dtb_pa, chosen_node,
++						  "bootargs", NULL);
++			if (fdt_cmdline) {
++				fdt_cmdline_size = strlen(fdt_cmdline);
++				strscpy(early_cmdline, fdt_cmdline,
++					COMMAND_LINE_SIZE);
++			}
++		}
++	}
++
++	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
++	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
++	    fdt_cmdline_size == 0 /* CONFIG_CMDLINE_FALLBACK */) {
++		strncat(early_cmdline, CONFIG_CMDLINE,
++			COMMAND_LINE_SIZE - fdt_cmdline_size);
++	}
++
++	return early_cmdline;
++}
++
++static u64 match_noXlvl(char *cmdline)
++{
++	if (strstr(cmdline, "no4lvl"))
++		return SATP_MODE_48;
++	else if (strstr(cmdline, "no5lvl"))
++		return SATP_MODE_57;
++
++	return 0;
++}
++
++u64 set_satp_mode_from_cmdline(uintptr_t dtb_pa)
++{
++	char *cmdline = get_early_cmdline(dtb_pa);
++
++	return match_noXlvl(cmdline);
++}
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:vmlinux.lds.S" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:vmlinux.lds.S">diff</a> --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+index 615ff5842690..305877d85e96 100644
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+</span><span class="hunk">@@ -83,6 +83,14 @@ SECTIONS
+</span> 	/* Start of init data section */
+ 	__init_data_begin = .;
+ 	INIT_DATA_SECTION(16)
+<span class="add">+
++	/* Those sections result from the compilation of kernel/pi/string.c */
++	.init.pidata : {
++		*(.init.srodata.cst8*)
++		*(.init__bug_table*)
++		*(.init.sdata*)
++	}
++
+</span> 	.init.bss : {
+ 		*(.init.bss)	/* from the EFI stub */
+ 	}
+<span class="hunk">@@ -128,9 +136,10 @@ SECTIONS
+</span> 		__rela_dyn_end = .;
+ 	}
+ 
+<span class="add">+	.got : { *(.got*) }
++
+</span> #ifdef CONFIG_RELOCATABLE
+ 	.data.rel : { *(.data.rel*) }
+<span class="del">-	.got : { *(.got*) }
+</span> 	.plt : { *(.plt) }
+ 	.dynamic : { *(.dynamic) }
+ 	.dynsym : { *(.dynsym) }
+<span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memcpy.S" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memcpy.S">diff</a> --git a/arch/riscv/lib/memcpy.S b/arch/riscv/lib/memcpy.S
+index 51ab716253fa..1a40d01a9543 100644
+--- a/arch/riscv/lib/memcpy.S
++++ b/arch/riscv/lib/memcpy.S
+</span><span class="hunk">@@ -106,3 +106,5 @@ WEAK(memcpy)
+</span> 6:
+ 	ret
+ END(__memcpy)
+<span class="add">+SYM_FUNC_ALIAS(__pi_memcpy, __memcpy)
++SYM_FUNC_ALIAS(__pi___memcpy, __memcpy)
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memmove.S" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memmove.S">diff</a> --git a/arch/riscv/lib/memmove.S b/arch/riscv/lib/memmove.S
+index e0609e1f0864..838ff2022fe3 100644
+--- a/arch/riscv/lib/memmove.S
++++ b/arch/riscv/lib/memmove.S
+</span><span class="hunk">@@ -314,3 +314,5 @@ return_from_memmove:
+</span> 
+ SYM_FUNC_END(memmove)
+ SYM_FUNC_END(__memmove)
+<span class="add">+SYM_FUNC_ALIAS(__pi_memmove, __memmove)
++SYM_FUNC_ALIAS(__pi___memmove, __memmove)
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:strlen.S" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:strlen.S">diff</a> --git a/arch/riscv/lib/strlen.S b/arch/riscv/lib/strlen.S
+index 15bb8f3aa959..9d0055616f7b 100644
+--- a/arch/riscv/lib/strlen.S
++++ b/arch/riscv/lib/strlen.S
+</span><span class="hunk">@@ -131,3 +131,4 @@ strlen_zbb:
+</span> .option pop
+ #endif
+ SYM_FUNC_END(strlen)
+<span class="add">+SYM_FUNC_ALIAS(__pi_strlen, strlen)
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:mm:init.c" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:mm:init.c">diff</a> --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index bce899b180cd..3ad771571c2d 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+</span><span class="hunk">@@ -746,6 +746,8 @@ static __init pgprot_t pgprot_from_va(uintptr_t va)
+</span> #endif /* CONFIG_STRICT_KERNEL_RWX */
+ 
+ #if defined(CONFIG_64BIT) &amp;&amp; !defined(CONFIG_XIP_KERNEL)
+<span class="add">+u64 __pi_set_satp_mode_from_cmdline(uintptr_t dtb_pa);
++
+</span> static void __init disable_pgtable_l5(void)
+ {
+ 	pgtable_l5_enabled = false;
+<span class="hunk">@@ -760,17 +762,39 @@ static void __init disable_pgtable_l4(void)
+</span> 	satp_mode = SATP_MODE_39;
+ }
+ 
+<span class="add">+static int __init print_no4lvl(char *p)
++{
++	pr_info("Disabled 4-level and 5-level paging");
++	return 0;
++}
++early_param("no4lvl", print_no4lvl);
++
++static int __init print_no5lvl(char *p)
++{
++	pr_info("Disabled 5-level paging");
++	return 0;
++}
++early_param("no5lvl", print_no5lvl);
++
+</span> /*
+  * There is a simple way to determine if 4-level is supported by the
+  * underlying hardware: establish 1:1 mapping in 4-level page table mode
+  * then read SATP to see if the configuration was taken into account
+  * meaning sv48 is supported.
+  */
+<span class="del">-static __init void set_satp_mode(void)
+</span><span class="add">+static __init void set_satp_mode(uintptr_t dtb_pa)
+</span> {
+ 	u64 identity_satp, hw_satp;
+ 	uintptr_t set_satp_mode_pmd = ((unsigned long)set_satp_mode) &amp; PMD_MASK;
+<span class="del">-	bool check_l4 = false;
+</span><span class="add">+	u64 satp_mode_cmdline = __pi_set_satp_mode_from_cmdline(dtb_pa);
++
++	if (satp_mode_cmdline == SATP_MODE_57) {
++		disable_pgtable_l5();
++	} else if (satp_mode_cmdline == SATP_MODE_48) {
++		disable_pgtable_l5();
++		disable_pgtable_l4();
++		return;
++	}
+</span> 
+ 	create_p4d_mapping(early_p4d,
+ 			set_satp_mode_pmd, (uintptr_t)early_pud,
+<span class="hunk">@@ -789,7 +813,8 @@ static __init void set_satp_mode(void)
+</span> retry:
+ 	create_pgd_mapping(early_pg_dir,
+ 			   set_satp_mode_pmd,
+<span class="del">-			   check_l4 ? (uintptr_t)early_pud : (uintptr_t)early_p4d,
+</span><span class="add">+			   pgtable_l5_enabled ?
++				(uintptr_t)early_p4d : (uintptr_t)early_pud,
+</span> 			   PGDIR_SIZE, PAGE_TABLE);
+ 
+ 	identity_satp = PFN_DOWN((uintptr_t)&amp;early_pg_dir) | satp_mode;
+<span class="hunk">@@ -800,9 +825,8 @@ static __init void set_satp_mode(void)
+</span> 	local_flush_tlb_all();
+ 
+ 	if (hw_satp != identity_satp) {
+<span class="del">-		if (!check_l4) {
+</span><span class="add">+		if (pgtable_l5_enabled) {
+</span> 			disable_pgtable_l5();
+<span class="del">-			check_l4 = true;
+</span> 			memset(early_pg_dir, 0, PAGE_SIZE);
+ 			goto retry;
+ 		}
+<span class="hunk">@@ -1031,7 +1055,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+</span> #endif
+ 
+ #if defined(CONFIG_64BIT) &amp;&amp; !defined(CONFIG_XIP_KERNEL)
+<span class="del">-	set_satp_mode();
+</span><span class="add">+	set_satp_mode(dtb_pa);
+</span> #endif
+ 
+ 	/*
+-- 
+2.37.2
+
+</pre><hr><pre>WARNING: multiple messages have this Message-ID (<a href="d/">diff</a>)</pre><pre>From: Alexandre Ghiti &lt;alexghiti@rivosinc.com&gt;
+To: "Jonathan Corbet" &lt;corbet@lwn.net&gt;,
+	"Paul Walmsley" &lt;paul.walmsley@sifive.com&gt;,
+	"Palmer Dabbelt" &lt;palmer@dabbelt.com&gt;,
+	"Albert Ou" &lt;aou@eecs.berkeley.edu&gt;,
+	"Conor Dooley" &lt;conor@kernel.org&gt;,
+	"Ard Biesheuvel" &lt;ardb@kernel.org&gt;,
+	"Björn Töpel" &lt;bjorn@kernel.org&gt;,
+	<a href="../../linux-doc/?t=20230424092431">linux-doc@vger.kernel.org</a>, <a href="../../lkml/?t=20230424092431">linux-kernel@vger.kernel.org</a>,
+	<a href="../../linux-riscv/?t=20230424092431">linux-riscv@lists.infradead.org</a>
+Cc: "Alexandre Ghiti" &lt;alexghiti@rivosinc.com&gt;,
+	"Björn Töpel" &lt;bjorn@rivosinc.com&gt;
+Subject: <a href="#r" id="t">[PATCH v10 1/1] riscv: Allow to downgrade paging mode from the command line</a>
+Date: Mon, 24 Apr 2023 11:23:13 +0200	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20230424092313.178699-2-alexghiti@rivosinc.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20230424092313.178699-1-alexghiti@rivosinc.com/">20230424092313.178699-1-alexghiti@rivosinc.com</a>&gt;
+
+Add 2 early command line parameters that allow to downgrade satp mode
+(using the same naming as x86):
+- "no5lvl": use a 4-level page table (down from sv57 to sv48)
+- "no4lvl": use a 3-level page table (down from sv57/sv48 to sv39)
+
+Note that going through the device tree to get the kernel command line
+works with ACPI too since the efi stub creates a device tree anyway with
+the command line.
+
+In KASAN kernels, we can't use the libfdt that early in the boot process
+since we are not ready to execute instrumented functions. So instead of
+using the "generic" libfdt, we compile our own versions of those functions
+that are not instrumented and that are prefixed so that they do not
+conflict with the generic ones. We also need the non-instrumented versions
+of the string functions and the prefixed versions of memcpy/memmove.
+
+This is largely inspired by commit aacd149b6238 ("arm64: head: avoid
+relocating the kernel twice for KASLR") from which I removed compilation
+flags that were not relevant to RISC-V at the moment (LTO, SCS). Also
+note that we have to link with -z norelro to avoid ld.lld to throw a
+warning with the new .got sections, like in commit 311bea3cb9ee ("arm64:
+link with -z norelro for LLD or aarch64-elf").
+
+Signed-off-by: Alexandre Ghiti &lt;alexghiti@rivosinc.com&gt;
+Tested-by: Björn Töpel &lt;bjorn@rivosinc.com&gt;
+Reviewed-by: Björn Töpel &lt;bjorn@rivosinc.com&gt;
+---
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1admin-guide:kernel-parameters.txt" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1admin-guide:kernel-parameters.txt">.../admin-guide/kernel-parameters.txt</a>         |  5 +-
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:Makefile" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:Makefile">arch/riscv/Makefile</a>                           |  3 +-
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:Makefile" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:Makefile">arch/riscv/kernel/Makefile</a>                    |  2 +
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:Makefile" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:Makefile">arch/riscv/kernel/pi/Makefile</a>                 | 39 ++++++++++++
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:cmdline_early.c" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:cmdline_early.c">arch/riscv/kernel/pi/cmdline_early.c</a>          | 62 +++++++++++++++++++
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:vmlinux.lds.S" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:vmlinux.lds.S">arch/riscv/kernel/vmlinux.lds.S</a>               | 11 +++-
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memcpy.S" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memcpy.S">arch/riscv/lib/memcpy.S</a>                       |  2 +
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memmove.S" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memmove.S">arch/riscv/lib/memmove.S</a>                      |  2 +
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:strlen.S" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:strlen.S">arch/riscv/lib/strlen.S</a>                       |  1 +
+ <a id="iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:mm:init.c" href="#Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:mm:init.c">arch/riscv/mm/init.c</a>                          | 36 +++++++++--
+ 10 files <a href="#related">changed</a>, 154 insertions(+), 9 deletions(-)
+ create mode 100644 arch/riscv/kernel/pi/Makefile
+ create mode 100644 arch/riscv/kernel/pi/cmdline_early.c
+
+<span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1admin-guide:kernel-parameters.txt" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1admin-guide:kernel-parameters.txt">diff</a> --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 6221a1d057dd..accc400b43f1 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+</span><span class="hunk">@@ -3576,7 +3576,10 @@
+</span> 			emulation library even if a 387 maths coprocessor
+ 			is present.
+ 
+<span class="del">-	no5lvl		[X86-64] Disable 5-level paging mode. Forces
+</span><span class="add">+	no4lvl		[RISCV] Disable 4-level and 5-level paging modes. Forces
++			kernel to use 3-level paging instead.
++
++	no5lvl		[X86-64,RISCV] Disable 5-level paging mode. Forces
+</span> 			kernel to use 4-level paging instead.
+ 
+ 	nofsgsbase	[X86] Disables FSGSBASE instructions.
+<span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:Makefile" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:Makefile">diff</a> --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 7dc6904a6836..6eef6b33795d 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+</span><span class="hunk">@@ -7,8 +7,9 @@
+</span> #
+ 
+ OBJCOPYFLAGS    := -O binary
+<span class="add">+LDFLAGS_vmlinux := -z norelro
+</span> ifeq ($(CONFIG_RELOCATABLE),y)
+<span class="del">-	LDFLAGS_vmlinux += -shared -Bsymbolic -z notext -z norelro --emit-relocs
+</span><span class="add">+	LDFLAGS_vmlinux += -shared -Bsymbolic -z notext --emit-relocs
+</span> 	KBUILD_CFLAGS += -fPIE
+ endif
+ ifeq ($(CONFIG_DYNAMIC_FTRACE),y)
+<span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:Makefile" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:Makefile">diff</a> --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+index 4cf303a779ab..aa22f87faeae 100644
+--- a/arch/riscv/kernel/Makefile
++++ b/arch/riscv/kernel/Makefile
+</span><span class="hunk">@@ -89,3 +89,5 @@ obj-$(CONFIG_EFI)		+= efi.o
+</span> obj-$(CONFIG_COMPAT)		+= compat_syscall_table.o
+ obj-$(CONFIG_COMPAT)		+= compat_signal.o
+ obj-$(CONFIG_COMPAT)		+= compat_vdso/
+<span class="add">+
++obj-$(CONFIG_64BIT)		+= pi/
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:Makefile" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:Makefile">diff</a> --git a/arch/riscv/kernel/pi/Makefile b/arch/riscv/kernel/pi/Makefile
+new file mode 100644
+index 000000000000..5d7cb991f2b8
+--- /dev/null
++++ b/arch/riscv/kernel/pi/Makefile
+</span><span class="hunk">@@ -0,0 +1,39 @@
+</span><span class="add">+# SPDX-License-Identifier: GPL-2.0
++# This file was copied from arm64/kernel/pi/Makefile.
++
++KBUILD_CFLAGS	:= $(subst $(CC_FLAGS_FTRACE),,$(KBUILD_CFLAGS)) -fpie \n+		   -Os -DDISABLE_BRANCH_PROFILING $(DISABLE_STACKLEAK_PLUGIN) \n+		   $(call cc-option,-mbranch-protection=none) \n+		   -I$(srctree)/scripts/dtc/libfdt -fno-stack-protector \n+		   -D__DISABLE_EXPORTS -ffreestanding \n+		   -fno-asynchronous-unwind-tables -fno-unwind-tables \n+		   $(call cc-option,-fno-addrsig)
++
++KBUILD_CFLAGS	+= -mcmodel=medany
++
++CFLAGS_cmdline_early.o += -D__NO_FORTIFY
++CFLAGS_lib-fdt_ro.o += -D__NO_FORTIFY
++
++GCOV_PROFILE	:= n
++KASAN_SANITIZE	:= n
++KCSAN_SANITIZE	:= n
++UBSAN_SANITIZE	:= n
++KCOV_INSTRUMENT	:= n
++
++$(obj)/%.pi.o: OBJCOPYFLAGS := --prefix-symbols=__pi_ \n+			       --remove-section=.note.gnu.property \n+			       --prefix-alloc-sections=.init
++$(obj)/%.pi.o: $(obj)/%.o FORCE
++	$(call if_changed,objcopy)
++
++$(obj)/lib-%.o: $(srctree)/lib/%.c FORCE
++	$(call if_changed_rule,cc_o_c)
++
++$(obj)/string.o: $(srctree)/lib/string.c FORCE
++	$(call if_changed_rule,cc_o_c)
++
++$(obj)/ctype.o: $(srctree)/lib/ctype.c FORCE
++	$(call if_changed_rule,cc_o_c)
++
++obj-y		:= cmdline_early.pi.o string.pi.o ctype.pi.o lib-fdt.pi.o lib-fdt_ro.pi.o
++extra-y		:= $(patsubst %.pi.o,%.o,$(obj-y))
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:cmdline_early.c" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:pi:cmdline_early.c">diff</a> --git a/arch/riscv/kernel/pi/cmdline_early.c b/arch/riscv/kernel/pi/cmdline_early.c
+new file mode 100644
+index 000000000000..05652d13c746
+--- /dev/null
++++ b/arch/riscv/kernel/pi/cmdline_early.c
+</span><span class="hunk">@@ -0,0 +1,62 @@
+</span><span class="add">+// SPDX-License-Identifier: GPL-2.0-only
++#include &lt;linux/types.h&gt;
++#include &lt;linux/init.h&gt;
++#include &lt;linux/libfdt.h&gt;
++#include &lt;linux/string.h&gt;
++#include &lt;asm/pgtable.h&gt;
++#include &lt;asm/setup.h&gt;
++
++static char early_cmdline[COMMAND_LINE_SIZE];
++
++/*
++ * Declare the functions that are exported (but prefixed) here so that LLVM
++ * does not complain it lacks the 'static' keyword (which, if added, makes
++ * LLVM complain because the function is actually unused in this file).
++ */
++u64 set_satp_mode_from_cmdline(uintptr_t dtb_pa);
++
++static char *get_early_cmdline(uintptr_t dtb_pa)
++{
++	const char *fdt_cmdline = NULL;
++	unsigned int fdt_cmdline_size = 0;
++	int chosen_node;
++
++	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
++		chosen_node = fdt_path_offset((void *)dtb_pa, "/chosen");
++		if (chosen_node &gt;= 0) {
++			fdt_cmdline = fdt_getprop((void *)dtb_pa, chosen_node,
++						  "bootargs", NULL);
++			if (fdt_cmdline) {
++				fdt_cmdline_size = strlen(fdt_cmdline);
++				strscpy(early_cmdline, fdt_cmdline,
++					COMMAND_LINE_SIZE);
++			}
++		}
++	}
++
++	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
++	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
++	    fdt_cmdline_size == 0 /* CONFIG_CMDLINE_FALLBACK */) {
++		strncat(early_cmdline, CONFIG_CMDLINE,
++			COMMAND_LINE_SIZE - fdt_cmdline_size);
++	}
++
++	return early_cmdline;
++}
++
++static u64 match_noXlvl(char *cmdline)
++{
++	if (strstr(cmdline, "no4lvl"))
++		return SATP_MODE_48;
++	else if (strstr(cmdline, "no5lvl"))
++		return SATP_MODE_57;
++
++	return 0;
++}
++
++u64 set_satp_mode_from_cmdline(uintptr_t dtb_pa)
++{
++	char *cmdline = get_early_cmdline(dtb_pa);
++
++	return match_noXlvl(cmdline);
++}
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:vmlinux.lds.S" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:kernel:vmlinux.lds.S">diff</a> --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+index 615ff5842690..305877d85e96 100644
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+</span><span class="hunk">@@ -83,6 +83,14 @@ SECTIONS
+</span> 	/* Start of init data section */
+ 	__init_data_begin = .;
+ 	INIT_DATA_SECTION(16)
+<span class="add">+
++	/* Those sections result from the compilation of kernel/pi/string.c */
++	.init.pidata : {
++		*(.init.srodata.cst8*)
++		*(.init__bug_table*)
++		*(.init.sdata*)
++	}
++
+</span> 	.init.bss : {
+ 		*(.init.bss)	/* from the EFI stub */
+ 	}
+<span class="hunk">@@ -128,9 +136,10 @@ SECTIONS
+</span> 		__rela_dyn_end = .;
+ 	}
+ 
+<span class="add">+	.got : { *(.got*) }
++
+</span> #ifdef CONFIG_RELOCATABLE
+ 	.data.rel : { *(.data.rel*) }
+<span class="del">-	.got : { *(.got*) }
+</span> 	.plt : { *(.plt) }
+ 	.dynamic : { *(.dynamic) }
+ 	.dynsym : { *(.dynsym) }
+<span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memcpy.S" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memcpy.S">diff</a> --git a/arch/riscv/lib/memcpy.S b/arch/riscv/lib/memcpy.S
+index 51ab716253fa..1a40d01a9543 100644
+--- a/arch/riscv/lib/memcpy.S
++++ b/arch/riscv/lib/memcpy.S
+</span><span class="hunk">@@ -106,3 +106,5 @@ WEAK(memcpy)
+</span> 6:
+ 	ret
+ END(__memcpy)
+<span class="add">+SYM_FUNC_ALIAS(__pi_memcpy, __memcpy)
++SYM_FUNC_ALIAS(__pi___memcpy, __memcpy)
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memmove.S" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:memmove.S">diff</a> --git a/arch/riscv/lib/memmove.S b/arch/riscv/lib/memmove.S
+index e0609e1f0864..838ff2022fe3 100644
+--- a/arch/riscv/lib/memmove.S
++++ b/arch/riscv/lib/memmove.S
+</span><span class="hunk">@@ -314,3 +314,5 @@ return_from_memmove:
+</span> 
+ SYM_FUNC_END(memmove)
+ SYM_FUNC_END(__memmove)
+<span class="add">+SYM_FUNC_ALIAS(__pi_memmove, __memmove)
++SYM_FUNC_ALIAS(__pi___memmove, __memmove)
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:strlen.S" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:lib:strlen.S">diff</a> --git a/arch/riscv/lib/strlen.S b/arch/riscv/lib/strlen.S
+index 15bb8f3aa959..9d0055616f7b 100644
+--- a/arch/riscv/lib/strlen.S
++++ b/arch/riscv/lib/strlen.S
+</span><span class="hunk">@@ -131,3 +131,4 @@ strlen_zbb:
+</span> .option pop
+ #endif
+ SYM_FUNC_END(strlen)
+<span class="add">+SYM_FUNC_ALIAS(__pi_strlen, strlen)
+</span><span class="head"><a href="#iZ2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:mm:init.c" id="Z2e.:20230424092313.178699-2-alexghiti::40rivosinc.com:1arch:riscv:mm:init.c">diff</a> --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index bce899b180cd..3ad771571c2d 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+</span><span class="hunk">@@ -746,6 +746,8 @@ static __init pgprot_t pgprot_from_va(uintptr_t va)
+</span> #endif /* CONFIG_STRICT_KERNEL_RWX */
+ 
+ #if defined(CONFIG_64BIT) &amp;&amp; !defined(CONFIG_XIP_KERNEL)
+<span class="add">+u64 __pi_set_satp_mode_from_cmdline(uintptr_t dtb_pa);
++
+</span> static void __init disable_pgtable_l5(void)
+ {
+ 	pgtable_l5_enabled = false;
+<span class="hunk">@@ -760,17 +762,39 @@ static void __init disable_pgtable_l4(void)
+</span> 	satp_mode = SATP_MODE_39;
+ }
+ 
+<span class="add">+static int __init print_no4lvl(char *p)
++{
++	pr_info("Disabled 4-level and 5-level paging");
++	return 0;
++}
++early_param("no4lvl", print_no4lvl);
++
++static int __init print_no5lvl(char *p)
++{
++	pr_info("Disabled 5-level paging");
++	return 0;
++}
++early_param("no5lvl", print_no5lvl);
++
+</span> /*
+  * There is a simple way to determine if 4-level is supported by the
+  * underlying hardware: establish 1:1 mapping in 4-level page table mode
+  * then read SATP to see if the configuration was taken into account
+  * meaning sv48 is supported.
+  */
+<span class="del">-static __init void set_satp_mode(void)
+</span><span class="add">+static __init void set_satp_mode(uintptr_t dtb_pa)
+</span> {
+ 	u64 identity_satp, hw_satp;
+ 	uintptr_t set_satp_mode_pmd = ((unsigned long)set_satp_mode) &amp; PMD_MASK;
+<span class="del">-	bool check_l4 = false;
+</span><span class="add">+	u64 satp_mode_cmdline = __pi_set_satp_mode_from_cmdline(dtb_pa);
++
++	if (satp_mode_cmdline == SATP_MODE_57) {
++		disable_pgtable_l5();
++	} else if (satp_mode_cmdline == SATP_MODE_48) {
++		disable_pgtable_l5();
++		disable_pgtable_l4();
++		return;
++	}
+</span> 
+ 	create_p4d_mapping(early_p4d,
+ 			set_satp_mode_pmd, (uintptr_t)early_pud,
+<span class="hunk">@@ -789,7 +813,8 @@ static __init void set_satp_mode(void)
+</span> retry:
+ 	create_pgd_mapping(early_pg_dir,
+ 			   set_satp_mode_pmd,
+<span class="del">-			   check_l4 ? (uintptr_t)early_pud : (uintptr_t)early_p4d,
+</span><span class="add">+			   pgtable_l5_enabled ?
++				(uintptr_t)early_p4d : (uintptr_t)early_pud,
+</span> 			   PGDIR_SIZE, PAGE_TABLE);
+ 
+ 	identity_satp = PFN_DOWN((uintptr_t)&amp;early_pg_dir) | satp_mode;
+<span class="hunk">@@ -800,9 +825,8 @@ static __init void set_satp_mode(void)
+</span> 	local_flush_tlb_all();
+ 
+ 	if (hw_satp != identity_satp) {
+<span class="del">-		if (!check_l4) {
+</span><span class="add">+		if (pgtable_l5_enabled) {
+</span> 			disable_pgtable_l5();
+<span class="del">-			check_l4 = true;
+</span> 			memset(early_pg_dir, 0, PAGE_SIZE);
+ 			goto retry;
+ 		}
+<span class="hunk">@@ -1031,7 +1055,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+</span> #endif
+ 
+ #if defined(CONFIG_64BIT) &amp;&amp; !defined(CONFIG_XIP_KERNEL)
+<span class="del">-	set_satp_mode();
+</span><span class="add">+	set_satp_mode(dtb_pa);
+</span> #endif
+ 
+ 	/*
+-- 
+2.37.2
+
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre><a href="../20230424092313.178699-2-alexghiti@rivosinc.com/" rel="next">next</a> <a href="../20230424092313.178699-1-alexghiti@rivosinc.com/" rel="prev">prev parent</a> <a href="#R">reply</a>	other threads:[<a href="../?t=20230424092425">~2023-04-24  9:24 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>6+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2023-04-24  9:23 <a href="../20230424092313.178699-1-alexghiti@rivosinc.com/">[PATCH v10 0/1] riscv: Allow to downgrade paging mode from the command line</a> Alexandre Ghiti
+2023-04-24  9:23 ` <a href="../20230424092313.178699-1-alexghiti@rivosinc.com/">Alexandre Ghiti</a>
+<b>2023-04-24  9:23 ` <a id="r" href="#t">Alexandre Ghiti [this message]</a></b>
+2023-04-24  9:23   ` <a href="../20230424092313.178699-2-alexghiti@rivosinc.com/">[PATCH v10 1/1]</a> " Alexandre Ghiti
+2023-04-26 15:57 ` <a href="../168252462351.26895.11552045445752621188.b4-ty@rivosinc.com/">[PATCH v10 0/1]</a> " Palmer Dabbelt
+2023-04-26 15:57   ` <a href="../168252462351.26895.11552045445752621188.b4-ty@rivosinc.com/">Palmer Dabbelt</a>
+</pre><form id="related" action="../"><pre>find likely ancestor, descendant, or conflicting patches for <a href="#t">this message</a>:
+<textarea name="q" cols="72" rows="14">( dfblob:6221a1d057d dfblob:accc400b43f dfblob:7dc6904a683
+dfblob:6eef6b33795 dfblob:4cf303a779a dfblob:aa22f87faea
+dfblob:5d7cb991f2b dfblob:05652d13c74 dfblob:615ff584269
+dfblob:305877d85e9 dfblob:51ab716253f dfblob:1a40d01a954
+dfblob:e0609e1f086 dfblob:838ff2022fe dfblob:15bb8f3aa95
+dfblob:9d0055616f7 dfblob:bce899b180c dfblob:3ad771571c2
+dfblob:6221a1d057d dfblob:accc400b43f dfblob:7dc6904a683
+dfblob:6eef6b33795 dfblob:4cf303a779a dfblob:aa22f87faea
+dfblob:5d7cb991f2b dfblob:05652d13c74 dfblob:615ff584269
+dfblob:305877d85e9 dfblob:51ab716253f dfblob:1a40d01a954
+dfblob:e0609e1f086 dfblob:838ff2022fe dfblob:15bb8f3aa95
+dfblob:9d0055616f7 dfblob:bce899b180c dfblob:3ad771571c2 )
+ OR (
+bs:"[PATCH v10 1/1] riscv: Allow to downgrade paging mode from the command line" )</textarea>
+<input type="submit" value="search">	(<a href="../_/text/help/#search">help</a>)</pre></form>
+<hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20230424092313.178699-2-alexghiti@rivosinc.com \n    --to=alexghiti@rivosinc.com \n    --cc=aou@eecs.berkeley.edu \n    --cc=ardb@kernel.org \n    --cc=bjorn@kernel.org \n    --cc=bjorn@rivosinc.com \n    --cc=conor@kernel.org \n    --cc=corbet@lwn.net \n    --cc=linux-doc@vger.kernel.org \n    --cc=linux-kernel@vger.kernel.org \n    --cc=linux-riscv@lists.infradead.org \n    --cc=palmer@dabbelt.com \n    --cc=paul.walmsley@sifive.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:alexghiti@rivosinc.com?In-Reply-To=%3C20230424092313.178699-2-alexghiti@rivosinc.com%3E&amp;Cc=aou%40eecs.berkeley.edu%2Cardb%40kernel.org%2Cbjorn%40kernel.org%2Cbjorn%40rivosinc.com%2Cconor%40kernel.org%2Ccorbet%40lwn.net%2Clinux-doc%40vger.kernel.org%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cpalmer%40dabbelt.com%2Cpaul.walmsley%40sifive.com&amp;Subject=Re%3A%20%5BPATCH%20v10%201%2F1%5D%20riscv%3A%20Allow%20to%20downgrade%20paging%20mode%20from%20the%20command%20line">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is an external index of several public inboxes,
+see <a href="../_/text/mirror/">mirroring instructions</a> on how to clone and mirror
+all data and code used by this external index.</pre><orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
