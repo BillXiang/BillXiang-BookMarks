@@ -103,6 +103,8 @@ mkdir tags
 read_dir "."
 echo $html_head | tee all.html index.html docs.html
 
+ls -l ./web_deploy/
+
 find ./tags -type f |xargs -i mv {} {}.html
 echo "<hr><h3>TAGs</h3>" | tee -a all.html index.html docs.html
 wc -l tags/*|sort -r|tail -n +2|head -n 20|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' | tee -a all.html index.html docs.html
@@ -170,4 +172,3 @@ echo "        </tbody>
     </body>
 </html>" >> docs.html
 rm -f *.tmp
-ls -l ./web_deploy/
