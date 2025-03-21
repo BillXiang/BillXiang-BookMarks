@@ -51,7 +51,7 @@ read_dir(){
         then
             if [[ $file != '.' && $file != '..' && $file != 'web_deploy' ]]
             then
-                echo read_dir "$file"
+                echo "read_dir" "$file"
                 read_dir "$file"
             fi
         else
@@ -94,6 +94,8 @@ read_dir(){
     done
     
 }
+
+cat ./web_deploy/html_preview.html
 
 echo "" > url.tmp
 echo "" > docs.tmp
@@ -168,3 +170,4 @@ echo "        </tbody>
     </body>
 </html>" >> docs.html
 rm -f *.tmp
+cat ./web_deploy/html_preview.html
