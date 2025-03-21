@@ -49,7 +49,7 @@ read_dir(){
     do
         if [ -d "$file" ]
         then
-            if [[ $file != '.' && $file != '..' && $file != 'web_deploy' ]]
+            if [[ $file != '.' && $file != '..' && $file != './web_deploy' ]]
             then
                 echo "read_dir" "$file"
                 read_dir "$file"
@@ -95,15 +95,11 @@ read_dir(){
     
 }
 
-cat ./web_deploy/html_preview.html
-
 echo "" > url.tmp
 echo "" > docs.tmp
 mkdir tags
 read_dir "."
 echo $html_head | tee all.html index.html docs.html
-
-ls -l ./web_deploy/
 
 find ./tags -type f |xargs -i mv {} {}.html
 echo "<hr><h3>TAGs</h3>" | tee -a all.html index.html docs.html
