@@ -9,11 +9,12 @@ const rawUrl = urlParams.get('rawUrl'); // 例如：'John'
 fetch(rawUrl)
     .then(response => response.text())
     .then(html => {
-    // 动态创建 iframe 并插入 HTML
-    const iframe = document.createElement('iframe');
-    document.body.appendChild(iframe);
-    iframe.srcdoc = html;
-    iframe.style.width = '100%';
-    iframe.style.height = '100vh';
+        // 动态创建 iframe 并插入 HTML
+        const iframe = document.createElement('iframe');
+        document.body.appendChild(iframe);
+        iframe.srcdoc = html;
+        iframe.style.width = '100%';
+        iframe.style.height = '100vh';
+        iframe.style.border = '0';
     })
     .catch(error => console.error('Failed to load:', error));
