@@ -51,6 +51,7 @@ read_dir(){
         then
             if [[ $file != '.' && $file != '..' && $file != 'web_deploy' ]]
             then
+                echo read_dir "$file"
                 read_dir "$file"
             fi
         else
@@ -81,6 +82,7 @@ read_dir(){
                     </tbody></table></td></tr>" | tee -a ../url.tmp $tags
                     cd ..
                 done
+                echo rm "$file"
                 rm "$file"
             elif [[ "$kimi" -ne 1 ]];then
                 file_name=$(echo $file | awk -F'/' '{print $NF}')
