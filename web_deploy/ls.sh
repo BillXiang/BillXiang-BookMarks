@@ -170,4 +170,4 @@ echo "        </tbody>
     </body>
 </html>" >> docs.html
 rm -f *.tmp
-cat ./web_deploy/html_preview.html
+ls -l ./web_deploy/
