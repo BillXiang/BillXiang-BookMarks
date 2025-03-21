@@ -49,7 +49,7 @@ read_dir(){
     do
         if [ -d "$file" ]
         then
-            if [[ $file != '.' && $file != '..' ]]
+            if [[ $file != '.' && $file != '..' && $file != 'web_deploy' ]]
             then
                 read_dir "$file"
             fi
@@ -75,7 +75,7 @@ read_dir(){
                     echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
                     <tr><td style='display: none;'>_${a}_${b}_</td><td>${a} ${b}</td></tr> \
                     <tr style='font-size: 25px;'><td><a href=\"$ori_url?source=https://billxiang.github.io/BillXiang-BookMarks\" target=\"_blank\"><b>$c</b></a></td></tr> \
-                    <tr style='font-size: 25px;'><td><a href=\"./web_deploy/html_preview.html?rawUrl=https://raw.githubusercontent.com/BillXiang/BillXiang-BookMarks/refs/heads/main/$file\" target=\"_blank\"><b>原文链接失效了?试试备份</b></a></td></tr> \
+                    <tr style='font-size: 25px;'><td><a href=\"./web_deploy/html_preview.html?rawUrl=https://raw.githubusercontent.com/BillXiang/BillXiang-BookMarks/refs/heads/main/$file\" target=\"_blank\">原文链接失效了?试试备份</a></td></tr> \
                     <tr><td>TAGs:$tags</td></tr> \
                     <tr><td>$summary</td></tr> \
                     </tbody></table></td></tr>" | tee -a ../url.tmp $tags
