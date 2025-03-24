@@ -57,6 +57,7 @@ read_dir(){
         else
             html=$(echo $file|grep "html$"|wc -l)
             kimi=$(echo $file|grep "kimi$"|wc -l)
+            md=$(echo $file|grep "md$"|wc -l)
             
             name=${file/\.\//}
             name=${name/书签工具栏/}
@@ -84,6 +85,11 @@ read_dir(){
                 done
                 echo rm "$file"
                 rm "$file"
+            elif [[ "$md" -ne 0 ]];then
+                file_name=$(echo $file | awk -F'/' '{print $NF}')
+                tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf " "}else{printf "\n"}}}}')
+                echo "<tr><td><a href=\"./web_deploy/markdown_view.html?rawUrl=$file\">$file_name</a></td></tr>" >> docs.tmp
+                echo "<tr style='margin-bottom: 20px;'><td>TAGs:$tags</td></tr>" >> docs.tmp
             elif [[ "$kimi" -ne 1 ]];then
                 file_name=$(echo $file | awk -F'/' '{print $NF}')
                 tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf " "}else{printf "\n"}}}}')
