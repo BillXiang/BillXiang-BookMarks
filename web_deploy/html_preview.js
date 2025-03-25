@@ -10,7 +10,7 @@ const key = decodeURIComponent(keyEncoded);
 // decodeURIComponent(valueEncoded.replace(/\+/g, ' ')) : '';
 
 // 创建 URLSearchParams 对象
-const urlParams = new URLSearchParams(window.location.search);
+//const urlParams = new URLSearchParams(window.location.search);
 // 获取单个参数（返回第一个值）
 const rawUrl = valueEncoded;
 // 发起跨域请求
