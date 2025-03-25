@@ -1,0 +1,929 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/ISA/zkr/[1_5] RISC-V_ KVM_ Forward SEED CSR access to user space - Patchwork (2025-03-25 10：58：25).html
+ Page saved with X-Webpage-Conserve 
+ url: https://patchwork.ozlabs.org/project/kvm-riscv/patch/20240214123757.305347-2-apatel@ventanamicro.com/
+ Summary: This text appears to be an email message containing a patch series for the RISC-V KVM (Kernel-based Virtual Machine) project. The patch series is related to forwarding SEED CSR (Control and Status Register) access to user space when the Zkr extension is available to the guest/VM. The patch includes changes to the `arch/riscv/kvm/vcpu_insn.c` file and is signed off by Anup Patel and reviewed by Andrew Jones. The patch series also includes metadata such as the list ID, mailman version, and sender information.此文本似乎是一封电子邮件，其中包含 RISC-V KVM（基于内核的虚拟机）项目的补丁系列。此补丁系列与当 Zkr 扩展可供来宾/VM 使用时将 SEED CSR（控制和状态寄存器）访问转发到用户空间有关。此补丁包括对 'arch/riscv/kvm/vcpu_insn.c' 文件的更改，由 Anup Patel 签署并由 Andrew Jones 审阅。修补程序系列还包括元数据，例如列表 ID、mailman 版本和发件人信息。
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" imt-state="dual"><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>[1/5] RISC-V: KVM: Forward SEED CSR access to user space - Patchwork</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/selectize.bootstrap3.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+  <script src="/static/js/jquery-1.10.1.min.js"></script>
+  <script src="/static/js/jquery.stickytableheaders.min.js"></script>
+  <script src="/static/js/jquery.checkboxes-1.0.6.min.js"></script>
+  <!-- IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js">
+    </script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.0.8/es5-shim.min.js"></script>
+  <![endif]-->
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="/static/js/selectize.min.js"></script>
+  <script src="/static/js/clipboard.min.js"></script>
+  <script>
+   $(document).ready(function() {
+       new Clipboard(document.querySelectorAll('button.btn-copy'));
+   });
+  </script>
+
+ <style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+ <body style="">
+  <nav class="navbar navbar-inverse navbar-static-top">
+   <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Patchwork</a>
+      <span class="navbar-subbrand">
+         Linux KVM RISC-V
+      </span>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-collapse">
+
+
+      <ul class="nav navbar-nav">
+        <li class="">
+          <a href="/project/kvm-riscv/list/">
+            <span class="glyphicon glyphicon-file"></span>
+            Patches
+          </a>
+        </li>
+        <li class="">
+          <a href="/project/kvm-riscv/bundles/">
+            <span class="glyphicon glyphicon-gift"></span>
+            Bundles
+          </a>
+        </li>
+        <li class="">
+          <a href="/project/kvm-riscv/">
+            <span class="glyphicon glyphicon-info-sign"></span>
+            About this project
+          </a>
+        </li>
+      </ul>
+
+
+     <ul class="nav navbar-nav navbar-right">
+
+     <li><a href="/user/login/">Login</a></li>
+     <li><a href="/register/">Register</a></li>
+     <li><a href="/mail/">Mail settings</a></li>
+
+     </ul>
+    </div>
+   </div>
+  </nav>
+
+  <div class="container-fluid">
+
+<script>
+function toggle_div(link_id, headers_id, label_show, label_hide)
+{
+    var link = document.getElementById(link_id)
+    var headers = document.getElementById(headers_id)
+
+    var hidden = headers.style['display'] == 'none';
+
+    if (hidden) {
+        link.innerHTML = label_hide || 'hide';
+        headers.style['display'] = 'block';
+    } else {
+        link.innerHTML = label_show || 'show';
+        headers.style['display'] = 'none';
+    }
+
+}
+</script>
+
+<div>
+  <div class="btn-group pull-right">
+  <button type="button" class="btn btn-default btn-copy" data-clipboard-text="1898911" title="Copy to Clipboard">
+      1898911
+  </button>
+  
+  <a href="/project/kvm-riscv/patch/20240214123757.305347-2-apatel@ventanamicro.com/raw/" class="btn btn-default" role="button" title="Download patch diff">diff</a>
+  <a href="/project/kvm-riscv/patch/20240214123757.305347-2-apatel@ventanamicro.com/mbox/" class="btn btn-default" role="button" title="Download patch mbox">mbox</a>
+  
+  
+  <a href="/series/394961/mbox/" class="btn btn-default" role="button" title="Download patch mbox with dependencies">series</a>
+  
+</div>
+
+  <h1>[1/5] RISC-V: KVM: Forward SEED CSR access to user space</h1>
+</div>
+
+<table class="patchmeta">
+ <tbody><tr>
+  <th>Message ID</th>
+  
+  <td>20240214123757.305347-2-apatel@ventanamicro.com</td>
+  
+ </tr>
+
+ <tr>
+  <th>State</th>
+  <td>Accepted</td>
+ </tr>
+
+
+
+ <tr>
+  <th>Headers</th>
+  <td><a id="togglepatchheaders" href="javascript:toggle_div('togglepatchheaders', 'patchheaders')">show</a>
+   <div id="patchheaders" class="patchheaders" style="display:none;">
+    <pre>Return-Path: 
+ &lt;kvm-riscv-bounces+incoming=patchwork.ozlabs.org@lists.infradead.org&gt;
+X-Original-To: incoming@patchwork.ozlabs.org
+Delivered-To: patchwork-incoming@legolas.ozlabs.org
+Authentication-Results: legolas.ozlabs.org;
+	dkim=pass (2048-bit key;
+ secure) header.d=lists.infradead.org header.i=@lists.infradead.org
+ header.a=rsa-sha256 header.s=bombadil.20210309 header.b=vMU0YHmo;
+	dkim=fail reason="signature verification failed" (2048-bit key;
+ unprotected) header.d=ventanamicro.com header.i=@ventanamicro.com
+ header.a=rsa-sha256 header.s=google header.b=F0/SiqA7;
+	dkim-atps=neutral
+Authentication-Results: legolas.ozlabs.org;
+ spf=none (no SPF record) smtp.mailfrom=lists.infradead.org
+ (client-ip=2607:7c80:54:3::133; helo=bombadil.infradead.org;
+ envelope-from=kvm-riscv-bounces+incoming=patchwork.ozlabs.org@lists.infradead.org;
+ receiver=patchwork.ozlabs.org)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:3::133])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by legolas.ozlabs.org (Postfix) with ESMTPS id 4TZd5f0VSRz23j4
+	for &lt;incoming@patchwork.ozlabs.org&gt;; Wed, 14 Feb 2024 23:38:14 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sh7s2M90+AB0U9p4ydrk4JU4UQaLaRdNDuKLi94RBxQ=; b=vMU0YHmo8CBnd+
+	6rVUxdBTjTrtDk6x1lHtecbtksrEL22M8EZ3IC+vU/CHg40m84WYrrPO/C08n04nJ+lH6D+IfPob5
+	fdrkCPEay7/dARscWl/Olv5WVMuKdjM6+BVjgkl+ARz9rpdNIQ57YYEzllhYGn4UC4VkUQ8aGXMqR
+	lLzLDr1DtQjrk+fWuuUUcpvKYkXxPGgWn/+opyGbJgF/ZyGjW86gBIwTMNQANmbW/XLoogyXzUpOk
+	XSlPDsh3+T1/fN8iG/PSfhewmahlFGMpsoEVn+cE7RhSp6Z0GFPjSO+l0N6IP2PJY6tCpHv2Z5J+Q
+	ghf5hhs4fgLP05dwx+vg==;
+Received: from localhost ([::1] helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raEWi-0000000Cr5B-2nb0;
+	Wed, 14 Feb 2024 12:38:12 +0000
+Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raEWg-0000000Cr3o-26mS
+	for kvm-riscv@lists.infradead.org;
+	Wed, 14 Feb 2024 12:38:11 +0000
+Received: by mail-pg1-x535.google.com with SMTP id
+ 41be03b00d2f7-5d3907ff128so4332207a12.3
+        for &lt;kvm-riscv@lists.infradead.org&gt;;
+ Wed, 14 Feb 2024 04:38:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1707914290; x=1708519090;
+ darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MnX8n4eslB3tatxrOtV2L4MVIcOQlO77yyiHCpmaDS0=;
+        b=F0/SiqA7SEj8VSytBd6tOnkHup6LWWailIpjL5VMGsczxq7LFjajb8qKi3PYVReLCR
+         6+HUZHwPQk/f6gqFdw4TvLEAAhqAq3A36VArk6snaKeaOLkodkk4r1syLDs80w92fWLr
+         xmGHlGGvRtwWBRpDT0ddarybBao+iIVCY1t6YBhQIksvI9lx4da6Y1ngOzdclZkV+zdY
+         0sCngvYL8AW8rmfqJ45wN+A6M7jODCn6J+CB6Vu/bklDHilnIhl//GlrmbBmW1yZ4P5h
+         PnLXuRTw6pcdxBOrMNvLCU42pa1SK/GM3KjLVuhciUCFg8CENPh3Tz9EcKJECEOVr/or
+         YrAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707914290; x=1708519090;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MnX8n4eslB3tatxrOtV2L4MVIcOQlO77yyiHCpmaDS0=;
+        b=Lb7iAKnODUl5XtvAkK2IV7rXEomp6lP/5bN0rPqb3xyq4zfJsR370ua0ciWGBJkRp4
+         WJAHauOXl9dSGP7N/SjnhFuN+PDE6M31Siv2TSslaecovOYQn5KYX8YsHvfPSLTe9Cn9
+         +4c4ldhSgCTcb8JYzuQUNpS8OS0ZUL7eJjEVVR0Q8EEFfRNTWI4rLDLz/bPvdf0W1Uoa
+         8HCxj69FpUsYlhE4b221IwXB+u7U7sx5M7TyvlmAe5Cmabz+5eaeyC1tLDz6/XWdDyVk
+         vYkx3CDK7M02lEFXQT5dGeTWDQuZWII6QKSDCJDPuv2P1Pb0+ShZdYhnmERX2YyagnsM
+         v0gg==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCW+oOi5YRZshbMxHFbYi2PGaD3b4Yz9JnJx93S4scRUf/Fr7HY0+IA+RTybLmvLVvGZvhL7t2wOudRz/zosykfCAdZHWFGDKonUJVlukg==
+X-Gm-Message-State: AOJu0Yx3rh4qhZtBKB8crQmTzCW2dCMj5/ShuYK45+sQQLSesFCj4TJY
+	ZpbgGDrSCUYvFHDrPR962NjWOVVcw0Dla3Nt9nrf1Fp/iknaihVFwYRikzcR88Y=
+X-Google-Smtp-Source: 
+ AGHT+IE6uz5maWXsKH4t6Aoq6//Z/uwPwTljcM59c0ZygfRhwmy9JrCrRK0P+aMmGkUP38CMtl1oDQ==
+X-Received: by 2002:a05:6a20:d90a:b0:19e:cd5d:8903 with SMTP id
+ jd10-20020a056a20d90a00b0019ecd5d8903mr2859932pzb.24.1707914289771;
+        Wed, 14 Feb 2024 04:38:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUseRnh7ThDsfj5aeC1nn7XD1vuC0T+l4uR5+8EA2oeNaaY4beARLRbEc2A5dB3+gf69HhCmg95FNFrVqsL676h30byk8kTd9lYlLxs0hSgvQ8X5/etcT/DhcJY8x1psR7VHew9KbANffe3Cy1WV5dL6KB3sEeLM+e1Ggoznv+uXUAmeTpY+BHCYZ+k+q2ITM53/7M2rM/QM66hI4uepvz2r5n/RgCxqGIjSxTLyWZKFElRBSB9M1Eyognik4Z2r0UgSIMR3y93lLWpqJJ90Dc5/wjKMjvhSJsf6oFZNXoF8FTdUTdBAUpRfkelhR66EbOuZ2UQTbcsxdsyDQO6736aiHEUmDWyc6aZlgxg9YIaxd7odR3dbPTWOrxRnRN72wFkQyDH2Odm5MjV6E7fQl0JJwQp0hyrQ+wglwQXoIC3GobElHq8xRR5QOxNNw==
+Received: from anup-ubuntu-vm.localdomain ([171.76.87.178])
+        by smtp.gmail.com with ESMTPSA id
+ o20-20020a170902e29400b001d9b749d281sm3041419plc.53.2024.02.14.04.38.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 04:38:09 -0800 (PST)
+From: Anup Patel &lt;apatel@ventanamicro.com&gt;
+To: Paolo Bonzini &lt;pbonzini@redhat.com&gt;,
+	Atish Patra &lt;atishp@atishpatra.org&gt;,
+	Shuah Khan &lt;shuah@kernel.org&gt;
+Cc: Palmer Dabbelt &lt;palmer@dabbelt.com&gt;,
+	Paul Walmsley &lt;paul.walmsley@sifive.com&gt;,
+	Andrew Jones &lt;ajones@ventanamicro.com&gt;,
+	Anup Patel &lt;anup@brainfault.org&gt;,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Anup Patel &lt;apatel@ventanamicro.com&gt;
+Subject: [PATCH 1/5] RISC-V: KVM: Forward SEED CSR access to user space
+Date: Wed, 14 Feb 2024 18:07:53 +0530
+Message-Id: &lt;20240214123757.305347-2-apatel@ventanamicro.com&gt;
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: &lt;20240214123757.305347-1-apatel@ventanamicro.com&gt;
+References: &lt;20240214123757.305347-1-apatel@ventanamicro.com&gt;
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240214_043810_567481_B9122392 
+X-CRM114-Status: GOOD (  10.65  )
+X-Spam-Score: -0.2 (/)
+X-Spam-Report: Spam detection software,
+ running on the system "bombadil.infradead.org",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  The SEED CSR access from VS/VU mode (guest) will always
+ trap
+    to HS-mode (KVM) when Zkr extension is available to the Guest/VM. We must
+    forward this CSR access to KVM user space so that it can be emulated based
+    on the method chosen by VMM.
+ Content analysis details:   (-0.2 points, 5.0 required)
+  pts rule name              description
+ ---- ----------------------
+ --------------------------------------------------
+ -0.0 RCVD_IN_DNSWL_NONE     RBL: Sender listed at https://www.dnswl.org/, no
+                             trust
+                             [2607:f8b0:4864:20:0:0:0:535 listed in]
+                             [list.dnswl.org]
+ -0.0 SPF_PASS               SPF: sender matches SPF record
+  0.0 SPF_HELO_NONE          SPF: HELO does not publish an SPF Record
+ -0.1 DKIM_VALID             Message has at least one valid DKIM or DK
+ signature
+ -0.1 DKIM_VALID_EF          Message has a valid DKIM or DK signature from
+                             envelope-from domain
+  0.1 DKIM_SIGNED            Message has a DKIM or DK signature,
+ not necessarily valid
+ -0.1 DKIM_VALID_AU          Message has a valid DKIM or DK signature from
+ author's
+                             domain
+ -0.0 T_SCC_BODY_TEXT_LINE   No description available.
+X-BeenThere: kvm-riscv@lists.infradead.org
+X-Mailman-Version: 2.1.34
+Precedence: list
+List-Id: &lt;kvm-riscv.lists.infradead.org&gt;
+List-Unsubscribe: &lt;http://lists.infradead.org/mailman/options/kvm-riscv&gt;,
+ &lt;mailto:kvm-riscv-request@lists.infradead.org?subject=unsubscribe&gt;
+List-Archive: &lt;http://lists.infradead.org/pipermail/kvm-riscv/&gt;
+List-Post: &lt;mailto:kvm-riscv@lists.infradead.org&gt;
+List-Help: &lt;mailto:kvm-riscv-request@lists.infradead.org?subject=help&gt;
+List-Subscribe: &lt;http://lists.infradead.org/mailman/listinfo/kvm-riscv&gt;,
+ &lt;mailto:kvm-riscv-request@lists.infradead.org?subject=subscribe&gt;
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "kvm-riscv" &lt;kvm-riscv-bounces@lists.infradead.org&gt;
+Errors-To: kvm-riscv-bounces+incoming=patchwork.ozlabs.org@lists.infradead.org</pre>
+   </div>
+  </td>
+ </tr>
+
+ <tr>
+  <th>Series</th>
+  <td>
+   <a href="/project/kvm-riscv/list/?series=394961">
+    KVM RISC-V report few more ISA extensions through ONE_REG
+   </a> |
+   <a id="togglepatchseries" href="javascript:toggle_div('togglepatchseries', 'patchseries', 'expand', 'collapse')">collapse</a>
+   <div id="patchseries" class="submissionlist" style="display: block;">
+    <ul>
+     
+      <li>
+      
+       
+       <a href="/project/kvm-riscv/cover/20240214123757.305347-1-apatel@ventanamicro.com/">
+        [0/5] KVM RISC-V report few more ISA extensions through ONE_REG
+       </a>
+       
+      
+      </li>
+     
+     
+      <li>
+       
+        [1/5] RISC-V: KVM: Forward SEED CSR access to user space
+       
+      </li>
+     
+      <li>
+       
+       <a href="/project/kvm-riscv/patch/20240214123757.305347-3-apatel@ventanamicro.com/">
+        [2/5] RISC-V: KVM: Allow Ztso extension for Guest/VM
+       </a>
+       
+      </li>
+     
+      <li>
+       
+       <a href="/project/kvm-riscv/patch/20240214123757.305347-4-apatel@ventanamicro.com/">
+        [3/5] KVM: riscv: selftests: Add Ztso extension to get-reg-list test
+       </a>
+       
+      </li>
+     
+      <li>
+       
+       <a href="/project/kvm-riscv/patch/20240214123757.305347-5-apatel@ventanamicro.com/">
+        [4/5] RISC-V: KVM: Allow Zacas extension for Guest/VM
+       </a>
+       
+      </li>
+     
+      <li>
+       
+       <a href="/project/kvm-riscv/patch/20240214123757.305347-6-apatel@ventanamicro.com/">
+        [5/5] KVM: riscv: selftests: Add Zacas extension to get-reg-list test
+       </a>
+       
+      </li>
+     
+    </ul>
+   </div>
+  </td>
+ </tr>
+
+
+</tbody></table>
+
+<div class="patchforms">
+
+
+
+
+ <div style="clear: both;">
+ </div>
+</div>
+
+
+
+
+
+
+<h2>Commit Message</h2>
+
+<div class="comment">
+<div class="meta">
+ <span><a href="/project/kvm-riscv/list/?submitter=83189">Anup Patel</a></span>
+ <span class="pull-right">Feb. 14, 2024, 12:37 p.m. UTC</span>
+</div>
+<pre class="content">The SEED CSR access from VS/VU mode (guest) will always trap to
+HS-mode (KVM) when Zkr extension is available to the Guest/VM.
+
+We must forward this CSR access to KVM user space so that it
+can be emulated based on the method chosen by VMM.
+
+Fixes: f370b4e668f0 ("RISC-V: KVM: Allow scalar crypto extensions for Guest/VM")
+<span class="signed-off-by">Signed-off-by: Anup Patel &lt;apatel@ventanamicro.com&gt;</span>
+---
+ arch/riscv/kvm/vcpu_insn.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+</pre>
+</div>
+
+
+
+<h2>Comments</h2>
+
+
+<a name="3272586"></a>
+<div class="comment">
+<div class="meta">
+ <span><a href="/project/kvm-riscv/list/?submitter=84460">Andrew Jones</a></span>
+ <span class="pull-right">Feb. 28, 2024, 1:03 p.m. UTC | <a href="/comment/3272586/">#1</a></span>
+</div>
+<pre class="content">On Wed, Feb 14, 2024 at 06:07:53PM +0530, Anup Patel wrote:
+<span class="quote">&gt; The SEED CSR access from VS/VU mode (guest) will always trap to</span>
+<span class="quote">&gt; HS-mode (KVM) when Zkr extension is available to the Guest/VM.</span>
+<span class="quote">&gt; </span>
+<span class="quote">&gt; We must forward this CSR access to KVM user space so that it</span>
+<span class="quote">&gt; can be emulated based on the method chosen by VMM.</span>
+<span class="quote">&gt; </span>
+<span class="quote">&gt; Fixes: f370b4e668f0 ("RISC-V: KVM: Allow scalar crypto extensions for Guest/VM")</span>
+<span class="quote">&gt; Signed-off-by: Anup Patel &lt;apatel@ventanamicro.com&gt;</span>
+<span class="quote">&gt; ---</span>
+<span class="quote">&gt;  arch/riscv/kvm/vcpu_insn.c | 13 +++++++++++++</span>
+<span class="quote">&gt;  1 file changed, 13 insertions(+)</span>
+<span class="quote">&gt; </span>
+<span class="quote">&gt; diff --git a/arch/riscv/kvm/vcpu_insn.c b/arch/riscv/kvm/vcpu_insn.c</span>
+<span class="quote">&gt; index 7a6abed41bc1..ee7215f4071f 100644</span>
+<span class="quote">&gt; --- a/arch/riscv/kvm/vcpu_insn.c</span>
+<span class="quote">&gt; +++ b/arch/riscv/kvm/vcpu_insn.c</span>
+<span class="quote">&gt; @@ -7,6 +7,8 @@</span>
+<span class="quote">&gt;  #include &lt;linux/bitops.h&gt;</span>
+<span class="quote">&gt;  #include &lt;linux/kvm_host.h&gt;</span>
+<span class="quote">&gt;  </span>
+<span class="quote">&gt; +#include &lt;asm/cpufeature.h&gt;</span>
+<span class="quote">&gt; +</span>
+<span class="quote">&gt;  #define INSN_OPCODE_MASK	0x007c</span>
+<span class="quote">&gt;  #define INSN_OPCODE_SHIFT	2</span>
+<span class="quote">&gt;  #define INSN_OPCODE_SYSTEM	28</span>
+<span class="quote">&gt; @@ -213,9 +215,20 @@ struct csr_func {</span>
+<span class="quote">&gt;  		    unsigned long wr_mask);</span>
+<span class="quote">&gt;  };</span>
+<span class="quote">&gt;  </span>
+<span class="quote">&gt; +static int seed_csr_rmw(struct kvm_vcpu *vcpu, unsigned int csr_num,</span>
+<span class="quote">&gt; +			unsigned long *val, unsigned long new_val,</span>
+<span class="quote">&gt; +			unsigned long wr_mask)</span>
+<span class="quote">&gt; +{</span>
+<span class="quote">&gt; +	if (!riscv_isa_extension_available(vcpu-&gt;arch.isa, ZKR))</span>
+<span class="quote">&gt; +		return KVM_INSN_ILLEGAL_TRAP;</span>
+<span class="quote">&gt; +</span>
+<span class="quote">&gt; +	return KVM_INSN_EXIT_TO_USER_SPACE;</span>
+<span class="quote">&gt; +}</span>
+<span class="quote">&gt; +</span>
+<span class="quote">&gt;  static const struct csr_func csr_funcs[] = {</span>
+<span class="quote">&gt;  	KVM_RISCV_VCPU_AIA_CSR_FUNCS</span>
+<span class="quote">&gt;  	KVM_RISCV_VCPU_HPMCOUNTER_CSR_FUNCS</span>
+<span class="quote">&gt; +	{ .base = CSR_SEED, .count = 1, .func = seed_csr_rmw },</span>
+<span class="quote">&gt;  };</span>
+<span class="quote">&gt;  </span>
+<span class="quote">&gt;  /**</span>
+<span class="quote">&gt; -- </span>
+<span class="quote">&gt; 2.34.1</span>
+<span class="quote">&gt;</span>
+<span class="reviewed-by">
+Reviewed-by: Andrew Jones &lt;ajones@ventanamicro.com&gt;</span>
+</pre>
+</div>
+
+
+
+<div>
+  <div class="btn-group pull-right">
+  <button type="button" class="btn btn-default btn-copy" data-clipboard-text="1898911" title="Copy to Clipboard">
+      1898911
+  </button>
+  
+  <a href="/project/kvm-riscv/patch/20240214123757.305347-2-apatel@ventanamicro.com/raw/" class="btn btn-default" role="button" title="Download patch diff">diff</a>
+  <a href="/project/kvm-riscv/patch/20240214123757.305347-2-apatel@ventanamicro.com/mbox/" class="btn btn-default" role="button" title="Download patch mbox">mbox</a>
+  
+  
+  <a href="/series/394961/mbox/" class="btn btn-default" role="button" title="Download patch mbox with dependencies">series</a>
+  
+</div>
+
+  <h2>Patch</h2>
+</div>
+<div id="patch" class="patch">
+<pre class="content"><span class="p_header">diff --git a/arch/riscv/kvm/vcpu_insn.c b/arch/riscv/kvm/vcpu_insn.c</span>
+<span class="p_header">index 7a6abed41bc1..ee7215f4071f 100644</span>
+<span class="p_header">--- a/arch/riscv/kvm/vcpu_insn.c</span>
+<span class="p_header">+++ b/arch/riscv/kvm/vcpu_insn.c</span>
+<span class="p_chunk">@@ -7,6 +7,8 @@</span> <span class="p_context"></span>
+ #include &lt;linux/bitops.h&gt;
+ #include &lt;linux/kvm_host.h&gt;
+ 
+<span class="p_add">+#include &lt;asm/cpufeature.h&gt;</span>
+<span class="p_add">+</span>
+ #define INSN_OPCODE_MASK	0x007c
+ #define INSN_OPCODE_SHIFT	2
+ #define INSN_OPCODE_SYSTEM	28
+<span class="p_chunk">@@ -213,9 +215,20 @@</span> <span class="p_context"> struct csr_func {</span>
+ 		    unsigned long wr_mask);
+ };
+ 
+<span class="p_add">+static int seed_csr_rmw(struct kvm_vcpu *vcpu, unsigned int csr_num,</span>
+<span class="p_add">+			unsigned long *val, unsigned long new_val,</span>
+<span class="p_add">+			unsigned long wr_mask)</span>
+<span class="p_add">+{</span>
+<span class="p_add">+	if (!riscv_isa_extension_available(vcpu-&gt;arch.isa, ZKR))</span>
+<span class="p_add">+		return KVM_INSN_ILLEGAL_TRAP;</span>
+<span class="p_add">+</span>
+<span class="p_add">+	return KVM_INSN_EXIT_TO_USER_SPACE;</span>
+<span class="p_add">+}</span>
+<span class="p_add">+</span>
+ static const struct csr_func csr_funcs[] = {
+ 	KVM_RISCV_VCPU_AIA_CSR_FUNCS
+ 	KVM_RISCV_VCPU_HPMCOUNTER_CSR_FUNCS
+<span class="p_add">+	{ .base = CSR_SEED, .count = 1, .func = seed_csr_rmw },</span>
+ };
+ 
+ /**
+
+</pre>
+</div>
+
+
+
+  </div>
+  <div id="footer">
+   <a href="http://jk.ozlabs.org/projects/patchwork/">patchwork</a>
+   patch tracking system | version 2.2.0. | <a href="/about/">about patchwork</a>
+  </div>
+ 
+
+<orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
