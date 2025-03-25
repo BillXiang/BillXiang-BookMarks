@@ -108,8 +108,6 @@ mkdir tags
 read_dir "."
 echo $html_head | tee all.html index.html docs.html
 
-cat docs.tmp
-
 find ./tags -type f |xargs -i mv {} {}.html
 echo "<hr><h3>TAGs</h3>" | tee -a all.html index.html docs.html
 wc -l tags/*|sort -r|tail -n +2|head -n 20|awk -F'[/.[:space:]]' '{print "<a href=./tags/"$(NF-1)".html>"$(NF-1),"</a>"$(NF-3)"篇<br>"}' | tee -a all.html index.html docs.html
@@ -122,7 +120,7 @@ echo "<table id="myTable">
           <tbody>" | tee index_content.html all_content.html docs_content.html
 awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- | head -n 20 >> index_content.html
 awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- | grep -v "web_deploy" | grep -v index.html  |grep -v all.html |grep -v docs.html>> all_content.html
-cat docs.tmp | grep -v "web_deploy" | grep -v README.md  |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
+cat docs.tmp |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
 echo "    </tbody>
       </table>" | tee -a index_content.html all_content.html docs_content.html
 rm -f url.tmp
