@@ -25,7 +25,7 @@ async function getMarkdownContent(url) {
 async function initEasyMDE() {
     const mdContent = await getMarkdownContent(rawUrl);
     const easyMDE = new EasyMDE({
-        element: document.getElementById('editor'),
+        //element: document.getElementById('editor'),
         initialValue: mdContent,
         spellChecker: false,
         autoDownloadFontAwesome: false,
