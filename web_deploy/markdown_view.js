@@ -31,7 +31,7 @@ async function initEasyMDE() {
         previewClass: ['markdown-body'],
         showIcons: []
     });
-    easyMDE.togglePreview();
+    easyMDE.toggleSideBySide();
 }
 
 // 调用初始化函数
