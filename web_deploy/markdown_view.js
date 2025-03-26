@@ -25,13 +25,13 @@ async function getMarkdownContent(url) {
 async function initEasyMDE() {
     const mdContent = await getMarkdownContent(rawUrl);
     const easyMDE = new EasyMDE({
-        //element: document.getElementById('editor'),
         initialValue: mdContent,
         spellChecker: false,
         autoDownloadFontAwesome: false,
         previewClass: ['markdown-body'],
-        readOnly: true // 只读模式，仅用于展示
+        showIcons: []
     });
+    easyMDE.togglePreview();
 }
 
 // 调用初始化函数
