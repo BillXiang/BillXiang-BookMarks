@@ -1,0 +1,1130 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/IOMMU/svnapot/[RESEND,v2,4_4] iommu_riscv_ Add support for Svnapot - Patchwork (2025-03-27 17：49：34).html
+ Page saved with X-Webpage-Conserve 
+ url: https://patchwork.kernel.org/project/linux-riscv/patch/20250318035930.11855-5-luxu.kernel@bytedance.com/
+ Summary: This text is an email message containing a patch series for the RISC-V IOMMU driver in the Linux kernel. The patch series aims to add support for Svnapot, a specific page size, in the IOMMU driver. The patch series includes five individual patches, each addressing a specific aspect of the implementation. The first patch adds the Svnapot size as a supported page size and applies it when possible. The remaining patches handle the allocation and freeing of Svnapot-sized pages in the IOMMU driver. The email also includes various headers and metadata, such as the sender, recipients, subject, and date.此文本是一封电子邮件，其中包含 Linux 内核中 RISC-V IOMMU 驱动程序的补丁系列。该补丁系列旨在在 IOMMU 驱动程序中添加对 Svnapot（一种特定页面大小）的支持。补丁系列包括五个单独的补丁，每个补丁都涉及实施的特定方面。第一个补丁将 Svnapot 大小添加为支持的页面大小，并在可能的情况下应用它。其余补丁处理 IOMMU 驱动程序中 Svnapot 大小的页面的分配和释放。该电子邮件还包括各种标头和元数据，例如发件人、收件人、主题和日期。
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" imt-state="dual"><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>[RESEND,v2,4/4] iommu/riscv: Add support for Svnapot - Patchwork</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.1999ae14de69.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/selectize.bootstrap3.5d3fb8271165.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/style.2951ca37f12e.css">
+  <script src="/static/js/jquery-1.10.1.min.33d85132f015.js"></script>
+  <script src="/static/js/jquery.stickytableheaders.min.f7c636d6c766.js"></script>
+  <script src="/static/js/jquery.checkboxes-1.0.6.min.cfa3c7bf5d41.js"></script>
+  <!-- IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js">
+    </script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.0.8/es5-shim.min.js"></script>
+  <![endif]-->
+  <script src="/static/js/bootstrap.min.abda843684d0.js"></script>
+  <script src="/static/js/selectize.min.7cdaf5b36b90.js"></script>
+  <script src="/static/js/clipboard.min.3e5e0fa949e0.js"></script>
+  <script>
+   $(document).ready(function() {
+       new Clipboard(document.querySelectorAll('button.btn-copy'));
+   });
+  </script>
+
+ <style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+ <body style="">
+  <nav class="navbar navbar-inverse navbar-static-top">
+   <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Patchwork</a>
+      <span class="navbar-subbrand">
+         Linux RISC-V
+      </span>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-collapse">
+
+
+      <ul class="nav navbar-nav">
+        <li class="">
+          <a href="/project/linux-riscv/list/">
+            <span class="glyphicon glyphicon-file"></span>
+            Patches
+          </a>
+        </li>
+        <li class="">
+          <a href="/project/linux-riscv/bundles/">
+            <span class="glyphicon glyphicon-gift"></span>
+            Bundles
+          </a>
+        </li>
+        <li class="">
+          <a href="/project/linux-riscv/">
+            <span class="glyphicon glyphicon-info-sign"></span>
+            About this project
+          </a>
+        </li>
+      </ul>
+
+
+     <ul class="nav navbar-nav navbar-right">
+
+     <li><a href="/user/login/">Login</a></li>
+     <li><a href="/register/">Register</a></li>
+     <li><a href="/mail/">Mail settings</a></li>
+
+     </ul>
+    </div>
+   </div>
+  </nav>
+
+  <div class="container-fluid">
+
+<script>
+function toggle_div(link_id, headers_id, label_show, label_hide)
+{
+    var link = document.getElementById(link_id)
+    var headers = document.getElementById(headers_id)
+
+    var hidden = headers.style['display'] == 'none';
+
+    if (hidden) {
+        link.innerHTML = label_hide || 'hide';
+        headers.style['display'] = 'block';
+    } else {
+        link.innerHTML = label_show || 'show';
+        headers.style['display'] = 'none';
+    }
+
+}
+</script>
+
+<div>
+  <div class="btn-group pull-right">
+  <button type="button" class="btn btn-default btn-copy" data-clipboard-text="14020283" title="Copy to Clipboard">
+      14020283
+  </button>
+  
+  <a href="/project/linux-riscv/patch/20250318035930.11855-5-luxu.kernel@bytedance.com/raw/" class="btn btn-default" role="button" title="Download patch diff">diff</a>
+  <a href="/project/linux-riscv/patch/20250318035930.11855-5-luxu.kernel@bytedance.com/mbox/" class="btn btn-default" role="button" title="Download patch mbox">mbox</a>
+  
+  
+  <a href="/series/944922/mbox/" class="btn btn-default" role="button" title="Download patch mbox with dependencies">series</a>
+  
+</div>
+
+  <h1>[RESEND,v2,4/4] iommu/riscv: Add support for Svnapot</h1>
+</div>
+
+<table class="patchmeta">
+ <tbody><tr>
+  <th>Message ID</th>
+  
+  <td>20250318035930.11855-5-luxu.kernel@bytedance.com (<a href="https://lore.kernel.org/r/20250318035930.11855-5-luxu.kernel@bytedance.com">mailing list archive</a>)</td>
+  
+ </tr>
+
+ <tr>
+  <th>State</th>
+  <td>New</td>
+ </tr>
+
+
+
+ <tr>
+  <th>Headers</th>
+  <td><a id="togglepatchheaders" href="javascript:toggle_div('togglepatchheaders', 'patchheaders')">show</a>
+   <div id="patchheaders" class="patchheaders" style="display:none;">
+    <pre>Return-Path: 
+ &lt;linux-riscv-bounces+linux-riscv=archiver.kernel.org@lists.infradead.org&gt;
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+	aws-us-west-2-korg-lkml-1.web.codeaurora.org
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED25AC35FF3
+	for &lt;linux-riscv@archiver.kernel.org&gt;; Tue, 18 Mar 2025 04:07:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vOUFkoRSH2JR7fsYgaSWMjgr5hbG+MEV47gD0+Gaca4=; b=xWksSFVxGa4RDg
+	QlE5nbr/Drdd51Y4JDWJh1bcfkphPB8XcbogpAkCRYFZVuRfpZjSafMPcoXLL0R+m4O8p3UK7RhkZ
+	E4W7uhSrDCop2t3VzW2oZHBAeKuwW4kMAGvrFkYxjgm0BSwtHhoiJwqnKC1OgHEkIOZ6tIxfNx+as
+	ORw9OJLpQt5rMHzWjDrMlNr2iKvCRnHVZkN+71vMbETOdYYASZjDS6AiFbI9enB0Ym+ezVMLE8Wjq
+	HN1D0I2d7nDGsT+YoW2DEeLzdZcPcpeBPrtOt3HBoeNjiR/+uuNHrj/hR9Q+9oUvpvXwOpZrFFTCo
+	ZHnCVpxZQainEXCYefRA==;
+Received: from localhost ([::1] helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1tuOEc-00000004bWY-2LCb;
+	Tue, 18 Mar 2025 04:07:22 +0000
+Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tuO7W-00000004afV-0whU
+	for linux-riscv@lists.infradead.org;
+	Tue, 18 Mar 2025 04:00:03 +0000
+Received: by mail-pl1-x62f.google.com with SMTP id
+ d9443c01a7336-22580c9ee0aso88891885ad.2
+        for &lt;linux-riscv@lists.infradead.org&gt;;
+ Mon, 17 Mar 2025 21:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1742270401; x=1742875201;
+ darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=25EEGwiFn3VnbkwivdTLYPKqZQgF1BeYiMnWI1gQipU=;
+        b=bNMQUtY9FnZ1tDaXVfD2HU2qC0jl+9iq4nCz6zUX/0sEeNOB9r6PiThe0Pfue1MMfm
+         89xVB7mYtJMFMEFTy5Gdw5wJOi/aOCsxYR4urP3N2BQUrOtb1+8XlMzeIu7FCGj4oQ1q
+         I7ZDpl3YPiMo7iZ9LKUqWgzmKgjZwdq0lsmuLix/2Dt2Cq/5JcQH3+TD9MFb0wvZw9ra
+         jV7EQ9408a+aGjbnW4I7Nh67n95OuabJqS3JR7oxKnXLeXMmgPwejpHaZd0chhyzWjgG
+         nzqkTGcuinukCfN5JJ/5X7IM+sUZsH3zJUw/ENDj246zp8ci/3/0y6XhcRWG+X3duUK8
+         xwBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742270401; x=1742875201;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=25EEGwiFn3VnbkwivdTLYPKqZQgF1BeYiMnWI1gQipU=;
+        b=mIVYDaWF3gDVZxIqoKRE11H7Lgt0D93py5gcC/y54RyRaguO5pg0nIYE+33/fk+u6g
+         kA7UWnsXn5UcDyuDxiKtEmzMzGXDvTHYgT782LIt4VQDryPwyouh8Lvv05pE6d0YbQuJ
+         RbKNTzIYXaR/QOKGVL+0sj5/a4X5zBmeAq2hbEZq7TPr0YmNopD5DtlxNwCssvCcZ530
+         Dm6TALMc+VXuA1UPN9aVdpqimHGUAJ+piG+thCWMgAA9/cVlpvs5g6j/cLu5mp5mnZMj
+         MwGLUD6Ei/7bPYE3+nR7zh2KvZNcHYmJg09D37ZXrMYdtD47Rb0JHdUuLgHQaLmAyyth
+         trJQ==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCVJxTMQviRIOnvxirBVTAyRCpKooOm4lWmBC9zd16C2sguh6WLcmCV7R4j52zFN8zUB5bYFkKioMPDvrA==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz96Kf2wPjdw8PTqNfKmOnX/GIz/UIE7CnK22d2oEMgwGnge2yh
+	vwXAqDaQ3RMVyRiv9f7HLuLsnrztyoJqD1EMqiV1f6TMmunE/oV3TNTsRMTJ76o=
+X-Gm-Gg: ASbGncucYP3sV9DjOgcXgxnMHlRC4bL7355K8KJQqMeDFGC8UMXRyqk13S2t/dNdxzI
+	BdZQ9DtE1KZZZysN2Ef48QJU6FWYLp4u4vgkwwVLwcMZVkz9nCHDrCt7vD0YQoZ/TB4Eipw9Wlz
+	xlu7clwv4DtPTVMZKg70RapnPPGqrYQH7BH53UuetvYOHtYuu9zeUqTuPOYDrFuc2UVNML93miz
+	r7svwQDdLj106wYLox9kPAs2i0qMBdil4pYOcCde6weWDT6aygA/6fBPuIygPHABs6LqPU9ejD2
+	eft7ycz7VqsW4JXz3bByn/oSRXxqEP2u/rAEstMd81DY6a9Iqte1QJpveVVhjhT1C6b1sUb2dZx
+	VG1AgXb7/gPhgk/t1IPHeuj35thEy/GN+8CyeSg==
+X-Google-Smtp-Source: 
+ AGHT+IFBc6TvuWKKSrWPTLSErVQ1GkoHiMOoKLD8NwCVFkbU9sjHFxonJru7yaMaEU5aIspYftiubw==
+X-Received: by 2002:a17:903:230f:b0:223:5e54:c521 with SMTP id
+ d9443c01a7336-225e0859fafmr199239715ad.0.1742270400974;
+        Mon, 17 Mar 2025 21:00:00 -0700 (PDT)
+Received: from J9GPGXL7NT.bytedance.net ([61.213.176.55])
+        by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-225c6bd4b30sm83720135ad.235.2025.03.17.20.59.56
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 17 Mar 2025 20:59:59 -0700 (PDT)
+From: Xu Lu &lt;luxu.kernel@bytedance.com&gt;
+To: akpm@linux-foundation.org,
+	jhubbard@nvidia.com,
+	kirill.shutemov@linux.intel.com,
+	tjeznach@rivosinc.com,
+	joro@8bytes.org,
+	will@kernel.org,
+	robin.murphy@arm.com
+Cc: lihangjing@bytedance.com,
+	xieyongji@bytedance.com,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	Xu Lu &lt;luxu.kernel@bytedance.com&gt;
+Subject: [PATCH RESEND v2 4/4] iommu/riscv: Add support for Svnapot
+Date: Tue, 18 Mar 2025 11:59:30 +0800
+Message-Id: &lt;20250318035930.11855-5-luxu.kernel@bytedance.com&gt;
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: &lt;20250318035930.11855-1-luxu.kernel@bytedance.com&gt;
+References: &lt;20250318035930.11855-1-luxu.kernel@bytedance.com&gt;
+MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250317_210002_289783_E2D41997 
+X-CRM114-Status: GOOD (  15.57  )
+X-BeenThere: linux-riscv@lists.infradead.org
+X-Mailman-Version: 2.1.34
+Precedence: list
+List-Id: &lt;linux-riscv.lists.infradead.org&gt;
+List-Unsubscribe: &lt;http://lists.infradead.org/mailman/options/linux-riscv&gt;,
+ &lt;mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe&gt;
+List-Archive: &lt;http://lists.infradead.org/pipermail/linux-riscv/&gt;
+List-Post: &lt;mailto:linux-riscv@lists.infradead.org&gt;
+List-Help: &lt;mailto:linux-riscv-request@lists.infradead.org?subject=help&gt;
+List-Subscribe: &lt;http://lists.infradead.org/mailman/listinfo/linux-riscv&gt;,
+ &lt;mailto:linux-riscv-request@lists.infradead.org?subject=subscribe&gt;
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-riscv" &lt;linux-riscv-bounces@lists.infradead.org&gt;
+Errors-To: 
+ linux-riscv-bounces+linux-riscv=archiver.kernel.org@lists.infradead.org</pre>
+   </div>
+  </td>
+ </tr>
+
+ <tr>
+  <th>Series</th>
+  <td>
+   <a href="/project/linux-riscv/list/?series=944922">
+    riscv: iommu: Support Svnapot
+   </a> |
+   <a id="togglepatchseries" href="javascript:toggle_div('togglepatchseries', 'patchseries', 'expand', 'collapse')">expand</a>
+   <div id="patchseries" class="submissionlist" style="display:none;">
+    <ul>
+     
+      <li>
+      
+       
+       <a href="/project/linux-riscv/cover/20250318035930.11855-1-luxu.kernel@bytedance.com/">
+        [RESEND,v2,0/4] riscv: iommu: Support Svnapot
+       </a>
+       
+      
+      </li>
+     
+     
+      <li>
+       
+       <a href="/project/linux-riscv/patch/20250318035930.11855-2-luxu.kernel@bytedance.com/">
+        [RESEND,v2,1/4] mm/gup: Add huge pte handling logic in follow_page_pte()
+       </a>
+       
+      </li>
+     
+      <li>
+       
+       <a href="/project/linux-riscv/patch/20250318035930.11855-3-luxu.kernel@bytedance.com/">
+        [RESEND,v2,2/4] iommu/riscv: Use pte_t to represent page table entry
+       </a>
+       
+      </li>
+     
+      <li>
+       
+       <a href="/project/linux-riscv/patch/20250318035930.11855-4-luxu.kernel@bytedance.com/">
+        [RESEND,v2,3/4] iommu/riscv: Introduce IOMMU page table lock
+       </a>
+       
+      </li>
+     
+      <li>
+       
+        [RESEND,v2,4/4] iommu/riscv: Add support for Svnapot
+       
+      </li>
+     
+    </ul>
+   </div>
+  </td>
+ </tr>
+
+
+</tbody></table>
+
+<div class="patchforms">
+
+
+
+
+ <div style="clear: both;">
+ </div>
+</div>
+
+
+
+
+<h2>Checks</h2>
+<table class="checks">
+<tbody><tr>
+  <th>Context</th>
+  <th>Check</th>
+  <th>Description</th>
+</tr>
+
+<tr>
+  <td>bjorn/pre-ci_am</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+    <a href="https://github.com/linux-riscv/linux/pull/193">
+    
+      Success
+    
+    </a>
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv32-defconfig</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      build-rv32-defconfig
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv64-clang-allmodconfig</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      build-rv64-clang-allmodconfig
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv64-gcc-allmodconfig</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      build-rv64-gcc-allmodconfig
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv64-nommu-k210-defconfig</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      build-rv64-nommu-k210-defconfig
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv64-nommu-k210-virt</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      build-rv64-nommu-k210-virt
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/checkpatch</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      checkpatch
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/dtb-warn-rv64</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      dtb-warn-rv64
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/header-inline</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      header-inline
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/kdoc</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      kdoc
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/module-param</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      module-param
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/verify-fixes</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      verify-fixes
+    
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/verify-signedoff</td>
+  <td>
+    <span title="Updated 1&nbsp;week, 2&nbsp;days ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+    
+      verify-signedoff
+    
+  </td>
+</tr>
+
+</tbody></table>
+
+
+
+<h2>Commit Message</h2>
+
+<div class="comment">
+<div class="meta">
+ <span><a href="/project/linux-riscv/list/?submitter=210266">Xu Lu</a></span>
+ <span class="pull-right">March 18, 2025, 3:59 a.m. UTC</span>
+</div>
+<pre class="content">Add Svnapot size as supported page size and apply Svnapot when it is
+possible.
+<span class="signed-off-by">
+Signed-off-by: Xu Lu &lt;luxu.kernel@bytedance.com&gt;</span>
+---
+ drivers/iommu/riscv/iommu.c | 86 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 77 insertions(+), 9 deletions(-)
+</pre>
+</div>
+
+
+
+
+<div>
+  <div class="btn-group pull-right">
+  <button type="button" class="btn btn-default btn-copy" data-clipboard-text="14020283" title="Copy to Clipboard">
+      14020283
+  </button>
+  
+  <a href="/project/linux-riscv/patch/20250318035930.11855-5-luxu.kernel@bytedance.com/raw/" class="btn btn-default" role="button" title="Download patch diff">diff</a>
+  <a href="/project/linux-riscv/patch/20250318035930.11855-5-luxu.kernel@bytedance.com/mbox/" class="btn btn-default" role="button" title="Download patch mbox">mbox</a>
+  
+  
+  <a href="/series/944922/mbox/" class="btn btn-default" role="button" title="Download patch mbox with dependencies">series</a>
+  
+</div>
+
+  <h2>Patch</h2>
+</div>
+<div id="patch" class="patch">
+<pre class="content"><span class="p_header">diff --git a/drivers/iommu/riscv/iommu.c b/drivers/iommu/riscv/iommu.c</span>
+<span class="p_header">index ce4cf6569ffb4..7cc736abd2a61 100644</span>
+<span class="p_header">--- a/drivers/iommu/riscv/iommu.c</span>
+<span class="p_header">+++ b/drivers/iommu/riscv/iommu.c</span>
+<span class="p_chunk">@@ -1158,6 +1158,26 @@</span> <span class="p_context"> static int pgsize_to_level(size_t pgsize)</span>
+ 	return level;
+ }
+ 
+<span class="p_add">+static unsigned long napot_size_to_order(unsigned long size)</span>
+<span class="p_add">+{</span>
+<span class="p_add">+	unsigned long order;</span>
+<span class="p_add">+</span>
+<span class="p_add">+	if (!has_svnapot())</span>
+<span class="p_add">+		return 0;</span>
+<span class="p_add">+</span>
+<span class="p_add">+	for_each_napot_order(order) {</span>
+<span class="p_add">+		if (size == napot_cont_size(order))</span>
+<span class="p_add">+			return order;</span>
+<span class="p_add">+	}</span>
+<span class="p_add">+</span>
+<span class="p_add">+	return 0;</span>
+<span class="p_add">+}</span>
+<span class="p_add">+</span>
+<span class="p_add">+static bool is_napot_size(unsigned long size)</span>
+<span class="p_add">+{</span>
+<span class="p_add">+	return napot_size_to_order(size) != 0;</span>
+<span class="p_add">+}</span>
+<span class="p_add">+</span>
+ static void riscv_iommu_pte_free(struct riscv_iommu_domain *domain,
+ 				 pte_t pte, int level,
+ 				 struct list_head *freelist)
+<span class="p_chunk">@@ -1205,7 +1225,8 @@</span> <span class="p_context"> static pte_t *riscv_iommu_pte_alloc(struct riscv_iommu_domain *domain,</span>
+ 		 * existing mapping with smaller granularity. Up to the caller
+ 		 * to replace and invalidate.
+ 		 */
+<span class="p_del">-		if (((size_t)1 &lt;&lt; shift) == pgsize)</span>
+<span class="p_add">+		if ((((size_t)1 &lt;&lt; shift) == pgsize) ||</span>
+<span class="p_add">+		    (is_napot_size(pgsize) &amp;&amp; pgsize_to_level(pgsize) == level))</span>
+ 			return ptr;
+ pte_retry:
+ 		pte = ptep_get(ptr);
+<span class="p_chunk">@@ -1256,7 +1277,10 @@</span> <span class="p_context"> static pte_t *riscv_iommu_pte_fetch(struct riscv_iommu_domain *domain,</span>
+ 		ptr += ((iova &gt;&gt; shift) &amp; (PTRS_PER_PTE - 1));
+ 		pte = ptep_get(ptr);
+ 		if (_io_pte_present(pte) &amp;&amp; _io_pte_leaf(pte)) {
+<span class="p_del">-			*pte_pgsize = (size_t)1 &lt;&lt; shift;</span>
+<span class="p_add">+			if (pte_napot(pte))</span>
+<span class="p_add">+				*pte_pgsize = napot_cont_size(napot_cont_order(pte));</span>
+<span class="p_add">+			else</span>
+<span class="p_add">+				*pte_pgsize = (size_t)1 &lt;&lt; shift;</span>
+ 			return ptr;
+ 		}
+ 		if (_io_pte_none(pte))
+<span class="p_chunk">@@ -1274,13 +1298,18 @@</span> <span class="p_context"> static int riscv_iommu_map_pages(struct iommu_domain *iommu_domain,</span>
+ {
+ 	struct riscv_iommu_domain *domain = iommu_domain_to_riscv(iommu_domain);
+ 	size_t size = 0;
+<span class="p_del">-	pte_t *ptr;</span>
+<span class="p_del">-	pte_t pte;</span>
+<span class="p_del">-	unsigned long pte_prot;</span>
+<span class="p_del">-	int rc = 0, level;</span>
+<span class="p_add">+	pte_t *ptr, old, pte;</span>
+<span class="p_add">+	unsigned long pte_prot, order = 0;</span>
+<span class="p_add">+	int rc = 0, level, i;</span>
+ 	spinlock_t *ptl; /* page table page lock */
+ 	LIST_HEAD(freelist);
+ 
+<span class="p_add">+	if (iova &amp; (pgsize - 1))</span>
+<span class="p_add">+		return -EINVAL;</span>
+<span class="p_add">+</span>
+<span class="p_add">+	if (is_napot_size(pgsize))</span>
+<span class="p_add">+		order = napot_size_to_order(pgsize);</span>
+<span class="p_add">+</span>
+ 	if (!(prot &amp; IOMMU_WRITE))
+ 		pte_prot = _PAGE_BASE | _PAGE_READ;
+ 	else if (domain-&gt;amo_enabled)
+<span class="p_chunk">@@ -1297,9 +1326,27 @@</span> <span class="p_context"> static int riscv_iommu_map_pages(struct iommu_domain *iommu_domain,</span>
+ 
+ 		level = pgsize_to_level(pgsize);
+ 		ptl = riscv_iommu_ptlock(domain, ptr, level);
+<span class="p_del">-		riscv_iommu_pte_free(domain, ptep_get(ptr), level, &amp;freelist);</span>
+<span class="p_add">+</span>
+<span class="p_add">+		old = ptep_get(ptr);</span>
+<span class="p_add">+		if (pte_napot(old) &amp;&amp; napot_cont_size(napot_cont_order(old)) &gt; pgsize) {</span>
+<span class="p_add">+			spin_unlock(ptl);</span>
+<span class="p_add">+			rc = -EFAULT;</span>
+<span class="p_add">+			break;</span>
+<span class="p_add">+		}</span>
+<span class="p_add">+</span>
+ 		pte = _io_pte_entry(phys_to_pfn(phys), pte_prot);
+<span class="p_del">-		set_pte(ptr, pte);</span>
+<span class="p_add">+		if (order) {</span>
+<span class="p_add">+			pte = pte_mknapot(pte, order);</span>
+<span class="p_add">+			for (i = 0; i &lt; napot_pte_num(order); i++, ptr++) {</span>
+<span class="p_add">+				old = ptep_get(ptr);</span>
+<span class="p_add">+				riscv_iommu_pte_free(domain, old, level, &amp;freelist);</span>
+<span class="p_add">+				set_pte(ptr, pte);</span>
+<span class="p_add">+			}</span>
+<span class="p_add">+		} else {</span>
+<span class="p_add">+			riscv_iommu_pte_free(domain, old, level, &amp;freelist);</span>
+<span class="p_add">+			set_pte(ptr, pte);</span>
+<span class="p_add">+		}</span>
+<span class="p_add">+</span>
+ 		spin_unlock(ptl);
+ 
+ 		size += pgsize;
+<span class="p_chunk">@@ -1336,6 +1383,9 @@</span> <span class="p_context"> static size_t riscv_iommu_unmap_pages(struct iommu_domain *iommu_domain,</span>
+ 	size_t unmapped = 0;
+ 	size_t pte_size;
+ 	spinlock_t *ptl; /* page table page lock */
+<span class="p_add">+	unsigned long pte_num;</span>
+<span class="p_add">+	pte_t pte;</span>
+<span class="p_add">+	int i;</span>
+ 
+ 	while (unmapped &lt; size) {
+ 		ptr = riscv_iommu_pte_fetch(domain, iova, &amp;pte_size);
+<span class="p_chunk">@@ -1347,7 +1397,21 @@</span> <span class="p_context"> static size_t riscv_iommu_unmap_pages(struct iommu_domain *iommu_domain,</span>
+ 			return unmapped;
+ 
+ 		ptl = riscv_iommu_ptlock(domain, ptr, pgsize_to_level(pte_size));
+<span class="p_del">-		set_pte(ptr, __pte(0));</span>
+<span class="p_add">+		if (is_napot_size(pte_size)) {</span>
+<span class="p_add">+			pte = ptep_get(ptr);</span>
+<span class="p_add">+</span>
+<span class="p_add">+			if (!pte_napot(pte) ||</span>
+<span class="p_add">+			    napot_cont_size(napot_cont_order(pte)) != pte_size) {</span>
+<span class="p_add">+				spin_unlock(ptl);</span>
+<span class="p_add">+				return unmapped;</span>
+<span class="p_add">+			}</span>
+<span class="p_add">+</span>
+<span class="p_add">+			pte_num = napot_pte_num(napot_cont_order(pte));</span>
+<span class="p_add">+			for (i = 0; i &lt; pte_num; i++, ptr++)</span>
+<span class="p_add">+				set_pte(ptr, __pte(0));</span>
+<span class="p_add">+		} else {</span>
+<span class="p_add">+			set_pte(ptr, __pte(0));</span>
+<span class="p_add">+		}</span>
+ 		spin_unlock(ptl);
+ 
+ 		iommu_iotlb_gather_add_page(&amp;domain-&gt;domain, gather, iova,
+<span class="p_chunk">@@ -1447,6 +1511,7 @@</span> <span class="p_context"> static struct iommu_domain *riscv_iommu_alloc_paging_domain(struct device *dev)</span>
+ 	unsigned int pgd_mode;
+ 	dma_addr_t va_mask;
+ 	int va_bits, level;
+<span class="p_add">+	size_t order;</span>
+ 
+ 	iommu = dev_to_iommu(dev);
+ 	if (iommu-&gt;caps &amp; RISCV_IOMMU_CAPABILITIES_SV57) {
+<span class="p_chunk">@@ -1506,6 +1571,9 @@</span> <span class="p_context"> static struct iommu_domain *riscv_iommu_alloc_paging_domain(struct device *dev)</span>
+ 	domain-&gt;domain.geometry.aperture_end = va_mask;
+ 	domain-&gt;domain.geometry.force_aperture = true;
+ 	domain-&gt;domain.pgsize_bitmap = va_mask &amp; (SZ_4K | SZ_2M | SZ_1G | SZ_512G);
+<span class="p_add">+	if (has_svnapot())</span>
+<span class="p_add">+		for_each_napot_order(order)</span>
+<span class="p_add">+			domain-&gt;domain.pgsize_bitmap |= napot_cont_size(order) &amp; va_mask;</span>
+ 
+ 	domain-&gt;domain.ops = &amp;riscv_iommu_paging_domain_ops;
+ 
+
+</pre>
+</div>
+
+
+
+  </div>
+  <div id="footer">
+   <a href="http://jk.ozlabs.org/projects/patchwork/">patchwork</a>
+   patch tracking system | version v2.2.6 | <a href="/about/">about patchwork</a>
+  </div>
+ 
+
+<orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
