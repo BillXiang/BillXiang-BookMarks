@@ -1,0 +1,1346 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/企业/Semidynamics - About us (2025-04-02 12：41：43).html
+ Page saved with X-Webpage-Conserve 
+ url: https://terenceli.github.io/%E6%8A%80%E6%9C%AF/2018/08/11/dirty-pages-tracking-in-migration
+ Summary: 
+-->
+<html lang="en"><head>
+        <meta charset="utf-8">
+        <title>qemu/kvm dirty pages tracking in migration</title>
+        <meta name="description" content="dirty page tracking">
+        <meta name="author" content="Terenceli">
+
+        <!-- Enable responsive viewport -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <!-- Le styles -->
+        <link href="/assets/themes/twitter//bootstrap/css/bootstrap.2.2.2.min.css" rel="stylesheet">
+        <link href="/assets/themes/twitter//css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+        <script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script><script src="/assets/themes/twitter//google-code-prettify/jquery.js"></script>
+        <script src="/assets/themes/twitter//google-code-prettify/prettify.js"></script>
+        <link href="/assets/themes/twitter//google-code-prettify/sunburst.css" rel="stylesheet" type="text/css" media="all">
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine">
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Inconsolata">
+        <script type="text/javascript">
+            $(function(){
+                $("pre").addClass("prettyprint");
+                prettyPrint();
+            });
+        </script>
+        <!-- Le fav and touch icons -->
+    <!-- Update these with your own images
+        <link rel="shortcut icon" href="images/favicon.ico">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->
+
+        <!-- atom & rss feed -->
+        <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+        <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+    <script type="text/javascript" async="" src="http://terenceli.disqus.com/embed.js"></script><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+
+    <body>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container-narrow">
+                    <a class="brand" href="/">不忘初心 方得始终</a>
+                    <ul class="nav">
+                        <!--
+                        
+                        
+
+
+  
+    
+      
+      	
+      	<li><a href="/aboutMe">About Me</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/archive">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories">Categories</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/pages">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags">Tags</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+    
+  
+
+
+-->
+						<li><a href="/archive.html">Archive</a></li>
+						<li><a href="/aboutMe.html">About Me</a></li>
+						<li><a href="/pages.html">Pages</a></li>
+						<li><a href="/tags.html">Tags</a></li>
+						<li><a href="/categories.html">Categories</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-narrow">
+
+            <div class="content">
+                
+
+<div class="page-header">
+    <h1>qemu/kvm dirty pages tracking in migration </h1>
+</div>
+
+<div class="row-fluid post-full">
+    <div class="span12">
+        <div class="date">
+            <span>2018-08-11</span>
+        </div>
+        <div class="content">
+            
+<p>The live migration’s most work is to migrate the RAM of guest from src host to dest host.
+So the qemu need to track the dirty pages of guest to transfer them to the dest host.
+This article discusses how qemu do the tracking work.</p>
+
+<p>In a summary, the following steps show the overview of dirty tracking:</p>
+
+<ol>
+  <li>qemu allocs a bitmap and set its all bits to 1(mean dirty)</li>
+  <li>qemu calls kvm to set memory slots with ‘KVM_MEM_LOG_DIRTY_PAGES’ flags</li>
+  <li>qemu calls kvm to get the kvm dirty bitmap</li>
+  <li>qemu kvm wrapper: walk the dirty bitmap(from kvm) and fill the dirty bitmap(ram_list)</li>
+  <li>migration code: walk the ram_list dirty bitmap and set the qemu dirty page bitmap</li>
+</ol>
+
+<h3> qemu and kvm create bitmap </h3>
+
+<p>In the ram migration setup function, it allocates the qemu bitmap in function ‘ram_save_init_globals’.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="pun">{</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+    qemu_mutex_lock_iothread</span><span class="pun">();</span><span class="pln">
+
+    qemu_mutex_lock_ramlist</span><span class="pun">();</span><span class="pln">
+    rcu_read_lock</span><span class="pun">();</span><span class="pln">
+    bytes_transferred </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+    reset_ram_globals</span><span class="pun">();</span><span class="pln">
+
+    ram_bitmap_pages </span><span class="pun">=</span><span class="pln"> last_ram_offset</span><span class="pun">()</span><span class="pln"> </span><span class="pun">&gt;&gt;</span><span class="pln"> TARGET_PAGE_BITS</span><span class="pun">;</span><span class="pln">
+    migration_bitmap_rcu </span><span class="pun">=</span><span class="pln"> g_new0</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> </span><span class="typ">BitmapRcu</span><span class="pun">,</span><span class="pln"> </span><span class="lit">1</span><span class="pun">);</span><span class="pln">
+    migration_bitmap_rcu</span><span class="pun">-&gt;</span><span class="pln">bmap </span><span class="pun">=</span><span class="pln"> bitmap_new</span><span class="pun">(</span><span class="pln">ram_bitmap_pages</span><span class="pun">);</span><span class="pln">
+    bitmap_set</span><span class="pun">(</span><span class="pln">migration_bitmap_rcu</span><span class="pun">-&gt;</span><span class="pln">bmap</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln"> ram_bitmap_pages</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+
+    </span><span class="com">/*
+    * Count the total number of pages used by ram blocks not including any
+    * gaps due to alignment or unplugs.
+    */</span><span class="pln">
+    migration_dirty_pages </span><span class="pun">=</span><span class="pln"> ram_bytes_total</span><span class="pun">()</span><span class="pln"> </span><span class="pun">&gt;&gt;</span><span class="pln"> TARGET_PAGE_BITS</span><span class="pun">;</span><span class="pln">
+
+    memory_global_dirty_log_start</span><span class="pun">();</span><span class="pln">
+    migration_bitmap_sync</span><span class="pun">();</span><span class="pln">
+    qemu_mutex_unlock_ramlist</span><span class="pun">();</span><span class="pln">
+    qemu_mutex_unlock_iothread</span><span class="pun">();</span><span class="pln">
+    rcu_read_unlock</span><span class="pun">();</span><span class="pln">
+
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>As we can see ‘migration_bitmap_rcu’ is the bitmap for qemu maintains.</p>
+
+<p>Then it calls ‘memory_global_dirty_log_start’:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">void</span><span class="pln"> memory_global_dirty_log_start</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    global_dirty_log </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+
+    MEMORY_LISTENER_CALL_GLOBAL</span><span class="pun">(</span><span class="pln">log_global_start</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Forward</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="com">/* Refresh DIRTY_LOG_MIGRATION bit.  */</span><span class="pln">
+    memory_region_transaction_begin</span><span class="pun">();</span><span class="pln">
+    memory_region_update_pending </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+    memory_region_transaction_commit</span><span class="pun">();</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>This set ‘global_dirty_log’ to true and commit the memory change to kvm (for update).</p>
+
+<p>It then calls ‘address_space_update_topology_pass’ and will call the ‘log_start’ for every MemoryRegionSection.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="pln">        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">adding</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            MEMORY_LISTENER_UPDATE_REGION</span><span class="pun">(</span><span class="pln">frnew</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">as</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Forward</span><span class="pun">,</span><span class="pln"> region_nop</span><span class="pun">);</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">frnew</span><span class="pun">-&gt;</span><span class="pln">dirty_log_mask </span><span class="pun">&amp;</span><span class="pln"> </span><span class="pun">~</span><span class="pln">frold</span><span class="pun">-&gt;</span><span class="pln">dirty_log_mask</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                MEMORY_LISTENER_UPDATE_REGION</span><span class="pun">(</span><span class="pln">frnew</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">as</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Forward</span><span class="pun">,</span><span class="pln"> log_start</span><span class="pun">,</span><span class="pln">
+                                              frold</span><span class="pun">-&gt;</span><span class="pln">dirty_log_mask</span><span class="pun">,</span><span class="pln">
+                                              frnew</span><span class="pun">-&gt;</span><span class="pln">dirty_log_mask</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">}</span></code></pre></div></div>
+
+<p>For kvm it is ‘kvm_log_start’. We can see in ‘kvm_mem_flags’ it adds the ‘KVM_MEM_LOG_DIRTY_PAGES’ flags.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">static</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> kvm_mem_flags</span><span class="pun">(</span><span class="typ">MemoryRegion</span><span class="pln"> </span><span class="pun">*</span><span class="pln">mr</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">bool</span><span class="pln"> </span><span class="kwd">readonly</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> mr</span><span class="pun">-&gt;</span><span class="kwd">readonly</span><span class="pln"> </span><span class="pun">||</span><span class="pln"> memory_region_is_romd</span><span class="pun">(</span><span class="pln">mr</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> flags </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">memory_region_get_dirty_log_mask</span><span class="pun">(</span><span class="pln">mr</span><span class="pun">)</span><span class="pln"> </span><span class="pun">!=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        flags </span><span class="pun">|=</span><span class="pln"> KVM_MEM_LOG_DIRTY_PAGES</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">readonly</span><span class="pln"> </span><span class="pun">&amp;&amp;</span><span class="pln"> kvm_readonly_mem_allowed</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        flags </span><span class="pun">|=</span><span class="pln"> KVM_MEM_READONLY</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> flags</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>Following stack backtrack shows the callchains.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="pun">(</span><span class="pln">gdb</span><span class="pun">)</span><span class="pln"> bt
+</span><span class="com">#0  kvm_set_user_memory_region (kml=0x55ab8fc502c0, slot=0x55ab8fc50500) at /home/liqiang02/qemu0711/qemu-2.8/kvm-all.c:236</span><span class="pln">
+</span><span class="com">#1  0x000055ab8df10a92 in kvm_slot_update_flags (kml=0x55ab8fc502c0, mem=0x55ab8fc50500, mr=0x55ab8fd36f70)</span><span class="pln">
+    at </span><span class="pun">/</span><span class="pln">home</span><span class="pun">/</span><span class="pln">liqiang02</span><span class="pun">/</span><span class="pln">qemu0711</span><span class="pun">/</span><span class="pln">qemu</span><span class="pun">-</span><span class="lit">2.8</span><span class="pun">/</span><span class="pln">kvm</span><span class="pun">-</span><span class="pln">all</span><span class="pun">.</span><span class="pln">c</span><span class="pun">:</span><span class="lit">376</span><span class="pln">
+</span><span class="com">#2  0x000055ab8df10b1f in kvm_section_update_flags (kml=0x55ab8fc502c0, section=0x7f0ab37fb4c0)</span><span class="pln">
+    at </span><span class="pun">/</span><span class="pln">home</span><span class="pun">/</span><span class="pln">liqiang02</span><span class="pun">/</span><span class="pln">qemu0711</span><span class="pun">/</span><span class="pln">qemu</span><span class="pun">-</span><span class="lit">2.8</span><span class="pun">/</span><span class="pln">kvm</span><span class="pun">-</span><span class="pln">all</span><span class="pun">.</span><span class="pln">c</span><span class="pun">:</span><span class="lit">389</span><span class="pln">
+</span><span class="com">#3  0x000055ab8df10b65 in kvm_log_start (listener=0x55ab8fc502c0, section=0x7f0ab37fb4c0, old=0, new=4)</span><span class="pln">
+    at </span><span class="pun">/</span><span class="pln">home</span><span class="pun">/</span><span class="pln">liqiang02</span><span class="pun">/</span><span class="pln">qemu0711</span><span class="pun">/</span><span class="pln">qemu</span><span class="pun">-</span><span class="lit">2.8</span><span class="pun">/</span><span class="pln">kvm</span><span class="pun">-</span><span class="pln">all</span><span class="pun">.</span><span class="pln">c</span><span class="pun">:</span><span class="lit">404</span><span class="pln">
+</span><span class="com">#4  0x000055ab8df18b33 in address_space_update_topology_pass (as=0x55ab8ea21880 &lt;address_space_memory&gt;, old_view=0x7f0cc4118ca0, </span><span class="pln">
+    new_view</span><span class="pun">=</span><span class="lit">0x7f0aa804d380</span><span class="pun">,</span><span class="pln"> adding</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">)</span><span class="pln"> at </span><span class="pun">/</span><span class="pln">home</span><span class="pun">/</span><span class="pln">liqiang02</span><span class="pun">/</span><span class="pln">qemu0711</span><span class="pun">/</span><span class="pln">qemu</span><span class="pun">-</span><span class="lit">2.8</span><span class="pun">/</span><span class="pln">memory</span><span class="pun">.</span><span class="pln">c</span><span class="pun">:</span><span class="lit">854</span><span class="pln">
+</span><span class="com">#5  0x000055ab8df18d9b in address_space_update_topology (as=0x55ab8ea21880 &lt;address_space_memory&gt;)</span><span class="pln">
+    at </span><span class="pun">/</span><span class="pln">home</span><span class="pun">/</span><span class="pln">liqiang02</span><span class="pun">/</span><span class="pln">qemu0711</span><span class="pun">/</span><span class="pln">qemu</span><span class="pun">-</span><span class="lit">2.8</span><span class="pun">/</span><span class="pln">memory</span><span class="pun">.</span><span class="pln">c</span><span class="pun">:</span><span class="lit">886</span><span class="pln">
+</span><span class="com">#6  0x000055ab8df18ed6 in memory_region_transaction_commit () at /home/liqiang02/qemu0711/qemu-2.8/memory.c:926</span><span class="pln">
+</span><span class="com">#7  0x000055ab8df1c9ef in memory_global_dirty_log_start () at /home/liqiang02/qemu0711/qemu-2.8/memory.c:2276</span><span class="pln">
+</span><span class="com">#8  0x000055ab8df30ce6 in ram_save_init_globals () at /home/liqiang02/qemu0711/qemu-2.8/migration/ram.c:1939</span><span class="pln">
+</span><span class="com">#9  0x000055ab8df30d36 in ram_save_setup (f=0x55ab90d874c0, opaque=0x0) at /home/liqiang02/qemu0711/qemu-2.8/migration/ram.c:1960</span><span class="pln">
+</span><span class="com">#10 0x000055ab8df3609a in qemu_savevm_state_begin (f=0x55ab90d874c0, params=0x55ab8ea0178c &lt;current_migration+204&gt;)</span><span class="pln">
+    at </span><span class="pun">/</span><span class="pln">home</span><span class="pun">/</span><span class="pln">liqiang02</span><span class="pun">/</span><span class="pln">qemu0711</span><span class="pun">/</span><span class="pln">qemu</span><span class="pun">-</span><span class="lit">2.8</span><span class="pun">/</span><span class="pln">migration</span><span class="pun">/</span><span class="pln">savevm</span><span class="pun">.</span><span class="pln">c</span><span class="pun">:</span><span class="lit">956</span><span class="pln">
+</span><span class="com">#11 0x000055ab8e25d9b8 in migration_thread (opaque=0x55ab8ea016c0 &lt;current_migration&gt;) at migration/migration.c:1829</span><span class="pln">
+</span><span class="com">#12 0x00007f0cda1fd494 in start_thread () from /lib/x86_64-linux-gnu/libpthread.so.0</span><span class="pln">
+</span><span class="com">#13 0x00007f0cd9f3facf in clone () from /lib/x86_64-linux-gnu/libc.so.6</span></code></pre></div></div>
+
+<p>Here we know the memory topology doesn’t change but only adds the ‘KVM_MEM_LOG_DIRTY_PAGES’.</p>
+
+<p>Now let’s go to the kvm part, as we can see the qemu sends ‘KVM_SET_USER_MEMORY_REGION’ ioctl
+and the kernel will go to ‘__kvm_set_memory_region’</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">int</span><span class="pln"> __kvm_set_memory_region</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm </span><span class="pun">*</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln">
+                </span><span class="kwd">const</span><span class="pln"> </span><span class="kwd">struct</span><span class="pln"> kvm_userspace_memory_region </span><span class="pun">*</span><span class="pln">mem</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">npages</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">old</span><span class="pun">.</span><span class="pln">npages</span><span class="pun">)</span><span class="pln">
+            change </span><span class="pun">=</span><span class="pln"> KVM_MR_CREATE</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">/* Modify an existing slot. */</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">((</span><span class="pln">mem</span><span class="pun">-&gt;</span><span class="pln">userspace_addr </span><span class="pun">!=</span><span class="pln"> old</span><span class="pun">.</span><span class="pln">userspace_addr</span><span class="pun">)</span><span class="pln"> </span><span class="pun">||</span><span class="pln">
+                </span><span class="pun">(</span><span class="pln">npages </span><span class="pun">!=</span><span class="pln"> old</span><span class="pun">.</span><span class="pln">npages</span><span class="pun">)</span><span class="pln"> </span><span class="pun">||</span><span class="pln">
+                </span><span class="pun">((</span><span class="kwd">new</span><span class="pun">.</span><span class="pln">flags </span><span class="pun">^</span><span class="pln"> old</span><span class="pun">.</span><span class="pln">flags</span><span class="pun">)</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln"> KVM_MEM_READONLY</span><span class="pun">))</span><span class="pln">
+                </span><span class="kwd">goto</span><span class="pln"> </span><span class="kwd">out</span><span class="pun">;</span><span class="pln">
+
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">base_gfn </span><span class="pun">!=</span><span class="pln"> old</span><span class="pun">.</span><span class="pln">base_gfn</span><span class="pun">)</span><span class="pln">
+                change </span><span class="pun">=</span><span class="pln"> KVM_MR_MOVE</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">new</span><span class="pun">.</span><span class="pln">flags </span><span class="pun">!=</span><span class="pln"> old</span><span class="pun">.</span><span class="pln">flags</span><span class="pun">)</span><span class="pln">
+                change </span><span class="pun">=</span><span class="pln"> KVM_MR_FLAGS_ONLY</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">/* Nothing to change. */</span><span class="pln">
+                r </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+                </span><span class="kwd">goto</span><span class="pln"> </span><span class="kwd">out</span><span class="pun">;</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">...</span><span class="pln">
+
+    </span><span class="com">/* Allocate page dirty bitmap if needed */</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">((</span><span class="kwd">new</span><span class="pun">.</span><span class="pln">flags </span><span class="pun">&amp;</span><span class="pln"> KVM_MEM_LOG_DIRTY_PAGES</span><span class="pun">)</span><span class="pln"> </span><span class="pun">&amp;&amp;</span><span class="pln"> </span><span class="pun">!</span><span class="kwd">new</span><span class="pun">.</span><span class="pln">dirty_bitmap</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">kvm_create_dirty_bitmap</span><span class="pun">(&amp;</span><span class="kwd">new</span><span class="pun">)</span><span class="pln"> </span><span class="pun">&lt;</span><span class="pln"> </span><span class="lit">0</span><span class="pun">)</span><span class="pln">
+            </span><span class="kwd">goto</span><span class="pln"> out_free</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>The most important work here is to call ‘kvm_create_dirty_bitmap’ to allocate a bitmap.
+for every memslot it will allocate memslot-&gt;dirty_bitmap in this function.
+    /*
+    * Allocation size is twice as large as the actual dirty bitmap size.
+    * See x86’s kvm_vm_ioctl_get_dirty_log() why this is needed.
+    */
+    static int kvm_create_dirty_bitmap(struct kvm_memory_slot *memslot)
+    {
+        unsigned long dirty_bytes = 2 * kvm_dirty_bitmap_bytes(memslot);</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="pln">    memslot</span><span class="pun">-&gt;</span><span class="pln">dirty_bitmap </span><span class="pun">=</span><span class="pln"> kvm_kvzalloc</span><span class="pun">(</span><span class="pln">dirty_bytes</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">memslot</span><span class="pun">-&gt;</span><span class="pln">dirty_bitmap</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="pun">-</span><span class="pln">ENOMEM</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>Then goes to ‘kvm_arch_commit_memory_region’ and ‘kvm_mmu_slot_remove_write_access’.
+Notice, this is not the newest implementation but an old kernel (3.13).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">void</span><span class="pln"> kvm_mmu_slot_remove_write_access</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm </span><span class="pun">*</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> slot</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">struct</span><span class="pln"> kvm_memory_slot </span><span class="pun">*</span><span class="pln">memslot</span><span class="pun">;</span><span class="pln">
+    </span><span class="typ">gfn_t</span><span class="pln"> last_gfn</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> i</span><span class="pun">;</span><span class="pln">
+
+    memslot </span><span class="pun">=</span><span class="pln"> id_to_memslot</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">memslots</span><span class="pun">,</span><span class="pln"> slot</span><span class="pun">);</span><span class="pln">
+    last_gfn </span><span class="pun">=</span><span class="pln"> memslot</span><span class="pun">-&gt;</span><span class="pln">base_gfn </span><span class="pun">+</span><span class="pln"> memslot</span><span class="pun">-&gt;</span><span class="pln">npages </span><span class="pun">-</span><span class="pln"> </span><span class="lit">1</span><span class="pun">;</span><span class="pln">
+
+    spin_lock</span><span class="pun">(&amp;</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">mmu_lock</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="pln">i </span><span class="pun">=</span><span class="pln"> PT_PAGE_TABLE_LEVEL</span><span class="pun">;</span><span class="pln">
+        i </span><span class="pun">&lt;</span><span class="pln"> PT_PAGE_TABLE_LEVEL </span><span class="pun">+</span><span class="pln"> KVM_NR_PAGE_SIZES</span><span class="pun">;</span><span class="pln"> </span><span class="pun">++</span><span class="pln">i</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="pun">*</span><span class="pln">rmapp</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> last_index</span><span class="pun">,</span><span class="pln"> index</span><span class="pun">;</span><span class="pln">
+
+        rmapp </span><span class="pun">=</span><span class="pln"> memslot</span><span class="pun">-&gt;</span><span class="pln">arch</span><span class="pun">.</span><span class="pln">rmap</span><span class="pun">[</span><span class="pln">i </span><span class="pun">-</span><span class="pln"> PT_PAGE_TABLE_LEVEL</span><span class="pun">];</span><span class="pln">
+        last_index </span><span class="pun">=</span><span class="pln"> gfn_to_index</span><span class="pun">(</span><span class="pln">last_gfn</span><span class="pun">,</span><span class="pln"> memslot</span><span class="pun">-&gt;</span><span class="pln">base_gfn</span><span class="pun">,</span><span class="pln"> i</span><span class="pun">);</span><span class="pln">
+
+        </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="pln">index </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> index </span><span class="pun">&lt;=</span><span class="pln"> last_index</span><span class="pun">;</span><span class="pln"> </span><span class="pun">++</span><span class="pln">index</span><span class="pun">,</span><span class="pln"> </span><span class="pun">++</span><span class="pln">rmapp</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(*</span><span class="pln">rmapp</span><span class="pun">)</span><span class="pln">
+                __rmap_write_protect</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> rmapp</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">);</span><span class="pln">
+
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">need_resched</span><span class="pun">()</span><span class="pln"> </span><span class="pun">||</span><span class="pln"> spin_needbreak</span><span class="pun">(&amp;</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">mmu_lock</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                kvm_flush_remote_tlbs</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">);</span><span class="pln">
+                cond_resched_lock</span><span class="pun">(&amp;</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">mmu_lock</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    kvm_flush_remote_tlbs</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">);</span><span class="pln">
+    spin_unlock</span><span class="pun">(&amp;</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">mmu_lock</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>As the function name implies, it remove write access of this memory slot.</p>
+
+<p>Here we just focus the normal 4k page, not 2M and 1G page. The ‘memslot-&gt;arch.rmp’ is a gfn-&gt;spte map, say given a gfn we can find the correspoding spte.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">static</span><span class="pln"> </span><span class="kwd">bool</span><span class="pln"> __rmap_write_protect</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm </span><span class="pun">*</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="pun">*</span><span class="pln">rmapp</span><span class="pun">,</span><span class="pln">
+                </span><span class="kwd">bool</span><span class="pln"> pt_protect</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    u64 </span><span class="pun">*</span><span class="pln">sptep</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">struct</span><span class="pln"> rmap_iterator iter</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">bool</span><span class="pln"> flush </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="pln">sptep </span><span class="pun">=</span><span class="pln"> rmap_get_first</span><span class="pun">(*</span><span class="pln">rmapp</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">iter</span><span class="pun">);</span><span class="pln"> sptep</span><span class="pun">;)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        BUG_ON</span><span class="pun">(!(*</span><span class="pln">sptep </span><span class="pun">&amp;</span><span class="pln"> PT_PRESENT_MASK</span><span class="pun">));</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">spte_write_protect</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> sptep</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">flush</span><span class="pun">,</span><span class="pln"> pt_protect</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            sptep </span><span class="pun">=</span><span class="pln"> rmap_get_first</span><span class="pun">(*</span><span class="pln">rmapp</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">iter</span><span class="pun">);</span><span class="pln">
+            </span><span class="kwd">continue</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+
+        sptep </span><span class="pun">=</span><span class="pln"> rmap_get_next</span><span class="pun">(&amp;</span><span class="pln">iter</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">return</span><span class="pln"> flush</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">bool</span><span class="pln">
+spte_write_protect</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm </span><span class="pun">*</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> u64 </span><span class="pun">*</span><span class="pln">sptep</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">bool</span><span class="pln"> </span><span class="pun">*</span><span class="pln">flush</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">bool</span><span class="pln"> pt_protect</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    u64 spte </span><span class="pun">=</span><span class="pln"> </span><span class="pun">*</span><span class="pln">sptep</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">is_writable_pte</span><span class="pun">(</span><span class="pln">spte</span><span class="pun">)</span><span class="pln"> </span><span class="pun">&amp;&amp;</span><span class="pln">
+        </span><span class="pun">!(</span><span class="pln">pt_protect </span><span class="pun">&amp;&amp;</span><span class="pln"> spte_is_locklessly_modifiable</span><span class="pun">(</span><span class="pln">spte</span><span class="pun">)))</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+
+    rmap_printk</span><span class="pun">(</span><span class="str">"rmap_write_protect: spte %p %llx
+"</span><span class="pun">,</span><span class="pln"> sptep</span><span class="pun">,</span><span class="pln"> </span><span class="pun">*</span><span class="pln">sptep</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">__drop_large_spte</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> sptep</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">*</span><span class="pln">flush </span><span class="pun">|=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">pt_protect</span><span class="pun">)</span><span class="pln">
+        spte </span><span class="pun">&amp;=</span><span class="pln"> </span><span class="pun">~</span><span class="pln">SPTE_MMU_WRITEABLE</span><span class="pun">;</span><span class="pln">
+    spte </span><span class="pun">=</span><span class="pln"> spte </span><span class="pun">&amp;</span><span class="pln"> </span><span class="pun">~</span><span class="pln">PT_WRITABLE_MASK</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">*</span><span class="pln">flush </span><span class="pun">|=</span><span class="pln"> mmu_spte_update</span><span class="pun">(</span><span class="pln">sptep</span><span class="pun">,</span><span class="pln"> spte</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>So here for every gfn, we remove the write access. After return from this ioctl, the guest’s RAM
+has been marked no write access, every write to this will exit to KVM make the page dirty. This means ‘start the dirty log’.</p>
+
+<p>When the guest write the memory, it will trigger the ept violation vmexit. Then calls ‘tdp_page_fault’.
+Because this is caused by write protection, the CPU will set the error code to ‘PFERR_WRITE_MASK’ so the ‘fast_page_fault’
+and ‘fast_pf_fix_direct_spte’ will be called.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">static</span><span class="pln"> </span><span class="kwd">bool</span><span class="pln">
+fast_pf_fix_direct_spte</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm_vcpu </span><span class="pun">*</span><span class="pln">vcpu</span><span class="pun">,</span><span class="pln"> u64 </span><span class="pun">*</span><span class="pln">sptep</span><span class="pun">,</span><span class="pln"> u64 spte</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">struct</span><span class="pln"> kvm_mmu_page </span><span class="pun">*</span><span class="pln">sp </span><span class="pun">=</span><span class="pln"> page_header</span><span class="pun">(</span><span class="pln">__pa</span><span class="pun">(</span><span class="pln">sptep</span><span class="pun">));</span><span class="pln">
+    </span><span class="typ">gfn_t</span><span class="pln"> gfn</span><span class="pun">;</span><span class="pln">
+
+    WARN_ON</span><span class="pun">(!</span><span class="pln">sp</span><span class="pun">-&gt;</span><span class="pln">role</span><span class="pun">.</span><span class="pln">direct</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="com">/*
+    * The gfn of direct spte is stable since it is calculated
+    * by sp-&gt;gfn.
+    */</span><span class="pln">
+    gfn </span><span class="pun">=</span><span class="pln"> kvm_mmu_page_get_gfn</span><span class="pun">(</span><span class="pln">sp</span><span class="pun">,</span><span class="pln"> sptep </span><span class="pun">-</span><span class="pln"> sp</span><span class="pun">-&gt;</span><span class="pln">spt</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cmpxchg64</span><span class="pun">(</span><span class="pln">sptep</span><span class="pun">,</span><span class="pln"> spte</span><span class="pun">,</span><span class="pln"> spte </span><span class="pun">|</span><span class="pln"> PT_WRITABLE_MASK</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> spte</span><span class="pun">)</span><span class="pln">
+        mark_page_dirty</span><span class="pun">(</span><span class="pln">vcpu</span><span class="pun">-&gt;</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> gfn</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">void</span><span class="pln"> mark_page_dirty</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm </span><span class="pun">*</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> </span><span class="typ">gfn_t</span><span class="pln"> gfn</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">struct</span><span class="pln"> kvm_memory_slot </span><span class="pun">*</span><span class="pln">memslot</span><span class="pun">;</span><span class="pln">
+
+    memslot </span><span class="pun">=</span><span class="pln"> gfn_to_memslot</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> gfn</span><span class="pun">);</span><span class="pln">
+    mark_page_dirty_in_slot</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> memslot</span><span class="pun">,</span><span class="pln"> gfn</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">void</span><span class="pln"> mark_page_dirty_in_slot</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm </span><span class="pun">*</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">struct</span><span class="pln"> kvm_memory_slot </span><span class="pun">*</span><span class="pln">memslot</span><span class="pun">,</span><span class="pln">
+                </span><span class="typ">gfn_t</span><span class="pln"> gfn</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">memslot </span><span class="pun">&amp;&amp;</span><span class="pln"> memslot</span><span class="pun">-&gt;</span><span class="pln">dirty_bitmap</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> rel_gfn </span><span class="pun">=</span><span class="pln"> gfn </span><span class="pun">-</span><span class="pln"> memslot</span><span class="pun">-&gt;</span><span class="pln">base_gfn</span><span class="pun">;</span><span class="pln">
+
+        set_bit_le</span><span class="pun">(</span><span class="pln">rel_gfn</span><span class="pun">,</span><span class="pln"> memslot</span><span class="pun">-&gt;</span><span class="pln">dirty_bitmap</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>Here we can see, it will set the spte writeable again and set the dirty bitmap.</p>
+
+<h3> qemu sync dirty log with kvm </h3>
+
+<p>Let’s go back to ‘ram_save_init_globals’ after telling the kvm to begin start dirty log, it calls ‘migration_bitmap_sync’.
+This function calls ‘memory_global_dirty_log_sync’ to get the dirty map from kvm. ‘kvm_log_sync’ is used to do this.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> kvm_log_sync</span><span class="pun">(</span><span class="typ">MemoryListener</span><span class="pln"> </span><span class="pun">*</span><span class="pln">listener</span><span class="pun">,</span><span class="pln">
+                        </span><span class="typ">MemoryRegionSection</span><span class="pln"> </span><span class="pun">*</span><span class="pln">section</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="typ">KVMMemoryListener</span><span class="pln"> </span><span class="pun">*</span><span class="pln">kml </span><span class="pun">=</span><span class="pln"> container_of</span><span class="pun">(</span><span class="pln">listener</span><span class="pun">,</span><span class="pln"> </span><span class="typ">KVMMemoryListener</span><span class="pun">,</span><span class="pln"> listener</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> r</span><span class="pun">;</span><span class="pln">
+
+    r </span><span class="pun">=</span><span class="pln"> kvm_physical_sync_dirty_bitmap</span><span class="pun">(</span><span class="pln">kml</span><span class="pun">,</span><span class="pln"> section</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">r </span><span class="pun">&lt;</span><span class="pln"> </span><span class="lit">0</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        abort</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> kvm_physical_sync_dirty_bitmap</span><span class="pun">(</span><span class="typ">KVMMemoryListener</span><span class="pln"> </span><span class="pun">*</span><span class="pln">kml</span><span class="pun">,</span><span class="pln">
+                                        </span><span class="typ">MemoryRegionSection</span><span class="pln"> </span><span class="pun">*</span><span class="pln">section</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="typ">KVMState</span><span class="pln"> </span><span class="pun">*</span><span class="pln">s </span><span class="pun">=</span><span class="pln"> kvm_state</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> size</span><span class="pun">,</span><span class="pln"> allocated_size </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">struct</span><span class="pln"> kvm_dirty_log d </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{};</span><span class="pln">
+    </span><span class="typ">KVMSlot</span><span class="pln"> </span><span class="pun">*</span><span class="pln">mem</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> ret </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+    hwaddr start_addr </span><span class="pun">=</span><span class="pln"> section</span><span class="pun">-&gt;</span><span class="pln">offset_within_address_space</span><span class="pun">;</span><span class="pln">
+    hwaddr end_addr </span><span class="pun">=</span><span class="pln"> start_addr </span><span class="pun">+</span><span class="pln"> int128_get64</span><span class="pun">(</span><span class="pln">section</span><span class="pun">-&gt;</span><span class="pln">size</span><span class="pun">);</span><span class="pln">
+
+    d</span><span class="pun">.</span><span class="pln">dirty_bitmap </span><span class="pun">=</span><span class="pln"> NULL</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">while</span><span class="pln"> </span><span class="pun">(</span><span class="pln">start_addr </span><span class="pun">&lt;</span><span class="pln"> end_addr</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        mem </span><span class="pun">=</span><span class="pln"> kvm_lookup_overlapping_slot</span><span class="pun">(</span><span class="pln">kml</span><span class="pun">,</span><span class="pln"> start_addr</span><span class="pun">,</span><span class="pln"> end_addr</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">mem </span><span class="pun">==</span><span class="pln"> NULL</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">break</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+
+        </span><span class="pun">...</span><span class="pln">
+        size </span><span class="pun">=</span><span class="pln"> ALIGN</span><span class="pun">(((</span><span class="pln">mem</span><span class="pun">-&gt;</span><span class="pln">memory_size</span><span class="pun">)</span><span class="pln"> </span><span class="pun">&gt;&gt;</span><span class="pln"> TARGET_PAGE_BITS</span><span class="pun">),</span><span class="pln">
+                    </span><span class="com">/*HOST_LONG_BITS*/</span><span class="pln"> </span><span class="lit">64</span><span class="pun">)</span><span class="pln"> </span><span class="pun">/</span><span class="pln"> </span><span class="lit">8</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">d</span><span class="pun">.</span><span class="pln">dirty_bitmap</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            d</span><span class="pun">.</span><span class="pln">dirty_bitmap </span><span class="pun">=</span><span class="pln"> g_malloc</span><span class="pun">(</span><span class="pln">size</span><span class="pun">);</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">size </span><span class="pun">&gt;</span><span class="pln"> allocated_size</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            d</span><span class="pun">.</span><span class="pln">dirty_bitmap </span><span class="pun">=</span><span class="pln"> g_realloc</span><span class="pun">(</span><span class="pln">d</span><span class="pun">.</span><span class="pln">dirty_bitmap</span><span class="pun">,</span><span class="pln"> size</span><span class="pun">);</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        allocated_size </span><span class="pun">=</span><span class="pln"> size</span><span class="pun">;</span><span class="pln">
+        memset</span><span class="pun">(</span><span class="pln">d</span><span class="pun">.</span><span class="pln">dirty_bitmap</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln"> allocated_size</span><span class="pun">);</span><span class="pln">
+
+        d</span><span class="pun">.</span><span class="pln">slot </span><span class="pun">=</span><span class="pln"> mem</span><span class="pun">-&gt;</span><span class="pln">slot </span><span class="pun">|</span><span class="pln"> </span><span class="pun">(</span><span class="pln">kml</span><span class="pun">-&gt;</span><span class="pln">as_id </span><span class="pun">&lt;&lt;</span><span class="pln"> </span><span class="lit">16</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">kvm_vm_ioctl</span><span class="pun">(</span><span class="pln">s</span><span class="pun">,</span><span class="pln"> KVM_GET_DIRTY_LOG</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">d</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="pun">-</span><span class="lit">1</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            DPRINTF</span><span class="pun">(</span><span class="str">"ioctl failed %d
+"</span><span class="pun">,</span><span class="pln"> errno</span><span class="pun">);</span><span class="pln">
+            ret </span><span class="pun">=</span><span class="pln"> </span><span class="pun">-</span><span class="lit">1</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">break</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+
+        kvm_get_dirty_pages_log_range</span><span class="pun">(</span><span class="pln">section</span><span class="pun">,</span><span class="pln"> d</span><span class="pun">.</span><span class="pln">dirty_bitmap</span><span class="pun">);</span><span class="pln">
+        start_addr </span><span class="pun">=</span><span class="pln"> mem</span><span class="pun">-&gt;</span><span class="pln">start_addr </span><span class="pun">+</span><span class="pln"> mem</span><span class="pun">-&gt;</span><span class="pln">memory_size</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    g_free</span><span class="pun">(</span><span class="pln">d</span><span class="pun">.</span><span class="pln">dirty_bitmap</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">return</span><span class="pln"> ret</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>Here we can see the qemu sends out a ‘KVM_GET_DIRTY_LOG’ ioctl. In kvm</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">int</span><span class="pln"> kvm_vm_ioctl_get_dirty_log</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm </span><span class="pun">*</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">struct</span><span class="pln"> kvm_dirty_log </span><span class="pun">*</span><span class="pln">log</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> r</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">struct</span><span class="pln"> kvm_memory_slot </span><span class="pun">*</span><span class="pln">memslot</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> n</span><span class="pun">,</span><span class="pln"> i</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="pun">*</span><span class="pln">dirty_bitmap</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="pun">*</span><span class="pln">dirty_bitmap_buffer</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">bool</span><span class="pln"> is_dirty </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+
+    mutex_lock</span><span class="pun">(&amp;</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">slots_lock</span><span class="pun">);</span><span class="pln">
+
+    r </span><span class="pun">=</span><span class="pln"> </span><span class="pun">-</span><span class="pln">EINVAL</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">log</span><span class="pun">-&gt;</span><span class="pln">slot </span><span class="pun">&gt;=</span><span class="pln"> KVM_USER_MEM_SLOTS</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">goto</span><span class="pln"> </span><span class="kwd">out</span><span class="pun">;</span><span class="pln">
+
+    memslot </span><span class="pun">=</span><span class="pln"> id_to_memslot</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">memslots</span><span class="pun">,</span><span class="pln"> log</span><span class="pun">-&gt;</span><span class="pln">slot</span><span class="pun">);</span><span class="pln">
+
+    dirty_bitmap </span><span class="pun">=</span><span class="pln"> memslot</span><span class="pun">-&gt;</span><span class="pln">dirty_bitmap</span><span class="pun">;</span><span class="pln">
+    r </span><span class="pun">=</span><span class="pln"> </span><span class="pun">-</span><span class="pln">ENOENT</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">dirty_bitmap</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">goto</span><span class="pln"> </span><span class="kwd">out</span><span class="pun">;</span><span class="pln">
+
+    n </span><span class="pun">=</span><span class="pln"> kvm_dirty_bitmap_bytes</span><span class="pun">(</span><span class="pln">memslot</span><span class="pun">);</span><span class="pln">
+
+    dirty_bitmap_buffer </span><span class="pun">=</span><span class="pln"> dirty_bitmap </span><span class="pun">+</span><span class="pln"> n </span><span class="pun">/</span><span class="pln"> </span><span class="kwd">sizeof</span><span class="pun">(</span><span class="kwd">long</span><span class="pun">);</span><span class="pln">
+    memset</span><span class="pun">(</span><span class="pln">dirty_bitmap_buffer</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln"> n</span><span class="pun">);</span><span class="pln">
+
+    spin_lock</span><span class="pun">(&amp;</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">mmu_lock</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="pln">i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;</span><span class="pln"> n </span><span class="pun">/</span><span class="pln"> </span><span class="kwd">sizeof</span><span class="pun">(</span><span class="kwd">long</span><span class="pun">);</span><span class="pln"> i</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> mask</span><span class="pun">;</span><span class="pln">
+        </span><span class="typ">gfn_t</span><span class="pln"> offset</span><span class="pun">;</span><span class="pln">
+
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">dirty_bitmap</span><span class="pun">[</span><span class="pln">i</span><span class="pun">])</span><span class="pln">
+            </span><span class="kwd">continue</span><span class="pun">;</span><span class="pln">
+
+        is_dirty </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+
+        mask </span><span class="pun">=</span><span class="pln"> xchg</span><span class="pun">(&amp;</span><span class="pln">dirty_bitmap</span><span class="pun">[</span><span class="pln">i</span><span class="pun">],</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">
+        dirty_bitmap_buffer</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> mask</span><span class="pun">;</span><span class="pln">
+
+        offset </span><span class="pun">=</span><span class="pln"> i </span><span class="pun">*</span><span class="pln"> BITS_PER_LONG</span><span class="pun">;</span><span class="pln">
+        kvm_mmu_write_protect_pt_masked</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> memslot</span><span class="pun">,</span><span class="pln"> offset</span><span class="pun">,</span><span class="pln"> mask</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">is_dirty</span><span class="pun">)</span><span class="pln">
+        kvm_flush_remote_tlbs</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">);</span><span class="pln">
+
+    spin_unlock</span><span class="pun">(&amp;</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">mmu_lock</span><span class="pun">);</span><span class="pln">
+
+    r </span><span class="pun">=</span><span class="pln"> </span><span class="pun">-</span><span class="pln">EFAULT</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">copy_to_user</span><span class="pun">(</span><span class="pln">log</span><span class="pun">-&gt;</span><span class="pln">dirty_bitmap</span><span class="pun">,</span><span class="pln"> dirty_bitmap_buffer</span><span class="pun">,</span><span class="pln"> n</span><span class="pun">))</span><span class="pln">
+        </span><span class="kwd">goto</span><span class="pln"> </span><span class="kwd">out</span><span class="pun">;</span><span class="pln">
+
+    r </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+</span><span class="kwd">out</span><span class="pun">:</span><span class="pln">
+    mutex_unlock</span><span class="pun">(&amp;</span><span class="pln">kvm</span><span class="pun">-&gt;</span><span class="pln">slots_lock</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> r</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>It copys the dirty bitmap to userspace and also set the spte to write protection using ‘kvm_mmu_write_protect_pt_masked’.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">void</span><span class="pln"> kvm_mmu_write_protect_pt_masked</span><span class="pun">(</span><span class="kwd">struct</span><span class="pln"> kvm </span><span class="pun">*</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln">
+                    </span><span class="kwd">struct</span><span class="pln"> kvm_memory_slot </span><span class="pun">*</span><span class="pln">slot</span><span class="pun">,</span><span class="pln">
+                    </span><span class="typ">gfn_t</span><span class="pln"> gfn_offset</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> mask</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="pun">*</span><span class="pln">rmapp</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">while</span><span class="pln"> </span><span class="pun">(</span><span class="pln">mask</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        rmapp </span><span class="pun">=</span><span class="pln"> __gfn_to_rmap</span><span class="pun">(</span><span class="pln">slot</span><span class="pun">-&gt;</span><span class="pln">base_gfn </span><span class="pun">+</span><span class="pln"> gfn_offset </span><span class="pun">+</span><span class="pln"> __ffs</span><span class="pun">(</span><span class="pln">mask</span><span class="pun">),</span><span class="pln">
+                    PT_PAGE_TABLE_LEVEL</span><span class="pun">,</span><span class="pln"> slot</span><span class="pun">);</span><span class="pln">
+        __rmap_write_protect</span><span class="pun">(</span><span class="pln">kvm</span><span class="pun">,</span><span class="pln"> rmapp</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">);</span><span class="pln">
+
+        </span><span class="com">/* clear the first set bit */</span><span class="pln">
+        mask </span><span class="pun">&amp;=</span><span class="pln"> mask </span><span class="pun">-</span><span class="pln"> </span><span class="lit">1</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>So next time, the guest write to this pfn page, it will mark as a dirty page again.</p>
+
+<p>kvm_get_dirty_pages_log_range–&gt;cpu_physical_memory_set_dirty_lebitmap.</p>
+
+<p>In the later function, it sets ‘ram_list.dirty_memory[i])-&gt;blocks’ dirty bitmap.
+This dirty bitmap lays in ‘ram_list’, not with the migration.</p>
+
+<h3> qemu copy dirty bitmap to migration bitmap </h3>
+
+<p>In ‘migration_bitmap_sync’ after the call of ‘memory_global_dirty_log_sync’, 
+‘migration_bitmap_sync_range’ will be called for every block. This calls copy ‘ram_list’s
+dirty bitmap to ‘migration_bitmap_rcu-&gt;bmap’.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> migration_bitmap_sync_range</span><span class="pun">(</span><span class="typ">ram_addr_t</span><span class="pln"> start</span><span class="pun">,</span><span class="pln"> </span><span class="typ">ram_addr_t</span><span class="pln"> length</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="pun">*</span><span class="pln">bitmap</span><span class="pun">;</span><span class="pln">
+    bitmap </span><span class="pun">=</span><span class="pln"> atomic_rcu_read</span><span class="pun">(&amp;</span><span class="pln">migration_bitmap_rcu</span><span class="pun">)-&gt;</span><span class="pln">bmap</span><span class="pun">;</span><span class="pln">
+    migration_dirty_pages </span><span class="pun">+=</span><span class="pln">
+        cpu_physical_memory_sync_dirty_bitmap</span><span class="pun">(</span><span class="pln">bitmap</span><span class="pun">,</span><span class="pln"> start</span><span class="pun">,</span><span class="pln"> length</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+
+</span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">inline</span><span class="pln">
+</span><span class="typ">uint64_t</span><span class="pln"> cpu_physical_memory_sync_dirty_bitmap</span><span class="pun">(</span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="pun">*</span><span class="pln">dest</span><span class="pun">,</span><span class="pln">
+                                            </span><span class="typ">ram_addr_t</span><span class="pln"> start</span><span class="pun">,</span><span class="pln">
+                                            </span><span class="typ">ram_addr_t</span><span class="pln"> length</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="typ">ram_addr_t</span><span class="pln"> addr</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> page </span><span class="pun">=</span><span class="pln"> BIT_WORD</span><span class="pun">(</span><span class="pln">start </span><span class="pun">&gt;&gt;</span><span class="pln"> TARGET_PAGE_BITS</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">uint64_t</span><span class="pln"> num_dirty </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="com">/* start address is aligned at the start of a word? */</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(((</span><span class="pln">page </span><span class="pun">*</span><span class="pln"> BITS_PER_LONG</span><span class="pun">)</span><span class="pln"> </span><span class="pun">&lt;&lt;</span><span class="pln"> TARGET_PAGE_BITS</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> start</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+       </span><span class="pun">...</span><span class="pln">
+        src </span><span class="pun">=</span><span class="pln"> atomic_rcu_read</span><span class="pun">(</span><span class="pln">
+                </span><span class="pun">&amp;</span><span class="pln">ram_list</span><span class="pun">.</span><span class="pln">dirty_memory</span><span class="pun">[</span><span class="pln">DIRTY_MEMORY_MIGRATION</span><span class="pun">])-&gt;</span><span class="pln">blocks</span><span class="pun">;</span><span class="pln">
+
+        </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="pln">k </span><span class="pun">=</span><span class="pln"> page</span><span class="pun">;</span><span class="pln"> k </span><span class="pun">&lt;</span><span class="pln"> page </span><span class="pun">+</span><span class="pln"> nr</span><span class="pun">;</span><span class="pln"> k</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">src</span><span class="pun">[</span><span class="pln">idx</span><span class="pun">][</span><span class="pln">offset</span><span class="pun">])</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> bits </span><span class="pun">=</span><span class="pln"> atomic_xchg</span><span class="pun">(&amp;</span><span class="pln">src</span><span class="pun">[</span><span class="pln">idx</span><span class="pun">][</span><span class="pln">offset</span><span class="pun">],</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">
+                </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> new_dirty</span><span class="pun">;</span><span class="pln">
+                new_dirty </span><span class="pun">=</span><span class="pln"> </span><span class="pun">~</span><span class="pln">dest</span><span class="pun">[</span><span class="pln">k</span><span class="pun">];</span><span class="pln">
+                dest</span><span class="pun">[</span><span class="pln">k</span><span class="pun">]</span><span class="pln"> </span><span class="pun">|=</span><span class="pln"> bits</span><span class="pun">;</span><span class="pln">
+                new_dirty </span><span class="pun">&amp;=</span><span class="pln"> bits</span><span class="pun">;</span><span class="pln">
+                num_dirty </span><span class="pun">+=</span><span class="pln"> ctpopl</span><span class="pun">(</span><span class="pln">new_dirty</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+   </span><span class="pun">...</span><span class="pln">
+
+    </span><span class="kwd">return</span><span class="pln"> num_dirty</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>Now, the ‘migration_bitmap_rcu-&gt;bmap’ know all the dirty pages. Of course it is not very useful for
+the setup process, as qemu already set all of ‘migration_bitmap_rcu-&gt;bmap’ to 1.</p>
+
+<h3> find the dirty pages and send out </h3>
+
+<p>After the setup, we go to the most important process, iterate send pages to the dest and after a water mark 
+reached, stop the machine and send the other all dirty pages to dest. The overview can short as following.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">while</span><span class="pln"> </span><span class="pun">(</span><span class="pln">s</span><span class="pun">-&gt;</span><span class="pln">state </span><span class="pun">==</span><span class="pln"> MIGRATION_STATUS_ACTIVE </span><span class="pun">||</span><span class="pln">
+        s</span><span class="pun">-&gt;</span><span class="pln">state </span><span class="pun">==</span><span class="pln"> MIGRATION_STATUS_POSTCOPY_ACTIVE</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">...</span><span class="pln">
+
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">qemu_file_rate_limit</span><span class="pun">(</span><span class="pln">s</span><span class="pun">-&gt;</span><span class="pln">to_dst_file</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="typ">uint64_t</span><span class="pln"> pend_post</span><span class="pun">,</span><span class="pln"> pend_nonpost</span><span class="pun">;</span><span class="pln">
+
+            qemu_savevm_state_pending</span><span class="pun">(</span><span class="pln">s</span><span class="pun">-&gt;</span><span class="pln">to_dst_file</span><span class="pun">,</span><span class="pln"> max_size</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">pend_nonpost</span><span class="pun">,</span><span class="pln">
+                                    </span><span class="pun">&amp;</span><span class="pln">pend_post</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">...</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">pending_size </span><span class="pun">&amp;&amp;</span><span class="pln"> pending_size </span><span class="pun">&gt;=</span><span class="pln"> max_size</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="com">/* Still a significant amount to transfer */</span><span class="pln">
+
+                </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">migrate_postcopy_ram</span><span class="pun">()</span><span class="pln"> </span><span class="pun">&amp;&amp;</span><span class="pln">
+                    s</span><span class="pun">-&gt;</span><span class="pln">state </span><span class="pun">!=</span><span class="pln"> MIGRATION_STATUS_POSTCOPY_ACTIVE </span><span class="pun">&amp;&amp;</span><span class="pln">
+                    pend_nonpost </span><span class="pun">&lt;=</span><span class="pln"> max_size </span><span class="pun">&amp;&amp;</span><span class="pln">
+                    atomic_read</span><span class="pun">(&amp;</span><span class="pln">s</span><span class="pun">-&gt;</span><span class="pln">start_postcopy</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+                    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">postcopy_start</span><span class="pun">(</span><span class="pln">s</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">old_vm_running</span><span class="pun">))</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                        current_active_state </span><span class="pun">=</span><span class="pln"> MIGRATION_STATUS_POSTCOPY_ACTIVE</span><span class="pun">;</span><span class="pln">
+                        entered_postcopy </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+                    </span><span class="pun">}</span><span class="pln">
+
+                    </span><span class="kwd">continue</span><span class="pun">;</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+                </span><span class="com">/* Just another iteration step */</span><span class="pln">
+                qemu_savevm_state_iterate</span><span class="pun">(</span><span class="pln">s</span><span class="pun">-&gt;</span><span class="pln">to_dst_file</span><span class="pun">,</span><span class="pln"> entered_postcopy</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                trace_migration_thread_low_pending</span><span class="pun">(</span><span class="pln">pending_size</span><span class="pun">);</span><span class="pln">
+                migration_completion</span><span class="pun">(</span><span class="pln">s</span><span class="pun">,</span><span class="pln"> current_active_state</span><span class="pun">,</span><span class="pln">
+                                    </span><span class="pun">&amp;</span><span class="pln">old_vm_running</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">start_time</span><span class="pun">);</span><span class="pln">
+                </span><span class="kwd">break</span><span class="pun">;</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span></code></pre></div></div>
+
+<p>Here show the three most important function. ‘qemu_savevm_state_pending’, ‘qemu_savevm_state_iterate’ and
+‘migration_completion’. For ram, the save pending function is ‘ram_save_pending’.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> ram_save_pending</span><span class="pun">(</span><span class="typ">QEMUFile</span><span class="pln"> </span><span class="pun">*</span><span class="pln">f</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> </span><span class="pun">*</span><span class="pln">opaque</span><span class="pun">,</span><span class="pln"> </span><span class="typ">uint64_t</span><span class="pln"> max_size</span><span class="pun">,</span><span class="pln">
+                            </span><span class="typ">uint64_t</span><span class="pln"> </span><span class="pun">*</span><span class="pln">non_postcopiable_pending</span><span class="pun">,</span><span class="pln">
+                            </span><span class="typ">uint64_t</span><span class="pln"> </span><span class="pun">*</span><span class="pln">postcopiable_pending</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="typ">uint64_t</span><span class="pln"> remaining_size</span><span class="pun">;</span><span class="pln">
+
+    remaining_size </span><span class="pun">=</span><span class="pln"> ram_save_remaining</span><span class="pun">()</span><span class="pln"> </span><span class="pun">*</span><span class="pln"> TARGET_PAGE_SIZE</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">migration_in_postcopy</span><span class="pun">(</span><span class="pln">migrate_get_current</span><span class="pun">())</span><span class="pln"> </span><span class="pun">&amp;&amp;</span><span class="pln">
+        remaining_size </span><span class="pun">&lt;</span><span class="pln"> max_size</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        qemu_mutex_lock_iothread</span><span class="pun">();</span><span class="pln">
+        rcu_read_lock</span><span class="pun">();</span><span class="pln">
+        migration_bitmap_sync</span><span class="pun">();</span><span class="pln">
+        rcu_read_unlock</span><span class="pun">();</span><span class="pln">
+        qemu_mutex_unlock_iothread</span><span class="pun">();</span><span class="pln">
+        remaining_size </span><span class="pun">=</span><span class="pln"> ram_save_remaining</span><span class="pun">()</span><span class="pln"> </span><span class="pun">*</span><span class="pln"> TARGET_PAGE_SIZE</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="com">/* We can do postcopy, and all the data is postcopiable */</span><span class="pln">
+    </span><span class="pun">*</span><span class="pln">postcopiable_pending </span><span class="pun">+=</span><span class="pln"> remaining_size</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>This function calls ‘migration_bitmap_sync’ to get the dirty page bitmap in ‘migration_bitmap_rcu-&gt;bmap’.
+In the iterate function ‘ram_save_iterate’ it calls ‘ram_find_and_save_block’ to find the dirty page and
+then send out to the dest host.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">static</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> ram_save_iterate</span><span class="pun">(</span><span class="typ">QEMUFile</span><span class="pln"> </span><span class="pun">*</span><span class="pln">f</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> </span><span class="pun">*</span><span class="pln">opaque</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> ret</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> i</span><span class="pun">;</span><span class="pln">
+    </span><span class="typ">int64_t</span><span class="pln"> t0</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> </span><span class="kwd">done</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+
+    rcu_read_lock</span><span class="pun">();</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">ram_list</span><span class="pun">.</span><span class="pln">version </span><span class="pun">!=</span><span class="pln"> last_version</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        reset_ram_globals</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="com">/* Read version before ram_list.blocks */</span><span class="pln">
+    smp_rmb</span><span class="pun">();</span><span class="pln">
+
+    ram_control_before_iterate</span><span class="pun">(</span><span class="pln">f</span><span class="pun">,</span><span class="pln"> RAM_CONTROL_ROUND</span><span class="pun">);</span><span class="pln">
+
+    t0 </span><span class="pun">=</span><span class="pln"> qemu_clock_get_ns</span><span class="pun">(</span><span class="pln">QEMU_CLOCK_REALTIME</span><span class="pun">);</span><span class="pln">
+    i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">while</span><span class="pln"> </span><span class="pun">((</span><span class="pln">ret </span><span class="pun">=</span><span class="pln"> qemu_file_rate_limit</span><span class="pun">(</span><span class="pln">f</span><span class="pun">))</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="lit">0</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">int</span><span class="pln"> pages</span><span class="pun">;</span><span class="pln">
+
+        pages </span><span class="pun">=</span><span class="pln"> ram_find_and_save_block</span><span class="pun">(</span><span class="pln">f</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">bytes_transferred</span><span class="pun">);</span><span class="pln">
+        </span><span class="com">/* no more pages to sent */</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">pages </span><span class="pun">==</span><span class="pln"> </span><span class="lit">0</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">done</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="lit">1</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">break</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        acct_info</span><span class="pun">.</span><span class="pln">iterations</span><span class="pun">++;</span><span class="pln">
+
+        </span><span class="com">/* we want to check in the 1st loop, just in case it was the 1st time
+        and we had to sync the dirty bitmap.
+        qemu_get_clock_ns() is a bit expensive, so we only check each some
+        iterations
+        */</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">((</span><span class="pln">i </span><span class="pun">&amp;</span><span class="pln"> </span><span class="lit">63</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="lit">0</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="typ">uint64_t</span><span class="pln"> t1 </span><span class="pun">=</span><span class="pln"> </span><span class="pun">(</span><span class="pln">qemu_clock_get_ns</span><span class="pun">(</span><span class="pln">QEMU_CLOCK_REALTIME</span><span class="pun">)</span><span class="pln"> </span><span class="pun">-</span><span class="pln"> t0</span><span class="pun">)</span><span class="pln"> </span><span class="pun">/</span><span class="pln"> </span><span class="lit">1000000</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">t1 </span><span class="pun">&gt;</span><span class="pln"> MAX_WAIT</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                DPRINTF</span><span class="pun">(</span><span class="str">"big wait: %"</span><span class="pln"> </span><span class="typ">PRIu64</span><span class="pln"> </span><span class="str">" milliseconds, %d iterations
+"</span><span class="pun">,</span><span class="pln">
+                        t1</span><span class="pun">,</span><span class="pln"> i</span><span class="pun">);</span><span class="pln">
+                </span><span class="kwd">break</span><span class="pun">;</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        i</span><span class="pun">++;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+   </span><span class="pun">...</span><span class="pln">
+
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">done</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>‘ram_find_and_save_block–&gt;get_queued_page’:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="kwd">static</span><span class="pln"> </span><span class="kwd">bool</span><span class="pln"> get_queued_page</span><span class="pun">(</span><span class="typ">MigrationState</span><span class="pln"> </span><span class="pun">*</span><span class="pln">ms</span><span class="pun">,</span><span class="pln"> </span><span class="typ">PageSearchStatus</span><span class="pln"> </span><span class="pun">*</span><span class="pln">pss</span><span class="pun">,</span><span class="pln">
+                            </span><span class="typ">ram_addr_t</span><span class="pln"> </span><span class="pun">*</span><span class="pln">ram_addr_abs</span><span class="pun">)</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="typ">RAMBlock</span><span class="pln">  </span><span class="pun">*</span><span class="pln">block</span><span class="pun">;</span><span class="pln">
+    </span><span class="typ">ram_addr_t</span><span class="pln"> offset</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">bool</span><span class="pln"> dirty</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">do</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        block </span><span class="pun">=</span><span class="pln"> unqueue_page</span><span class="pun">(</span><span class="pln">ms</span><span class="pun">,</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">offset</span><span class="pun">,</span><span class="pln"> ram_addr_abs</span><span class="pun">);</span><span class="pln">
+        </span><span class="com">/*
+        * We're sending this page, and since it's postcopy nothing else
+        * will dirty it, and we must make sure it doesn't get sent again
+        * even if this queue request was received after the background
+        * search already sent it.
+        */</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">block</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">unsigned</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="pun">*</span><span class="pln">bitmap</span><span class="pun">;</span><span class="pln">
+            bitmap </span><span class="pun">=</span><span class="pln"> atomic_rcu_read</span><span class="pun">(&amp;</span><span class="pln">migration_bitmap_rcu</span><span class="pun">)-&gt;</span><span class="pln">bmap</span><span class="pun">;</span><span class="pln">
+            dirty </span><span class="pun">=</span><span class="pln"> test_bit</span><span class="pun">(*</span><span class="pln">ram_addr_abs </span><span class="pun">&gt;&gt;</span><span class="pln"> TARGET_PAGE_BITS</span><span class="pun">,</span><span class="pln"> bitmap</span><span class="pun">);</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">dirty</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                trace_get_queued_page_not_dirty</span><span class="pun">(</span><span class="pln">
+                    block</span><span class="pun">-&gt;</span><span class="pln">idstr</span><span class="pun">,</span><span class="pln"> </span><span class="pun">(</span><span class="typ">uint64_t</span><span class="pun">)</span><span class="pln">offset</span><span class="pun">,</span><span class="pln">
+                    </span><span class="pun">(</span><span class="typ">uint64_t</span><span class="pun">)*</span><span class="pln">ram_addr_abs</span><span class="pun">,</span><span class="pln">
+                    test_bit</span><span class="pun">(*</span><span class="pln">ram_addr_abs </span><span class="pun">&gt;&gt;</span><span class="pln"> TARGET_PAGE_BITS</span><span class="pun">,</span><span class="pln">
+                        atomic_rcu_read</span><span class="pun">(&amp;</span><span class="pln">migration_bitmap_rcu</span><span class="pun">)-&gt;</span><span class="pln">unsentmap</span><span class="pun">));</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                trace_get_queued_page</span><span class="pun">(</span><span class="pln">block</span><span class="pun">-&gt;</span><span class="pln">idstr</span><span class="pun">,</span><span class="pln">
+                                    </span><span class="pun">(</span><span class="typ">uint64_t</span><span class="pun">)</span><span class="pln">offset</span><span class="pun">,</span><span class="pln">
+                                    </span><span class="pun">(</span><span class="typ">uint64_t</span><span class="pun">)*</span><span class="pln">ram_addr_abs</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">while</span><span class="pln"> </span><span class="pun">(</span><span class="pln">block </span><span class="pun">&amp;&amp;</span><span class="pln"> </span><span class="pun">!</span><span class="pln">dirty</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">block</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="com">/*
+        * As soon as we start servicing pages out of order, then we have
+        * to kill the bulk stage, since the bulk stage assumes
+        * in (migration_bitmap_find_and_reset_dirty) that every page is
+        * dirty, that's no longer true.
+        */</span><span class="pln">
+        ram_bulk_stage </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+
+        </span><span class="com">/*
+        * We want the background search to continue from the queued page
+        * since the guest is likely to want other pages near to the page
+        * it just requested.
+        */</span><span class="pln">
+        pss</span><span class="pun">-&gt;</span><span class="pln">block </span><span class="pun">=</span><span class="pln"> block</span><span class="pun">;</span><span class="pln">
+        pss</span><span class="pun">-&gt;</span><span class="pln">offset </span><span class="pun">=</span><span class="pln"> offset</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="pun">!!</span><span class="pln">block</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></code></pre></div></div>
+
+<p>In this function we find the dirty page in bitmap.</p>
+
+<p>The following shows the process of dirty bitmap tracking.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight prettyprint prettyprinted" style=""><code><span class="pun">+-------------+</span><span class="pln">          </span><span class="pun">+----------+</span><span class="pln">       </span><span class="pun">+--------------+</span><span class="pln">          </span><span class="pun">+---------------------+</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">          </span><span class="pun">|</span><span class="pln"> ram_list </span><span class="pun">+-----&gt;</span><span class="pln"> </span><span class="pun">|</span><span class="pln"> dirty_memory </span><span class="pun">+--------&gt;</span><span class="pln"> </span><span class="pun">|</span><span class="pln"> migration_bitmap_rcu</span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">          </span><span class="pun">+----------+</span><span class="pln">       </span><span class="pun">+------+-------+</span><span class="pln">          </span><span class="pun">+---------------------+</span><span class="pln">
+</span><span class="pun">|</span><span class="pln"> </span><span class="typ">Guest</span><span class="pln">       </span><span class="pun">|</span><span class="pln">                                    </span><span class="pun">^</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">                                    </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">                                    </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">                                    </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">+--------------------------------+</span><span class="pln">   </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">                                </span><span class="pun">|</span><span class="pln">   </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">                                </span><span class="pun">|</span><span class="pln">   </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">                                </span><span class="pun">|</span><span class="pln">   </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">                                v   </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">                                    </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">          </span><span class="pun">+---------+</span><span class="pln">       </span><span class="pun">+-------+--------+</span><span class="pln">
+</span><span class="pun">|</span><span class="pln">             </span><span class="pun">|</span><span class="pln">          </span><span class="pun">|</span><span class="pln"> memslot </span><span class="pun">+-----&gt;</span><span class="pln"> </span><span class="pun">|</span><span class="pln"> dirty_bitmap   </span><span class="pun">|</span><span class="pln">
+</span><span class="pun">+-------------+</span><span class="pln">          </span><span class="pun">+---------+</span><span class="pln">       </span><span class="pun">+----------------+</span></code></pre></div></div>
+
+        </div>
+
+    
+        <ul class="tag_box inline">
+            <li><i class="icon-folder-open"></i></li>
+            
+            
+
+
+  
+     
+    	<li><a href="/categories.html#技术-ref">
+    		技术 <span>101</span>
+    	</a></li>
+    
+  
+
+
+        </ul>
+        
+
+    
+        <ul class="tag_box inline">
+            <li><i class="icon-tags"></i></li>
+            
+            
+
+
+  
+     
+    	<li><a href="/tags.html#qemu-ref">qemu <span>3</span></a></li>
+    
+  
+
+
+
+        </ul>
+        
+
+        <hr>
+        <div class="pagination">
+            <ul>
+            
+                <li class="prev"><a href="/%E6%8A%80%E6%9C%AF/2018/07/25/add-new-qmp" title="Add a new qmp command for qemu ">← Previous</a></li>
+            
+                <li><a href="/archive.html">Archive</a></li>
+            
+                <li class="next"><a href="/%E6%8A%80%E6%9C%AF/2018/08/27/kvm-interrupt-emulation" title="kvm interrupt emulation">Next →</a></li>
+            
+            </ul>
+        </div>
+        <hr>
+        
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+    var disqus_shortname = 'terenceli'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+    </div>
+</div>
+
+
+            </div>
+            <hr>
+            <footer>
+                <p>© 2025 Terenceli
+                    with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+                    and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+                </p>
+            </footer>
+
+        </div>
+
+        
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-123-12']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+    
+
+
+<orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; -moz-osx-font-smoothing: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; -moz-user-input: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper><div id="github-upload-progress" style="position: fixed; top: 10px; left: 10px; background-color: rgb(255, 193, 7); padding: 10px; border: 1px solid rgb(204, 204, 204); z-index: 9999;">上传到 GitHub 成功！</div></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div><div id="immersive-translate-popup" style="all: initial"></div></html>
