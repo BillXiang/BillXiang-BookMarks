@@ -1,0 +1,663 @@
+<!-- Filename: 书签工具栏/study/计算机体系结构/WWW Computer Architecture - Books (2025-04-09 11：50：40).html
+ Page saved with X-Webpage-Conserve 
+ url: https://pages.cs.wisc.edu/~arch/www/books.html
+ Summary: This webpage, titled "WWW Computer Architecture Page," is designed by a group of individuals from various universities and is maintained by Derek Hower. The page provides information about computer architecture, including books, publications, and tools. It includes sections on virtual machines, computer architecture design, parallel computing, and computer arithmetic. The page also offers links to newsgroups, job postings, and organizations related to computer architecture.这个标题为“WWW Computer Architecture Page”的网页由来自不同大学的一群人设计，并由 Derek Hower 维护。该页提供有关计算机体系结构的信息，包括书籍、出版物和工具。它包括有关虚拟机、计算机体系结构设计、并行计算和计算机算术的部分。该页面还提供指向与计算机体系结构相关的新闻组、招聘启事和组织的链接。
+-->
+<html imt-state="dual"><head>
+<title>
+WWW Computer Architecture Page
+</title>
+<link rel="alternate" type="application/rss+xml" href="whatsnew.rss" title="RSS feed for WWW Computer Architecture Page">
+<base target="_top">
+<script language="JavaScript">
+top.location.target="_top"
+if(window.location.target != "_top") 
+{
+  top.location.href=window.location.href
+} 
+</script><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+
+
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<table border="0" width="100%">
+<tbody><tr>
+  <td colspan="100">
+    <table border="0" width="100%">
+<tbody><tr>
+<td align="LEFT" valign="CENTER" nowrap=""><img src="data:image/jpeg;base64,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" alt="Pyramids" width="183" height="114" border="0" align="MIDDLE"></td>
+<td>
+<h2 align="center">WWW Computer Architecture Page</h2>
+<p align="center">
+Designed by 
+<a href="http://www.cs.wisc.edu/~drh5">Derek Hower</a>,
+<a href="http://www.cs.wisc.edu/~lyen">Luke Yen</a>, 
+<a href="http://www.cae.wisc.edu/~mxu/">Min Xu</a>, 
+<a href="http://www.cis.upenn.edu/~milom/">Milo Martin</a>+, 
+<a href="http://www.cs.utexas.edu/users/dburger/">Doug Burger</a>*, and 
+<a href="http://www.cs.wisc.edu/~markhill/markhill.html">Mark Hill</a>
+<br>
+
+<table boarder="0" width="100%">
+<tbody><tr>
+<td align="center">
+  <a href="http://www.cs.wisc.edu/arch/uwarch/">Computer Architecture Group</a><br>
+  <a href="http://www.cs.wisc.edu/">Computer Sciences Department</a><br>
+  University of Wisconsin-Madison
+</td>
+<td align="center">
++<a href="http://www.cis.upenn.edu/">Computer and Information Science</a><br>
+University of Pennsylvania
+</td>
+<td align="center">
+*<a href="http://www.cs.utexas.edu/">Department of Computer Sciences</a><br>
+University of Texas at Austin
+</td>
+</tr>
+</tbody></table>
+
+</p><center><small><a href="http://www.cs.wisc.edu/~arch/www/">original site</a> - 
+Chinese mirrors
+<a href="http://hpc.cs.tsinghua.edu.cn/wwwarch/index.html">1</a> <!-- yanjn03@mails.tsinghua.edu.cn -->
+<a href="http://mprc.pku.cn/archwww/">2</a> <!-- archwww@mprc.pku.cn Microprocessor Research and Development Center, Peking University (http://mprc.pku.cn) -->
+-
+<a href="http://gangothri.serc.iisc.ernet.in/~wwwarch/">Indian mirror (down?)</a> -
+<!-- -->
+<a href="http://www.c.csce.kyushu-u.ac.jp/www-ca/">Japanese mirror</a>
+<!-- arch@c.csce.kyushu-u.ac.jp --> -
+<a href="whatsnew.rss">RSS Feed <img src="data:image/gif;base64,R0lGODlhJAAOANUAANVYBPHUwOFdBP/28P9yFeCngvfp4OVeBPRkBe3Jsee9odByM/fg0P+rc9+ecvr07/BjBf/RsvmygiEOAfCugvqWU/PCoeZ7M/98JPjXwfDBod1uJOR3LvBsFNRhFOirguezkf/t4c1nI85VBP/awf+FNOWEQ//m1Z9BA//j0f+PRP+0gn0zAv+aV8JQBD8aAf/IpP////9mAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAALAAAAAAkAA4AAAbKwBNsSCwaj8gjpyVrOp/QqDTKYk6vWKq12YgNCDJVLEVYxWKlJuwcjpGmVWgmliCEYouROaZAEM4xLmIBAFJxTxgPMQwxDi4IZoobKwNngjGEhltOFWcBLgcyZgp0AxaWg4VaUWIxBh5NZgUaZyKomKpQh04EAwOMILExBRd0LreZq08RjQtnJqLDAgguALcGHysrKk+7Ml2fBxKuHbICTreAMRQQTt4yB9VNAi4uMvTnTvUyEPX++TLeZRlIBcWLgwgTKlzIcOGEIAA7" alt="xml icon" border="0"></a>
+</small></center><p>
+
+<!--
+<br/>
+<p style="text-align:center;color:red;font-weight:bold">Notice: This site has been moved. <br/><br/>Please visit the <a href="http://arch-www.cs.wisc.edu/home">redesigned WWW Architecture website</a> for the most up to date information. </p>
+<br/>
+!-->
+
+
+</p>
+</td>
+<td align="RIGHT" valign="CENTER" nowrap=""><img src="data:image/jpeg;base64,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" alt="Parthenon" width="247" height="110" border="0" align="MIDDLE"></td>
+</tr>
+</tbody></table>
+
+  </td>
+</tr>
+</tbody></table>
+
+<table border="0" width="100%">
+<tbody><tr>
+  <td valign="top">
+    <table border="0" cellpadding="1" cellspacing="12">
+
+<tbody><tr><td align="right" valign="middle">
+<a href="index.html">What's New</a> 
+</td>
+<td bgcolor="#9c0831" rowspan="99"><br></td>
+</tr>
+
+<tr><td align="right" valign="middle">
+<a href="contribute.html">Contribute</a> 
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="conferences.html">Conferences</a> 
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="tools.html">Tools, Simulators &amp; Benchmarks</a>
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="groups.html">Groups &amp; Projects</a> 
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="people.html">People</a>
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="commercial.html">Commercial</a> 
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="online.html">On-line Publications</a> 
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="organizations.html">Organizations</a> 
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="books.html">Books</a> 
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="awards.html">Awards</a>
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="newsgroups.html">Newsgroups</a> 
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="misc.html">Miscellanea</a>
+</td></tr>
+
+<tr><td align="right" valign="middle">
+<a href="jobs.html">Job Postings</a>
+</td></tr>
+
+</tbody></table>
+
+  </td>
+  <td valign="top" width="99%">
+<br>
+
+
+<h2>Computer Architecture Related Books</h2>
+<ul>
+<li><a href="http://www.mkp.com/comparch/">Computer Architecture and Design Books from Morgan Kaufmann Publishers</a>
+
+<p>
+
+</p></li><li><a href="http://www.morganclaypool.com/doi/abs/10.2200/S00192ED1V01Y200904CAC005">Synthesis Lecture on Fault Tolerant Computer Architecture</a> by Daniel J. Sorin
+
+</li><li><a href="http://www.ece.ucsb.edu/Faculty/Parhami/text_comp_arch.htm">Computer Architecture: From Microprocessors to Supercomputers, Oxford, 2005</a> - Textbook for an upper-division undergraduate course, with 28 lecture-size chapters, 491 problems, and extensive downloadable PowerPoint presentations (ISBN 0-19-515455-X)
+
+</li><li><a href="http://books.elsevier.com/us/mk/us/subindex.asp?isbn=1558609105">Virtual Machines - Versatile Platforms for Systems and Processes</a>
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-393-X">Macintosh
+Technology in the Common Hardware Reference Platform</a> by Apple Computer
+Inc.
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-394-8">PowerPC Microprocessor Common Hardware Reference Platform</a> by Apple Computer Inc., International Business Machines, Inc., and Motorola Inc.
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-270-4">The Designer's Guide to VHDL</a> by Peter J. Ashenden
+
+</li><li><a href="http://www.dgs.monash.edu.au/~rajkumar/cluster/">High Performance Cluster Computing Vol 1 and 2</a> by Rajkumar Buyya
+
+</li><li><a href="http://www.mpdiag.com/rapa.html">Reasoning About Parallel Architectures</a> by William W. Collier
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-343-3">Parallel Computer Architecture - A Hardware/Software Approach</a> by David Culler and Jaswinder Pal Singh
+
+</li><li><a href="http://www.manning.com/El-Rewini/index.html">Distributed and Parallel Computing</a> by Hesham El-Rewini and Ted Lewis
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-297-6">The MIPS Programmer's Handbook</a> by Erin Farquhar and Philip Bunce
+
+</li><li><a href="http://umunhum.stanford.edu/book.html">Computer Architecture: Pipelined and Parallel Processor Design</a> by Michael J. Flynn
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-329-8">Computer Architecture: A Quantitative Approach, Second Edition</a> by John L. Hennessy and David A. Patterson - <a href="http://www.mkp.com/books_catalog/ca/hp2e_res.htm">web component</a>
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-539-8">Readings in Computer Architecture</a> edited by Mark D. Hill, Norman P. Jouppi, and Gurindar S. Sohi - <a href="http://www.mkp.com/architecture-readings/wc/">web component</a>
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-316-6">The PowerPC Architecture: A Specification for a New Family of RISC Processors</a> by International Business Machines, Inc.
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-344-1">RISC System/6000: PowerPC System Architecture</a> by International Business Machines, Inc.
+
+</li><li><a href="http://www.buyya.com/superstorage/c">High Performance Mass Storage and Parallel I/O</a> Hai Jin, Toni Cortes, and Rajkumar Buyya, Editiors
+
+</li><li><a href="http://www.ecs.umass.edu/ece/koren/arith/">Computer Arithmetic Algorithms</a> by Israel Koren
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-117-1">Introduction to Parallel Algorithms and Architectures: Arrays, Trees, and Hypercubes</a> by F. Thomson Leighton
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-315-8">Scalable Shared-Memory Multiprocessing</a> by Daniel E. Lenoski and Wolf-Dietrich Weber
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-348-4">Distributed Algorithms</a> by Nancy A. Lynch
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-254-2">Parallel Processing from Applications to Systems</a> by Dan I. Moldovan
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-320-4">Advanced Compiler Design and Implementation</a> by Steven Muchnick
+
+</li><li><a href="http://www.cs.rdg.ac.uk/archive/phiscs/list.html">Computer Arithmetic Systems</a> by Amos R. Omondi
+
+</li><li><a href="http://www.wkap.nl/book.htm/0-7923-8463-6">The Microarchitecture of Pipelined and Superscalar Computers</a> by Amos R. Omondi
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-339-5">Parallel Programming with MPI</a> by Peter S. Pacheco
+
+</li><li><a href="http://www.ece.ucsb.edu/Faculty/Parhami/algorithms.html">Introduction to Parallel Processing: Algorithms and Architectures</a> by Behrooz Parhami, Plenum Press, 1999
+
+</li><li><a href="http://www.ece.ucsb.edu/Faculty/Parhami/arithmetic.html">Computer Arithmetic: Algorithms and Hardware Designs</a> by Behrooz Parhami, Oxford University Press, 2000
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-428-6">Computer Organization and Design: The Hardware/Software Interface</a> by David A. Patterson and John L. Hennessy
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-136-8">Cache and
+Memory Hierarchy Design</a> by Steven A. Przybylski
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-371-9">The DLX Instruction Set Architecture Handbook</a> by Philip M. Sailer and David R. Kaeli
+
+</li><li><a href="http://goethe.ira.uka.de/people/ungerer/proc-arch/">Processor Architecture: From Dataflow to Superscalar and Beyond</a> by Jurij Silc, Borut Robic, and Th. Ungerer
+
+</li><li><a href="http://www.lpds.sztaki.hu/aca/">Advanced Computer Architectures - A Design Space Approach</a> by Dezso Sima, Terence Fountain, and Peter Kacsuk
+
+</li><li><a href="http://www.cs.cmu.edu/~koopman/titan/index.html">The Architecture of Supercomputers: Titan, a case study</a> by Daniel Siewiorek and Philip Koopman
+
+</li><li><a href="http://www.computer.org/cspress/CATALOG/anatomy.htm">The Anatomy of a High-Performance Microprocessor - A Systems Perspective</a> by Bruce Shriver and Bennett Smith
+
+</li><li><a href="http://vig.prenhall.com/acadbook/0,2581,0130812943,00.html">Computer Organization and Architecture: Designing for Performance</a> by William Stallings
+
+</li><li><a href="http://www.mkp.com/books_catalog/catalog.asp?ISBN=1-55860-279-8">POWER and PowerPC: Principles, Architecture, Implementation</a> by Shlomo Weiss and James E. Smith
+
+</li><li><a href="http://www.geocities.com/thinkorrr/howcomputerswork/p1.html">How Computers Work</a> by Roger Young
+
+</li></ul>
+
+<address>
+<hr>
+<a href="http://www.cs.wisc.edu/arch/www/">WWW Computer Architecture Page</a><br>
+Maintained by <a href="http://www.cs.wisc.edu/~drh5">Derek Hower</a>  <br>
+Designed by 
+<a href="http://www.cs.wisc.edu/~drh5">Derek Hower</a>, 
+<a href="http://www.cs.wisc.edu/~lyen">Luke Yen</a>, 
+<a href="http://www.cae.wisc.edu/~mxu/">Min Xu</a>, 
+<a href="http://www.cis.upenn.edu/~milom/">Milo Martin</a>, 
+<a href="http://www.cs.utexas.edu/users/dburger/">Doug Burger</a>, and 
+<a href="http://www.cs.wisc.edu/~markhill/markhill.html">Mark Hill</a>
+<br>
+<a href="http://www.cs.wisc.edu/arch/uwarch/">Computer Architecture Group</a><br>
+<a href="http://www.cs.wisc.edu/">Computer Sciences Department</a><br>
+University of Wisconsin-Madison <br>
+Copyright 1999-2006, All Rights Reserved
+<hr>
+
+
+Last modified: Thursday, 25-Mar-2010 14:26:52 CDT
+<hr>
+</address>
+  </td>
+</tr>
+</tbody></table>
+
+
+
+<orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; hyphenate-limit-chars: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
