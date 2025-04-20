@@ -119,7 +119,7 @@ echo $html_mid | tee -a all.html index.html docs.html
 echo "<table id="myTable">
           <tbody>" | tee index_content.html all_content.html docs_content.html
 awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- | head -n 20 >> index_content.html
-awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- | grep -v "web_deploy" | grep -v index.html |grep -v docs.html>> all_content.html
+awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- >> all_content.html
 cat docs.tmp |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
 echo "    </tbody>
       </table>" | tee -a index_content.html all_content.html docs_content.html
