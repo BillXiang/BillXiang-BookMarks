@@ -7,7 +7,7 @@ html_head="<!DOCTYPE html>
       <meta charset="UTF-8">
       <link rel="stylesheet" href="./web_deploy/gitalk.css">
       <script src="./web_deploy/gitalk.min.js"></script>
-      <link rel="icon" href="./BillXiang-BookMarks/favicon.ico">
+      <link rel="icon" href="./favicon.ico">
       <title>BillXiang</title>
       <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
       <script>
