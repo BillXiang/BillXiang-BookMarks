@@ -1,0 +1,650 @@
+<!-- Filename: 书签工具栏/study/处理器/随机数/环形振荡器与CPU硬件随机数解析 - DeepSeek - 探索未至之境 (2025-05-17 16：08：35).html
+ Page saved with X-Webpage-Conserve 
+ url: https://www.tampermonkey.net/index.php?version=5.3.3&ext=fire&updated=true
+ Summary: 
+-->
+<html itemscope="" itemtype="http://schema.org/WebPage" lang="zh"><head>
+    <meta charset="utf-8">
+    <title>首页 | Tampermonkey</title>
+    <meta name="twitter:card" content="summary">
+    <meta property="og:title" content="首页 | Tampermonkey">
+    <meta name="description" property="og:description" content="首页">
+    <meta property="og:url" content="https://www.tampermonkey.net/index.php?browser=firefox&amp;locale=en">
+    <meta property="og:image" content="https://www.tampermonkey.net/images/og_image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/images/icon144.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icon180.png">
+    <link rel="canonical" href="https://www.tampermonkey.net/index.php?browser=firefox&amp;locale=en">
+    <script src="https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202505070101/show_ads_impl_fy2021.js?bust=31092429"></script><script type="text/javascript" async="" src="https://a.tampermonkey.net/matomo.js"></script><script type="text/javascript">
+      window.loadStart = Date.now();
+      window.addEventListener('DOMContentLoaded', function() { window.loadEnd = Date.now(); });
+    </script>
+    <link rel="preconnect" href="https://u.tampermonkey.net"><link rel="preconnect" href="https://a.tampermonkey.net"><link rel="preconnect" href="https://pagead2.googlesyndication.com"><link rel="preload" href="/fonts/lato_400.woff2" as="font" type="font/woff2" crossorigin=""><link rel="preload" href="/fonts/lato_300.woff2" as="font" type="font/woff2" crossorigin="">
+    <link href="/style.css?dd0ec73" rel="stylesheet" type="text/css">
+    <script src="/client.js?dd0ec73"></script>
+  <script type="text/javascript" async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9wSqI5i0iwGdf6L1CERNdmsTPgVu44ewj8QxTBYgsv1LCPUVF7YmWOvTappqB1139jAymxUW/RO8zmMqo4zlAAAAACNeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiRmxlZGdlQmlkZGluZ0FuZEF1Y3Rpb25TZXJ2ZXIiLCJleHBpcnkiOjE3MzY4MTI4MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A+d7vJfYtay4OUbdtRPZA3y7bKQLsxaMEPmxgfhBGqKXNrdkCQeJlUwqa6EBbSfjwFtJWTrWIioXeMW+y8bWAgQAAACTeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiRmxlZGdlQmlkZGluZ0FuZEF1Y3Rpb25TZXJ2ZXIiLCJleHBpcnkiOjE3MzY4MTI4MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script type="text/javascript" async="" src="https://u.tampermonkey.net/s.js?rand=mao8frwgop4kzduo4m&amp;id=a15f2e278dda4213379702a2a0b9ed20&amp;id=a14f2e278dda4213379702a2a0b9ed20&amp;id=a18f2e2&amp;id=a17f2e2&amp;id=a06f2e278dda4213379702a2a0b9ed20&amp;tdc=2836&amp;tad=3220&amp;sw=2560&amp;sh=1327&amp;tzo=8"></script><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+  <body class="index" id="top" data-locale="zh">
+    
+    <script type="text/javascript">
+    var _paq = window._paq = window._paq || [];
+    _paq.push(['setCookieDomain', '.tampermonkey.net']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+        var u="https://a.tampermonkey.net/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '8']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+</script>
+<noscript><p><img src="https://a.tampermonkey.net/matomo.php?idsite=8&amp;rec=1" style="border:0;" alt="" /></p></noscript><script type="text/javascript">
+    (function() {
+        var devel = [ '1', 'true' ].indexOf(window.pargs.devel) != -1;
+        var cms;
+        var context = window.tmn.context = {"disableads":false,"consentRequired":false,"dtm":"p_","country":"CN","region":"BJ","snigel":false,"cdn":""};
+
+        if (context.consentRequired) {
+            if (context.snigel) {
+                if (devel) {
+                    cms = '//staging-cdn.snigelweb.com/adengine/tampermonkey.net/loader.js';
+                } else {
+                    cms = 'https://cdn.snigelweb.com/adengine/tampermonkey.net/loader.js';
+                }
+            } else {
+                cms = '//cdn.snigelweb.com/adconsent/adconsent.js';
+            }
+        }
+        window.tmn.cms.start(cms);
+    })();
+</script><script type="text/javascript">_paq.push(['trackPageView']);</script>
+    
+<div class="row header">
+  <div class="container">
+    <div class="col-2-sm icon">
+      <img src="/images/ape.svg" class="svg" async="">
+    </div>
+    <div class="col-8-sm text">
+      Tampermonkey<sup>®</sup>
+      <small>by Jan Biniok</small>
+    </div>
+
+    <div class="col-2-sm">
+      <div class="language">
+    <select id="locale">
+        <option value="en" title="English" selected="selected">en</option>
+        <option value="zh" title="Chinese (Simplified) - 中文（简体中文）">zh</option>
+        <option value="de" title="German - Deutsch">de</option>
+        <option value="fr" title="French - français">fr</option>
+        <option value="es" title="Spanish - español">es</option>
+        <option value="pt" title="Portuguese (Brazil) - português brasileiro">pt</option>
+        <option value="ru" title="Russian - русский">ru</option>
+        <option value="it" title="Italian - italiano">it</option>
+        <option value="ja" title="Japanese - 日本語">ja</option>
+    </select>
+</div>
+    </div>
+  </div>
+</div>
+<div class="row mainnav">
+  <div class="container">
+    <div class="row tabview right sm-to-md-text">
+  <input type="checkbox" id="menu-button-main" class="menu-button-switch">
+  <label for="menu-button-main" class="menu-button">☰</label>
+  <div class="tabs">
+    <a class="tab" href="/index.php?ext=fire&amp;updated=true&amp;version=5.3.3">
+  <input type="radio" name="main" id="tab-首页" checked="" class="tab-switch">
+  <label class="tab-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="fa fa-home" aria-hidden="true" title="首页"><path d="M557.1 240.7L512 203.8V104c0-4.4-3.6-8-8-8h-32c-4.4 0-8 3.6-8 8v60.5L313.4 41.1c-14.7-12.1-36-12.1-50.7 0L18.9 240.7c-3.4 2.8-3.9 7.8-1.1 11.3l20.3 24.8c2.8 3.4 7.8 3.9 11.3 1.1l14.7-12V464c0 8.8 7.2 16 16 16h168c4.4 0 8-3.6 8-8V344h64v128c0 4.4 3.6 8 8 8h168c8.8 0 16-7.2 16-16V265.8l14.7 12c3.4 2.8 8.5 2.3 11.3-1.1l20.3-24.8c2.6-3.4 2.1-8.4-1.3-11.2zM464 432h-96V304c0-4.4-3.6-8-8-8H216c-4.4 0-8 3.6-8 8v128h-96V226.5l170.9-140c2.9-2.4 7.2-2.4 10.1 0l170.9 140V432z"></path></svg>&nbsp;&nbsp;<span>首页</span></label>
+</a>
+<a class="tab" href="/scripts.php?ext=fire&amp;updated=true&amp;version=5.3.3">
+  <input type="text" name="main" id="tab-用户脚本" checked="" class="tab-switch">
+  <label class="tab-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="fa fa-code" aria-hidden="true" title="用户脚本"><path d="M234.8 511.7L196 500.4c-4.2-1.2-6.7-5.7-5.5-9.9L331.3 5.8c1.2-4.2 5.7-6.7 9.9-5.5L380 11.6c4.2 1.2 6.7 5.7 5.5 9.9L244.7 506.2c-1.2 4.3-5.6 6.7-9.9 5.5zm-83.2-121.1l27.2-29c3.1-3.3 2.8-8.5-.5-11.5L72.2 256l106.1-94.1c3.4-3 3.6-8.2.5-11.5l-27.2-29c-3-3.2-8.1-3.4-11.3-.4L2.5 250.2c-3.4 3.2-3.4 8.5 0 11.7L140.3 391c3.2 3 8.2 2.8 11.3-.4zm284.1.4l137.7-129.1c3.4-3.2 3.4-8.5 0-11.7L435.7 121c-3.2-3-8.3-2.9-11.3.4l-27.2 29c-3.1 3.3-2.8 8.5.5 11.5L503.8 256l-106.1 94.1c-3.4 3-3.6 8.2-.5 11.5l27.2 29c3.1 3.2 8.1 3.4 11.3.4z"></path></svg>&nbsp;&nbsp;<span>用户脚本</span></label>
+</a>
+<a class="tab" href="/faq.php?ext=fire&amp;updated=true&amp;version=5.3.3">
+  <input type="text" name="main" id="tab-文档" checked="" class="tab-switch">
+  <label class="tab-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="fa fa-question" aria-hidden="true" title="文档"><path d="M199.65 0C125.625 0 69.665 30.187 27.21 92.51c-19.17 28.15-12.94 66.3 14.17 86.86l36.73 27.85c10.81 8.2 24.19 12.79 37.74 12.96-11.84 19-17.82 40.61-17.82 64.55v11.43c0 16.38 6.2 31.34 16.38 42.65C97.99 357.2 88 381.45 88 408c0 57.35 46.65 104 104 104s104-46.65 104-104c0-26.55-9.99-50.8-26.41-69.19 8.66-9.62 14.43-21.87 15.97-35.38 28.287-16.853 96-48.895 96-138.21C381.56 71.151 290.539 0 199.65 0zM192 464c-30.88 0-56-25.12-56-56 0-30.873 25.118-56 56-56 30.887 0 56 25.132 56 56 0 30.88-25.12 56-56 56zm45.97-176.21v8.37c0 8.788-7.131 15.84-15.84 15.84h-60.26c-8.708 0-15.84-7.051-15.84-15.84v-11.43c0-47.18 35.77-66.04 62.81-81.2 23.18-13 37.39-21.83 37.39-39.04 0-22.77-29.04-37.88-52.52-37.88-30.61 0-44.74 14.49-64.6 39.56-5.365 6.771-15.157 8.01-22 2.8l-36.73-27.85c-6.74-5.11-8.25-14.6-3.49-21.59C98.08 73.73 137.8 48 199.65 48c64.77 0 133.91 50.56 133.91 117.22 0 88.51-95.59 89.87-95.59 122.57z" class="st0"></path></svg>&nbsp;&nbsp;<span>文档</span></label>
+</a>
+<a class="tab" href="/changelog.php?ext=fire&amp;updated=true&amp;version=5.3.3">
+  <input type="text" name="main" id="tab-更新日志" checked="" class="tab-switch">
+  <label class="tab-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa fa-exchange" aria-hidden="true" title="更新日志"><path d="M508.485 168.485l-100.375 100c-4.686 4.686-12.284 4.686-16.97 0l-19.626-19.626c-4.753-4.753-4.675-12.484.173-17.14L422.916 184H12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h410.916l-51.228-47.719c-4.849-4.656-4.927-12.387-.173-17.14l19.626-19.626c4.686-4.686 12.284-4.686 16.97 0l100.375 100c4.685 4.686 4.685 12.284-.001 16.97zm-504.97 192l100.375 100c4.686 4.686 12.284 4.686 16.97 0l19.626-19.626c4.753-4.753 4.675-12.484-.173-17.14L89.084 376H500c6.627 0 12-5.373 12-12v-24c0-6.627-5.373-12-12-12H89.084l51.228-47.719c4.849-4.656 4.927-12.387.173-17.14l-19.626-19.626c-4.686-4.686-12.284-4.686-16.97 0l-100.375 100c-4.686 4.686-4.686 12.284.001 16.97z"></path></svg>&nbsp;&nbsp;<span>更新日志</span></label>
+</a>
+<a class="tab" href="/contrib.php?ext=fire&amp;updated=true&amp;version=5.3.3">
+  <input type="text" name="main" id="tab-捐助" checked="" class="tab-switch">
+  <label class="tab-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="fa fa-heart" aria-hidden="true" title="捐助"><path d="M414.9 24C361.8 24 312 65.7 288 89.3 264 65.7 214.2 24 161.1 24 70.3 24 16 76.9 16 165.5c0 72.6 66.8 133.3 69.2 135.4l187 180.8c8.8 8.5 22.8 8.5 31.6 0l186.7-180.2c2.7-2.7 69.5-63.5 69.5-136C560 76.9 505.7 24 414.9 24z"></path></svg>&nbsp;&nbsp;<span>捐助</span></label>
+</a>
+<a class="tab" href="/imprint.php?ext=fire&amp;updated=true&amp;version=5.3.3">
+  <input type="text" name="main" id="tab-关于" checked="" class="tab-switch">
+  <label class="tab-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" class="fa fa-info" aria-hidden="true" title="关于"><path d="M224 352.589V224c0-16.475-6.258-31.517-16.521-42.872C225.905 161.14 236 135.346 236 108 236 48.313 187.697 0 128 0 68.313 0 20 48.303 20 108c0 20.882 5.886 40.859 16.874 58.037C15.107 176.264 0 198.401 0 224v39.314c0 23.641 12.884 44.329 32 55.411v33.864C12.884 363.671 0 384.359 0 408v40c0 35.29 28.71 64 64 64h128c35.29 0 64-28.71 64-64v-40c0-23.641-12.884-44.329-32-55.411zM128 48c33.137 0 60 26.863 60 60s-26.863 60-60 60-60-26.863-60-60 26.863-60 60-60zm80 400c0 8.836-7.164 16-16 16H64c-8.836 0-16-7.164-16-16v-40c0-8.836 7.164-16 16-16h16V279.314H64c-8.836 0-16-7.164-16-16V224c0-8.836 7.164-16 16-16h96c8.836 0 16 7.164 16 16v168h16c8.836 0 16 7.164 16 16v40z"></path></svg>&nbsp;&nbsp;<span>关于</span></label>
+</a>
+
+  </div>
+</div>
+  </div>
+</div><div class="row subnav">
+  <div class="container">
+    <div class="row tabview sm-text">
+  <input type="checkbox" id="menu-button-index" class="menu-button-switch">
+  <label for="menu-button-index" class="menu-button">☰</label>
+  <div class="tabs">
+    <a class="tab" href="#installed">
+  <input type="radio" name="subnav" id="tab-已安装" checked="" class="tab-switch">
+  <label class="tab-label"><span>已安装</span></label>
+</a>
+<a class="tab" href="#features">
+  <input type="radio" name="subnav" id="tab-特色" class="tab-switch">
+  <label class="tab-label"><span>特色</span></label>
+</a>
+
+  </div>
+</div>
+  </div>
+</div>
+    <div class="row content">
+      <div class="container">
+        <div class="searcad edge left">
+  <div class="w160">
+    
+  </div>
+</div>
+        <div class="col-full">
+          <div class="row md intro installed">
+  <div class="searcad incontent right">
+  
+</div><p><strong>篡改猴 (Tampermonkey)</strong> 已经成功安装!</p>
+<p>通过下载此插件, 表明你已同意 <a href="/eula.php?ext=fire&amp;updated=true&amp;version=5.3.3">终端用户许可协议</a>。.</p>
+<p>一个十分重要的事前提醒: <strong><span class="malicious-warning">恶意脚本可以侵犯你的隐私,并能够代表你来进行其他操作。</span></strong><br>
+你应该只从那些你能够 <strong>信任的渠道</strong>安装脚本。</p>
+<p>现在,让我们继续目前的话题: 如果你觉得这个插件</p>
+<ul>
+<li>在你浏览你最喜欢网站时<strong>有所帮助</strong>,或者</li>
+<li>它使你的工作<strong>更富有成效</strong>,抑或者</li>
+<li>它帮助<strong>简化</strong>你正在玩的一款网络游戏</li>
+</ul>
+<p>那么请考虑下</p>
+<ul>
+<li>通过<a href="/contrib.php?ext=fire&amp;updated=true&amp;version=5.3.3">捐助</a>来支持我</li>
+<li>訂閱篡改猴的 <a href="https://www.youtube.com/channel/UCMCSmK0Kanmbkya2Z7bMCaw?utm_source=tm.net">YouTube頻道 </a> 并且</li><li class="">可以给篡改猴一个5星好评<a href="https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/">请点击这里</a></li>
+</ul>
+<p>谢谢你的帮助。</p>
+<p>如您所知，为了使篡改猴实际执行某项操作，您需要用户脚本。<br>
+新的<a href="https://www.userscript.zone/?utm_source=tm.net&amp;utm_medium=index">Userscript.Zone网站</a>可以 可以帮助您，因为它允许您按URL，域或搜索词搜索用户脚本。
+所以试试吧！</p>
+<p>以下是篡改猴主要特色的简短概述。或许你会找到一些对你有用的东西。:)</p>
+<p>可以<a href="/scripts.php?ext=fire&amp;updated=true&amp;version=5.3.3">在此</a>处找到脚本源列表。🤓</p>
+
+  <div class="col-12">
+    <div class="searcad incontent">
+  <ins class="adsbygoogle" style="display: block; height: 280px;" data-ad-client="ca-pub-4506419030010334" data-ad-slot="9780175625" data-ad-format="auto" data-full-width-responsive="true" data-adsbygoogle-status="done"><div id="aswift_1_host" style="border: medium; height: 280px; width: 983px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block; overflow: visible;"><iframe id="aswift_1" name="aswift_1" style="left:0;position:absolute;top:0;border:0;width:983px;height:280px;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="983" height="280" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" src="https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-4506419030010334&amp;output=html&amp;h=280&amp;slotname=9780175625&amp;adk=3257966763&amp;adf=614145696&amp;pi=t.ma~as.9780175625&amp;w=983&amp;abgtt=11&amp;fwrn=4&amp;fwrnh=100&amp;lmt=1747244823&amp;rafmt=1&amp;format=983x280&amp;url=https%3A%2F%2Fwww.tampermonkey.net%2Findex.php%3Fversion%3D5.3.3%26ext%3Dfire%26updated%3Dtrue&amp;fwr=0&amp;fwrattr=true&amp;rpe=1&amp;resp_fmts=3&amp;wgl=1&amp;dt=1747244819504&amp;bpp=1&amp;bdt=26620&amp;idt=3682&amp;shv=r20250512&amp;mjsv=m202505070101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie_enabled=1&amp;eoidce=1&amp;prev_fmts=300x600&amp;correlator=5076629299158&amp;frm=20&amp;pv=1&amp;u_tz=480&amp;u_his=1&amp;u_h=1440&amp;u_w=2560&amp;u_ah=1415&amp;u_aw=2560&amp;u_cd=30&amp;u_sd=1&amp;adx=781&amp;ady=849&amp;biw=2545&amp;bih=1327&amp;scr_x=0&amp;scr_y=0&amp;eid=31092114%2C31092370%2C95353387%2C31092429%2C95344787%2C95360960&amp;oid=2&amp;pvsid=8267558836437585&amp;tmod=274722193&amp;uas=0&amp;nvt=1&amp;fc=896&amp;brdim=-2560%2C-540%2C-2560%2C-540%2C2560%2C-515%2C2560%2C1440%2C2560%2C1327&amp;vis=2&amp;rsz=%7C%7ClEer%7C&amp;abl=CS&amp;pfx=0&amp;fu=128&amp;bc=31&amp;bz=1&amp;ifi=2&amp;uci=a!2&amp;fsb=1&amp;dtd=3686" data-google-container-id="a!2" tabindex="0" title="Advertisement" aria-label="Advertisement"></iframe></div></ins><script type="text/javascript">(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+  </div>
+</div>
+<div class="row md download">
+  
+</div>
+<div class="row md features">
+  <h1 id="特色">特色</h1>
+<h2 id="方便的脚本管理">方便的脚本管理</h2>
+<p><img class="" alt="popup menu" title="popup menu" data-src="/images/action_menu.png" src="/images/action_menu.png"></p>
+<p>篡改猴(Tampermonkey) 使管理您的用户脚本变得非常简单。位于右上方的 篡改猴 图标显示正在运行的脚本的数量,单击图标就可以看到正在运行的脚本和可能在这个网页上运行的脚本。</p>
+<p><span class="gif-small playable" data-src="images/animated/enable_disable_script.gif">
+            <a href="javascript:void(0)">(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa fa-play-circle" aria-hidden="true"><path d="M371.7 238l-176-107c-15.8-8.8-35.7 2.5-35.7 21v208c0 18.4 19.8 29.8 35.7 21l176-101c16.4-9.1 16.4-32.8 0-42zM504 256C504 119 393 8 256 8S8 119 8 256s111 248 248 248 248-111 248-248zm-448 0c0-110.5 89.5-200 200-200s200 89.5 200 200-89.5 200-200 200S56 366.5 56 256z"></path></svg> 视频教程)</a>
+            </span></p>
+<h2 id="脚本概览">脚本概览</h2>
+<p></p><p><img class="enlargable" alt="script overview" title="script overview" data-src="/images/script_overview.png" src="/images/script_overview.png"><span>单击图片进行放大</span></p><p></p>
+<p>篡改猴 概览清晰地显示所有安装的脚本。您可以看到它们最后的更新时间,如果它们有自己的主页,您还可以对它们进行分类和其他更多的功能...
+<span class="gif-small playable" data-src="images/animated/options_page_script.gif">
+            <a href="javascript:void(0)">(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa fa-play-circle" aria-hidden="true"><path d="M371.7 238l-176-107c-15.8-8.8-35.7 2.5-35.7 21v208c0 18.4 19.8 29.8 35.7 21l176-101c16.4-9.1 16.4-32.8 0-42zM504 256C504 119 393 8 256 8S8 119 8 256s111 248 248 248 248-111 248-248zm-448 0c0-110.5 89.5-200 200-200s200 89.5 200 200-89.5 200-200 200S56 366.5 56 256z"></path></svg> 视频教程)</a>
+            </span></p>
+<h2 id="设置多样性">设置多样性</h2>
+<p><img class="" alt="config mode" title="config mode" data-src="/images/config_mode.png" src="/images/config_mode.png"></p>
+<p>您可以为设置页面在三种不同的等级中进行选择。不常用的选项将被隐藏,通过这种方式来简化页面。
+<span class="gif-small playable" data-src="images/animated/options_page_settings.gif">
+            <a href="javascript:void(0)">(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="fa fa-play-circle" aria-hidden="true"><path d="M371.7 238l-176-107c-15.8-8.8-35.7 2.5-35.7 21v208c0 18.4 19.8 29.8 35.7 21l176-101c16.4-9.1 16.4-32.8 0-42zM504 256C504 119 393 8 256 8S8 119 8 256s111 248 248 248 248-111 248-248zm-448 0c0-110.5 89.5-200 200-200s200 89.5 200 200-89.5 200-200 200S56 366.5 56 256z"></path></svg> 视频教程)</a>
+            </span></p>
+<h2 id="脚本自动更新">脚本自动更新</h2>
+<p><img class="" alt="script update settings" title="script update settings" data-src="/images/script_update.png" src="/images/script_update.png"></p>
+<p>您可以对脚本的检查更新频率进行设置。不再因为过时的脚本而产生漏洞。:)</p>
+<h2 id="安全">安全</h2>
+<p></p><div class="searcad incontent right">
+  <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-4506419030010334" data-ad-slot="3837131229" data-adsbygoogle-status="done"><div id="aswift_2_host" style="border: medium; height: 600px; width: 300px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block;"></div></ins><script type="text/javascript">(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div><p></p>
+<p></p><p><img class="enlargable" alt="security settings" title="security settings" data-src="/images/security.png" src="/images/security.png"><span>单击图片进行放大</span></p><p></p>
+<p>只有偏执狂才能生存!把所有不该使用脚本的网站都列入黑名单。</p>
+<h2 id="兼容性">兼容性</h2>
+<p><img class="" alt="compatibility settings" title="compatibility settings" data-src="/images/compatibility.png" src="/images/compatibility.png"></p>
+<p>许多为火狐用户脚本管理器攥写的用户脚本叫做 Greasemonkey(油猴) &lt;= 3.x,这就是为什么篡改猴要提供一个兼容层并自动检测配套设置。</p>
+<h2 id="同步">同步</h2>
+<p><img class="" alt="sync settings" title="sync settings" data-src="/images/sync.png" src="/images/sync.png"></p>
+<p>您正在使用多个浏览器,一个家用,一个工作用?您希望您可以同步自己的脚本?那么,您仅需设置 篡改猴 的同步功能。</p>
+<h2 id="codemirror-编辑器">CodeMirror 编辑器</h2>
+<p><img class="" alt="editor settings" title="editor settings" data-src="/images/editor_settings.png" src="/images/editor_settings.png"></p>
+<p>您需要开发并编辑一个脚本?没问题!篡改猴 提供一个嵌入式的编辑器。</p>
+<h2 id="eslint-语法检查">ESLint 语法检查</h2>
+<p></p><p><img class="lazy enlargable" alt="editor with linter hints" title="editor with linter hints" data-src="/images/editor.png"><span>单击图片进行放大</span></p><p></p>
+<p>您的脚本无法运行?篡改猴 的语法检查或许可以帮您找到问题...:)</p>
+<h2 id="快速开发">快速开发</h2>
+<p></p><p><img class="lazy enlargable" alt="allow access to file urls" title="allow access to file urls" data-src="/images/allow_access_to_file_urls.png"><span>单击图片进行放大</span></p><p></p>
+<p>篡改猴的编辑器是很棒的，然而您拥有自己的编辑器，它更快、更好……解决办法是启用“允许访问文件网址”，然后您就可以通过@require调用您脚本的本地副本了。</p>
+<p>您也可以嘗試使用 <a href="https://chrome.google.com/webstore/detail/tampermonkey-editors/lieodnapokbjkkdkhdljlllmgkmdokcm">篡改猴 Editors 擴展</a> 在 <a href="https://vscode.dev?connectTo=tampermonkey">vscode.dev</a> 頁面上編輯篡改猴的用戶腳本。</p>
+<h2 id="卸载">卸载</h2>
+<p>如果您对篡改猴不满意(这不大可能发生,但是谁知道呢;),您可以在 Chrome 浏览器的插件页面移除它。</p>
+<p><iframe width="800" height="400" data-src="https://www.youtube-nocookie.com/embed/Firefox?loop=1" class="lazy" title="Video Playback" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></p>
+
+</div>
+        </div>
+        <div class="searcad edge right">
+  <div class="w300">
+    <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px" data-ad-client="ca-pub-4506419030010334" data-ad-slot="7357404204" data-adsbygoogle-status="done"><div id="aswift_0_host" style="border: medium; height: 600px; width: 300px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block;"><iframe id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;border:0;width:300px;height:600px;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" width="300" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" src="https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-4506419030010334&amp;output=html&amp;h=600&amp;slotname=7357404204&amp;adk=4014961883&amp;adf=89288396&amp;pi=t.ma~as.7357404204&amp;w=300&amp;abgtt=11&amp;lmt=1747244823&amp;format=300x600&amp;url=https%3A%2F%2Fwww.tampermonkey.net%2Findex.php%3Fversion%3D5.3.3%26ext%3Dfire%26updated%3Dtrue&amp;wgl=1&amp;dt=1747244819499&amp;bpp=4&amp;bdt=26615&amp;idt=3594&amp;shv=r20250512&amp;mjsv=m202505070101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie_enabled=1&amp;eoidce=1&amp;correlator=5076629299158&amp;frm=20&amp;pv=2&amp;u_tz=480&amp;u_his=1&amp;u_h=1440&amp;u_w=2560&amp;u_ah=1415&amp;u_aw=2560&amp;u_cd=30&amp;u_sd=1&amp;adx=1795&amp;ady=176&amp;biw=2545&amp;bih=1327&amp;scr_x=0&amp;scr_y=0&amp;eid=31092114%2C31092370%2C95353387%2C31092429%2C95344787%2C95360960&amp;oid=2&amp;pvsid=8267558836437585&amp;tmod=274722193&amp;uas=0&amp;nvt=1&amp;fc=896&amp;brdim=-2560%2C-540%2C-2560%2C-540%2C2560%2C-515%2C2560%2C1440%2C2560%2C1327&amp;vis=2&amp;rsz=%7C%7CfeEr%7C&amp;abl=CF&amp;pfx=0&amp;fu=0&amp;bc=31&amp;bz=1&amp;ifi=1&amp;uci=a!1&amp;fsb=1&amp;dtd=3606" data-google-container-id="a!1" tabindex="0" title="Advertisement" aria-label="Advertisement"></iframe></div></ins><script type="text/javascript">(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+</div>
+      </div>
+    </div>
+    <div class="row footer">
+      <div class="col-1 hidden-sm"></div>
+      <div class="col">
+        <span class="hidden">5/14/2025, 5:46:34 PM</span>
+        <span><a href="/imprint.php?ext=fire&amp;updated=true&amp;version=5.3.3">联系方式</a></span>&nbsp;&nbsp;
+        <span><a href="/privacy.php?ext=fire&amp;updated=true&amp;version=5.3.3">隐私政策</a></span>
+      </div>
+      <div class="col-1 hidden-sm"></div>
+    </div>
+    <script type="text/javascript">
+    window.tmn.ads.config({ url: 'https://u.tampermonkey.net', id: 'a15f2e278dda4213379702a2a0b9ed20&id=a14f2e278dda4213379702a2a0b9ed20&id=a18f2e2&id=a17f2e2&id=a06f2e278dda4213379702a2a0b9ed20', rand: 'mao8frwgop4kzduo4m' });
+</script>
+    <a href="#" class="back-to-top clickable" title="Scroll to top">▲</a>
+  
+
+<orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; -moz-osx-font-smoothing: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; text-wrap: initial; cursor: initial; pointer-events: initial; -moz-user-input: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper><ins class="adsbygoogle adsbygoogle-noablate" style="display: none !important;" data-adsbygoogle-status="done"><div id="aswift_3_host" style="border: medium; height: 0px; width: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; background-color: transparent; display: inline-block;"><iframe id="aswift_3" name="aswift_3" style="left:0;position:absolute;top:0;border:0;width:undefinedpx;height:undefinedpx;" sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" src="https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-4506419030010334&amp;output=html&amp;adk=3046330955&amp;adf=2044148826&amp;abgtt=11&amp;lmt=1747244825&amp;plat=4%3A16%2C8%3A32768%2C9%3A32776%2C16%3A8388608%2C17%3A32%2C24%3A32%2C25%3A32%2C30%3A1081344%2C32%3A32%2C41%3A32%2C42%3A32&amp;plas=634x1043_l&amp;format=0x0&amp;url=https%3A%2F%2Fwww.tampermonkey.net%2Findex.php%3Fversion%3D5.3.3%26ext%3Dfire%26updated%3Dtrue&amp;pra=7&amp;wgl=1&amp;aihb=0&amp;asro=0&amp;aifxl=29_18~30_19&amp;aiapm=0.15&amp;aiapmi=0.16&amp;aiact=0.7&amp;aicct=0.7&amp;ailct=0.7&amp;aimart=8&amp;dt=1747244819507&amp;bpp=1&amp;bdt=26623&amp;idt=5697&amp;shv=r20250512&amp;mjsv=m202505070101&amp;ptt=9&amp;saldr=aa&amp;abxe=1&amp;cookie_enabled=1&amp;eoidce=1&amp;prev_fmts=300x600%2C983x280&amp;nras=1&amp;correlator=5076629299158&amp;frm=20&amp;pv=1&amp;u_tz=480&amp;u_his=1&amp;u_h=1440&amp;u_w=2560&amp;u_ah=1415&amp;u_aw=2560&amp;u_cd=30&amp;u_sd=1&amp;adx=-12245933&amp;ady=-12245933&amp;biw=2545&amp;bih=1327&amp;scr_x=0&amp;scr_y=0&amp;eid=31092114%2C31092370%2C95353387%2C31092429%2C95344787%2C95360960&amp;oid=2&amp;pvsid=8267558836437585&amp;tmod=274722193&amp;uas=0&amp;nvt=1&amp;fsapi=1&amp;fc=896&amp;brdim=-2560%2C-540%2C-2560%2C-540%2C2560%2C-515%2C2560%2C1440%2C2560%2C1327&amp;vis=2&amp;rsz=%7C%7Cs%7C&amp;abl=NS&amp;fu=32768&amp;bc=31&amp;bz=1&amp;ifi=4&amp;uci=a!4&amp;fsb=1&amp;dtd=5705" data-google-container-id="a!4" tabindex="0" title="Advertisement" aria-label="Advertisement"></iframe></div></ins></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div><iframe id="google_esf" name="google_esf" src="https://googleads.g.doubleclick.net/pagead/html/r20250512/r20190131/zrt_lookup_fy2021.html" style="display: none;"></iframe></html>
