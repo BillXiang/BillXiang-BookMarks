@@ -1,0 +1,974 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/qemu/satp/[PULL 12_22] riscv_ Allow user to set the satp mode (2025-05-23 15：01：36).html
+ Page saved with X-Webpage-Conserve 
+ url: https://mail.gnu.org/archive/html/qemu-riscv/2023-03/msg00274.html
+ Summary: This is a series of commit messages from the RISC-V QEMU project. The commits introduce various changes to the RISC-V CPU implementation in QEMU. Some of the changes include:
+
+* Implementing the Zicboz and Zicbom extensions
+* Adding a cbomz-block-size property in fdt files
+* Changing the type of valid\_vm\_1\_10\_32|64 to bool
+* Passing Object instead of DeviceState to register\_cpu\_props
+* Allowing users to set the satp mode
+* Introducing satp mode hw capabilities
+* Upgrading from OpenBI v1.1 to v1.2
+* Adding ACPI infrastructure to the RISC-V virtual machine
+
+The commit messages also include the authors and dates of each commit.这是来自 RISC-V QEMU 项目的一系列提交信息。这些提交对 QEMU 中的 RISC-V CPU 实现进行了各种更改。一些更改包括： * 实现 Zicboz 和 Zicbom 扩展 * 在 fdt 文件中添加 cbomz-block-size 属性 * 将 valid\_vm\_1\_1\_10\_32|64 的类型更改为 bool * 将 Object 而不是 DeviceState 传递给 register\_cpu\_props * 允许用户设置 satp 模式 * 引入 satp 模式硬件功能 * 从 OpenBI v1.1 升级到 v1.2 * 将 ACPI 基础设施添加到 RISC-V 虚拟机 提交消息还包括每个提交。
+-->
+<html imt-state="dual"><head>
+<title>[PULL 12/22] riscv: Allow user to set the satp mode</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+<body>
+<center>
+<table border="0" cellspacing="2" cellpadding="0" bgcolor="#000000">
+<tbody><tr><td><table border="0" bgcolor="#FFFFCC">
+<tbody><tr><td><big><b>qemu-riscv</b></big></td></tr></tbody></table></td></tr></tbody></table>
+<div class="nowrap">
+<small>[<a href="../">Top</a>][<a href="/archive/html">All Lists</a>]</small>
+</div>
+<form method="get" action="/archive/cgi-bin/namazu.cgi">
+<input type="text" name="query" size="30">
+<input type="submit" name="submit" value="Search">
+<input type="hidden" name="idxname" value="qemu-riscv">
+<a href="/archive/cgi-bin/namazu.cgi?idxname=qemu-riscv">Advanced</a>
+</form>
+
+</center>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<hr>
+[<a href="msg00273.html">Date Prev</a>][<a href="msg00275.html">Date Next</a>][<a href="msg00273.html">Thread Prev</a>][<a href="msg00275.html">Thread Next</a>][<a href="index.html#00274">Date Index</a>][<a href="threads.html#00274">Thread Index</a>]
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<h2>[PULL 12/22] riscv: Allow user to set the satp mode</h2>
+<hr>
+<table border="0">
+<tbody>
+<tr>
+<td align="right" valign="top">
+<b>From</b>: </td>
+<td align="left">
+Palmer Dabbelt</td>
+</tr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+
+<tr>
+<td align="right" valign="top">
+<b>Subject</b>: </td>
+<td align="left">
+[PULL 12/22] riscv: Allow user to set the satp mode</td>
+</tr>
+
+<tr>
+<td align="right" valign="top">
+<b>Date</b>: </td>
+<td align="left">
+Mon,  6 Mar 2023 14:02:49 -0800</td>
+</tr>
+
+</tbody>
+</table>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<hr>
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>From: Alexandre Ghiti &lt;alexghiti@rivosinc.com&gt;
+
+RISC-V specifies multiple sizes for addressable memory and Linux probes for
+the machine's support at startup via the satp CSR register (done in
+csr.c:validate_vm).
+
+As per the specification, sv64 must support sv57, which in turn must
+support sv48...etc. So we can restrict machine support by simply setting the
+"highest" supported mode and the bare mode is always supported.
+
+You can set the satp mode using the new properties "sv32", "sv39", "sv48",
+"sv57" and "sv64" as follows:
+-cpu rv64,sv57=on  # Linux will boot using sv57 scheme
+-cpu rv64,sv39=on  # Linux will boot using sv39 scheme
+-cpu rv64,sv57=off # Linux will boot using sv48 scheme
+-cpu rv64          # Linux will boot using sv57 scheme by default
+
+We take the highest level set by the user:
+-cpu rv64,sv48=on,sv57=on # Linux will boot using sv57 scheme
+
+We make sure that invalid configurations are rejected:
+-cpu rv64,sv39=off,sv48=on # sv39 must be supported if higher modes are
+                           # enabled
+
+We accept "redundant" configurations:
+-cpu rv64,sv48=on,sv57=off # Linux will boot using sv48 scheme
+
+And contradictory configurations:
+-cpu rv64,sv48=on,sv48=off # Linux will boot using sv39 scheme
+
+Co-Developed-by: Ludovic Henry &lt;ludovic@rivosinc.com&gt;
+Signed-off-by: Ludovic Henry &lt;ludovic@rivosinc.com&gt;
+Signed-off-by: Alexandre Ghiti &lt;alexghiti@rivosinc.com&gt;
+Reviewed-by: Andrew Jones &lt;ajones@ventanamicro.com&gt;
+Reviewed-by: Bin Meng &lt;bmeng@tinylab.org&gt;
+Acked-by: Alistair Francis &lt;alistair.francis@wdc.com&gt;
+Reviewed-by: Frank Chang &lt;frank.chang@sifive.com&gt;
+Message-ID: &lt;<a href="msg00152.html">20230303131252.892893-4-alexghiti@rivosinc.com</a>&gt;
+Signed-off-by: Palmer Dabbelt &lt;palmer@rivosinc.com&gt;
+---
+ target/riscv/cpu.c | 214 +++++++++++++++++++++++++++++++++++++++++++++
+ target/riscv/cpu.h |  21 +++++
+ target/riscv/csr.c |  12 ++-
+ 3 files changed, 240 insertions(+), 7 deletions(-)
+
+diff --git a/target/riscv/cpu.c b/target/riscv/cpu.c
+index 1c4d8aaa74..e1e8057836 100644
+--- a/target/riscv/cpu.c
++++ b/target/riscv/cpu.c
+@@ -28,6 +28,7 @@
+ #include "time_helper.h"
+ #include "exec/exec-all.h"
+ #include "qapi/error.h"
++#include "qapi/visitor.h"
+ #include "qemu/error-report.h"
+ #include "hw/qdev-properties.h"
+ #include "migration/vmstate.h"
+@@ -249,6 +250,82 @@ static void set_vext_version(CPURISCVState *env, int 
+vext_ver)
+     env-&gt;vext_ver = vext_ver;
+ }
+ 
++#ifndef CONFIG_USER_ONLY
++static uint8_t satp_mode_from_str(const char *satp_mode_str)
++{
++    if (!strncmp(satp_mode_str, "mbare", 5)) {
++        return VM_1_10_MBARE;
++    }
++
++    if (!strncmp(satp_mode_str, "sv32", 4)) {
++        return VM_1_10_SV32;
++    }
++
++    if (!strncmp(satp_mode_str, "sv39", 4)) {
++        return VM_1_10_SV39;
++    }
++
++    if (!strncmp(satp_mode_str, "sv48", 4)) {
++        return VM_1_10_SV48;
++    }
++
++    if (!strncmp(satp_mode_str, "sv57", 4)) {
++        return VM_1_10_SV57;
++    }
++
++    if (!strncmp(satp_mode_str, "sv64", 4)) {
++        return VM_1_10_SV64;
++    }
++
++    g_assert_not_reached();
++}
++
++uint8_t satp_mode_max_from_map(uint32_t map)
++{
++    /* map here has at least one bit set, so no problem with clz */
++    return 31 - __builtin_clz(map);
++}
++
++const char *satp_mode_str(uint8_t satp_mode, bool is_32_bit)
++{
++    if (is_32_bit) {
++        switch (satp_mode) {
++        case VM_1_10_SV32:
++            return "sv32";
++        case VM_1_10_MBARE:
++            return "none";
++        }
++    } else {
++        switch (satp_mode) {
++        case VM_1_10_SV64:
++            return "sv64";
++        case VM_1_10_SV57:
++            return "sv57";
++        case VM_1_10_SV48:
++            return "sv48";
++        case VM_1_10_SV39:
++            return "sv39";
++        case VM_1_10_MBARE:
++            return "none";
++        }
++    }
++
++    g_assert_not_reached();
++}
++
++/* Sets the satp mode to the max supported */
++static void set_satp_mode_default_map(RISCVCPU *cpu)
++{
++    bool rv32 = riscv_cpu_mxl(&amp;cpu-&gt;env) == MXL_RV32;
++
++    if (riscv_feature(&amp;cpu-&gt;env, RISCV_FEATURE_MMU)) {
++        cpu-&gt;cfg.satp_mode.map |= (1 &lt;&lt; (rv32 ? VM_1_10_SV32 : VM_1_10_SV57));
++    } else {
++        cpu-&gt;cfg.satp_mode.map |= (1 &lt;&lt; VM_1_10_MBARE);
++    }
++}
++#endif
++
+ static void riscv_any_cpu_init(Object *obj)
+ {
+     CPURISCVState *env = &amp;RISCV_CPU(obj)-&gt;env;
+@@ -918,6 +995,87 @@ static void riscv_cpu_validate_set_extensions(RISCVCPU 
+*cpu, Error **errp)
+     set_misa(env, env-&gt;misa_mxl, ext);
+ }
+ 
++#ifndef CONFIG_USER_ONLY
++static void riscv_cpu_satp_mode_finalize(RISCVCPU *cpu, Error **errp)
++{
++    bool rv32 = riscv_cpu_mxl(&amp;cpu-&gt;env) == MXL_RV32;
++    const bool *valid_vm = rv32 ? valid_vm_1_10_32 : valid_vm_1_10_64;
++    uint8_t satp_mode_max;
++
++    if (cpu-&gt;cfg.satp_mode.map == 0) {
++        if (cpu-&gt;cfg.satp_mode.init == 0) {
++            /* If unset by the user, we fallback to the default satp mode. */
++            set_satp_mode_default_map(cpu);
++        } else {
++            /*
++             * Find the lowest level that was disabled and then enable the
++             * first valid level below which can be found in
++             * valid_vm_1_10_32/64.
++             */
++            for (int i = 1; i &lt; 16; ++i) {
++                if ((cpu-&gt;cfg.satp_mode.init &amp; (1 &lt;&lt; i)) &amp;&amp; valid_vm[i]) {
++                    for (int j = i - 1; j &gt;= 0; --j) {
++                        if (valid_vm[j]) {
++                            cpu-&gt;cfg.satp_mode.map |= (1 &lt;&lt; j);
++                            break;
++                        }
++                    }
++                    break;
++                }
++            }
++        }
++    }
++
++    /* Make sure the configuration asked is supported by qemu */
++    for (int i = 0; i &lt; 16; ++i) {
++        if ((cpu-&gt;cfg.satp_mode.map &amp; (1 &lt;&lt; i)) &amp;&amp; !valid_vm[i]) {
++            error_setg(errp, "satp_mode %s is not valid",
++                       satp_mode_str(i, rv32));
++            return;
++        }
++    }
++
++    /*
++     * Make sure the user did not ask for an invalid configuration as per
++     * the specification.
++     */
++    satp_mode_max = satp_mode_max_from_map(cpu-&gt;cfg.satp_mode.map);
++
++    if (!rv32) {
++        for (int i = satp_mode_max - 1; i &gt;= 0; --i) {
++            if (!(cpu-&gt;cfg.satp_mode.map &amp; (1 &lt;&lt; i)) &amp;&amp;
++                (cpu-&gt;cfg.satp_mode.init &amp; (1 &lt;&lt; i)) &amp;&amp;
++                valid_vm[i]) {
++                error_setg(errp, "cannot disable %s satp mode if %s "
++                           "is enabled", satp_mode_str(i, false),
++                           satp_mode_str(satp_mode_max, false));
++                return;
++            }
++        }
++    }
++
++    /* Finally expand the map so that all valid modes are set */
++    for (int i = satp_mode_max - 1; i &gt;= 0; --i) {
++        if (valid_vm[i]) {
++            cpu-&gt;cfg.satp_mode.map |= (1 &lt;&lt; i);
++        }
++    }
++}
++#endif
++
++static void riscv_cpu_finalize_features(RISCVCPU *cpu, Error **errp)
++{
++#ifndef CONFIG_USER_ONLY
++    Error *local_err = NULL;
++
++    riscv_cpu_satp_mode_finalize(cpu, &amp;local_err);
++    if (local_err != NULL) {
++        error_propagate(errp, local_err);
++        return;
++    }
++#endif
++}
++
+ static void riscv_cpu_realize(DeviceState *dev, Error **errp)
+ {
+     CPUState *cs = CPU(dev);
+@@ -1017,6 +1175,12 @@ static void riscv_cpu_realize(DeviceState *dev, Error 
+**errp)
+      }
+ #endif
+ 
++    riscv_cpu_finalize_features(cpu, &amp;local_err);
++    if (local_err != NULL) {
++        error_propagate(errp, local_err);
++        return;
++    }
++
+     riscv_cpu_register_gdb_regs_for_features(cs);
+ 
+     qemu_init_vcpu(cs);
+@@ -1026,6 +1190,52 @@ static void riscv_cpu_realize(DeviceState *dev, Error 
+**errp)
+ }
+ 
+ #ifndef CONFIG_USER_ONLY
++static void cpu_riscv_get_satp(Object *obj, Visitor *v, const char *name,
++                               void *opaque, Error **errp)
++{
++    RISCVSATPMap *satp_map = opaque;
++    uint8_t satp = satp_mode_from_str(name);
++    bool value;
++
++    value = satp_map-&gt;map &amp; (1 &lt;&lt; satp);
++
++    visit_type_bool(v, name, &amp;value, errp);
++}
++
++static void cpu_riscv_set_satp(Object *obj, Visitor *v, const char *name,
++                               void *opaque, Error **errp)
++{
++    RISCVSATPMap *satp_map = opaque;
++    uint8_t satp = satp_mode_from_str(name);
++    bool value;
++
++    if (!visit_type_bool(v, name, &amp;value, errp)) {
++        return;
++    }
++
++    satp_map-&gt;map = deposit32(satp_map-&gt;map, satp, 1, value);
++    satp_map-&gt;init |= 1 &lt;&lt; satp;
++}
++
++static void riscv_add_satp_mode_properties(Object *obj)
++{
++    RISCVCPU *cpu = RISCV_CPU(obj);
++
++    if (cpu-&gt;env.misa_mxl == MXL_RV32) {
++        object_property_add(obj, "sv32", "bool", cpu_riscv_get_satp,
++                            cpu_riscv_set_satp, NULL, &amp;cpu-&gt;cfg.satp_mode);
++    } else {
++        object_property_add(obj, "sv39", "bool", cpu_riscv_get_satp,
++                            cpu_riscv_set_satp, NULL, &amp;cpu-&gt;cfg.satp_mode);
++        object_property_add(obj, "sv48", "bool", cpu_riscv_get_satp,
++                            cpu_riscv_set_satp, NULL, &amp;cpu-&gt;cfg.satp_mode);
++        object_property_add(obj, "sv57", "bool", cpu_riscv_get_satp,
++                            cpu_riscv_set_satp, NULL, &amp;cpu-&gt;cfg.satp_mode);
++        object_property_add(obj, "sv64", "bool", cpu_riscv_get_satp,
++                            cpu_riscv_set_satp, NULL, &amp;cpu-&gt;cfg.satp_mode);
++    }
++}
++
+ static void riscv_cpu_set_irq(void *opaque, int irq, int level)
+ {
+     RISCVCPU *cpu = RISCV_CPU(opaque);
+@@ -1246,6 +1456,10 @@ static void register_cpu_props(Object *obj)
+     for (prop = riscv_cpu_extensions; prop &amp;&amp; prop-&gt;name; prop++) {
+         qdev_property_add_static(dev, prop);
+     }
++
++#ifndef CONFIG_USER_ONLY
++    riscv_add_satp_mode_properties(obj);
++#endif
+ }
+ 
+ static Property riscv_cpu_properties[] = {
+diff --git a/target/riscv/cpu.h b/target/riscv/cpu.h
+index b5b5425b99..67ac665ff0 100644
+--- a/target/riscv/cpu.h
++++ b/target/riscv/cpu.h
+@@ -27,6 +27,7 @@
+ #include "qom/object.h"
+ #include "qemu/int128.h"
+ #include "cpu_bits.h"
++#include "qapi/qapi-types-common.h"
+ 
+ #define TCG_GUEST_DEFAULT_MO 0
+ 
+@@ -401,6 +402,17 @@ struct RISCVCPUClass {
+     ResettablePhases parent_phases;
+ };
+ 
++/*
++ * map is a 16-bit bitmap: the most significant set bit in map is the maximum
++ * satp mode that is supported.
++ *
++ * init is a 16-bit bitmap used to make sure the user selected a correct
++ * configuration as per the specification.
++ */
++typedef struct {
++    uint16_t map, init;
++} RISCVSATPMap;
++
+ struct RISCVCPUConfig {
+     bool ext_i;
+     bool ext_e;
+@@ -497,6 +509,10 @@ struct RISCVCPUConfig {
+     bool misa_w;
+ 
+     bool short_isa_string;
++
++#ifndef CONFIG_USER_ONLY
++    RISCVSATPMap satp_mode;
++#endif
+ };
+ 
+ typedef struct RISCVCPUConfig RISCVCPUConfig;
+@@ -798,9 +814,14 @@ enum riscv_pmu_event_idx {
+ /* CSR function table */
+ extern riscv_csr_operations csr_ops[CSR_TABLE_SIZE];
+ 
++extern const bool valid_vm_1_10_32[], valid_vm_1_10_64[];
++
+ void riscv_get_csr_ops(int csrno, riscv_csr_operations *ops);
+ void riscv_set_csr_ops(int csrno, riscv_csr_operations *ops);
+ 
+ void riscv_cpu_register_gdb_regs_for_features(CPUState *cs);
+ 
++uint8_t satp_mode_max_from_map(uint32_t map);
++const char *satp_mode_str(uint8_t satp_mode, bool is_32_bit);
++
+ #endif /* RISCV_CPU_H */
+diff --git a/target/riscv/csr.c b/target/riscv/csr.c
+index d93d481bd6..ab566639e5 100644
+--- a/target/riscv/csr.c
++++ b/target/riscv/csr.c
+@@ -1141,12 +1141,12 @@ static const target_ulong hip_writable_mask = MIP_VSSIP;
+ static const target_ulong hvip_writable_mask = MIP_VSSIP | MIP_VSTIP | 
+MIP_VSEIP;
+ static const target_ulong vsip_writable_mask = MIP_VSSIP;
+ 
+-static const bool valid_vm_1_10_32[16] = {
++const bool valid_vm_1_10_32[16] = {
+     [VM_1_10_MBARE] = true,
+     [VM_1_10_SV32] = true
+ };
+ 
+-static const bool valid_vm_1_10_64[16] = {
++const bool valid_vm_1_10_64[16] = {
+     [VM_1_10_MBARE] = true,
+     [VM_1_10_SV39] = true,
+     [VM_1_10_SV48] = true,
+@@ -1232,11 +1232,9 @@ static RISCVException read_mstatus(CPURISCVState *env, 
+int csrno,
+ 
+ static bool validate_vm(CPURISCVState *env, target_ulong vm)
+ {
+-    if (riscv_cpu_mxl(env) == MXL_RV32) {
+-        return valid_vm_1_10_32[vm &amp; 0xf];
+-    } else {
+-        return valid_vm_1_10_64[vm &amp; 0xf];
+-    }
++    RISCVCPU *cpu = RISCV_CPU(env_cpu(env));
++
++    return (vm &amp; 0xf) &lt;= satp_mode_max_from_map(cpu-&gt;cfg.satp_mode.map);
+ }
+ 
+ static RISCVException write_mstatus(CPURISCVState *env, int csrno,
+-- 
+2.39.2
+
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<form method="post" action="/mp/yyz.py" enctype="multipart/form-data">
+<input type="hidden" name="a" value="palmer">
+<input type="hidden" name="b" value="[PULL 12/22] riscv: Allow user to set the satp mode">
+<input type="hidden" name="d" value="20230306220259.7748-13-palmer@rivosinc.com">
+<input type="hidden" name="c" value="rivosinc.com">
+<center>reply via email to<br><input type="submit" value=" Palmer Dabbelt "></center>
+</form>
+<hr>
+<table width="100%">
+<tbody><tr><td align="left">[<a href="msg00273.html">Prev in Thread</a>]</td>
+<td align="center"><b>Current Thread</b></td>
+<td align="right">[<a href="msg00275.html">Next in Thread</a>]</td></tr></tbody></table>
+<ul>
+<li><strong>[PULL 01/22] target/riscv: implement Zicboz extension</strong>, <em>(continued)</em>
+<ul>
+<li><b><a name="00264" href="msg00264.html">[PULL 01/22] target/riscv: implement Zicboz extension</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00265" href="msg00265.html">[PULL 02/22] target/riscv: implement Zicbom extension</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00266" href="msg00266.html">[PULL 05/22] disas/riscv Fix ctzw disassemble</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00267" href="msg00267.html">[PULL 03/22] target/riscv: add Zicbop cbo.prefetch{i, r, m} placeholder</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00268" href="msg00268.html">[PULL 04/22] hw/riscv/virt.c: add cbo[mz]-block-size fdt properties</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00269" href="msg00269.html">[PULL 06/22] target/riscv: cpu: Implement get_arch_id callback</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00270" href="msg00270.html">[PULL 08/22] gitlab/opensbi: Move to docker:stable</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00271" href="msg00271.html">[PULL 07/22] hw: intc: Use cpu_by_arch_id to fetch CPU state</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00272" href="msg00272.html">[PULL 11/22] riscv: Change type of valid_vm_1_10_[32|64] to bool</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00273" href="msg00273.html">[PULL 10/22] riscv: Pass Object to register_cpu_props instead of DeviceState</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><font color="#666666"><strong>[PULL 12/22] riscv: Allow user to set the satp mode</strong>,
+<em>Palmer Dabbelt</em></font>&nbsp;<b>&lt;=</b>
+</li>
+<li><b><a name="00275" href="msg00275.html">[PULL 14/22] riscv: Correctly set the device-tree entry 'mmu-type'</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00276" href="msg00276.html">[PULL 13/22] riscv: Introduce satp mode hw capabilities</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00277" href="msg00277.html">[PULL 09/22] roms/opensbi: Upgrade from v1.1 to v1.2</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00278" href="msg00278.html">[PULL 17/22] hw/riscv/virt: Add memmap pointer to RiscVVirtState</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00279" href="msg00279.html">[PULL 15/22] hw/riscv/virt: Add OEM_ID and OEM_TABLE_ID fields</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00280" href="msg00280.html">[PULL 16/22] hw/riscv/virt: Add a switch to disable ACPI</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00281" href="msg00281.html">[PULL 19/22] hw/riscv/virt: virt-acpi-build.c: Add RINTC in MADT</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00282" href="msg00282.html">[PULL 18/22] hw/riscv/virt: Enable basic ACPI infrastructure</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00283" href="msg00283.html">[PULL 22/22] MAINTAINERS: Add entry for RISC-V ACPI</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+<li><b><a name="00284" href="msg00284.html">[PULL 21/22] hw/riscv/virt.c: Initialize the ACPI tables</a></b>, <i>Palmer Dabbelt</i>, <tt>2023/03/06</tt>
+</li>
+</ul>
+</li>
+</ul>
+
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00273.html">[PULL 10/22] riscv: Pass Object to register_cpu_props instead of DeviceState</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00275.html">[PULL 14/22] riscv: Correctly set the device-tree entry 'mmu-type'</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00273.html">[PULL 10/22] riscv: Pass Object to register_cpu_props instead of DeviceState</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00275.html">[PULL 14/22] riscv: Correctly set the device-tree entry 'mmu-type'</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="index.html#00274"><strong>Date</strong></a></li>
+<li><a href="threads.html#00274"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<!--X-User-Footer-End-->
+
+
+<orbit-wrapper style="border-block: initial; border-inline: initial; border-start-start-radius: initial; border-start-end-radius: initial; border-end-start-radius: initial; border-end-end-radius: initial; overflow-block: initial; overflow-inline: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; margin-block: initial; margin-inline: initial; scroll-margin-block: initial; scroll-margin-inline: initial; padding-block: initial; padding-inline: initial; scroll-padding-block: initial; scroll-padding-inline: initial; inset-block: initial; inset-inline: initial; block-size: initial; min-block-size: initial; max-block-size: initial; inline-size: initial; min-inline-size: initial; max-inline-size: initial; contain-intrinsic-block-size: initial; contain-intrinsic-inline-size: initial; background: initial; background-blend-mode: initial; border: initial; border-radius: initial; box-decoration-break: initial; -moz-float-edge: initial; display: initial; position: fixed; float: initial; clear: initial; vertical-align: initial; baseline-source: initial; overflow: initial; overflow-anchor: initial; transform: initial; rotate: initial; scale: initial; translate: initial; offset: initial; scroll-behavior: initial; scroll-snap-align: initial; scroll-snap-type: initial; scroll-snap-stop: initial; overscroll-behavior: initial; isolation: initial; break-after: initial; break-before: initial; break-inside: initial; resize: initial; perspective: initial; perspective-origin: initial; backface-visibility: initial; transform-box: initial; transform-style: initial; transform-origin: initial; contain: initial; content-visibility: initial; container: initial; appearance: initial; -moz-orient: initial; will-change: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; touch-action: initial; -webkit-line-clamp: initial; scrollbar-gutter: initial; zoom: initial; columns: initial; column-fill: initial; column-rule: initial; column-span: initial; content: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; opacity: initial; box-shadow: initial; clip: initial; filter: initial; backdrop-filter: initial; mix-blend-mode: initial; font: initial; font-synthesis: initial; font-palette: initial; math-depth: initial; math-style: initial; visibility: initial; writing-mode: initial; text-orientation: initial; print-color-adjust: initial; image-rendering: initial; image-orientation: initial; dominant-baseline: initial; text-anchor: initial; color-interpolation: initial; color-interpolation-filters: initial; fill: initial; fill-opacity: initial; fill-rule: initial; shape-rendering: initial; stroke: initial; stroke-width: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-dasharray: initial; stroke-dashoffset: initial; clip-rule: initial; marker: initial; paint-order: initial; border-collapse: initial; empty-cells: initial; caption-side: initial; border-spacing: initial; color: initial; text-transform: initial; hyphens: initial; -moz-text-size-adjust: initial; text-indent: initial; overflow-wrap: initial; word-break: initial; text-justify: initial; text-align-last: initial; text-align: initial; letter-spacing: initial; word-spacing: initial; white-space: initial; text-shadow: initial; text-emphasis: initial; text-emphasis-position: initial; tab-size: initial; line-break: initial; -webkit-text-fill-color: initial; -webkit-text-stroke: initial; ruby-align: initial; ruby-position: initial; text-combine-upright: initial; text-rendering: initial; text-underline-offset: initial; text-underline-position: initial; text-decoration-skip-ink: initial; hyphenate-character: initial; forced-color-adjust: initial; -webkit-text-security: initial; hyphenate-limit-chars: initial; text-wrap: initial; cursor: initial; pointer-events: initial; caret-color: initial; accent-color: initial; color-scheme: initial; scrollbar-color: initial; list-style: initial; quotes: initial; margin: initial; overflow-clip-margin: initial; scroll-margin: initial; outline: initial; outline-offset: initial; padding: initial; scroll-padding: initial; page: initial; top: 0px; right: 0px; bottom: initial; left: initial; z-index: 2147483647; flex-flow: initial; place-content: initial; place-items: initial; flex: initial; place-self: initial; order: initial; height: 100vh; min-height: initial; max-height: initial; width: 0px; min-width: initial; max-width: initial; box-sizing: initial; object-fit: initial; object-position: initial; grid-area: initial; grid: initial; gap: initial; aspect-ratio: initial; contain-intrinsic-size: initial; vector-effect: initial; stop-color: initial; stop-opacity: initial; flood-color: initial; flood-opacity: initial; lighting-color: initial; mask-type: initial; clip-path: initial; mask: initial; x: initial; y: initial; cx: initial; cy: initial; rx: initial; ry: initial; r: initial; d: initial; table-layout: initial; text-overflow: initial; text-decoration: initial; ime-mode: initial; scrollbar-width: initial; user-select: initial; -moz-window-dragging: initial; -moz-force-broken-image-icon: initial; transition: initial; animation: initial; animation-composition: initial; -moz-box-align: initial; -moz-box-direction: initial; -moz-box-flex: initial; -moz-box-orient: initial; -moz-box-pack: initial; -moz-box-ordinal-group: initial;"></orbit-wrapper></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
