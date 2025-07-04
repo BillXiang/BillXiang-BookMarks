@@ -1,0 +1,755 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/kvm/KVM-unit-tests - KVM (2025-07-04 14：46：09).html
+ Page saved with X-Webpage-Conserve 
+ url: https://www.linux-kvm.org/page/KVM-unit-tests
+ Summary: 
+-->
+<html class="client-js" lang="en" dir="ltr" style=""><head>
+<meta charset="UTF-8">
+<title>KVM-unit-tests - KVM</title>
+<script>document.documentElement.className="client-js";RLCONF={"wgBreakFrames":false,"wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgRequestId":"63dbfeb60fe241826eaeb754","wgCSPNonce":false,"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"KVM-unit-tests","wgTitle":"KVM-unit-tests","wgCurRevisionId":174016,"wgRevisionId":174016,"wgArticleId":2701,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Docs","Testing","HowTo"],"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgRelevantPageName":"KVM-unit-tests","wgRelevantArticleId":2701,"wgIsProbablyEditable":false,"wgRelevantPageIsProbablyEditable":false,"wgRestrictionEdit":[],"wgRestrictionMove":[]};RLSTATE={"site.styles":"ready","user.styles":
+"ready","user":"ready","user.options":"loading","mediawiki.ui.button":"ready","skins.chameleon":"ready","zzz.ext.bootstrap.styles":"ready"};RLPAGEMODULES=["site","mediawiki.page.ready","mediawiki.toc","ext.bootstrap.scripts","skin.chameleon.sticky"];</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.loader.implement("user.options@12s5i",function($,jQuery,require,module){mw.user.tokens.set({"patrolToken":"+\","watchToken":"+\","csrfToken":"+\"});});});</script>
+<link rel="stylesheet" href="/load.php?lang=en&amp;modules=mediawiki.ui.button%7Cskins.chameleon%7Czzz.ext.bootstrap.styles&amp;only=styles&amp;skin=chameleon">
+<script async="" src="/load.php?lang=en&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=chameleon"></script>
+<style>
+@media screen {
+	.toctoggle{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none;font-size:94%}}</style><meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="/load.php?lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=chameleon">
+<meta name="generator" content="MediaWiki 1.39.5">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=1000">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="icon" href="/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="KVM (en)">
+<link rel="EditURI" type="application/rsd+xml" href="https://linux-kvm.org/api.php?action=rsd">
+<link rel="license" href="https://www.gnu.org/copyleft/fdl.html">
+<link rel="alternate" type="application/atom+xml" title="KVM Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-KVM-unit-tests rootpage-KVM-unit-tests layout-kvm skin-chameleon action-view" style="position: relative;">
+	<!-- navigation bar -->
+	<nav class="p-navbar collapsible navbar-light bg-primary" role="navigation" id="mw-navigation" style="position: relative; left: auto; width: 1257px;">
+		<!-- logo and main page link -->
+		<div id="p-logo" class="navbar-brand p-logo" role="banner">
+			<a href="/page/Main_Page" title="Visit the main page"><img src="data:image/png;base64,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" alt="KVM"></a>
+		</div>
+		<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#i30vja02i8"></button>
+		<div class="collapse navbar-collapse i30vja02i8" id="i30vja02i8">
+			<div class="navbar-nav">
+				<!-- navigation -->
+				<div id="n-Home" class="mw-list-item"><a href="/page/Main_Page" class="nav-link n-Home">Home</a></div>
+				<!-- Status and Features -->
+				<div class="nav-item dropdown p-Status-and-Features-dropdown">
+					<a href="#" class="nav-link dropdown-toggle p-Status-and-Features-toggle" data-toggle="dropdown" data-boundary="viewport">Status and Features</a>
+					<div class="dropdown-menu p-Status-and-Features" id="p-Status-and-Features">
+						<div id="n-Status" class="mw-list-item"><a href="/page/Host_Support_Status" class="nav-link n-Status">Status</a></div>
+						<div id="n-Guest-Support-Status" class="mw-list-item"><a href="/page/Guest_Support_Status" class="nav-link n-Guest-Support-Status">Guest Support Status</a></div>
+						<div id="n-Management-Tools" class="mw-list-item"><a href="/page/Management_Tools" class="nav-link n-Management-Tools">Management Tools</a></div>
+						<div id="n-KVM-Features" class="mw-list-item"><a href="/page/KVM_Features" class="nav-link n-KVM-Features">KVM Features</a></div>
+						<div id="n-Migration" class="mw-list-item"><a href="/page/Migration" class="nav-link n-Migration">Migration</a></div>
+					</div>
+				</div>
+				<!-- Develop -->
+				<div class="nav-item dropdown p-Develop-dropdown">
+					<a href="#" class="nav-link dropdown-toggle p-Develop-toggle" data-toggle="dropdown" data-boundary="viewport">Develop</a>
+					<div class="dropdown-menu p-Develop" id="p-Develop">
+						<div id="n-Mailing-Lists/IRC" class="mw-list-item"><a href="/page/Lists,_IRC" class="nav-link n-Mailing-Lists/IRC">Mailing Lists/IRC</a></div>
+						<div id="n-Bugs" class="mw-list-item"><a href="/page/Bugs" class="nav-link n-Bugs">Bugs</a></div>
+						<div id="n-Code" class="mw-list-item"><a href="/page/Code" class="nav-link n-Code">Code</a></div>
+						<div id="n-TODO" class="mw-list-item"><a href="/page/TODO" class="nav-link n-TODO">TODO</a></div>
+						<div id="n-Avocado" class="mw-list-item"><a href="/page/Avocado" class="nav-link n-Avocado">Avocado</a></div>
+					</div>
+				</div>
+				<!-- Conferences -->
+				<div class="nav-item dropdown p-Conferences-dropdown">
+					<a href="#" class="nav-link dropdown-toggle p-Conferences-toggle" data-toggle="dropdown" data-boundary="viewport">Conferences</a>
+					<div class="dropdown-menu p-Conferences" id="p-Conferences">
+						<div id="n-KVM-Forum" class="mw-list-item"><a href="/page/KVM_Forum" class="nav-link n-KVM-Forum">KVM Forum</a></div>
+						<div id="n-All-Conferences" class="mw-list-item"><a href="/page/Category:Conferences" class="nav-link n-All-Conferences">All Conferences</a></div>
+					</div>
+				</div>
+				<!-- About -->
+				<div class="nav-item dropdown p-About-dropdown">
+					<a href="#" class="nav-link dropdown-toggle p-About-toggle" data-toggle="dropdown" data-boundary="viewport">About</a>
+					<div class="dropdown-menu p-About" id="p-About">
+						<div id="n-HOWTO" class="mw-list-item"><a href="/page/HOWTO" class="nav-link n-HOWTO">HOWTO</a></div>
+						<div id="n-Documents" class="mw-list-item"><a href="/page/Documents" class="nav-link n-Documents">Documents</a></div>
+						<div id="n-Downloads" class="mw-list-item"><a href="/page/Downloads" class="nav-link n-Downloads">Downloads</a></div>
+						<div id="n-Book-&quot;qemu-kvm-&amp;-libvirt&quot;" class="mw-list-item"><a href="http://qemu-buch.de" rel="nofollow" class="nav-link n-Book-&quot;qemu-kvm-&amp;-libvirt&quot;">Book "qemu-kvm &amp; libvirt"</a></div>
+						<div id="n-FAQ" class="mw-list-item"><a href="/page/FAQ" class="nav-link n-FAQ">FAQ</a></div>
+					</div>
+				</div>
+			</div>
+			<div class="navbar-nav right">
+				<!-- page tools -->
+				<div class="navbar-tools navbar-nav flex-row">
+					<div class="navbar-tool dropdown">
+						<a data-toggle="dropdown" data-boundary="viewport" class="navbar-more-tools" href="#" title="Page tools"></a>
+						<!-- Content navigation -->
+						<div class="flex-row navbar-pagetools dropdown-menu p-contentnavigation" id="p-contentnavigation">
+							<!-- namespaces -->
+							<div id="ca-talk" class="new mw-list-item"><a href="/index.php?title=Talk:KVM-unit-tests&amp;action=edit&amp;redlink=1" rel="discussion" title="Discussion about the content page (page does not exist) [Alt+Shift+t]" accesskey="t" class="new ca-talk">Discussion</a></div>
+							<!-- views -->
+							<div id="ca-viewsource" class="mw-list-item"><a href="/index.php?title=KVM-unit-tests&amp;action=edit" title="This page is protected.
+You can view its source [Alt+Shift+e]" accesskey="e" class="ca-viewsource">View source</a></div>
+							<div id="ca-history" class="mw-list-item"><a href="/index.php?title=KVM-unit-tests&amp;action=history" title="Past revisions of this page [Alt+Shift+h]" accesskey="h" class="ca-history">View history</a></div>
+						</div>
+					</div>
+				</div>
+				<!-- search form -->
+				<div id="p-search" class="p-search order-first order-cmln-0 navbar-form" role="search">
+					<form id="searchform" class="mw-search" action="/index.php">
+						<input type="hidden" name="title" value=" Special:Search">
+						<div class="input-group">
+							<input type="search" name="search" placeholder="Search KVM" aria-label="Search KVM" autocapitalize="sentences" title="Search KVM [Alt+Shift+f]" accesskey="f" id="searchInput" class="form-control">
+							<div class="input-group-append">
+								<button value="Go" id="searchGoButton" name="go" type="submit" class="search-btn searchGoButton" aria-label="Go to page" title="Go to a page with this exact name if it exists"></button>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+				<!-- personal tools -->
+				<div class="navbar-tools navbar-nav">
+					<div class="navbar-tool dropdown">
+						<a class="navbar-usernotloggedin" href="#" data-toggle="dropdown" data-boundary="viewport" title="You are not logged in.">
+						</a>
+						<div class="p-personal-tools dropdown-menu">
+							<div id="pt-login" class="mw-list-item"><a href="/index.php?title=Special:UserLogin&amp;returnto=KVM-unit-tests" title="You are encouraged to log in; however, it is not mandatory [Alt+Shift+o]" accesskey="o" class="pt-login">Log in</a></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<div class="flex-fill container">
+		<div class="row">
+			<div class="col">
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<!-- start the content area -->
+				<div id="content" class="mw-body content"><a id="top" class="top"></a>
+					<div id="mw-indicators" class="mw-indicators"></div>
+						<div class="contentHeader">
+						<!-- title of the page -->
+						<h1 id="firstHeading" class="firstHeading"><span class="mw-page-title-main">KVM-unit-tests</span></h1>
+						<!-- tagline; usually goes something like "From WikiName" primary purpose of this seems to be for printing to identify the source of the content -->
+						<div id="siteSub" class="siteSub">From KVM</div><div id="jump-to-nav" class="mw-jump jump-to-nav">Jump to:<a href="#mw-navigation">navigation</a>, <a href="#p-search">search</a></div>
+					</div>
+					<div id="bodyContent" class="bodyContent">
+						<!-- body text -->
+
+						<div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr"><div class="mw-parser-output"><p><br>
+</p>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><input type="checkbox" role="button" id="toctogglecheckbox" class="toctogglecheckbox" style="display:none"><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#kvm-unit-tests"><span class="tocnumber">1</span> <span class="toctext">kvm-unit-tests</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Introduction"><span class="tocnumber">2</span> <span class="toctext">Introduction</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Framework"><span class="tocnumber">3</span> <span class="toctext">Framework</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Testdevs"><span class="tocnumber">4</span> <span class="toctext">Testdevs</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#API"><span class="tocnumber">5</span> <span class="toctext">API</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Running_tests"><span class="tocnumber">6</span> <span class="toctext">Running tests</span></a>
+<ul>
+<li class="toclevel-2 tocsection-7"><a href="#Running_tests_via_Avocado"><span class="tocnumber">6.1</span> <span class="toctext">Running tests via Avocado</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Adding_a_test"><span class="tocnumber">7</span> <span class="toctext">Adding a test</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#Contributing"><span class="tocnumber">8</span> <span class="toctext">Contributing</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="kvm-unit-tests">kvm-unit-tests</span></h1>
+<p>The source code can be found at:
+</p>
+<ul><li><a rel="nofollow" class="external free" href="https://gitlab.com/kvm-unit-tests/kvm-unit-tests.git">https://gitlab.com/kvm-unit-tests/kvm-unit-tests.git</a></li></ul>
+<p><br>
+</p>
+<h1><span class="mw-headline" id="Introduction">Introduction</span></h1>
+<p>kvm-unit-tests is a project as old as KVM. As its name suggests, it's purpose is to provide  <a rel="nofollow" class="external text" href="http://en.wikipedia.org/wiki/Unit_testing">unit tests</a> for KVM. The unit tests are tiny guest operating systems that generally execute only tens of lines of C and assembler test code in order to obtain its PASS/FAIL result. Unit tests provide KVM and virtual hardware functional testing by targeting the features through minimal implementations of their use per the hardware specification. The simplicity of unit tests make them easy to verify they are correct, easy to maintain, and easy to use in timing measurements. Unit tests are also often used for quick and dirty bug reproducers. The reproducers may then be kept as regression tests. It's strongly encouraged that patches implementing new KVM features are submitted with accompanying unit tests.
+</p><p>While a single unit test is focused on a single feature, all unit tests share the minimal system initialization and setup code. There are also several functions made shareable across all unit tests, comprising a unit test API. The setup code and API implementation are briefly described in the next section, <a href="/page/KVM-unit-tests#Framework" title="KVM-unit-tests">"Framework"</a>. We then describe testdevs in the <a href="/page/KVM-unit-tests#Testdevs" title="KVM-unit-tests">"Testdevs"</a> section, which are extensions to KVM's userspace that provide special support for unit tests. Section <a href="/page/KVM-unit-tests#API" title="KVM-unit-tests">"API"</a> lists the subsystems, e.g. MMU, SMP, that the API covers, along with a few descriptions of what the API supports. It specifically avoids listing any actual function declarations though, as those may change (use the source, Luke!). The <a href="/page/KVM-unit-tests#Running_tests" title="KVM-unit-tests">"Running tests"</a> section gives all the details necessary to build and run tests, and section <a href="/page/KVM-unit-tests#Adding_a_test" title="KVM-unit-tests">"Adding a test"</a> provides an example of adding a test. Finally, section <a href="/page/KVM-unit-tests#Contributing" title="KVM-unit-tests">"Contributing"</a> explains where and how to submit patches.
+</p><p><br>
+</p>
+<h1><span class="mw-headline" id="Framework">Framework</span></h1>
+<p>The kvm-unit-tests framework supports multiple architectures; currently i386, x86_64, armv7 (arm), armv8 (arm64), ppc64, ppc64le, and s390x. The framework makes sharing code between similar architectures, e.g. arm and arm64, easier by adopting Linux's configured asm symlink. With the asm symlink each architecture gets its own copy of the headers, but then may opt to share the same code.
+</p><p>The framework has the following components:
+</p>
+<dl><dt>Test building support</dt>
+<dd>Test building is done through makefiles and some supporting bash scripts.</dd>
+<dt>Shared code for test setup and API</dt>
+<dd>Test setup code includes, for example, early system init, MMU enablement, and UART init. The API provides some common libc functions, e.g. strcpy, atol, malloc, printf, as well as some low-level helper functions commonly seen in kernel code, e.g. irq_enable/disable, virt_to_phys/phys_to_virt, and some kvm-unit-tests specific API for, e.g., installing exception handlers and reporting test success/failure.</dd>
+<dt>Test running support</dt>
+<dd>Test running is provided with a few bash scripts, using a unit tests configuration file as input. Generally tests are run from within the source root directory using the supporting scripts, but tests may optionally be built as standalone tests as well. More information about the standalone building and running is in the section <a href="/page/KVM-unit-tests#Running_tests" title="KVM-unit-tests">"Running tests"</a>.</dd></dl>
+<h1><span class="mw-headline" id="Testdevs">Testdevs</span></h1>
+<p>Like all guests, a kvm-unit-test unit test (a mini guest) is run not only with KVM, but also with KVM's userspace. It's useful for unit tests to be able to open a test specific communication channel to KVM's userspace, allowing it to send commands for host-controlled behaviors or guest external invoked events. In particular a channel is useful for initiating an exit, i.e. to quit the unit test. Testdevs fill these roles. The following are testdevs currently in QEMU
+</p>
+<dl><dt>isa-debug-exit</dt>
+<dd>x86 device that opens an I/O port. When the I/O port is written it induces an exit, using the value written to form the exit code. Note, the exit code written is modified with "<tt>(<i>code</i> &lt;&lt; 1) | 1</tt>". Thus, a unit test exiting with zero for success induces an exit from QEMU with 1.</dd></dl>
+<dl><dt>pc-testdev</dt>
+<dd>x86 device that opens several I/O ports, where each port provides an interface to a helper function for the unit tests. One such function is interrupt injection.</dd></dl>
+<dl><dt>pci-testdev</dt>
+<dd>A PCI "device" that when read and written tests PCI accesses.</dd></dl>
+<dl><dt>edu</dt>
+<dd>A PCI device that supports testing both INTx and MSI interrupts and DMA transfers.</dd></dl>
+<dl><dt>testdev</dt>
+<dd>An architecture neutral testdev that takes its commands in postfix notation over a serial channel. Unit tests add an additional serial channel to their unit test guest config (the first being for test output), and then bind this device to it. kvm-unit-tests has minimal support for virtio in order to allow the additional serial channel to be an instance of virtio-serial. Currently testdev only supports the command "<tt><i>code</i>q</tt>", which works exactly like the isa-debug-exit testdev.</dd></dl>
+<h1><span class="mw-headline" id="API">API</span></h1>
+<p>There are three API categories in kvm-unit-tests 1) libc, 2) functions typical of kernel code, and 3) kvm-unit-tests specific. Very little libc has been implemented, but some of the most commonly used functions, such as strcpy, memset, malloc, printf, assert, exit, and others are available. To give an overview of (2), it's best to break them down by subsytem
+</p>
+<dl><dt>Device discovery</dt>
+<dd>ACPI - minimal table search support. Currently x86-only.</dd>
+<dd>Device tree - libfdt and a device tree library wrapping libfdt to accommodate the use of device trees conforming to the Linux documentation. For example, there is a function that gets the "bootargs" from /chosen, which are then fed into the unit test's main function's inputs (argc, argv) by the setup code before the unit test starts.</dd></dl>
+<dl><dt>Vectors</dt>
+<dd>Functions to install exception handlers.</dd></dl>
+<dl><dt>Memory</dt>
+<dd>Functions for memory allocation. Free memory is prepared for allocation during system init before the unit test starts.</dd>
+<dd>Functions for MMU enable/disable, TLB flushing, PTE setting, etc.</dd></dl>
+<dl><dt>SMP</dt>
+<dd>Functions to boot secondaries, iterate online cpus, etc.</dd>
+<dd>Barriers, spinlocks, atomic ops, cpumasks, etc.</dd></dl>
+<dl><dt>I/O</dt>
+<dd>Output messages to the UART. The UART is initialized during system init before the unit test starts.</dd>
+<dd>Functions to read/write MMIO</dd>
+<dd>Functions to read/write I/O ports (x86-only)</dd>
+<dd>Functions for accessing PCI devices</dd></dl>
+<dl><dt>Power management</dt>
+<dd>PSCI (arm/arm64-only)</dd>
+<dd>RTAS (PowerPC-only)</dd></dl>
+<dl><dt>Interrupt controller</dt>
+<dd>Functions to enable/disable, send IPIs, etc.</dd>
+<dd>Functions to enable/disable IRQs</dd></dl>
+<dl><dt>Virtio</dt>
+<dd>Buffer sending support. Currently virtio-mmio only.</dd></dl>
+<dl><dt>Misc</dt>
+<dd>Special register accessors</dd>
+<dd>Switch to user mode support</dd>
+<dd>Linux's asm-offsets generation, which can be used for structures that need to be accessed from assembly.</dd></dl>
+<p>Note, many of the names for the functions implementing the above are kvm-unit-tests specific, making them also part of the kvm-unit-tests specific API. However, at least for arm/arm64, any function that implements something for which the Linux kernel already has a function, then we use the same name (and exact same type signature, if possible). The kvm-unit-tests specific API also includes some testing specific functions, such as report() and report_summary(). The report* functions should be used to report PASS/FAIL results of the tests, and the overall test result summary.
+</p>
+<h1><span class="mw-headline" id="Running_tests">Running tests</span></h1>
+<p><br>Here are a few examples of building and running tests
+</p>
+<dl><dd><dl><dd>Run all tests on the current host</dd></dl></dd></dl>
+<pre>$ git clone https://gitlab.com/kvm-unit-tests/kvm-unit-tests.git
+$ cd kvm-unit-tests/
+$ ./configure
+$ make
+$ ./run_tests.sh
+</pre>
+<dl><dd><dl><dd>Cross-compile and run with a specific QEMU</dd></dl></dd></dl>
+<pre>$ ./configure --arch=arm64 --cross-prefix=aarch64-linux-gnu-
+$ make
+$ export QEMU=/path/to/qemu-system-aarch64
+$ ./run_tests.sh
+</pre>
+<dl><dd><dl><dd>Parallel building and running</dd></dl></dd></dl>
+<pre>$ ./configure
+$ make -j # build in parallel
+$ ./run_tests.sh -j 4 # run up to four unit tests simultaneously
+</pre>
+<dl><dd><dl><dd>Run a single test, passing additional QEMU command line options</dd></dl></dd></dl>
+<pre>$ ./arm-run arm/selftest.flat -smp 4 -append smp
+</pre>
+<p>Note1: run_tests.sh runs each test in $TEST_DIR/unittests.cfg (TEST_DIR, along with some other variables, is defined in config.mak after running configure. See './configure -h' for a list of supported options.)<br>
+Note2: When a unit test is run separately, all output goes to stdout. When unit tests are run through run_tests.sh, then each test has its output redirected to a file in the logs directory named from the test name in the unittests.cfg file, e.g. the pci-test for arm/arm64 has its output logged to 'logs/pci-test.log'.
+</p>
+<dl><dd><dl><dd>Building and running standalone tests</dd></dl></dd></dl>
+<pre>$ make standalone
+$ tests/hypercall # example run of a standalone test
+</pre>
+<p>Tests may be installed with 'make install', which copies the standalone version of each test to $PREFIX/share/kvm-unit-tests/
+</p>
+<h2><span class="mw-headline" id="Running_tests_via_Avocado">Running tests via Avocado</span></h2>
+<p>kvm-unit-tests may be run as an <a rel="nofollow" class="external text" href="http://avocado-framework.readthedocs.io/en/latest/">Avocado</a> external testsuite using the <a rel="nofollow" class="external text" href="https://github.com/avocado-framework/avocado/blob/master/contrib/testsuites/run-kvm-unit-test.sh">Avocado kvm-unit-tests runner script</a>. Check the available options with `sh run-kvm-unit-test.sh -h`. By default it downloads the latest kvm-unit-tests and runs all available tests.
+</p>
+<pre>$ sh contrib/testsuites/run-kvm-unit-test.sh 
+JOB ID    &nbsp;: 216c5cf937b07befd9d2bc1dd496714fce280f22
+JOB LOG   &nbsp;: /home/medic/avocado/job-results/job-2017-02-23T16.49-216c5cf/job.log
+ (01/42) access: PASS (4.46 s)
+ (02/42) apic: FAIL (4.42 s)
+ (03/42) apic-split: FAIL (4.41 s)
+...
+ (41/42) vmx: FAIL (1.64 s)
+ (42/42) xsave: PASS (1.28 s)
+RESULTS   &nbsp;: PASS 33 | ERROR 0 | FAIL 9 | SKIP 0 | WARN 0 | INTERRUPT 0
+TESTS TIME&nbsp;: 114.34 s
+JOB HTML  &nbsp;: /home/medic/avocado/job-results/job-2017-02-23T16.49-216c5cf/html/results.html
+</pre>
+<h1><span class="mw-headline" id="Adding_a_test">Adding a test</span></h1>
+<p>1. Create the new unit test's main code file
+</p>
+<pre>$ cat &gt; x86/new-unit-test.c
+#include &lt;libcflat.h&gt;
+
+int main(int ac, char **av)
+{
+        report(true, "hello!");
+        return report_summary();
+}
+</pre>
+<p>2. Ensure the appropriate makefile, e.g. x86/Makefile.common, has been updated by adding it to a tests variable<br>
+</p>
+<pre>tests-common += $(TEST_DIR)/new-unit-test.flat
+</pre>
+<p>Note, the tests-common variable identifies tests shared between similar architectures, e.g. i386 and x86_64 or arm and arm64. Use the tests makefile variable of a specific architecture's makefile to build the test specifically for that architecture.
+</p><p>3. You can now build and run the test
+</p>
+<pre>$ ./configure
+$ make
+$ x86/run x86/new-unit-test.flat 
+</pre>
+<h1><span class="mw-headline" id="Contributing">Contributing</span></h1>
+<p>To contribute new tests or enhancements and fixes to the framework, please submit patches to the KVM mailing list with the additional tag 'kvm-unit-tests' in the subject, i.e. [kvm-unit-tests PATCH]
+</p>
+<!-- 
+NewPP limit report
+Cached time: 20250703031906
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+CPU time usage: 0.012 seconds
+Real time usage: 0.243 seconds
+Preprocessor visited node count: 88/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 1373/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key kvmwiki-kvmwiki_:pcache:idhash:2701-0!canonical and timestamp 20250703031905 and revision id 174016.
+ -->
+</div></div><div class="printfooter">
+Retrieved from "<a dir="ltr" href="https://linux-kvm.org/index.php?title=KVM-unit-tests&amp;oldid=174016">https://linux-kvm.org/index.php?title=KVM-unit-tests&amp;oldid=174016</a>"</div>
+
+						<!-- end body text -->
+						<!-- data blocks which should go somewhere after the body text, but not before the catlinks block-->
+						
+					</div>
+					<!-- category links -->
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/page/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="/page/Category:Docs" title="Category:Docs">Docs</a></li><li><a href="/page/Category:Testing" title="Category:Testing">Testing</a></li><li><a href="/page/Category:HowTo" title="Category:HowTo">HowTo</a></li></ul></div></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="mb-2 mt-4 container-fluid">
+		<div class="row">
+			<div class="col">
+				<!-- navigation bar -->
+				<nav class="p-navbar not-collapsible small mavbar-light" role="navigation" id="mw-navigation-i30vja02wn">
+					<div class="navbar-nav">
+					<!-- toolbox -->
+					<div class="nav-item p-tb-dropdown dropup">
+						<a href="#" class="nav-link dropdown-toggle p-tb-toggle" data-toggle="dropdown" data-boundary="viewport">Tools</a>
+						<div class="dropdown-menu">
+							<div id="t-whatlinkshere" class="nav-item mw-list-item"><a href="/page/Special:WhatLinksHere/KVM-unit-tests" title="A list of all wiki pages that link here [Alt+Shift+j]" accesskey="j" class="nav-link t-whatlinkshere">What links here</a></div>
+							<div id="t-recentchangeslinked" class="nav-item mw-list-item"><a href="/page/Special:RecentChangesLinked/KVM-unit-tests" rel="nofollow" title="Recent changes in pages linked from this page [Alt+Shift+k]" accesskey="k" class="nav-link t-recentchangeslinked">Related changes</a></div>
+							<div id="t-specialpages" class="nav-item mw-list-item"><a href="/page/Special:SpecialPages" title="A list of all special pages [Alt+Shift+q]" accesskey="q" class="nav-link t-specialpages">Special pages</a></div>
+							<div id="t-print" class="nav-item mw-list-item"><a href="javascript:print();" rel="alternate" title="Printable version of this page [Alt+Shift+p]" accesskey="p" class="nav-link t-print">Printable version</a></div>
+							<div id="t-permalink" class="nav-item mw-list-item"><a href="/index.php?title=KVM-unit-tests&amp;oldid=174016" title="Permanent link to this revision of this page" class="nav-link t-permalink">Permanent link</a></div>
+							<div id="t-info" class="nav-item mw-list-item"><a href="/index.php?title=KVM-unit-tests&amp;action=info" title="More information about this page" class="nav-link t-info">Page information</a></div>
+							<div id="t-cite" class="nav-item mw-list-item"><a href="/index.php?title=Special:CiteThisPage&amp;page=KVM-unit-tests&amp;id=174016&amp;wpFormIdentifier=titleform" title="Information on how to cite this page" class="nav-link t-cite">Cite this page</a></div>
+						</div>
+					</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+	</div><script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.012","walltime":"0.243","ppvisitednodes":{"value":88,"limit":1000000},"postexpandincludesize":{"value":0,"limit":2097152},"templateargumentsize":{"value":0,"limit":2097152},"expansiondepth":{"value":2,"limit":100},"expensivefunctioncount":{"value":0,"limit":100},"unstrip-depth":{"value":0,"limit":20},"unstrip-size":{"value":1373,"limit":5000000},"timingprofile":["100.00%    0.000      1 -total"]},"cachereport":{"timestamp":"20250703031906","ttl":86400,"transientcontent":false}}});mw.config.set({"wgBackendResponseTime":79});});</script>
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
