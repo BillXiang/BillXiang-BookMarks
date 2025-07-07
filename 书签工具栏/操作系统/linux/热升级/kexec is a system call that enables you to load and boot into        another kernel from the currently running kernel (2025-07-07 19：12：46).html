@@ -1,0 +1,864 @@
+<!-- Filename: 书签工具栏/操作系统/linux/热升级/kexec is a system call that enables you to load and boot into        another kernel from the currently running kernel (2025-07-07 19：12：46).html
+ Page saved with X-Webpage-Conserve 
+ url: https://www.man7.org/linux/man-pages/man8/kexec.8.html
+ Summary: 
+-->
+<html lang="en-US"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>kexec(8) - Linux manual page</title>
+    <link rel="stylesheet" type="text/css" href="../../../style.css" title="style">
+    <link rel="stylesheet" type="text/css" href="../style.css" title="style">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+
+<body>
+
+<div class="page-top"><a id="top_of_page"></a></div>
+<!--%%%TOP_BAR%%%-->
+    <div class="nav-bar">
+        <table class="nav-table">
+            <tbody><tr>
+                <td class="nav-cell">
+                    <p class="nav-text">
+                        <a href="../../../index.html">man7.org</a> &gt; Linux &gt; <a href="../index.html">man-pages</a>
+                    </p>
+                </td>
+                <td class="training-cell">
+                    <p class="training-text"><a class="training-link" href="http://man7.org/training/">Linux/UNIX system programming training</a></p>
+                </td>
+            </tr>
+        </tbody></table>
+    </div>
+
+<hr class="nav-end">
+
+<!--%%%PAGE_START%%%-->
+<h1>kexec(8) — Linux manual page</h1>
+
+
+<table class="sec-table">
+<tbody><tr>
+    <td>
+        <p class="section-dir">
+<a href="#NAME">NAME</a> | <a href="#SYNOPSIS">SYNOPSIS</a> | <a href="#DESCRIPTION">DESCRIPTION</a> | <a href="#USAGE">USAGE</a> | <a href="#EXAMPLE">EXAMPLE</a> | <a href="#OPTIONS">OPTIONS</a> | <a href="#SUPPORTED_KERNEL_FILE_TYPES_AND_OPTIONS">SUPPORTED&nbsp;KERNEL&nbsp;FILE&nbsp;TYPES&nbsp;AND&nbsp;OPTIONS</a> | <a href="#ARCHITECTURE_OPTIONS">ARCHITECTURE&nbsp;OPTIONS</a> | <a href="#COLOPHON">COLOPHON</a>
+        </p>
+    </td>
+</tr>
+<tr>
+    <td class="search-box">
+        <div class="man-search-box">
+
+            <form method="get" action="https://www.google.com/search">
+                <fieldset class="man-search">
+                    <input type="text" name="q" size="10" maxlength="255" value="">
+                    <input type="hidden" name="sitesearch" value="man7.org/linux/man-pages">
+                    <input type="submit" name="sa" value="Search online pages">
+                </fieldset>
+            </form>
+
+        </div>
+    </td>
+    <td> </td>
+</tr>
+</tbody></table>
+
+<!--%%%TEXT_START%%%-->
+<pre><span class="headline"><i>kexec</i>(8)                       User Manuals                      <i>kexec</i>(8)</span>
+</pre>
+<h2><a id="NAME" href="#NAME"></a>NAME  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       kexec - directly boot into a new kernel
+</pre>
+<h2><a id="SYNOPSIS" href="#SYNOPSIS"></a>SYNOPSIS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       <b>/sbin/kexec [-v (--version)] [-f (--force)] [-x (--no-ifdown)] [-y</b>
+       <b>(--no-sync)] [-l (--load)] [-p (--load-panic)] [-u (--unload)] [-e</b>
+       <b>(--exec)] [-t (--type)] [--mem-min=</b><i>addr</i><b>] [--mem-max=</b><i>addr</i><b>]</b>
+</pre>
+<h2><a id="DESCRIPTION" href="#DESCRIPTION"></a>DESCRIPTION  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       <b>kexec </b>is a system call that enables you to load and boot into
+       another kernel from the currently running kernel.  <b>kexec </b>performs
+       the function of the boot loader from within the kernel. The
+       primary difference between a standard system boot and a <b>kexec </b>boot
+       is that the hardware initialization normally performed by the BIOS
+       or firmware (depending on architecture) is not performed during a
+       <b>kexec </b>boot. This has the effect of reducing the time required for
+       a reboot.
+
+       Make sure you have selected <b>CONFIG_KEXEC=y </b>when configuring the
+       kernel. The <b>CONFIG_KEXEC </b>option enables the <b>kexec </b>system call.
+</pre>
+<h2><a id="USAGE" href="#USAGE"></a>USAGE  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       Using <b>kexec </b>consists of
+
+              (1) loading the kernel to be rebooted to into memory, and
+              (2) actually rebooting to the pre-loaded kernel.
+
+       To load a kernel, the syntax is as follows:
+
+              <b>kexec </b>-l <i>kernel-image</i> --append=<i>command-line-options</i>
+              --initrd=<i>initrd-image</i>
+
+       where <i>kernel-image</i> is the kernel file that you intend to reboot
+       to.
+
+       Insert the command-line parameters that must be passed to the new
+       kernel into <i>command-line-options</i>.  Passing the exact contents of
+       /proc/cmdline into <i>command-line-options</i> is the safest way to
+       ensure that correct values are passed to the rebooting kernel.
+
+       The optional <i>initrd-image</i> is the initrd image to be used during
+       boot.
+
+       It's also possible to invoke <b>kexec </b>without an option parameter. In
+       that case, kexec loads the specified kernel and then invokes
+       <a href="../man8/shutdown.8.html">shutdown(8)</a>.  If the shutdown scripts of your Linux distribution
+       support kexec-based rebooting, they then call <b>kexec </b><i>-e</i> just before
+       actually rebooting the machine. That way, the machine does a clean
+       shutdown including all shutdown scripts.
+</pre>
+<h2><a id="EXAMPLE" href="#EXAMPLE"></a>EXAMPLE  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       For example, if the kernel image you want to reboot to is
+       <b>/boot/vmlinux</b>, the contents of /proc/cmdline is <b>root=/dev/hda1</b>,
+       and the path to the initrd is <b>/boot/initrd</b>, then you would use the
+       following command to load the kernel:
+
+              <b>kexec </b>-l <b>/boot/vmlinux</b>
+              --append=<b>root=/dev/hda1 </b>--initrd=<b>/boot/initrd</b>
+
+       After this kernel is loaded, assuming the user-space supports
+       kexec-based rebooting, it can be booted to, with a clean shutdown,
+       using the command:
+
+              <b>reboot</b>
+
+       Alternatively, it can also be booted to, without calling
+       shutdown(8), with the command:
+
+              <b>kexec </b>-e
+</pre>
+<h2><a id="OPTIONS" href="#OPTIONS"></a>OPTIONS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       <b>-d (--debug)</b>
+              Enable debugging messages.
+
+       <b>-S (--status)</b>
+              Return 1 if the type (by default crash) is loaded, 0 if
+              not. Can be used in conjuction with -l or -p to toggle the
+              type. Note this option supersedes other options and it will
+              <b>not load or unload the kernel.</b>
+
+       <b>-e (--exec)</b>
+              Run the currently loaded kernel. Note that it will reboot
+              into the loaded kernel without calling shutdown(8).
+
+       <b>-f (--force)</b>
+              Force an immediate <b>kexec </b>call, do not call <a href="../man8/shutdown.8.html">shutdown(8)</a>
+              (contrary to the default action without any option
+              parameter). This option performs the same actions like
+              executing <i>-l</i> and <i>-e</i> in one call.
+
+       <b>-h (--help)</b>
+              Open a help file for <b>kexec</b>.
+
+       <b>--hotplug</b>
+              Setup kexec segments such that kernel can safely update
+              them on CPU/Memory hot add/remove events. If this option is
+              enabled, kernel does in-kernel update of kexec segments on
+              CPU/Memory hot add/remove events, thus avoiding the need to
+              reload kdump kernel.
+
+       <b>-i (--no-checks)</b>
+              Fast reboot, no memory integrity checks.
+
+       <b>-l (--load) </b><i>kernel</i>
+              Load the specified <i>kernel</i> into the current kernel.
+
+       <b>-p (--load-panic)</b>
+              Load the new kernel for use on panic.
+
+       <b>-t (--type=</b><i>type</i><b>)</b>
+              Specify that the new kernel is of this <i>type.</i>
+
+       <b>-s (--kexec-file-syscall)</b>
+              Specify that the new KEXEC_FILE_LOAD syscall should be used
+              exclusively.  Ignored on XEN.
+
+       <b>-c (--kexec-syscall)</b>
+              Specify that the old KEXEC_LOAD syscall should be used
+              exclusively.
+
+       <b>-a (--kexec-syscall-auto)</b>
+              Try the new KEXEC_FILE_LOAD syscall first and when it is
+              not supported or the kernel does not understand the
+              supplied image fall back to the old KEXEC_LOAD interface.
+
+              There is no one single interface that always works, so this
+              is the default.
+
+              KEXEC_FILE_LOAD is required on systems that use locked-down
+              secure boot to verify the kernel signature.  KEXEC_LOAD may
+              be also disabled in the kernel configuration.
+
+              KEXEC_LOAD is required for some kernel image formats and on
+              architectures that do not implement KEXEC_FILE_LOAD.
+
+       <b>-u (--unload)</b>
+              Unload the current <b>kexec </b>target kernel. If a capture kernel
+              is being unloaded then specify -p with -u.
+
+       <b>-v (--version)</b>
+              Return the version number of the installed utility.
+
+       <b>-x (--no-ifdown)</b>
+              Shut down the running kernel, but restore the interface on
+              reload.
+
+       <b>-y (--no-sync)</b>
+              Shut down the running kernel, but skip syncing the
+              filesystems.
+
+       <b>--mem-min=</b><i>addr</i>
+              Specify the lowest memory address <i>addr</i> to load code into.
+
+       <b>--mem-max=</b><i>addr</i>
+              Specify the highest memory address <i>addr</i> to load code into.
+
+       <b>--entry=</b><i>addr</i>
+              Specify the jump back address. (0 means it's not jump back
+              or preserve context)
+
+       <b>--load-preserve-context</b>
+              Load the new kernel and preserve context of current kernel
+              during kexec.
+
+       <b>--load-jump-back-helper</b>
+              Load a helper image to jump back to original kernel.
+
+       <b>--reuseinitrd</b>
+              Reuse initrd from first boot.
+
+       <b>--print-ckr-size</b>
+              Print crash kernel region size, if available.
+</pre>
+<h2><a id="SUPPORTED_KERNEL_FILE_TYPES_AND_OPTIONS" href="#SUPPORTED_KERNEL_FILE_TYPES_AND_OPTIONS"></a>SUPPORTED KERNEL FILE TYPES AND OPTIONS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       <b>Beoboot-x86</b>
+
+              <b>--args-elf</b>
+                     Pass ELF boot notes.
+
+              <b>--args-linux</b>
+                     Pass Linux kernel style options.
+
+              <b>--real-mode</b>
+                     Use the kernel's real mode entry point.
+
+       <b>elf-x86</b>
+
+              <b>--append=</b><i>string</i>
+                     Append <i>string</i> to the kernel command line.
+
+              <b>--command-line=</b><i>string</i>
+                     Set the kernel command line to <i>string</i>.
+
+              <b>--reuse-cmdline</b>
+                     Use the command line from the running system. When a
+                     panic kernel is loaded, it strips the <i>crashkernel</i>
+                     parameter automatically. The <i>BOOT_IMAGE</i> parameter is
+                     also stripped.
+
+              <b>--initrd=</b><i>file</i>
+                     Use <i>file</i> as the kernel's initial ramdisk.
+
+              <b>--ramdisk=</b><i>file</i>
+                     Use <i>file</i> as the kernel's initial ramdisk.
+
+       <b>bzImage-x86</b>
+
+              <b>--append=</b><i>string</i>
+                     Append <i>string</i> to the kernel command line.
+
+              <b>--command-line=</b><i>string</i>
+                     Set the kernel command line to <i>string</i>.
+
+              <b>--reuse-cmdline</b>
+                     Use the command line from the running system. When a
+                     panic kernel is loaded, it strips the <i>crashkernel</i>
+                     parameter automatically. The <i>BOOT_IMAGE</i> parameter is
+                     also stripped.
+
+              <b>--initrd=</b><i>file</i>
+                     Use <i>file</i> as the kernel's initial ramdisk.
+
+              <b>--ramdisk=</b><i>file</i>
+                     Use <i>file</i> as the kernel's initial ramdisk.
+
+              <b>--real-mode</b>
+                     Use real-mode entry point.
+
+       <b>multiboot-x86</b>
+
+              <b>--command-line=</b><i>string</i>
+                     Set the kernel command line to <i>string</i>.
+
+              <b>--reuse-cmdline</b>
+                     Use the command line from the running system. When a
+                     panic kernel is loaded, it strips the <i>crashkernel</i>
+                     parameter automatically. The <i>BOOT_IMAGE</i> parameter is
+                     also stripped.
+
+              <b>--module=</b><i>mod arg1 arg2 ...</i>
+                     Load module <i>mod</i> with command-line arguments <i>arg1</i>
+                     <i>arg2 ...</i>  This parameter can be specified multiple
+                     times.
+
+       <b>multiboot2-x86</b>
+
+              <b>--command-line=</b><i>string</i>
+                     Set the kernel command line to <i>string</i>.
+
+              <b>--reuse-cmdline</b>
+                     Use the command line from the running system. When a
+                     panic kernel is loaded, it strips the <i>crashkernel</i>
+                     parameter automatically. The <i>BOOT_IMAGE</i> parameter is
+                     also stripped.
+
+              <b>--module=</b><i>mod arg1 arg2 ...</i>
+                     Load module <i>mod</i> with command-line arguments <i>arg1</i>
+                     <i>arg2 ...</i>  This parameter can be specified multiple
+                     times.
+
+       <b>elf-ppc64</b>
+
+              <b>--reuse-cmdline</b>
+                     Use the kernel command line from the running system.
+
+              <b>--command-line=</b><i>string</i>
+                     Set the kernel command line to <i>string.</i>
+
+              <b>--append=</b><i>string</i>
+                     Set the kernel command line to <i>string.</i>
+
+              <b>--ramdisk=</b><i>file</i>
+                     Use <i>file</i> as the initial RAM disk.
+
+              <b>--initrd=</b><i>file</i>
+                     Use <i>file</i> as the initial RAM disk.
+
+              <b>--devicetreeblob=</b><i>file</i>
+                     Specify device tree blob file. Not applicable while
+                     using --kexec-file-syscall.
+
+              <b>--dtb=</b><i>file</i>
+                     Specify device tree blob file. Not applicable while
+                     using --kexec-file-syscall.
+</pre>
+<h2><a id="ARCHITECTURE_OPTIONS" href="#ARCHITECTURE_OPTIONS"></a>ARCHITECTURE OPTIONS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       <b>--console-serial</b>
+              Enable the serial console.
+
+       <b>--console-vga</b>
+              Enable the VGA console.
+
+       <b>--elf32-core-headers</b>
+              Prepare core headers in ELF32 format.
+
+       <b>--elf64-core-headers</b>
+              Prepare core headers in ELF64 format.
+
+       <b>--reset-vga</b>
+              Attempt to reset a standard VGA device.
+
+       <b>--serial=</b><i>port</i>
+              Specify the serial <i>port</i> for debug output.
+
+       <b>--serial-baud=</b><i>baud_rate</i>
+              Specify the <i>baud rate</i> of the serial port.
+
+       <b>--dt-no-old-root</b>
+              Do not reuse old kernel root=&lt;device&gt; param while creating
+              flatten device tree.
+</pre>
+<h2><a id="COLOPHON" href="#COLOPHON"></a>COLOPHON  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>       This page is part of the <i>kexec-tools</i> (kexec-tools) project.
+       Information about the project can be found at 
+       ⟨<a href="https://projects.horms.net/projects/kexec/">https://projects.horms.net/projects/kexec/</a>⟩.  If you have a bug
+       report for this manual page, send it to kexec@lists.infradead.org.
+       This page was obtained from the project's upstream Git repository
+       ⟨<a href="https://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git">https://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git</a>⟩
+       on 2025-02-02.  (At that time, the date of the most recent commit
+       that was found in the repository was 2024-12-13.)  If you discover
+       any rendering problems in this HTML version of the page, or you
+       believe there is a better or more up-to-date source for the page,
+       or you have corrections or improvements to the information in this
+       COLOPHON (which is <i>not</i> part of the original manual page), send a
+       mail to man-pages@man7.org
+
+<span class="footline">Linux                           April 2006                       <i>kexec</i>(8)</span>
+</pre>
+
+<hr class="end-man-text">
+<p>Pages that refer to this page:
+    <a href="../man2/kexec_load.2.html">kexec_load(2)</a>
+</p>
+<hr>
+
+ 
+<hr class="start-footer">
+
+<div class="footer">
+
+<table class="colophon-table">
+    <tbody><tr>
+    <td class="pub-info">
+        <p>
+            HTML rendering created 2025-02-02
+            by <a href="https://man7.org/mtk/index.html">Michael Kerrisk</a>,
+            author of
+            <a href="https://man7.org/tlpi/"><em>The Linux Programming Interface</em></a>.
+        </p>
+        <p>
+            For details of in-depth
+            <strong>Linux/UNIX system programming training courses</strong>
+            that I teach, look <a href="https://man7.org/training/">here</a>.
+        </p>
+        <p>
+            Hosting by <a href="https://www.jambit.com/index_en.html">jambit GmbH</a>.
+        </p>
+    </td>
+    <td class="colophon-divider">
+    </td>
+    <td class="tlpi-cover">
+        <a href="https://man7.org/tlpi/"><img src="data:image/png;base64,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7QYALFmyZN68ed8QQwOe59etW7dr165Dhw6dSzL09fX95je/+T48AQihSqWSZXn9+vUD7/TYY489++yzTz755GuvvTZgfM6zbCn2gCCI83jFNWvWrF27duD0rbfeWrNmjdVqTXVeAMBrr72G43hbW9t1110XDAbPvff111+PRCKiKP74xz/WarUEQZz389tstltuuQUAUFNT89prr32TMYQQrlixoqqqatKkSclk8tyic81UR0fH6tWrnU7nYJqslBI4ePDgyZMnUw5ASgmYzWaEEI7jc+fORQjxPA8AGDly5Ln3pkYZQujYsWMAgCeffHKgSK1W2+32ASXQ2dl533334TieKlUUBcfxf7R+KSWQKr3//vsBAHv37n3//ffPVQKPPvrotm3bAABPP/106qfVarX/VAnk5uamHkeSZMoIp5SAw+HAMCylRgZUfOrfvyC6dUAGdOuOHTsAAC0tLQih559/HgCwatWqtra25ubmG2+8EQDwzDPPpGBKZSTec889DQ0NHR0dFEWdC2tjY2PK7i9evBghFI/HAQBtbW2px02dOpUkyXNhffTRR1PDVpblf4QVIURRFI7jL7/88neB9d133039eClYd+/eDQDIyMj46KOPurq6Xn/99cGHNeVgnXdx1apVAz3L4XBYrdbU8fPPP09RVOoVWZZNuTUDctttt53bAWfNmjXgYKVeIAWQ1+u94YYbzn1oU1NTit9JEbipEQMAWLRoEULozTffHHCwAAAPPvggQmjEiBEDVj7lgQy07/F4EEJjx44tLS0deMSoUaMAAO3t7anTvXv3FhQUDLyqWq1ubm7+V2H976kWhNB5zPG3iNvtRghlZGT809Kuri6CIBwOx6UfJiWTyba2toKCgvMI5e9ItRDfxWR99xbT09O/pTQnJ+eHEn3SNF1aWnqZE7hMtVyG9bL8z+TbdOuGDRtCodCtt94KAHj55ZfD4fAvfvGLVFF7e/snn3xy7733PvPMM21tbefeVVxcfO211z700EMD7uewYcPuvvvu6urq9957LzWnMnz48P/4j/8AAHR3dz/11FMD944ZM+bmm28GAGzevLm1tfXee+89t+Xnn39+3759Ho+nsrJy7dq1DofjnnvukWU5VSpJ0ksvvfQtqSHfq3yLgzV37tyioqLUcXZ29gDzhBDavn17ys365S9/uWDBglRsOmfO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" alt="Cover of TLPI"></a>
+    </td>
+    </tr>
+</tbody></table>
+
+</div>
+
+<hr class="end-footer">
+
+
+
+<!--BEGIN-SITETRACKING-->
+<!-- SITETRACKING.man7.org_linux_man-pages -->
+
+<!-- Default Statcounter code for man7.org/linux/man-pages
+http://www.man7.org/linux/man-pages -->
+<script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script><script type="text/javascript">
+var sc_project=7422636;
+var sc_invisible=1;
+var sc_security="9b6714ff";
+</script>
+<script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async=""></script>
+<noscript><div class="statcounter"><a title="Web Analytics
+Made Easy - StatCounter" href="https://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="https://c.statcounter.com/7422636/0/9b6714ff/1/"
+alt="Web Analytics Made Easy -
+StatCounter"></a></div></noscript>
+<!-- End of Statcounter Code -->
+
+
+
+<!-- Start of Google Analytics Code -->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9830363-8']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<!-- End of Google Analytics Code -->
+
+<!--END-SITETRACKING-->
+
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
