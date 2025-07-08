@@ -1,3 +1,7 @@
+```
+#define RISCV_FENCE(p, s) \
+	__asm__ __volatile__ ("fence " #p "," #s : : : "memory")
+```
 这段代码是使用 GCC 内联汇编（Inline Assembly）语法编写的 RISC-V **内存屏障（Memory Barrier 或 Fence）**指令。它的核心作用是**强制处理器按照特定顺序执行内存访问操作**，在多核、多线程环境或与硬件设备交互时，确保内存访问的可见性和顺序性，防止因处理器优化（如乱序执行、缓存）导致的数据不一致问题。
 
 **代码分解：**
