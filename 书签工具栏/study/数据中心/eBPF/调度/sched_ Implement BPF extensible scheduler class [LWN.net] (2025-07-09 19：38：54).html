@@ -1,0 +1,1260 @@
+<!-- Filename: 书签工具栏/study/数据中心/eBPF/调度/sched_ Implement BPF extensible scheduler class [LWN.net] (2025-07-09 19：38：54).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lwn.net/Articles/937884/
+ Summary: 
+-->
+<html lang="en"><head><title>sched: Implement BPF extensible scheduler class [LWN.net]</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="sched: Implement BPF extensible scheduler class">
+<meta property="og:site_name" content="LWN.net">
+<meta property="og:type" content="article">
+<meta property="og:description" content="">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="robots" content="noai, noimageai">
+        <link rel="icon" href="https://static.lwn.net/images/favicon.png" type="image/png">
+        <link rel="alternate" type="application/rss+xml" title="LWN.net headlines" href="https://lwn.net/headlines/rss">
+        <link rel="stylesheet" href="/CSS/lwn">
+<link rel="stylesheet" href="/CSS/nosub">
+
+        
+<script type="text/javascript" async="" src="https://e-4669.adzerk.net/ados?t=1752042037883&amp;request=%7B%22Placements%22%3A%5B%7B%22A%22%3A4669%2C%22S%22%3A20979%2C%22D%22%3A%22azk13321_leaderboard%22%2C%22AT%22%3A4%2C%22Z%22%3A%5B16026%5D%7D%2C%7B%22A%22%3A4669%2C%22S%22%3A20979%2C%22D%22%3A%22azk93271_right_zone%22%2C%22ATA%22%3A%5B5%2C10%2C6%5D%2C%22Z%22%3A%5B16027%5D%7D%2C%7B%22A%22%3A4669%2C%22S%22%3A20979%2C%22D%22%3A%22azk31017_tracking%22%2C%22AT%22%3A20%2C%22Z%22%3A%5B20995%5D%7D%5D%2C%22Keywords%22%3A%22T%253ASSL%22%2C%22Referrer%22%3A%22https%253A%252F%252Fwww.bing.com%252F%22%2C%22IsAsync%22%3Atrue%7D"></script><script type="text/javascript" async="" src="https://engine.adzerk.net/ados.js"></script><script type="text/javascript">var p="http",d="static";if(document.location.protocol=="https:"){p+="s";d="engine";}var z=document.createElement("script");z.type="text/javascript";z.async=true;z.src=p+"://"+d+".adzerk.net/ados.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(z,s);</script>
+<script type="text/javascript">
+var ados_keywords = ados_keywords || [];
+if( location.protocol=='https:' ) {
+        ados_keywords.push('T:SSL');
+} else {
+        ados_keywords.push('T:HTTP');
+}
+
+var ados = ados || {};
+ados.run = ados.run || [];
+ados.run.push(function() {
+
+ados_add_placement(4669, 20979, "azk13321_leaderboard", 4).setZone(16026);
+
+ados_add_placement(4669, 20979, "azk93271_right_zone", [5,10,6]).setZone(16027);
+
+ados_add_placement(4669, 20979, "azk31017_tracking", 20).setZone(20995);
+
+
+
+ados_setKeywords(ados_keywords.join(', ')); 
+ados_load();
+});</script>
+
+        <style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+        <body>
+        <a name="t"></a>
+<div id="menu"><a href="/"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABRCAYAAABv/dCnAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJTUUH3wUHEg82LQtN2wAAHbdJREFUeNrlnHmcXFW1779771NzdVdP1UO6Mw8kEAhDAgmDIRKMIIiKFxQSuJKoTyVeUVDwKpM4X3EA9YlDLtOVGxQVBATRPKYwSxICJGQiQ89zdc3nnL3fH+dUdTcZICH4yH3n8+lPV515/85av/Vba+1Tgn/+YgHvB04HTgLGAUkgDXQA64FHgLuAXv4/WKLAV4CdgHkLfzngV0DL/2RQ5gHb3yIgBjBCiNLnNPAlQPxPA2W+//TfMihHHTfbfOj8j5vTzjjTxOMVpfUrgcA/66bVO3z+WmAVULU/B80+8USmTD6MZEMj8ZoE7Tt2YtvFI4AxwL3/DGDkO3z+K4CG/T0oFo0jpcRSimRNPS1TJpc2LQXOPdSBsYBLDuTA1FCKfLFAX38v27Ztpqe9feTm7wOhQ5lbjt0fXhn5V1dXZ8ZNmGii0eje9rn4UAbmkgMF5i38PXkou9KR73D4bzxUgakb+SUSjXLCKacwd/78Nz0wXlHBxZ/6LFdecwM1tbV72kUAiw7VcP0J4LDSl5raOpRlMXvOPGbNmcOa557d7YCPLbmY85Z8gvecupDMUAotDKfMfy+PrXpkT+fvAO5/JyPHO7VUlD789Fe3c8Jxx5LJZvnrQ39h264dNDY309HayvA+tzLr8COIxGK4tkMqM4cNr23gsSce48jZs3np+effeP5Zhyr5/h0wF1y01Ly2ZbtxXde4rmv6+gfNGR88d6TkN5d+/nLT3d1rbNs2juMa23ZMNpc327bvMl/48teNFQjsiYB3HVJofOPe1yde/4fNx008cu5TYybPNA8/87J5eWu7uf77N5s//221aevPmzWvtZnk2CkGMMmWKeaRp182rX058/LWdvPvN/zALFv+ZbNu0y6zqzdnnlyz2YyZPNNUN4x9IzBt7+Q4Dnpidt09WwYRYktP69ZJxVwmMWvW0ezcuYNgKEwgECAeixIOh2ntTXPrNUv41+vvpCERJhCw2Lp1K/39/YwbPwHbsRnT2Ig2hpfXr6e6aSI//sypHH/mxcyafw5aaztR27jomnOnrDokLOa6e7bkrl35ctxP+kxPb7858cQTzdTDpptf/OdvzXXXXWfy+YL50i+fNJ/5wX3mytv+Ydo6e4wxxiSTSQOY08480yy//EqzZs0a47iuWfyvl5jr7tlirrrtH+aMpVeb2jETTcu0YzZdu3LLuEMxXA8A5PMFpk+fzqaNG9iwcSPGGF75wxKaa+GMic9TE3N5/d6P4Np5tNYA/O2BB7jpP75DOp1GAO1tntf8ZPlCHvz19fS2bWPXay/mrj1v8o5DyZU63kriKHC5pOEL/Kbjxxjx5s8nnx3iO0uOwRhTWpX1I58+JMK1GZQTQkkZ+f6yU/4tlx68RihF265dPHLrlzluwnN0d0lSacFJczOEAi18rv5cNm6KM+uIPAZwXMhmBNt7ZnP0uT+ju6ePw6ZNwSkWRoJSqgiOB7YdEhYzYvkU8AuAu799JvMO30F9YwElvUsKlQRZi7E3DN+MDANxIIXWBeyiYNWjFmd+9ZW9XeNs4M+HGsf0A1xz4RSOmbZrFCjelSuBwghQEqAmgEoCFeQKik3bwiw41Ubu/fEdfygq336ABXOiNCTzo0EBMCmM0+ODEsHIRgQCTJaf3z5Ae6tDU5Ng6iS89ZjdzV2IhStuu22tZQXOktJqUULEjDHCNbrb1fpFqZ0fLF68OPVuc6XjgOf/+M3ZoAOc/f7eURc1QoLRCBEEayIA9z38Oi+8kENJwdlnBJk1w2Yoraha8CoARxx9DDu2bCadTnP6+xbx3tMWmhnTD7dD4WBQKQspJcZoXNfFsTWZTHpzoVi8Y/EF513vK+13BTATga3XLJlKXXWUQtblsk/Z8Ib7E7KSPz9c5IW1WYyBww8P8y9nFsFAwTY8/kw1i77oJZzLv/QVYvE4LU2NjGlqJB6LEQqGiEYjxGJRlLIwRmMXbVLpNPl8nmw2V0ylUg9u2pj86LXXLnDeDa6UA3isfRKfmphn+1AXK++32LLFJhwWGATFoovjDCKAyZOCXPghB0OBog29fSHWb6qlb9zlJKqWkBocpLa6mqmTJ1GXrCMSCpGoqiQaiSH8x/vqq6/S1trKaQsXEolGKNo2Pd09QaXk2ZOndf4H8IV3AzBVAJWJSpwjPsPY4K+Z0dyG6xoGBgxKCsYfEeCEI12qEg7a2ORt6GgPs3FnM+Pe/xMmTw9Tn83w1atvYKCnk2OOOorKygoqKitIVFYiBHR2drBixQqWL/88y5Yu5fT3nc5pCxcCEAwEaGpqpKOjU6ZSqfHvFvKdDxAMhWluaiJdeRn/eP5XHD3pFSZPyhIOGRA2WkM6K+jqifH6FkHNqT9n9vwpVFZWYClFR2cXUyeNp2LWEURjUepqalFKMjg4yNq1a2hsbOLOO+5g3rx53HbbbTzx5BNvJGgaGpIUbXvuuwEYCVwKUBGvYFxLE66jKRQu4qmND9Db9yjxqERIg+0ahlISJixlwjln0NzUQEU8ihCCV155ldd37KK6uoqamipi0RjGGNra2vjoR8/lwgsv5D3vmc/kyZO5+aab+c2KFWTSmd1vRiqikUjlqlWrwgsWLMj/vwTm08BMgFMXnM64liaM0WSyGYxZxGu9s9GuJhyOUF1VRTJZx5jGJM2NSSKRMADPvfAP+nr7SSQqSSbrUNKTXN/77ndZtGgRF198MdVV1QDMmDGDp556igcfeIB8Yc/jNvs5gHcCmGnA93w75pwPLCQQ8C4zeeI4irZNOBTC0ZpoJEJNdYLG+iQNyVqCwQCO4/DYE6sx2lBXV0tVVQKAJ554gnQ6zV//+jBNY5pobGyiosIrEobCYa659jquuPxyzjr7rH+OwPvV7bdPCVuBq5WyJktEJQhHa93rOM5mB+fXn1i8+LkRu8eA3/u6nmefW0NFPDZc66yIMXFcC4FAEK010WiEupoqaqoTWJYil8vz+ONPEgyHqKuvJRL2rOeaa67mySee4He//z3t7e38+b77OOecDzF+nFd1KBaLLFiwgLnz5rJ9+/Z3FpiVK1cGi665JRQKL4pFo41SCkAgpUBrgzbmtEI+v/iulfdssu3i84Wc/d1ly5ZcX3KhJUs/zVFHTkcIMYoIa2urkJbCaE0sGiYcjiClYGhoiKeefpZoPEZDfRIpJa7rIoRgzYtrqG9owLYdTjhhLk8++QTjxo9nzvFeRrBj+w7uXrmSq79+NVddddWocZRKGQelS/CLX6xMWCHzYHWi+oPhcLgiEgkTj8WoqakiUZWgIh4jFAwSCgWDkWikMRQKH6u1e8lh06cfl8lkaW9v44/3/Im62uo9EKEkGgkTjYQJBoMIIejr6+f5F16kMpGgPpnEGM0tt9zC4OAAU6ZMYdq0adx800+YM2cOylIkEgkeeughli5dRk9PD3fffTfjJ0xg/qmn8oEPfADbtunr66WttZVtW7dSVVWN7Ti269jfu/XWW9+SyBN7sBRlu+bBqqqa0yOREJUVFSQSCcReNLIxhmw2x1B6CNt26O/vZ1drG/NPOZkjZx4+ymL2tLR1dLDh1Y3U1NaW3e7CCy6gp6ebB//yENIn3fcvWkQiUclHPnIukyZN4uMf/xjPPf8CiUQCKSWO49DT001PdzfZbHY06U07DNt1M/lspu6Ao1K+4H6/trbmvdFouBwNXNfBGI3wC0oj6yJKSmKxKLFYFGMMlRVxamtrae9sp7Ozi4kTxzNl8qQ9Xnzrtu3s3LmTMWOaCAQCZdOfMHECuVy2DArA+eefzze/eQP/6zOfZc7xx/OVK68kkUiQz+fo6uyip7cH7bp7vE7RLiKk2m+9McKFbhsXjkbOi8aiqq62loBlEQgEyqCUAFFKEQgEyoOxbRvbtnEch8rKSprHNNHc1EQkGuH1HTt55G//h67u7lEXfmn9K7S1t48CpeRq8+fPp6urC4DW1lZWrVrFhz/yYYLBIGPGjAFg6dJldHV2sv6ll+jq6twrKAB20d7vUsuonaLxwPLqRKK5trYapSRaa2zbxrICWD5IlmWNAsMdQW5CgOu65WMaG+ppbmoiGo2wbv3LPPb4agqFAmvXvUQmk6GxoZ7zPnY+N3zrO6Nuqra2ju7ubrTWrPr733n2mWeoqqrmt3f9N5MnTaZQLKK1JuxHrX0OUEpy+Rw/vPEHodMWLnwNuGW/gYlHwz+NRCPFSDhS5gYhBI7j+EAUcRwH1386b4w4xlDe5oXRAlIKamtrGNPYiFKSJ1Y/je26JJN1CCH43VcEF896gXXr1o0AphbXdVm3di133303LWPH4rouhx9+OAjjEaMQxOLxPdVoiMfjNDe3MGPG4QwMDLL0kku47777rAlTpowFjtpvjqmsrLQty0oLIWq8gRqMMQgBWnuflRoGZCTXeNuUx0m+FQkhcR0HqTz/bmxsoL2jg/HhIfKupKgqeK3iSuJVRaoDVTzyyCMsXLgQpbzn9aMf/ZAf3PhDxo8fi+tqMGb4URpNIBAgFApRKBSIRCLU1NRSXVNDMBj0su1XXuFrX/t3enq8glhDfSMDvb1j+vzv+xWVHnvy6YfGNNa/zxiD4ziUAPKI0fVrHmaU+5S+uq6LlHIPluSBGgwG6eruYUylIUqOgUALrqvR2kEpi2nZz2Ow+db9C0hUJjj9fe/DGDAMW4lEgDAYIwgELHp7ewkGg+VUAjM8quWXLuevf324fC8nzV9AsVjof+6p1TX7HZWM4343ncnMi0WjFXaxiLIUruMilUIIgW3bvhUJlFKjsFVK4boOUqoyOI7joPxjjTHEYzEG8gVqrA5kaBytj17MERMNA2NvAyFwikOcd975OCPJ1ICQYrg/q03ZxROJhP+gBJRANAIEZcsbKfaUspz95hiA+fNP+nsmk90ghCAYCqGURTAURErpRyOPhJVSaK1xHAetdRkIywpgtB4VwUq8Y4whEomQLRQReOvmz45RV1tH7oXlPNa+mK2Vd+C4rgeAMUghfOxNufgn5GhXFqKEnvGSRf/7Fy+/gqamplGct2njhswBdwls277bLhZdpdQojzNGj2J7y7LKUaok340xKMsaFT5L6z0AQRuDIyJYOkch30ux2I6a9kXqJxyLMRopBBKDwBuoFAIpFVJ5ksG7jRH85vOf0fgdBc+CxraM5c47/4t5804kmaw3WzZv0r3dXU8fcM139erVEakCa+rqaqc5jjOCYDVa67KrDD8xUbYKpVR5vTGmLNJc1+MRy7Lo6OhkYpVBSsgEG7EdxwdS4KdkgPBdVgIGYzRKWbhuyTrNqCBQ4jpR4iDtnUf459r2+uvZcz/8oSuy2ezjwEsHWgxv/MYN31oxdmzz+8OhMFOmTiESiaD18A2UeKMEUAkcISgrZK21Lw5F+XKhUIihoTQhYdMkO+gMTvUSPW9UZSOWwrMX4Z3Qu4YBg/b2EV5kMsZT38aAazRKSJ+cSyB5V+7rH8gUcm8jJQAIRyLP/vBHNyYzQ0MmFAqJaDTGSSefxDe+cQNSenpFa43juqQGU9i2jVKKWCxGNBopK2UpJVr7VqS1ZxlaE4tG6evvZ2y46HOr8c5b9gKBQfvRTiCM8QEB43eZGMEvWggwLtIHBeOjUe5ICHZrTxwIx0Si0VfGjZ8YLhQKIpVK0dHRzgP338+K3/zGu1EhkFKyc8dO+vr7GUqnGRgcpLWtjS1bt5EaSu/mZkJKApblhXQlcVwHLRVBVXIbyiEZY9CGMmjeHnJ0KU6U3BuENv72YVBMKW6bA+sQ7RGYoWz2ukRVVbpErAC5XI7Vq58su4jtjE4HRobErq5u2js6yi4mhBgm4xL/aMjJBCFn0MMCcF2DQAMGWVLWYnfiL4dwId+QvQ9bimA4Uh00YJxc7ikgc8zsE8rrAoEAJ8ydWxZ9YX+G1N6WTCZLR0fXcOogSi7ikWU4HGRIRwk7AyipkFL6RC2QQg7P7dDa9y4xIjRrdlNzJbQPEIi33NTfsmnj1aFwKF1RWQlAS0sLS5Zc5CeKDoVCnqbGRoZD+u5LOpMml8+PNBSPrLUmHo/Rl4Og67ud0VDmFUbpFG+7l5aMVNy+E45sa/oHijfUjMR+T6PZKzC7duy4Zf36dc8kqqrd+vp6+zcrVhCJRBBC+tl2gHA4REtLM9FodK8XcPyU3yNiT/hpYwgEgjiO64tCVeauEolIPykVQvjGVorjpkzKlHrggDa6DJZ+Qyjf/x7BmxTDB3p6zhig59f/eesd1c3NLWdp7Y7SEMYYgoEALc1jKOQLDKQGSaczZU0TCgWJxeO+9pGjxF6JjwoqTsgdomDCZQ3jai/CyGGzKB8ryrLP31ASLCNcSniIltMEqcTBBQawgYtaJo2fls5k5sRjsQbXdf0nZkYNUilJsq6O+mQS7Uv6UCjkpwymPL4SSCWFnCZO1BlAqTFe8izASEMpdRw5JCN8HTPCYpAStBllbWrLV2moeJliQdEz9p4Daiy9pWrWwlNOeS2Tzm4KZDd4Uywcp5wxl0sOfhpgjEEqj0wLhcIoNxpp3sYYKuIxevIWISflWZSn4Iazd2NGqVCfmpGW8rWRQZR5x/sfe20xk+rXE48aaqodpgyeTXDDRbCf00DeUsPt5TtmfmuqddHJqigwBcNQRtKavAcDWF6BxntSloXrOCjL2k0VG9+8pRBof8CRSIRUaggZcEbgoOENLmNGpCSdnV3U1tWhwmHfUzReZgWCfhrrB5AqCCIBaJTsp6Wxl8zmL1RceGNxBvDiQbGY526ae9K0qcWrLEsiZBCpIlTGDeP7P0wgEEBrPapqpyyLUn5VcplhMh0WfaV+jzYGR4UJmOHJhyWlW8pzbNumdddO1q1dS1tbq3c9n0MEEiE9IJs7L/YsT40DmQTZAHIiSkaYNrGbK89ynj9oFnP4MX2PK6VA1IFKABIh+oiGuxjTcTatDfeO4ppSIunVPpQvZHVZ0Qop0Y7jcYMPWIZKwu4gBVnnW5bnTvl8jrbWXaRSqd1aNsO6RaKNQRe3EwlrhIoCwRGMHUaoBpR5nbNPy8q/J47SyaReNnPx+hViH8yzT7p+5NtH/3L+e7PLlFXjoV9WmQb0doybpX9A0T32j2WXGVVq8K3CLUWlUjTy9w0GgwylMgTI0xLsoSs4Fa0N2WyG1l27SKeH9nhf02fMoLIyQdF2fJM3NHedTTQCQrX4Ex9H6XFwd2F0mkwOWltjhMIOyZoCVkBjtGAwFeSFdYHfnXXlmn/Zp8Xc96njorNm55ZJCcgEvFF6yzHgbqEq4TLw2mfIT755r2JPKS/7xXehkaeKxaP09RewVAHbttm8eRPZzL5rScYMs4+XgCrCodJ9Rfb8/GUSYbLEwpopkzMjZoJ60NYnbU6Z6350nxzz+68e11R1ZHGoMm57JQSxJ+kfQKgkQsD4+p2I4ujZ6yN5x+hha1JKopTlr9de+dEYjJBYwrwpKKUEFsBSFn19/SS2noOUIGRgL11nASIEsgGhFMrfV6hahDUWEWgBAcGgy5++fFjFKIu549oplRXE740nzMmJSq0mTbCxLP+Ee8RPgEwgTD8Sm0nZ5WwN/cnnDe+daTMi3xkp8rzOJjiuS1ApEJCTFcRljlA4TCGf34PVKerqkjQ2NWFZFjt3tbJuzYvcdddvefRG27+fin2wgwRZBVT6EUyMEIYGQQAhimTCsVOB+6w/fW3mFfNONt9NJGwhZXa3XMTzV7F37pZNoHcSDELdzo+yRvyE5pZmL9yWMmIhUL6WwXiyTcrhzDkYCDKk41S5/VRWVNI9AphIJEKyvp76ZD2udhkYHKKrp4+vXnkFL7+0jpOOSqKsan+oFaV+wj4oVe1xD4ODEBDS7geA++R7TnO+V1NbFJblSWelQCmvxipkDYiqfQAjQMQQyutG1FQ7bH70Bhob6hECbMeh6HcVyiUIKcuAlEoR0WiEQSdIyE0Tr4gjhCCRSDBt2mHMPPIoKiuryGSzRCJRpArS3tVdjlR//nGN99xlECMO8D11YyOMQSJIVJpzAaxwyPW0gNUCIuzpbjGsM998KrAAWYswGaTOs+ysNpxIlGlTPbAKxSL9ff0MpFIU8nmE8ApWSFHWM4FAAMcdIheqobq6msrKBEop8oUCtuMwYfw4KiriOI5DfyoDSIpFr/oXi/i5kqrjwN8A8HIRYQyNzaIGwLJtQTBgQEQ94jqggpcFsgX0VixLk336aKILvJcnQsEgjY0NNDY2+HWaDJ1dPaTTaVztohzXL4caBoItuE4RV2si4TCTJk4sT1MrdyaURTaTobO9jZ9dPg5VThCjHPB8bmEBlQgxyPhxOQkgdt13pG5qLAjPYioO/OQYMGmMsxMDvN47k8mLfr/PI7TW9PcP0NvXR29fH5FwhLEtzdTW1ux1/9XPvMhFi89n29YtZB6fRjjszS5HNfO2JrqbHOjtuK7mxWfDd1mdndI0NiCE2wbWVA78VWyfb2QcdJpxVS9RzA8RDFfscyZCbW3NXoHYLdV3HL75zevZtnWLR9pBv4Knannbs/9FEJBIoZl5bO58OZShaEZVGd5eQVDIWr89Kig+N+egTQXVWvPz//1L/nK/9/Mxa2+bjpTCb9W83d/bMUAetOtHSSGksU16eOPbf3HfCAshPF6IhA3r75z9ts9p2w6XXXY5l/3bpeV1UyfrEemeeRvuXwC3DZxdIzoSYNU2mYQEkGEOzntdyheFni4YP26Ip//rc8y94KcHBEhXVy8tLaN/3+LEGdWU6/DCsP+vRWrPO/QgmEGMHu0pjquxxo0pWp74kwcJmNG9HCUNYmg16YFu4lXJN82BXNelULB5betWjj1q5h73++XXxyNEpqxavSz7LRiHcBHkwO3DmIzf7za4rvcuZtGW9PdH2LZVP2+FQtoTLiYDZghExAdIHiChSbwfBEqXq3ChsOK/bziT93zuHhqTNViWVW71aldTKBYZSmdYvfo5Prn0QjL7yJeiQUUsYoY7J8ZF4L6JM7nAEMLtwegi2jUUHcjkJOmhGJm0IJV26ek32UxXaN4FP35mnVegL1XPnF0IoTxwRAQIewmkED7/jARLvIkuKJml12euidlMm/T23x+/9IPjsG2Fq8G7d28S0e6343cHTA7cTozJ47iGfB4GU2HS6SCpIZehIZfBftGdz0ZPW/zDp8rNfstoMcqDjHHBpIefuA+CN+nA8gCTFZ6gEmpEH8fv+ulB0D0+KIZczgJtsNTBeT36iIkxsjkoFgRWtDQXoB+Mwoig32fSYIqguzAmh3YNuYKgvy/GwKAklXJIpYqk0upZXPXhj3/vxd1+J8Jauz706IzphflCGLQrcTW4jihP4ZDKRVkaJUCpAlIWkTLl97eU7zZ+G0O4GGODMdiOIZW2SKUiFPIaRx+ctwzzBUM+b0ilQ1iBPAFLgJtCMOSXHTQYt9y/KtqGgf4QPb1hBlM2qUHXpAbknYV46pOf+Pbre535YM355Eun/mT5lNDYmvi9oaC7wAoZK6iEUAFBwFIEAhLL0iglCAUhFHGIRoqEwy4By0YKp5yJG4NfTjCk00H6+8MMpDSpIYeu3jILDOH9vEEayPifS+sGGX7nOIX3xv9YYALeTztZG7ZnOGySJJUKgjHE43nCIU834RbBGFzt3UMmHaRvMEJfr0tfX5FMSv2xM5f+2Odv2lw4oPkxKz97RLxYETzF0vocaTHfshhvBXU4HDIiFBFEQopwRBGLaoIhm5DlgvJmGmhHUiwqMrkAgymXgQGHnm5pvrxi481tvYWfARsO0FhiwAknH1nzsavOb/5kVY0kFrWIxzWxmE0wVPQqmFpSLATJZC1SKRgYKNLfr1ox8pjzvv1i937E1re+/PbSY8boMEusgFkWjejJ0YgW4agkGFYEpQTpKQTXhnzBITOkGRiQqVc3pqde+4ctXQdLBd/15VnrInFzZGXMJRILEI4qggHfWh3IFzS5jMPAoHQzeT5x4bfX3n4AouPAlzsvm328DNrfCgbNKaGQCVoBjQRcIyjkJbms2unmgjMX3/RMioO83H75rPMCQfHriqgbj0YMSgk0BrtoyOSkyWath4f65dmfvuWFA8pzDtp71yu+cHRVIGBOFkbMNzCgNKs+fuOa1byDy7XXIg9Lz7pCWvIqyzIxxyWjHXG/GpSfPe+WFwbfzrn/L6K/2mrmY/ZKAAAAAElFTkSuQmCC" class="logo" border="0" alt="LWN.net Logo">
+           <span class="logo">LWN<br>.net</span>
+           <span class="logobl">News from the source</span></a>
+           <a href="/"><img src="data:image/png;base64,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" class="sslogo" border="0" alt="LWN"></a><div class="navmenu-container">
+           <ul class="navmenu">
+        <li><a class="navmenu" href="#t"><b>Content</b></a><ul><li><a href="/current/">Weekly Edition</a></li><li><a href="/Archives/">Archives</a></li><li><a href="/Search/">Search</a></li><li><a href="/Kernel/">Kernel</a></li><li><a href="/Security/">Security</a></li><li><a href="/Calendar/">Events calendar</a></li><li><a href="/Comments/unread">Unread comments</a></li><li><hr></li><li><a href="/op/FAQ.lwn">LWN FAQ</a></li><li><a href="/op/AuthorGuide.lwn">Write for us</a></li></ul></li>
+<li><a class="navmenu" href="#t"><b>Edition</b></a><ul><li><a href="/Articles/937461/">Return to the Announcements page</a></li></ul></li>
+</ul></div>
+</div> <!-- menu -->
+<div class="not-handset" style="margin-left: 10.5em; display: block;">
+                   <div class="not-print"> <div id="azk13321_leaderboard"></div> </div>
+                </div>
+            <div class="topnav-container">
+<div class="not-handset"><form action="https://lwn.net/Login/" method="post" name="loginform" class="loginform">
+        <label><b>User:</b> <input type="text" name="uname" value="" size="8" id="uc"></label> 
+		<label><b>Password:</b> <input type="password" name="pword" size="8" id="pc"></label> <input type="hidden" name="target" value="/Articles/937884/"> <input type="submit" name="submit" value="Log in"></form> |
+           <form action="https://lwn.net/subscribe/" method="post" class="loginform">
+           <input type="submit" name="submit" value="Subscribe">
+           </form> |
+           <form action="https://lwn.net/Login/newaccount" method="post" class="loginform">
+           <input type="submit" name="submit" value="Register">
+           </form>
+        </div>
+               <div class="handset-only">
+               <a href="/subscribe/"><b>Subscribe</b></a> /
+               <a href="/Login/"><b>Log in</b></a> /
+               <a href="/Login/newaccount"><b>New account</b></a>
+               </div>
+               </div><div class="maincolumn flexcol">
+<div class="middlecolumn">
+<div class="PageHeadline">
+<h1>sched: Implement BPF extensible scheduler class</h1>
+</div>
+<div class="ArticleText">
+<table>
+<tbody><tr><td valign="top"><b>From</b>:</td>
+             <td>&nbsp;</td><td valign="top">Tejun Heo &lt;tj-AT-kernel.org&gt;</td></tr>
+<tr><td valign="top"><b>To</b>:</td>
+             <td>&nbsp;</td><td valign="top">torvalds-AT-linux-foundation.org, mingo-AT-redhat.com,        peterz-AT-infradead.org, juri.lelli-AT-redhat.com,        vincent.guittot-AT-linaro.org, dietmar.eggemann-AT-arm.com,        rostedt-AT-goodmis.org, bsegall-AT-google.com, mgorman-AT-suse.de,        bristot-AT-redhat.com, vschneid-AT-redhat.com, ast-AT-kernel.org,        daniel-AT-iogearbox.net, andrii-AT-kernel.org, martin.lau-AT-kernel.org,        joshdon-AT-google.com, brho-AT-google.com, pjt-AT-google.com,        derkling-AT-google.com, haoluo-AT-google.com, dvernet-AT-meta.com,        dschatzberg-AT-meta.com, dskarlat-AT-cs.cmu.edu, riel-AT-surriel.com</td></tr>
+<tr><td valign="top"><b>Subject</b>:</td>
+             <td>&nbsp;</td><td valign="top">[PATCHSET v4] sched: Implement BPF extensible scheduler class</td></tr>
+<tr><td valign="top"><b>Date</b>:</td>
+             <td>&nbsp;</td><td valign="top">Mon, 10 Jul 2023 15:13:18 -1000</td></tr>
+<tr><td valign="top"><b>Message-ID</b>:</td>
+             <td>&nbsp;</td><td valign="top">&lt;20230711011412.100319-1-tj@kernel.org&gt;</td></tr>
+<tr><td valign="top"><b>Cc</b>:</td>
+             <td>&nbsp;</td><td valign="top">linux-kernel-AT-vger.kernel.org, bpf-AT-vger.kernel.org,        kernel-team-AT-meta.com</td></tr>
+<tr><td valign="top"><b>Archive-link</b>:</td>
+             <td>&nbsp;</td><td valign="top"><a href="https://lwn.net/ml/linux-kernel/20230711011412.100319-1-tj@kernel.org/">Article</a></td></tr>
+</tbody></table><p>
+</p><pre>Changes
+-------
+
+This is v4 of sched_ext (SCX) patchset. The followings are changes from v3
+(<a href="https://lkml.kernel.org/r/20230317213333.2174969-1-tj@kernel.org">https://lkml.kernel.org/r/20230317213333.2174969-1-tj@ker...</a>):
+
+- There aren't any significant changes to the sched_ext API even though we
+  kept experimenting heavily with a couple BPF scheduler implementations
+  indicating that the core API reached a level of maturity.
+
+- 0002-sched-Encapsulate-task-attribute-change-sequence-int.patch which
+  implemented custom guard scope for scheduler attribute changes dropped as
+  upstream is moving towards a more generic implementation.
+
+- Build fixes with different CONFIG combinations.
+
+- Core code cleanups and improvements including how idle CPU is selected and
+  disabling ttwu_queue for tasks on SCX to avoid confusing BPF schedulers
+  expecting -&gt;select_cpu() call. See
+  0012-sched_ext-Implement-BPF-extensible-scheduler-class.patch for more
+  details.
+
+- "_example" dropped from the example schedulers as the distinction between
+  the example-only and practically-useful isn't black-and-white. Instead,
+  each scheduler has detailed comments and there's also a README file.
+
+- scx_central, scx_pair and scx_flatcg are moved into their own patches as
+  suggested by Josh Don.
+
+- scx_atropos received sustantial updates including fixes for bugs that
+  could cause temporary stalls and improvements in load balancing and wakeup
+  target CPU selection. For details, See
+  0034-sched_ext-Add-a-rust-userspace-hybrid-example-schedu.patch.
+
+v2 (<a href="http://lkml.kernel.org/r/20230128001639.3510083-1-tj@kernel.org">http://lkml.kernel.org/r/20230128001639.3510083-1-tj@kern...</a>) -&gt; v3:
+
+- ops.set_weight() added to allow BPF schedulers to track weight changes
+  without polling p-&gt;scx.weight.
+
+- scx_bpf_task_cgroup() kfunc added to allow BPF scheduler to reliably
+  determine the current cpu cgroup under rq lock protection. This required
+  improving the kf_mask SCX operation verification mechanism and adding
+  0023-sched_ext-Track-tasks-that-are-subjects-of-the-in-fl.patch.
+
+- Updated to use the latest BPF improvements including KF_RCU and the inline
+  iterator.
+
+- scx_example_flatcg added to 0024-sched_ext-Add-cgroup-support.patch. It
+  uses the new BPF RB tree support to implement flattened cgroup hierarchy.
+
+- A DSQ now also contains an rbtree so that it can be used to implement
+  vtime based scheduling among tasks sharing a DSQ conveniently and
+  efficiently. For more details, see
+  0029-sched_ext-Add-vtime-ordered-priority-queue-to-dispat.patch. All
+  eligible example schedulers are updated to default to weighted vtime
+  scheduilng.
+
+- atropos scheduler's userspace code is substantially restructred and
+  rewritten. The binary is renamed to scx_atropos and can auto-config the
+  domains according to the cache topology.
+
+- Various other example scheduler updates including scx_example_dummy being
+  renamed to scx_example_simple, the example schedulers defaulting to
+  enabling switch_all and clarifying performance expectation of each example
+  scheduler.
+
+- A bunch of fixes and improvements. Please refer to each patch for details.
+
+v1 (<a href="http://lkml.kernel.org/r/20221130082313.3241517-1-tj@kernel.org">http://lkml.kernel.org/r/20221130082313.3241517-1-tj@kern...</a>) -&gt; v2:
+
+- Rebased on top of bpf/for-next - a5f6b9d577eb ("Merge branch 'Enable
+  struct_ops programs to be sleepable'"). There were several missing
+  features including generic cpumask helpers and sleepable struct_ops
+  operation support that v1 was working around. The rebase gets rid of all
+  SCX specific temporary helpers.
+
+- Some kfunc helpers are context-sensitive and can only be called from
+  specific operations. v1 didn't restrict kfunc accesses allowing them to be
+  misused which can lead to crashes and other malfunctions. v2 makes more
+  kfuncs safe to be called from anywhere and implements per-task mask based
+  runtime access control for the rest. The longer-term plan is to make the
+  BPF verifier enforce these restrictions. Combined with the above, sans
+  mistakes and bugs, it shouldn't be possible to crash the machine through
+  SCX and its helpers.
+
+- Core-sched support. While v1 implemented the pick_task operation, there
+  were multiple missing pieces for working core-sched support. v2 adds
+  0027-sched_ext-Implement-core-sched-support.patch. SCX by default
+  implements global FIFO ordering and allows the BPF schedulers to implement
+  custom ordering via scx_ops.core_sched_before(). scx_example_qmap is
+  updated so that the five queues' relative priorities are correctly
+  reflected when core-sched is enabled.
+
+- Dropped balance_scx_on_up() which was called from put_prev_task_balance().
+  UP support is now contained in SCX proper.
+
+- 0002-sched-Encapsulate-task-attribute-change-sequence-int.patch adds
+  SCHED_CHANGE_BLOCK() which encapsulates the preparation and restoration
+  sequences used for task attribute changes. For SCX, this replaces
+  sched_deq_and_put_task() and sched_enq_and_set_task() from v1.
+
+- 0011-sched-Add-reason-to-sched_move_task.patch dropped from v1. SCX now
+  distinguishes cgroup and autogroup tg's using task_group_is_autogroup().
+
+- Other misc changes including fixes for bugs that Julia Lawall noticed and
+  patch descriptions updates with more details on how the introduced changes
+  are going to be used.
+
+- MAINTAINERS entries added.
+
+The followings are discussion points which were raised but didn't result in
+code changes in this iteration.
+
+- There were discussions around exposing __setscheduler_prio() and, in v2,
+  SCHED_CHANGE_BLOCK() in kernel/sched/sched.h. Switching scheduler
+  implementations is innate for SCX. At the very least, it needs to be able
+  to turn on and off the BPF scheduler which requires something equivalent
+  to SCHED_CHANGE_BLOCK(). The use of __setscheduler_prio() depends on the
+  behavior we want to present to userspace. The current one of using CFS as
+  the fallback when BPF scheduler is not available seems more friendly and
+  less error-prone to other options.
+
+- Another discussion point was around for_each_active_class() and friends
+  which skip over CFS or SCX when it's known that the sched_class must be
+  empty. I left it as-is for now as it seems to be cleaner and more robust
+  than trying to plug each operation which may added unnecessary overheads.
+
+Overview
+--------
+
+This patch set proposes a new scheduler class called ‘ext_sched_class’, or
+sched_ext, which allows scheduling policies to be implemented as BPF programs.
+
+More details will be provided on the overall architecture of sched_ext
+throughout the various patches in this set, as well as in the “How” section
+below. We realize that this patch set is a significant proposal, so we will be
+going into depth in the following “Motivation” section to explain why we think
+it’s justified. That section is laid out as follows, touching on three main
+axes where we believe that sched_ext provides significant value:
+
+1. Ease of experimentation and exploration: Enabling rapid iteration of new
+   scheduling policies.
+
+2. Customization: Building application-specific schedulers which implement
+   policies that are not applicable to general-purpose schedulers.
+
+3. Rapid scheduler deployments: Non-disruptive swap outs of scheduling
+   policies in production environments.
+
+After the motivation section, we’ll provide a more detailed (but still
+high-level) overview of how sched_ext works.
+
+Motivation
+----------
+
+1. Ease of experimentation and exploration
+
+*Why is exploration important?*
+
+Scheduling is a challenging problem space. Small changes in scheduling
+behavior can have a significant impact on various components of a system, with
+the corresponding effects varying widely across different platforms,
+architectures, and workloads.
+
+While complexities have always existed in scheduling, they have increased
+dramatically over the past 10-15 years. In the mid-late 2000s, cores were
+typically homogeneous and further apart from each other, with the criteria for
+scheduling being roughly the same across the entire die.
+
+Systems in the modern age are by comparison much more complex. Modern CPU
+designs, where the total power budget of all CPU cores often far exceeds the
+power budget of the socket, with dynamic frequency scaling, and with or
+without chiplets, have significantly expanded the scheduling problem space.
+Cache hierarchies have become less uniform, with Core Complex (CCX) designs
+such as recent AMD processors having multiple shared L3 caches within a single
+socket. Such topologies resemble NUMA sans persistent NUMA node stickiness.
+
+Use-cases have become increasingly complex and diverse as well. Applications
+such as mobile and VR have strict latency requirements to avoid missing
+deadlines that impact user experience. Stacking workloads in servers is
+constantly pushing the demands on the scheduler in terms of workload isolation
+and resource distribution.
+
+Experimentation and exploration are important for any non-trivial problem
+space. However, given the recent hardware and software developments, we
+believe that experimentation and exploration are not just important, but
+_critical_ in the scheduling problem space.
+
+Indeed, other approaches in industry are already being explored. AMD has
+proposed an experimental patch set [0] which enables userspace to provide
+hints to the scheduler via “Userspace Hinting”. The approach adds a prctl()
+API which allows callers to set a numerical “hint” value on a struct
+task_struct. This hint is then optionally read by the scheduler to adjust the
+cost calculus for various scheduling decisions.
+
+[0]: <a href="https://lore.kernel.org/lkml/20220910105326.1797-1-kprateek.nayak@amd.com/">https://lore.kernel.org/lkml/20220910105326.1797-1-kprate...</a>
+
+Huawei have also expressed interest [1] in enabling some form of programmable
+scheduling. While we’re unaware of any patch sets which have been sent to the
+upstream list for this proposal, it similarly illustrates the need for more
+flexibility in the scheduler.
+
+[1]: <a href="https://lore.kernel.org/bpf/dedc7b72-9da4-91d0-d81d-75360c177188@huawei.com/">https://lore.kernel.org/bpf/dedc7b72-9da4-91d0-d81d-75360...</a>
+
+Additionally, Google has developed ghOSt [2] with the goal of enabling custom,
+userspace driven scheduling policies. Prior presentations at LPC [3] have
+discussed ghOSt and how BPF can be used to accelerate scheduling.
+
+[2]: <a href="https://dl.acm.org/doi/pdf/10.1145/3477132.3483542">https://dl.acm.org/doi/pdf/10.1145/3477132.3483542</a>
+[3]: <a href="https://lpc.events/event/16/contributions/1365/">https://lpc.events/event/16/contributions/1365/</a>
+
+*Why can’t we just explore directly with CFS?*
+
+Experimenting with CFS directly or implementing a new sched_class from scratch
+is of course possible, but is often difficult and time consuming. Newcomers to
+the scheduler often require years to understand the codebase and become
+productive contributors. Even for seasoned kernel engineers, experimenting
+with and upstreaming features can take a very long time. The iteration process
+itself is also time consuming, as testing scheduler changes on real hardware
+requires reinstalling the kernel and rebooting the host.
+ 
+Core scheduling is an example of a feature that took a significant amount of
+time and effort to integrate into the kernel. Part of the difficulty with core
+scheduling was the inherent mismatch in abstraction between the desire to
+perform core-wide scheduling, and the per-cpu design of the kernel scheduler.
+This caused issues, for example ensuring proper fairness between the
+independent runqueues of SMT siblings.
+
+The high barrier to entry for working on the scheduler is an impediment to
+academia as well. Master’s/PhD candidates who are interested in improving the
+scheduler will spend years ramping-up, only to complete their degrees just as
+they’re finally ready to make significant changes. A lower entrance barrier
+would allow researchers to more quickly ramp up, test out hypotheses, and
+iterate on novel ideas. Research methodology is also severely hampered by the
+high barrier of entry to make modifications; for example, the Shenango [4] and
+Shinjuku scheduling policies used sched affinity to replicate the desired
+policy semantics, due to the difficulty of incorporating these policies into
+the kernel directly.
+
+[4]: <a href="https://www.usenix.org/system/files/nsdi19-ousterhout.pdf">https://www.usenix.org/system/files/nsdi19-ousterhout.pdf</a>
+
+The iterative process itself also imposes a significant cost to working on the
+scheduler. Testing changes requires developers to recompile and reinstall the
+kernel, reboot their machines, rewarm their workloads, and then finally rerun
+their benchmarks. Though some of this overhead could potentially be mitigated
+by enabling schedulers to be implemented as kernel modules, a machine crash or
+subtle system state corruption is always only one innocuous mistake away.
+These problems are exacerbated when testing production workloads in a
+datacenter environment as well, where multiple hosts may be involved in an
+experiment; requiring a significantly longer ramp up time. Warming up memcache
+instances in the Meta production environment takes hours, for example.
+
+*How does sched_ext help with exploration?*
+
+sched_ext attempts to address all of the problems described above. In this
+section, we’ll describe the benefits to experimentation and exploration that
+are afforded by sched_ext, provide real-world examples of those benefits, and
+discuss some of the trade-offs and considerations in our design choices.
+
+One of our main goals was to lower the barrier to entry for experimenting
+with the scheduler. sched_ext provides ergonomic callbacks and helpers to
+ease common operations such as managing idle CPUs, scheduling tasks on
+arbitrary CPUs, handling preemptions from other scheduling classes, and
+more. While sched_ext does require some ramp-up, the complexity is
+self-contained, and the learning curve gradual. Developers can ramp up by
+first implementing simple policies such as global weighted vtime scheduling
+in only tens of lines of code, and then continue to learn the APIs and
+building blocks available with sched_ext as they build more featureful and
+complex schedulers.
+
+Another critical advantage provided by sched_ext is the use of BPF. BPF
+provides strong safety guarantees by statically analyzing programs at load
+time to ensure that they cannot corrupt or crash the system. sched_ext
+guarantees system integrity no matter what BPF scheduler is loaded, and
+provides mechanisms to safely disable the current BPF scheduler and migrate
+tasks back to a trusted scheduler. For example, we also implement in-kernel
+safety mechanisms to guarantee that a misbehaving scheduler cannot
+indefinitely starve tasks. BPF also enables sched_ext to significantly improve
+iteration speed for running experiments. Loading and unloading a BPF scheduler
+is simply a matter of running and terminating a sched_ext binary.
+
+BPF also provides programs with a rich set of APIs, such as maps, kfuncs,
+and BPF helpers. In addition to providing useful building blocks to programs
+that run entirely in kernel space (such as many of our example schedulers),
+these APIs also allow programs to leverage user space in making scheduling
+decisions. Specifically, the Atropos sample scheduler has a relatively
+simple weighted vtime or FIFO scheduling layer in BPF, paired with a load
+balancing component in userspace written in Rust. As described in more
+detail below, we also built a more general user-space scheduling framework
+called “rhone” by leveraging various BPF features.
+
+On the other hand, BPF does have shortcomings, as can be plainly seen from the
+complexity in some of the example schedulers. scx_example_pair.bpf.c
+illustrates this point well. To start, it requires a good amount of code to
+emulate cgroup-local-storage. In the kernel proper, this would simply be a
+matter of adding another pointer to the struct cgroup, but in BPF, it requires
+a complex juggling of data amongst multiple different maps, a good amount of
+boilerplate code, and some unwieldy bpf_loop()‘s and atomics. The code is also
+littered with explicit and often unnecessary sanity checks to appease the
+verifier.
+
+That being said, BPF is being rapidly improved. For example, Yonghong Song
+recently upstreamed a patch set [5] to add a cgroup local storage map type,
+allowing scx_example_pair.bpf.c to be simplified. There are plans to address
+other issues as well, such as providing statically-verified locking, and
+avoiding the need for unnecessary sanity checks. Addressing these shortcomings
+is a high priority for BPF, and as progress continues to be made, we expect
+most deficiencies to be addressed in the not-too-distant future.
+
+[5]: <a href="https://lore.kernel.org/bpf/20221026042835.672317-1-yhs@fb.com/">https://lore.kernel.org/bpf/20221026042835.672317-1-yhs@f...</a>
+
+Yet another exploration advantage of sched_ext is helping widening the scope
+of experiments. For example, sched_ext makes it easy to defer CPU assignment
+until a task starts executing, allowing schedulers to share scheduling queues
+at any granularity (hyper-twin, CCX and so on). Additionally, higher level
+frameworks can be built on top to further widen the scope. For example, the
+aforementioned “rhone” [6] library allows implementing scheduling policies in
+user-space by encapsulating the complexity around communicating scheduling
+decisions with the kernel. This allows taking advantage of a richer
+programming environment in user-space, enabling experimenting with, for
+instance, more complex mathematical models.
+
+[6]: <a href="https://github.com/Decave/rhone">https://github.com/Decave/rhone</a>
+
+sched_ext also allows developers to leverage machine learning. At Meta, we
+experimented with using machine learning to predict whether a running task
+would soon yield its CPU. These predictions can be used to aid the scheduler
+in deciding whether to keep a runnable task on its current CPU rather than
+migrating it to an idle CPU, with the hope of avoiding unnecessary cache
+misses. Using a tiny neural net model with only one hidden layer of size 16,
+and a decaying count of 64 syscalls as a feature, we were able to achieve a
+15% throughput improvement on an Nginx benchmark, with an 87% inference
+accuracy.
+
+2. Customization
+
+This section discusses how sched_ext can enable users to run workloads on
+application-specific schedulers.
+
+*Why deploy custom schedulers rather than improving CFS?*
+
+Implementing application-specific schedulers and improving CFS are not
+conflicting goals. Scheduling features explored with sched_ext which yield
+beneficial results, and which are sufficiently generalizable, can and should
+be integrated into CFS. However, CFS is fundamentally designed to be a general
+purpose scheduler, and thus is not conducive to being extended with some
+highly targeted application or hardware specific changes.
+
+Targeted, bespoke scheduling has many potential use cases. For example, VM
+scheduling can make certain optimizations that are infeasible in CFS due to
+the constrained problem space (scheduling a static number of long-running
+VCPUs versus an arbitrary number of threads). Additionally, certain
+applications might want to make targeted policy decisions based on hints
+directly from the application (for example, a service that knows the different
+deadlines of incoming RPCs).
+
+Google has also experimented with some promising, novel scheduling policies.
+One example is “central” scheduling, wherein a single CPU makes all scheduling
+decisions for the entire system. This allows most cores on the system to be
+fully dedicated to running workloads, and can have significant performance
+improvements for certain use cases. For example, central scheduling with VCPUs
+can avoid expensive vmexits and cache flushes, by instead delegating the
+responsibility of preemption checks from the tick to a single CPU. See
+scx_example_central.bpf.c for a simple example of a central scheduling policy
+built in sched_ext.
+
+Some workloads also have non-generalizable constraints which enable
+optimizations in a scheduling policy which would otherwise not be feasible.
+For example,VM workloads at Google typically have a low overcommit ratio
+compared to the number of physical CPUs. This allows the scheduler to support
+bounded tail latencies, as well as longer blocks of uninterrupted time.
+
+Yet another interesting use case is the scx_example_flatcg scheduler, which
+is in 0024-sched_ext-Add-cgroup-support.patch and provides a flattened
+hierarchical vtree for cgroups. This scheduler does not account for
+thundering herd problems among cgroups, and therefore may not be suitable
+for inclusion in CFS. However, in a simple benchmark using wrk[8] on apache
+serving a CGI script calculating sha1sum of a small file, it outperformed
+CFS by ~3% with CPU controller disabled and by ~10% with two apache
+instances competing with 2:1 weight ratio nested four level deep.
+
+[7] <a href="https://github.com/wg/wrk">https://github.com/wg/wrk</a>
+
+Certain industries require specific scheduling behaviors that do not apply
+broadly. For example, ARINC 653 defines scheduling behavior that is widely
+used by avionic software, and some out-of-tree implementations
+(<a href="https://ieeexplore.ieee.org/document/7005306">https://ieeexplore.ieee.org/document/7005306</a>) have been built. While the
+upstream community may decide to merge one such implementation in the future,
+it would also be entirely reasonable to not do so given the narrowness of
+use-case, and non-generalizable, strict requirements. Such cases can be well
+served by sched_ext in all stages of the software development lifecycle --
+development, testing, deployment and maintenance.
+
+There are also classes of policy exploration, such as machine learning, or
+responding in real-time to application hints, that are significantly harder
+(and not necessarily appropriate) to integrate within the kernel itself.
+
+*Won’t this increase fragmentation?*
+
+We acknowledge that to some degree, sched_ext does run the risk of increasing
+the fragmentation of scheduler implementations. As a result of exploration,
+however, we believe that enabling the larger ecosystem to innovate will
+ultimately accelerate the overall development and performance of Linux.
+Additionally, our licensing and API stability policies should incentivize
+users to upstream their schedulers.
+
+BPF programs are required to be GPLv2, which is enforced by the verifier on
+program loads. With regards to API stability, just as with other semi-internal
+interfaces such as BPF kfuncs, we won’t be providing any API stability
+guarantees to BPF schedulers. While we intend to make an effort to provide
+compatibility when possible, we will not provide any explicit, strong
+guarantees as the kernel typically does with e.g. UAPI headers. For users who
+decide to keep their schedulers out-of-tree,the licensing and maintenance
+overheads will be fundamentally the same as for carrying out-of-tree patches.
+
+With regards to the schedulers included in this patch set, and any other
+schedulers we implement in the future, both Meta and Google will open-source
+all of the schedulers we implement which have any relevance to the broader
+upstream community. We expect that some of these, such as the example
+schedulers and scx_example_flatcg scheduler, will be upstreamed as part of
+the kernel tree. Distros will be able to package and release these
+schedulers with the kernel, allowing users to utilize these schedulers
+out-of-the-box without requiring any additional work or dependencies such as
+clang or building the scheduler programs themselves. Other schedulers and
+scheduling frameworks such as rhone may be open-sourced through separate
+per-project repos.
+
+3. Rapid scheduler deployments
+
+Rolling out kernel upgrades is a slow and iterative process. At a large scale
+it can take months to roll a new kernel out to a fleet of servers. While this
+latency is expected and inevitable for normal kernel upgrades, it can become
+highly problematic when kernel changes are required to fix bugs. Livepatch [8]
+is available to quickly roll out critical security fixes to large fleets, but
+the scope of changes that can be applied with livepatching is fairly limited,
+and would likely not be usable for patching scheduling policies. With
+sched_ext, new scheduling policies can be rapidly rolled out to production
+environments.
+
+[8]: <a href="https://www.kernel.org/doc/html/latest/livepatch/livepatch.html">https://www.kernel.org/doc/html/latest/livepatch/livepatc...</a>
+
+As an example, one of the variants of the L1 Terminal Fault (L1TF) [9]
+vulnerability allows a VCPU running a VM to read arbitrary host kernel
+memory for pages in L1 data cache. The solution was to implement core
+scheduling, which ensures that tasks running as hypertwins have the same
+“cookie”.
+
+[9]: <a href="https://www.intel.com/content/www/us/en/architecture-and-technology/l1tf.html">https://www.intel.com/content/www/us/en/architecture-and-...</a>
+
+While core scheduling works well, it took a long time to finalize and land
+upstream. This long rollout period was painful, and required organizations to
+make difficult choices amongst a bad set of options. Some companies such as
+Google chose to implement and use their own custom L1TF-safe scheduler, others
+chose to run without hyper-threading enabled, and yet others left
+hyper-threading enabled and crossed their fingers.
+
+Once core scheduling was upstream, organizations had to upgrade the kernels on
+their entire fleets. As downtime is not an option for many, these upgrades had
+to be gradually rolled out, which can take a very long time for large fleets.
+
+An example of an sched_ext scheduler that illustrates core scheduling
+semantics is scx_example_pair.bpf.c, which co-schedules pairs of tasks from
+the same cgroup, and is resilient to L1TF vulnerabilities. While this example
+scheduler is certainly not suitable for production in its current form, a
+similar scheduler that is more performant and featureful could be written and
+deployed if necessary.
+
+Rapid scheduling deployments can similarly be useful to quickly roll-out new
+scheduling features without requiring kernel upgrades. At Google, for example,
+it was observed that some low-priority workloads were causing degraded
+performance for higher-priority workloads due to consuming a disproportionate
+share of memory bandwidth. While a temporary mitigation was to use sched
+affinity to limit the footprint of this low-priority workload to a small
+subset of CPUs, a preferable solution would be to implement a more featureful
+task-priority mechanism which automatically throttles lower-priority tasks
+which are causing memory contention for the rest of the system. Implementing
+this in CFS and rolling it out to the fleet could take a very long time.
+
+sched_ext would directly address these gaps. If another hardware bug or
+resource contention issue comes in that requires scheduler support to
+mitigate, sched_ext can be used to experiment with and test different
+policies. Once a scheduler is available, it can quickly be rolled out to as
+many hosts as necessary, and function as a stop-gap solution until a
+longer-term mitigation is upstreamed.
+
+How
+---
+
+sched_ext is a new sched_class which allows scheduling policies to be
+implemented in BPF programs.
+
+sched_ext leverages BPF’s struct_ops feature to define a structure which
+exports function callbacks and flags to BPF programs that wish to implement
+scheduling policies. The struct_ops structure exported by sched_ext is struct
+sched_ext_ops, and is conceptually similar to struct sched_class. The role of
+sched_ext is to map the complex sched_class callbacks to the more simple and
+ergonomic struct sched_ext_ops callbacks.
+
+Unlike some other BPF program types which have ABI requirements due to
+exporting UAPIs, struct_ops has no ABI requirements whatsoever. This provides
+us with the flexibility to change the APIs provided to schedulers as
+necessary. BPF struct_ops is also already being used successfully in other
+subsystems, such as in support of TCP congestion control.
+
+The only struct_ops field that is required to be specified by a scheduler is
+the ‘name’ field. Otherwise, sched_ext will provide sane default behavior,
+such as automatically choosing an idle CPU on the task wakeup path if
+.select_cpu() is missing.
+
+*Dispatch queues*
+
+To bridge the workflow imbalance between the scheduler core and sched_ext_ops
+callbacks, sched_ext uses simple FIFOs called dispatch queues (dsq's). By
+default, there is one global dsq (SCX_DSQ_GLOBAL), and one local per-CPU dsq
+(SCX_DSQ_LOCAL). SCX_DSQ_GLOBAL is provided for convenience and need not be
+used by a scheduler that doesn't require it. As described in more detail
+below, SCX_DSQ_LOCAL is the per-CPU FIFO that sched_ext pulls from when
+putting the next task on the CPU. The BPF scheduler can manage an arbitrary
+number of dsq's using scx_bpf_create_dsq() and scx_bpf_destroy_dsq().
+
+*Scheduling cycle*
+
+The following briefly shows a typical workflow for how a waking task is
+scheduled and executed.
+
+1. When a task is waking up, .select_cpu() is the first operation invoked.
+   This serves two purposes. It both allows a scheduler to optimize task
+   placement by specifying a CPU where it expects the task to eventually be
+   scheduled, and the latter is that the selected CPU will be woken if it’s
+   idle.
+
+2. Once the target CPU is selected, .enqueue() is invoked. It can make one of
+   the following decisions:
+
+   - Immediately dispatch the task to either the global dsq (SCX_DSQ_GLOBAL)
+     or the current CPU’s local dsq (SCX_DSQ_LOCAL).
+
+   - Immediately dispatch the task to a user-created dispatch queue.
+
+   - Queue the task on the BPF side, e.g. in an rbtree map for a vruntime
+     scheduler, with the intention of dispatching it at a later time from
+     .dispatch().
+
+3. When a CPU is ready to schedule, it first looks at its local dsq. If empty,
+   it invokes .consume() which should make one or more scx_bpf_consume() calls
+   to consume tasks from dsq's. If a scx_bpf_consume() call succeeds, the CPU
+   has the next task to run and .consume() can return. If .consume() is not
+   defined, sched_ext will by-default consume from only the built-in
+   SCX_DSQ_GLOBAL dsq.
+
+4. If there's still no task to run, .dispatch() is invoked which should make
+   one or more scx_bpf_dispatch() calls to dispatch tasks from the BPF
+   scheduler to one of the dsq's. If more than one task has been dispatched,
+   go back to the previous consumption step.
+
+*Verifying callback behavior*
+
+sched_ext always verifies that any value returned from a callback is valid,
+and will issue an error and unload the scheduler if it is not. For example, if
+.select_cpu() returns an invalid CPU, or if an attempt is made to invoke the
+scx_bpf_dispatch() with invalid enqueue flags. Furthermore, if a task remains
+runnable for too long without being scheduled, sched_ext will detect it and
+error-out the scheduler.
+
+Closing Thoughts
+----------------
+
+Both Meta and Google have experimented quite a lot with schedulers in the last
+several years. Google has benchmarked various workloads using user space
+scheduling, and have achieved performance wins by trading off generality for
+application specific needs. At Meta, we have not yet deployed sched_ext on any
+production workloads, though our preliminary experiments indicate that
+sched_ext would provide significant performance wins when deployed at scale.
+If successfully upstreamed, we expect to leverage it extensively to run
+various experiments and develop customized schedulers for a number of critical
+workloads.
+
+In closing, both Meta and Google believe that sched_ext will significantly
+evolve how the broader community explores the scheduling problem space,
+empowering continued improvement to the in-kernel scheduler, while also
+enabling targeted policies for custom applications. We’ll be able to
+experiment easier and faster, explore uncharted areas, and deploy emergency
+scheduler changes when necessary. The same applies to anyone who wants to work
+on the scheduler, including academia and specialized industries. sched_ext
+will push forward the state of the art when it comes to scheduling and
+performance in Linux.
+
+Written By
+----------
+
+David Vernet &lt;dvernet@meta.com&gt;
+Josh Don &lt;joshdon@google.com&gt;
+Tejun Heo &lt;tj@kernel.org&gt;
+Barret Rhoden &lt;brho@google.com&gt;
+
+Supported By
+------------
+
+Paul Turner &lt;pjt@google.com&gt;
+Neel Natu &lt;neelnatu@google.com&gt;
+Patrick Bellasi &lt;derkling@google.com&gt;
+Hao Luo &lt;haoluo@google.com&gt;
+Dimitrios Skarlatos &lt;dskarlat@cs.cmu.edu&gt;
+
+Patchset
+--------
+
+This patchset is on top of bpf/for-next as of 2023-06-07:
+
+ 67faabbde36b ("selftests/bpf: Add missing prototypes for several test kfuncs")
+
+and contains the following patches:
+
+NOTE: The doc added by 0032 contains a high-level overview and might be good
+      place to start.
+
+ 0001-cgroup-Implement-cgroup_show_cftypes.patch
+ 0002-sched-Restructure-sched_class-order-sanity-checks-in.patch
+ 0003-sched-Allow-sched_cgroup_fork-to-fail-and-introduce-.patch
+ 0004-sched-Add-sched_class-reweight_task.patch
+ 0005-sched-Add-sched_class-switching_to-and-expose-check_.patch
+ 0006-sched-Factor-out-cgroup-weight-conversion-functions.patch
+ 0007-sched-Expose-css_tg-and-__setscheduler_prio.patch
+ 0008-sched-Enumerate-CPU-cgroup-file-types.patch
+ 0009-sched-Add-reason-to-sched_class-rq_-on-off-line.patch
+ 0010-sched-Add-normal_policy.patch
+ 0011-sched_ext-Add-boilerplate-for-extensible-scheduler-c.patch
+ 0012-sched_ext-Implement-BPF-extensible-scheduler-class.patch
+ 0013-sched_ext-Add-scx_simple-and-scx_example_qmap-exampl.patch
+ 0014-sched_ext-Add-sysrq-S-which-disables-the-BPF-schedul.patch
+ 0015-sched_ext-Implement-runnable-task-stall-watchdog.patch
+ 0016-sched_ext-Allow-BPF-schedulers-to-disallow-specific-.patch
+ 0017-sched_ext-Allow-BPF-schedulers-to-switch-all-eligibl.patch
+ 0018-sched_ext-Implement-scx_bpf_kick_cpu-and-task-preemp.patch
+ 0019-sched_ext-Add-a-central-scheduler-which-makes-all-sc.patch
+ 0020-sched_ext-Make-watchdog-handle-ops.dispatch-looping-.patch
+ 0021-sched_ext-Add-task-state-tracking-operations.patch
+ 0022-sched_ext-Implement-tickless-support.patch
+ 0023-sched_ext-Track-tasks-that-are-subjects-of-the-in-fl.patch
+ 0024-sched_ext-Add-cgroup-support.patch
+ 0025-sched_ext-Add-a-cgroup-based-core-scheduling-schedul.patch
+ 0026-sched_ext-Add-a-cgroup-scheduler-which-uses-flattene.patch
+ 0027-sched_ext-Implement-SCX_KICK_WAIT.patch
+ 0028-sched_ext-Implement-sched_ext_ops.cpu_acquire-releas.patch
+ 0029-sched_ext-Implement-sched_ext_ops.cpu_online-offline.patch
+ 0030-sched_ext-Implement-core-sched-support.patch
+ 0031-sched_ext-Add-vtime-ordered-priority-queue-to-dispat.patch
+ 0032-sched_ext-Documentation-scheduler-Document-extensibl.patch
+ 0033-sched_ext-Add-a-basic-userland-vruntime-scheduler.patch
+ 0034-sched_ext-Add-a-rust-userspace-hybrid-example-schedu.patch
+
+0001     : Cgroup prep.
+
+0002-0010: Scheduler prep.
+
+0011-0013: sched_ext core implementation and a couple example BPF scheduler.
+
+0014-0017: Utility features including safety mechanisms and switch-all.
+
+0018-0023: Kicking and preempting other CPUs, task state transition tracking
+           and tickless support. Demonstrated with an example central
+           scheduler which makes all scheduling decisions on one CPU.
+
+0024-0028: cgroup support and the ability to wait for other CPUs after
+           kicking them. Demonstrated with an example pair scheduler which
+           guarantees that a hyperthread pair always executes tasks from the
+           same cgroup at any given time.
+
+0029     : Add CPU hotplug callbacks.
+
+0030     : Add core-sched support.
+
+0031     : Add DSQ rbtree support.
+
+0032     : Add documentation.
+
+0033-0034: Add two example schedulers. One demonstrating deferring most
+           scheduling decisions to userland. The other demonstrating a
+           hybrid approach where load balancing decisions are made by
+           userspace written in rust.
+
+The patchset is also available in the following git branch:
+
+ <a href="https://github.com/htejun/sched_ext">https://github.com/htejun/sched_ext</a> sched_ext-v4
+
+diffstat follows.
+
+ Documentation/scheduler/index.rst                 |    1
+ Documentation/scheduler/sched-ext.rst             |  229 ++
+ MAINTAINERS                                       |    3
+ drivers/tty/sysrq.c                               |    1
+ include/asm-generic/vmlinux.lds.h                 |    1
+ include/linux/cgroup-defs.h                       |    8
+ include/linux/cgroup.h                            |    5
+ include/linux/sched.h                             |    5
+ include/linux/sched/ext.h                         |  708 +++++++
+ include/linux/sched/task.h                        |    3
+ include/uapi/linux/sched.h                        |    1
+ init/Kconfig                                      |    5
+ init/init_task.c                                  |   12
+ kernel/Kconfig.preempt                            |   24
+ kernel/bpf/bpf_struct_ops_types.h                 |    4
+ kernel/cgroup/cgroup.c                            |   97 -
+ kernel/fork.c                                     |   17
+ kernel/sched/build_policy.c                       |    5
+ kernel/sched/core.c                               |  315 ++-
+ kernel/sched/deadline.c                           |    4
+ kernel/sched/debug.c                              |    6
+ kernel/sched/ext.c                                | 4427 ++++++++++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/ext.h                                |  266 ++
+ kernel/sched/fair.c                               |    9
+ kernel/sched/idle.c                               |    2
+ kernel/sched/rt.c                                 |    4
+ kernel/sched/sched.h                              |  117 +
+ kernel/sched/topology.c                           |    4
+ tools/sched_ext/.gitignore                        |    9
+ tools/sched_ext/Makefile                          |  213 ++
+ tools/sched_ext/README                            |  264 ++
+ tools/sched_ext/gnu/stubs.h                       |    1
+ tools/sched_ext/scx_atropos/.gitignore            |    3
+ tools/sched_ext/scx_atropos/Cargo.toml            |   27
+ tools/sched_ext/scx_atropos/build.rs              |   70
+ tools/sched_ext/scx_atropos/rustfmt.toml          |    8
+ tools/sched_ext/scx_atropos/src/atropos_sys.rs    |   10
+ tools/sched_ext/scx_atropos/src/bpf/atropos.bpf.c |  978 ++++++++++
+ tools/sched_ext/scx_atropos/src/bpf/atropos.h     |   64
+ tools/sched_ext/scx_atropos/src/main.rs           | 1196 ++++++++++++
+ tools/sched_ext/scx_central.bpf.c                 |  334 +++
+ tools/sched_ext/scx_central.c                     |   94 +
+ tools/sched_ext/scx_common.bpf.h                  |  293 +++
+ tools/sched_ext/scx_flatcg.bpf.c                  |  904 +++++++++
+ tools/sched_ext/scx_flatcg.c                      |  232 ++
+ tools/sched_ext/scx_flatcg.h                      |   49
+ tools/sched_ext/scx_pair.bpf.c                    |  627 ++++++
+ tools/sched_ext/scx_pair.c                        |  164 +
+ tools/sched_ext/scx_pair.h                        |   10
+ tools/sched_ext/scx_qmap.bpf.c                    |  401 ++++
+ tools/sched_ext/scx_qmap.c                        |  107 +
+ tools/sched_ext/scx_simple.bpf.c                  |  135 +
+ tools/sched_ext/scx_simple.c                      |  101 +
+ tools/sched_ext/scx_userland.bpf.c                |  262 ++
+ tools/sched_ext/scx_userland.c                    |  402 ++++
+ tools/sched_ext/scx_userland.h                    |   19
+ tools/sched_ext/user_exit_info.h                  |   50
+ 57 files changed, 13207 insertions(+), 103 deletions(-)
+
+Thanks.
+
+--
+tejun
+
+
+</pre>
+
+</div> <!-- ArticleText -->
+</div> <!-- middlecolumn -->
+<div class="rightcol not-print">
+<div id="azk93271_right_zone"></div>
+</div>
+</div> <!-- maincolumn -->
+
+            <br clear="all">
+            <center>
+            <p>
+            <span class="ReallySmall">
+            Copyright © 2023, Eklektix, Inc.<br>
+            
+            Comments and public postings are copyrighted by their creators.<br>
+            Linux  is a registered trademark of Linus Torvalds<br>
+            </span>
+            </p></center>
+            
+            
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
