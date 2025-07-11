@@ -1,0 +1,1968 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/Software-defined hardware - How AI is changing the rules for Software and Hardware design - Rivosinc (2025-07-11 14：14：16).html
+ Page saved with X-Webpage-Conserve 
+ url: https://www.rivosinc.com/posts/how-ai-is-changing-rules-for-sw-hw-design/
+ Summary: 
+-->
+<html lang="en" class="fontawesome-i2svg-active fontawesome-i2svg-complete" imt-state="dual" imt-trans-position="after"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">:root, :host {
+  --fa-font-solid: normal 900 1em/1 "Font Awesome 6 Solid";
+  --fa-font-regular: normal 400 1em/1 "Font Awesome 6 Regular";
+  --fa-font-light: normal 300 1em/1 "Font Awesome 6 Light";
+  --fa-font-thin: normal 100 1em/1 "Font Awesome 6 Thin";
+  --fa-font-duotone: normal 900 1em/1 "Font Awesome 6 Duotone";
+  --fa-font-sharp-solid: normal 900 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-regular: normal 400 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-light: normal 300 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-thin: normal 100 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-brands: normal 400 1em/1 "Font Awesome 6 Brands";
+}
+
+svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
+  overflow: visible;
+  box-sizing: content-box;
+}
+
+.svg-inline--fa {
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}
+.svg-inline--fa.fa-2xs {
+  vertical-align: 0.1em;
+}
+.svg-inline--fa.fa-xs {
+  vertical-align: 0em;
+}
+.svg-inline--fa.fa-sm {
+  vertical-align: -0.0714285705em;
+}
+.svg-inline--fa.fa-lg {
+  vertical-align: -0.2em;
+}
+.svg-inline--fa.fa-xl {
+  vertical-align: -0.25em;
+}
+.svg-inline--fa.fa-2xl {
+  vertical-align: -0.3125em;
+}
+.svg-inline--fa.fa-pull-left {
+  margin-right: var(--fa-pull-margin, 0.3em);
+  width: auto;
+}
+.svg-inline--fa.fa-pull-right {
+  margin-left: var(--fa-pull-margin, 0.3em);
+  width: auto;
+}
+.svg-inline--fa.fa-li {
+  width: var(--fa-li-width, 2em);
+  top: 0.25em;
+}
+.svg-inline--fa.fa-fw {
+  width: var(--fa-fw-width, 1.25em);
+}
+
+.fa-layers svg.svg-inline--fa {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.fa-layers-counter, .fa-layers-text {
+  display: inline-block;
+  position: absolute;
+  text-align: center;
+}
+
+.fa-layers {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  text-align: center;
+  vertical-align: -0.125em;
+  width: 1em;
+}
+.fa-layers svg.svg-inline--fa {
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-text {
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-counter {
+  background-color: var(--fa-counter-background-color, #ff253a);
+  border-radius: var(--fa-counter-border-radius, 1em);
+  box-sizing: border-box;
+  color: var(--fa-inverse, #fff);
+  line-height: var(--fa-counter-line-height, 1);
+  max-width: var(--fa-counter-max-width, 5em);
+  min-width: var(--fa-counter-min-width, 1.5em);
+  overflow: hidden;
+  padding: var(--fa-counter-padding, 0.25em 0.5em);
+  right: var(--fa-right, 0);
+  text-overflow: ellipsis;
+  top: var(--fa-top, 0);
+  -webkit-transform: scale(var(--fa-counter-scale, 0.25));
+          transform: scale(var(--fa-counter-scale, 0.25));
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-bottom-right {
+  bottom: var(--fa-bottom, 0);
+  right: var(--fa-right, 0);
+  top: auto;
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: bottom right;
+          transform-origin: bottom right;
+}
+
+.fa-layers-bottom-left {
+  bottom: var(--fa-bottom, 0);
+  left: var(--fa-left, 0);
+  right: auto;
+  top: auto;
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: bottom left;
+          transform-origin: bottom left;
+}
+
+.fa-layers-top-right {
+  top: var(--fa-top, 0);
+  right: var(--fa-right, 0);
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-top-left {
+  left: var(--fa-left, 0);
+  right: auto;
+  top: var(--fa-top, 0);
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: top left;
+          transform-origin: top left;
+}
+
+.fa-1x {
+  font-size: 1em;
+}
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa-3x {
+  font-size: 3em;
+}
+
+.fa-4x {
+  font-size: 4em;
+}
+
+.fa-5x {
+  font-size: 5em;
+}
+
+.fa-6x {
+  font-size: 6em;
+}
+
+.fa-7x {
+  font-size: 7em;
+}
+
+.fa-8x {
+  font-size: 8em;
+}
+
+.fa-9x {
+  font-size: 9em;
+}
+
+.fa-10x {
+  font-size: 10em;
+}
+
+.fa-2xs {
+  font-size: 0.625em;
+  line-height: 0.1em;
+  vertical-align: 0.225em;
+}
+
+.fa-xs {
+  font-size: 0.75em;
+  line-height: 0.0833333337em;
+  vertical-align: 0.125em;
+}
+
+.fa-sm {
+  font-size: 0.875em;
+  line-height: 0.0714285718em;
+  vertical-align: 0.0535714295em;
+}
+
+.fa-lg {
+  font-size: 1.25em;
+  line-height: 0.05em;
+  vertical-align: -0.075em;
+}
+
+.fa-xl {
+  font-size: 1.5em;
+  line-height: 0.0416666682em;
+  vertical-align: -0.125em;
+}
+
+.fa-2xl {
+  font-size: 2em;
+  line-height: 0.03125em;
+  vertical-align: -0.1875em;
+}
+
+.fa-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.fa-ul {
+  list-style-type: none;
+  margin-left: var(--fa-li-margin, 2.5em);
+  padding-left: 0;
+}
+.fa-ul > li {
+  position: relative;
+}
+
+.fa-li {
+  left: calc(var(--fa-li-width, 2em) * -1);
+  position: absolute;
+  text-align: center;
+  width: var(--fa-li-width, 2em);
+  line-height: inherit;
+}
+
+.fa-border {
+  border-color: var(--fa-border-color, #eee);
+  border-radius: var(--fa-border-radius, 0.1em);
+  border-style: var(--fa-border-style, solid);
+  border-width: var(--fa-border-width, 0.08em);
+  padding: var(--fa-border-padding, 0.2em 0.25em 0.15em);
+}
+
+.fa-pull-left {
+  float: left;
+  margin-right: var(--fa-pull-margin, 0.3em);
+}
+
+.fa-pull-right {
+  float: right;
+  margin-left: var(--fa-pull-margin, 0.3em);
+}
+
+.fa-beat {
+  -webkit-animation-name: fa-beat;
+          animation-name: fa-beat;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, ease-in-out);
+          animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+.fa-bounce {
+  -webkit-animation-name: fa-bounce;
+          animation-name: fa-bounce;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+}
+
+.fa-fade {
+  -webkit-animation-name: fa-fade;
+          animation-name: fa-fade;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+.fa-beat-fade {
+  -webkit-animation-name: fa-beat-fade;
+          animation-name: fa-beat-fade;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+.fa-flip {
+  -webkit-animation-name: fa-flip;
+          animation-name: fa-flip;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, ease-in-out);
+          animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+.fa-shake {
+  -webkit-animation-name: fa-shake;
+          animation-name: fa-shake;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, linear);
+          animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+.fa-spin {
+  -webkit-animation-name: fa-spin;
+          animation-name: fa-spin;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 2s);
+          animation-duration: var(--fa-animation-duration, 2s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, linear);
+          animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+.fa-spin-reverse {
+  --fa-animation-direction: reverse;
+}
+
+.fa-pulse,
+.fa-spin-pulse {
+  -webkit-animation-name: fa-spin;
+          animation-name: fa-spin;
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, steps(8));
+          animation-timing-function: var(--fa-animation-timing, steps(8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fa-beat,
+.fa-bounce,
+.fa-fade,
+.fa-beat-fade,
+.fa-flip,
+.fa-pulse,
+.fa-shake,
+.fa-spin,
+.fa-spin-pulse {
+    -webkit-animation-delay: -1ms;
+            animation-delay: -1ms;
+    -webkit-animation-duration: 1ms;
+            animation-duration: 1ms;
+    -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+    -webkit-transition-delay: 0s;
+            transition-delay: 0s;
+    -webkit-transition-duration: 0s;
+            transition-duration: 0s;
+  }
+}
+@-webkit-keyframes fa-beat {
+  0%, 90% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  45% {
+    -webkit-transform: scale(var(--fa-beat-scale, 1.25));
+            transform: scale(var(--fa-beat-scale, 1.25));
+  }
+}
+@keyframes fa-beat {
+  0%, 90% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  45% {
+    -webkit-transform: scale(var(--fa-beat-scale, 1.25));
+            transform: scale(var(--fa-beat-scale, 1.25));
+  }
+}
+@-webkit-keyframes fa-bounce {
+  0% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    -webkit-transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+            transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+  }
+  30% {
+    -webkit-transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+            transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+  }
+  50% {
+    -webkit-transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+            transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+  }
+  57% {
+    -webkit-transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+            transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+  }
+  64% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+}
+@keyframes fa-bounce {
+  0% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    -webkit-transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+            transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+  }
+  30% {
+    -webkit-transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+            transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+  }
+  50% {
+    -webkit-transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+            transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+  }
+  57% {
+    -webkit-transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+            transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+  }
+  64% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+}
+@-webkit-keyframes fa-fade {
+  50% {
+    opacity: var(--fa-fade-opacity, 0.4);
+  }
+}
+@keyframes fa-fade {
+  50% {
+    opacity: var(--fa-fade-opacity, 0.4);
+  }
+}
+@-webkit-keyframes fa-beat-fade {
+  0%, 100% {
+    opacity: var(--fa-beat-fade-opacity, 0.4);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(var(--fa-beat-fade-scale, 1.125));
+            transform: scale(var(--fa-beat-fade-scale, 1.125));
+  }
+}
+@keyframes fa-beat-fade {
+  0%, 100% {
+    opacity: var(--fa-beat-fade-opacity, 0.4);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(var(--fa-beat-fade-scale, 1.125));
+            transform: scale(var(--fa-beat-fade-scale, 1.125));
+  }
+}
+@-webkit-keyframes fa-flip {
+  50% {
+    -webkit-transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+            transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+  }
+}
+@keyframes fa-flip {
+  50% {
+    -webkit-transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+            transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+  }
+}
+@-webkit-keyframes fa-shake {
+  0% {
+    -webkit-transform: rotate(-15deg);
+            transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+  }
+  8%, 24% {
+    -webkit-transform: rotate(-18deg);
+            transform: rotate(-18deg);
+  }
+  12%, 28% {
+    -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+  }
+  16% {
+    -webkit-transform: rotate(-22deg);
+            transform: rotate(-22deg);
+  }
+  20% {
+    -webkit-transform: rotate(22deg);
+            transform: rotate(22deg);
+  }
+  32% {
+    -webkit-transform: rotate(-12deg);
+            transform: rotate(-12deg);
+  }
+  36% {
+    -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+  }
+  40%, 100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+@keyframes fa-shake {
+  0% {
+    -webkit-transform: rotate(-15deg);
+            transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+  }
+  8%, 24% {
+    -webkit-transform: rotate(-18deg);
+            transform: rotate(-18deg);
+  }
+  12%, 28% {
+    -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+  }
+  16% {
+    -webkit-transform: rotate(-22deg);
+            transform: rotate(-22deg);
+  }
+  20% {
+    -webkit-transform: rotate(22deg);
+            transform: rotate(22deg);
+  }
+  32% {
+    -webkit-transform: rotate(-12deg);
+            transform: rotate(-12deg);
+  }
+  36% {
+    -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+  }
+  40%, 100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+.fa-rotate-90 {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
+.fa-rotate-180 {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.fa-rotate-270 {
+  -webkit-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+
+.fa-flip-horizontal {
+  -webkit-transform: scale(-1, 1);
+          transform: scale(-1, 1);
+}
+
+.fa-flip-vertical {
+  -webkit-transform: scale(1, -1);
+          transform: scale(1, -1);
+}
+
+.fa-flip-both,
+.fa-flip-horizontal.fa-flip-vertical {
+  -webkit-transform: scale(-1, -1);
+          transform: scale(-1, -1);
+}
+
+.fa-rotate-by {
+  -webkit-transform: rotate(var(--fa-rotate-angle, 0));
+          transform: rotate(var(--fa-rotate-angle, 0));
+}
+
+.fa-stack {
+  display: inline-block;
+  vertical-align: middle;
+  height: 2em;
+  position: relative;
+  width: 2.5em;
+}
+
+.fa-stack-1x,
+.fa-stack-2x {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: var(--fa-stack-z-index, auto);
+}
+
+.svg-inline--fa.fa-stack-1x {
+  height: 1em;
+  width: 1.25em;
+}
+.svg-inline--fa.fa-stack-2x {
+  height: 2em;
+  width: 2.5em;
+}
+
+.fa-inverse {
+  color: var(--fa-inverse, #fff);
+}
+
+.sr-only,
+.fa-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:not(:focus),
+.fa-sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.svg-inline--fa .fa-primary {
+  fill: var(--fa-primary-color, currentColor);
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa .fa-secondary {
+  fill: var(--fa-secondary-color, currentColor);
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-primary {
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-secondary {
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa mask .fa-primary,
+.svg-inline--fa mask .fa-secondary {
+  fill: black;
+}
+
+.fad.fa-inverse,
+.fa-duotone.fa-inverse {
+  color: var(--fa-inverse, #fff);
+}</style><link rel="icon" type="image/png" href="/favicon.png">
+    <title>Rivos 公司 --- Rivos Inc.</title>
+    <link href="/site.css" rel="stylesheet">
+    <script src="/site.js" defer=""></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-HNGQLNXLSV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-HNGQLNXLSV');
+    </script>
+  <style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style data-id="immersive-translate-default-injected-css">:root {
+  --immersive-translate-theme-underline-borderColor: #72ece9;
+  --immersive-translate-theme-nativeUnderline-borderColor: #72ece9;
+  --immersive-translate-theme-nativeDashed-borderColor: #72ece9;
+  --immersive-translate-theme-nativeDotted-borderColor: #72ece9;
+  --immersive-translate-theme-highlight-backgroundColor: #ffff00;
+  --immersive-translate-theme-dashed-borderColor: #59c1bd;
+  --immersive-translate-theme-blockquote-borderColor: #cc3355;
+  --immersive-translate-theme-thinDashed-borderColor: #ff374f;
+  --immersive-translate-theme-dashedBorder-borderColor: #94a3b8;
+  --immersive-translate-theme-dashedBorder-borderRadius: 0;
+  --immersive-translate-theme-solidBorder-borderColor: #94a3b8;
+  --immersive-translate-theme-solidBorder-borderRadius: 0;
+  --immersive-translate-theme-dotted-borderColor: #94a3b8;
+  --immersive-translate-theme-wavy-borderColor: #72ece9;
+  --immersive-translate-theme-dividingLine-borderColor: #94a3b8;
+  --immersive-translate-theme-grey-textColor: #2f4f4f;
+  --immersive-translate-theme-marker-backgroundColor: #fbda41;
+  --immersive-translate-theme-marker-backgroundColor-rgb: 251, 218, 65;
+  --immersive-translate-theme-marker2-backgroundColor: #ffff00;
+  --immersive-translate-theme-background-backgroundColor: #dbafaf;
+  --immersive-translate-theme-background-backgroundColor-rgb: 219, 175, 175;
+  --immersive-translate-theme-background-backgroundOpacity: 12;
+  --immersive-translate-theme-opacity-opacity: 10;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-pre-whitespace {
+  white-space: pre-wrap !important;
+}
+
+[imt-state="dual"] .immersive-translate-pdf-target-container {
+  position: absolute;
+  background-color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    sans-serif;
+  top: 0;
+  width: 600px;
+  height: 100%;
+  z-index: 2;
+  line-height: 1.3;
+  font-size: 16px;
+}
+[imt-state="dual"] .immersive-translate-target-wrapper[dir="rtl"] {
+  text-align: right;
+}
+
+[imt-state="dual"]
+  .immersive-translate-pdf-target-container
+  .immersive-translate-target-wrapper {
+  color: rgb(0, 0, 0);
+  white-space: normal;
+  position: absolute;
+}
+
+[imt-state="dual"]
+  .immersive-translate-pdf-target-container
+  .immersive-translate-target-wrapper
+  font {
+  color: inherit;
+  white-space: inherit;
+  position: unset;
+}
+
+[imt-state="translation"] .immersive-translate-target-wrapper > br {
+  display: none;
+}
+
+[imt-state="translation"]
+  .immersive-translate-target-translation-block-wrapper {
+  margin: 0 !important;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-block-wrapper {
+  margin: 8px 0 !important;
+  display: inline-block;
+}
+
+[imt-trans-position="before"]
+  .immersive-translate-target-translation-block-wrapper {
+  display: block;
+}
+
+[imt-trans-position="before"]
+  .immersive-translate-target-translation-block-wrapper {
+  margin-top: 0 !important;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-pdf-block-wrapper {
+  margin: 0 !important;
+  display: inline-block;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-grey-inner {
+  color: var(--immersive-translate-theme-grey-textColor);
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-underline-inner {
+  border-bottom: 1px solid
+    var(--immersive-translate-theme-underline-borderColor) !important;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-nativeUnderline-inner {
+  text-decoration: underline !important;
+  text-decoration-color: var(
+    --immersive-translate-theme-nativeUnderline-borderColor
+  ) !important;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-block-wrapper-theme-dashedBorder {
+  border: 1px dashed var(--immersive-translate-theme-dashedBorder-borderColor) !important;
+  border-radius: var(
+    --immersive-translate-theme-dashedBorder-borderRadius
+  ) !important;
+  padding: 6px;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-inline-wrapper-theme-dashedBorder {
+  border: 1px dashed var(--immersive-translate-theme-dashedBorder-borderColor) !important;
+  border-radius: var(
+    --immersive-translate-theme-dashedBorder-borderRadius
+  ) !important;
+  padding: 2px;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-block-wrapper-theme-solidBorder {
+  border: 1px solid var(--immersive-translate-theme-solidBorder-borderColor) !important;
+  border-radius: var(
+    --immersive-translate-theme-solidBorder-borderRadius
+  ) !important;
+  padding: 6px;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-inline-wrapper-theme-solidBorder {
+  border: 1px solid var(--immersive-translate-theme-solidBorder-borderColor) !important;
+  border-radius: var(
+    --immersive-translate-theme-solidBorder-borderRadius
+  ) !important;
+  padding: 2px;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-nativeDashed-inner {
+  text-decoration: underline !important;
+  text-decoration-color: var(
+    --immersive-translate-theme-nativeDashed-borderColor
+  ) !important;
+  text-decoration-style: dashed !important;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-thinDashed-inner {
+  border-bottom: 1px dashed
+    var(--immersive-translate-theme-thinDashed-borderColor) !important;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-dotted-inner {
+  background-image: linear-gradient(
+    to right,
+    var(--immersive-translate-theme-dotted-borderColor) 30%,
+    rgba(255, 255, 255, 0) 0%
+  );
+  background-position: bottom;
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
+  padding-bottom: 3px;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-nativeDotted-inner {
+  text-decoration: underline !important;
+  text-decoration-color: var(
+    --immersive-translate-theme-nativeDotted-borderColor
+  ) !important;
+  text-decoration-style: dotted !important;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-wavy-inner {
+  text-decoration: underline !important;
+  text-decoration-color: var(
+    --immersive-translate-theme-wavy-borderColor
+  ) !important;
+  text-decoration-style: wavy !important;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-dashed-inner {
+  background: linear-gradient(
+      to right,
+      var(--immersive-translate-theme-dashed-borderColor) 0%,
+      var(--immersive-translate-theme-dashed-borderColor) 50%,
+      transparent 50%,
+      transparent 100%
+    )
+    repeat-x left bottom;
+  background-size: 8px 2px;
+  padding-bottom: 2px;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-block-wrapper-theme-dividingLine::before {
+  content: "";
+  display: block;
+  max-width: 80px;
+  width: 10%;
+  border-top: 1px dashed
+    var(--immersive-translate-theme-dividingLine-borderColor);
+  padding-top: 8px;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-inline-wrapper-theme-dividingLine::before {
+  content: "";
+  border-left: 1px dashed
+    var(--immersive-translate-theme-dividingLine-borderColor);
+  max-height: 16px;
+  height: 16px;
+  padding-left: 8px;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-highlight-inner {
+  background: var(--immersive-translate-theme-highlight-backgroundColor);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-block-wrapper-theme-marker {
+  line-height: 1.5em;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-marker2-inner {
+  font-weight: bold;
+  text-shadow: 10px 0px 3px
+      var(--immersive-translate-theme-marker2-backgroundColor),
+    16px 3px 9px var(--immersive-translate-theme-marker2-backgroundColor),
+    2px 0px 6px var(--immersive-translate-theme-marker2-backgroundColor),
+    -12px 0px 12px var(--immersive-translate-theme-marker2-backgroundColor) !important;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-marker-inner {
+  /* TODO: add more texture */
+  background: linear-gradient(
+    to right,
+    rgba(var(--immersive-translate-theme-marker-backgroundColor-rgb), 0.1),
+    rgba(var(--immersive-translate-theme-marker-backgroundColor-rgb), 0.9) 3%,
+    rgba(var(--immersive-translate-theme-marker-backgroundColor-rgb), 0.9) 35%,
+    rgba(var(--immersive-translate-theme-marker-backgroundColor-rgb), 0.9) 70%,
+    rgba(var(--immersive-translate-theme-marker-backgroundColor-rgb), 0.8) 95%,
+    rgba(var(--immersive-translate-theme-marker-backgroundColor-rgb), 0.3)
+  );
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-weakening {
+  opacity: 0.618 !important;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-italic {
+  font-style: italic !important;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-bold {
+  font-weight: bold !important;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-block-wrapper-theme-paper {
+  margin: 8px 0;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  padding: 16px 32px;
+  display: inline-block;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-block-wrapper-theme-blockquote {
+  border-left: 4px solid var(--immersive-translate-theme-blockquote-borderColor) !important;
+  padding-left: 12px !important;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  display: inline-block;
+}
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-mask-inner {
+  filter: blur(5px) !important;
+  transition: filter 0.3s ease !important;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+[data-immersive-translate-root-translation-theme="none"]
+  .immersive-translate-target-translation-theme-mask-inner {
+  filter: none !important;
+}
+
+[data-immersive-translate-root-translation-theme="mask"]
+  .immersive-translate-target-inner {
+  filter: blur(5px) !important;
+  transition: filter 0.3s ease !important;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+/* opacity theme start */
+
+[imt-state="dual"] .immersive-translate-target-translation-theme-opacity-inner {
+  filter: opacity(
+    calc(var(--immersive-translate-theme-opacity-opacity) * 1%)
+  ) !important;
+  transition: filter 0.3s ease !important;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+[data-immersive-translate-root-translation-theme="none"]
+  .immersive-translate-target-translation-theme-opacity-inner {
+  filter: none !important;
+}
+[data-immersive-translate-root-translation-theme="opacity"]
+  .immersive-translate-target-inner,
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-opacity-inner:hover {
+  filter: opacity(
+    calc(var(--immersive-translate-theme-opacity-opacity) * 1%)
+  ) !important;
+  transition: filter 0.3s ease !important;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-opacity-inner:hover {
+  filter: none !important;
+}
+
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-mask-inner:hover {
+  filter: none !important;
+}
+[data-immersive-translate-root-translation-theme="opacity"]
+  .immersive-translate-target-inner:hover {
+  filter: none !important;
+}
+
+[data-immersive-translate-root-translation-theme="mask"]
+  .immersive-translate-target-inner:hover {
+  filter: none !important;
+}
+
+/* opacity theme end */
+
+/* background theme start */
+[imt-state="dual"]
+  .immersive-translate-target-translation-block-wrapper-theme-background {
+  margin: 8px 0;
+  background: rgba(
+    var(--immersive-translate-theme-background-backgroundColor-rgb),
+    calc(var(--immersive-translate-theme-background-backgroundOpacity) * 1%)
+  );
+  border-radius: 4px;
+  box-shadow: unset !important;
+  padding: 12px;
+  display: inline-block;
+}
+[imt-state="dual"]
+  .immersive-translate-target-translation-theme-background-inner {
+  background: rgba(
+    var(--immersive-translate-theme-background-backgroundColor-rgb),
+    calc(var(--immersive-translate-theme-background-backgroundOpacity) * 1%)
+  );
+  padding-left: 6px;
+  padding-right: 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+[imt-state="dual"]
+  .immersive-translate-target-translation-block-wrapper
+  .immersive-translate-target-translation-theme-background-inner {
+  background: unset;
+  padding-left: unset;
+  padding-right: unset;
+}
+/* background theme end */
+
+/* vertical css , please remain it in the last one. */
+.immersive-translate-target-translation-vertical-block-wrapper {
+  margin: 0px 8px !important;
+}
+
+.immersive-translate-text {
+  font-size: 15px !important;
+}
+
+.immersive-translate-error-toast {
+  position: fixed;
+  top: 5%;
+  z-index: 99999999;
+  left: 0;
+  right: 0;
+  margin: auto;
+  max-width: 300px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media all and (min-width: 750px) {
+  .immersive-translate-error-toast {
+    max-width: 400px;
+  }
+}
+
+.immersive-translate-clickable-button {
+  cursor: pointer;
+}
+
+.immersive-translate-help-button {
+  cursor: pointer;
+}
+
+.immersive-translate-loading-text:before {
+  content: "...";
+}
+
+/* dark mode for loading */
+
+@media only screen and (prefers-color-scheme: dark) {
+  .immersive-translate-loading {
+    border: 2px rgba(255, 255, 255, 0.25) solid !important;
+    border-top: 2px rgba(255, 255, 255, 1) solid !important;
+  }
+}
+
+.immersive-translate-error-wrapper {
+  position: relative;
+  display: inline-flex;
+  padding: 6px;
+  margin: 0 12px;
+  white-space: nowrap;
+  font-size: 0.9em;
+}
+[lang="zh-CN"] .immersive-translate-error-wrapper {
+  font-size: 0.75em;
+}
+[lang="zh-TW"] .immersive-translate-error-wrapper {
+  font-size: 0.75em;
+}
+
+.immersive-translate-tooltip {
+  position: relative;
+  display: inline-flex;
+  /* little indicater to indicate it's hoverable */
+}
+
+.immersive-translate-tooltip-content {
+  /* here's the magic */
+  position: absolute;
+  z-index: 100000000000;
+
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 110%);
+  line-height: 1;
+  /* and add a small left margin */
+
+  /* basic styles */
+  width: max-content;
+  max-width: 250px;
+  word-wrap: break-word;
+  white-space: pre-line;
+  padding: 10px;
+  border-radius: 10px;
+  background: #000c;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  display: none;
+  /* hide by default */
+}
+
+.immersive-translate-tooltip:hover .immersive-translate-tooltip-content {
+  display: inline-block;
+}
+
+.immersive-translate-tooltip:hover + .immersive-translate-tooltip-content {
+  display: inline-block;
+}
+
+.immersive-translate-tooltip-content-table {
+  left: unset !important;
+  bottom: unset !important;
+  transform: translate(-10%, 50%) !important;
+}
+
+.immersive-translate-tooltip:hover:before {
+  display: inline-block;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg-2, #fff);
+  font-size: 14px;
+}
+</style><style data-id="immersive-translate-user-custom-style">:root {
+
+.immersive-translate-target-inner { font-family: inherit; }
+
+
+.immersive-translate-target-inner { font-family: inherit; }
+}
+</style><style data-id="immersive-translate-dynamic-injected-css">.immersive-translate-target-wrapper[dir='rtl'] {text-align: right;}
+.immersive-translate-target-wrapper[dir='rtl'] [data-immersive-translate-class-bak*='block-wrapper'] {display:block;}
+.immersive-translate-target-wrapper {word-break:break-word; user-select:text;}
+[imt-state="translation"] .immersive-translate-target-wrapper[dir='rtl'] {display:inline-block;}
+[dir='rtl'] .immersive-translate-target-wrapper:not([dir]) {text-align:left;}
+[imt-state=dual] .immersive-translate-target-translation-block-wrapper-theme-dividingLine::before {display:block;}
+[imt-trans-position=before] .immersive-translate-target-translation-block-wrapper {display:block!important;}
+[imt-state][data-immersive-translate_rtl] .immersive-translate-target-wrapper {display:block!important;}
+</style>undefined</head>
+  <body data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+    <nav class="navbar navbar-expand-lg bg-light" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+      <div class="container-lg" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+        <a class="navbar-brand" href="/" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><img style="height: 60px" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiIHZlcnNpb249IjEuMSIgdmlld0JveD0iNTUgNjAgMzEwIDEzMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQiIHgxPSItMzM1LjIiIHgyPSItMzAyLjYiIHkxPSI5MTUuOCIgeTI9Ijk1Ny40IiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDMuOCAwIDAgMy44IDEzNjYuNSAtMzQxMy40KSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzQ3YmZiMiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzIzNjliMyIvPjwvbGluZWFyR3JhZGllbnQ+PHN0eWxlPi5jbHMtMntzdHJva2Utd2lkdGg6MDtmaWxsOiMwMzQ0NTV9PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImxheWVyMSI+PGcgaWQ9InRleHQxNTA3Ij48cGF0aCBpZD0icGF0aDE3IiBkPSJNMTE2IDEzMi45djI2LjdoLTguMlY5NC44aDE1LjljNy45IDAgMTMuNiAxLjYgMTcuNCA0LjVzNS43IDcuNyA1LjcgMTMuOC0uNSA0LjgtMS4xIDYuOGMtLjcgMS44LTEuNiAzLjYtMi45IDUtMS4xIDEuNC0yLjUgMi41LTQuMSAzLjRzLTMuMiAxLjYtNC44IDIuM2wxNy43IDI5aC05LjdsLTE1LjYtMjYuN2gtMTAuMlptMC03LjFoNy4yYzIuNyAwIDUtLjIgNi44LS43czMuNC0xLjQgNC41LTIuM2MxLjEtMS4xIDItMi4zIDIuNy0zLjkuNS0xLjYuOS0zLjQuOS01LjRzLS4yLTMuOS0uOS01LjRjLS43LTEuNi0xLjYtMi43LTIuNy0zLjZzLTIuNy0xLjYtNC44LTJjLTEuOC0uNS00LjEtLjctNi42LS43aC03djI0aC0uMloiIGNsYXNzPSJjbHMtMiIvPjxwYXRoIGlkPSJwYXRoMTkiIGQ9Ik0xNjguMSAxNTkuNmgtOC4ydi00OC41aDguMnptLTguNi02MS44YzAtMS44LjUtMi45IDEuNC0zLjkuOS0uOSAyLTEuMSAzLjQtMS4xczEuNCAwIDEuOC4yYy43IDAgMS4xLjUgMS42LjkuNS41LjcuOS45IDEuNnMuNSAxLjQuNSAyLjNjMCAxLjgtLjUgMi45LTEuNCAzLjktLjkuOS0yIDEuMS0zLjQgMS4xcy0yLjUtLjUtMy40LTEuMWMtLjktLjktMS40LTItMS40LTMuOSIgY2xhc3M9ImNscy0yIi8+PC9nPjwvZz48ZyBpZD0ibGF5ZXIzIj48ZyBpZD0idGV4dDMxNTI3Ij48cGF0aCBpZD0icGF0aDIyIiBkPSJtMjI4LjggMTU5LjYtMTYuNS00OC41aDguNGw4LjggMjdjLjIuOS43IDIuMyAxLjEgMy45cy45IDMuMiAxLjQgNC44LjkgMy4yIDEuMSA0LjVjLjUgMS40LjcgMi41LjcgMy4yaC4yYzAtLjcuNS0xLjguNy0zLjIuNS0xLjQuNy0yLjkgMS4xLTQuNXMuOS0zLjIgMS40LTQuOC45LTIuNyAxLjEtMy45bDguOC0yN2g4LjRMMjM5IDE1OS42eiIgY2xhc3M9ImNscy0yIi8+PHBhdGggaWQ9InBhdGgyNCIgZD0iTTMwMi44IDEzNS4xYzAgNC4xLS41IDcuNy0xLjYgMTAuOS0uOSAzLjItMi41IDUuNy00LjMgNy45LTEuOCAyLTQuMSAzLjktNi42IDQuOC0yLjcgMS4xLTUuNyAxLjYtOC44IDEuNnMtNS45LS41LTguNC0xLjYtNC44LTIuNy02LjYtNC44Yy0xLjgtMi4zLTMuNC00LjgtNC4zLTcuOS0xLjEtMy4yLTEuNi02LjgtMS42LTEwLjlzLjUtNy41IDEuNC0xMC42IDIuNS01LjcgNC4zLTcuOSA0LjEtMy45IDYuNi00LjhjMi43LTEuMSA1LjctMS42IDguOC0xLjZzNS45LjUgOC40IDEuNiA0LjggMi43IDYuNiA0LjggMy40IDQuOCA0LjMgNy45YzEuMSAzLjIgMS42IDYuNiAxLjYgMTAuNnptLTMzLjkgMGMwIDYuMS45IDEwLjkgMi45IDE0czUuNCA0LjggMTAgNC44IDcuNy0xLjYgOS43LTQuOCAyLjktNy43IDIuOS0xNC0uOS0xMC45LTIuOS0xMy44Yy0yLTMuMi01LjItNC41LTkuNy00LjVzLTcuOSAxLjYtOS43IDQuNWMtMiAyLjktMi45IDcuNy0yLjkgMTMuOGgtLjJaIiBjbGFzcz0iY2xzLTIiLz48cGF0aCBpZD0icGF0aDI2IiBkPSJNMzQ0LjcgMTQ2LjJjMCAyLjMtLjUgNC41LTEuNCA2LjFzLTIgMy4yLTMuNiA0LjVjLTEuNiAxLjEtMy42IDItNS45IDIuN3MtNC44LjktNy43LjktNS45LS4yLTguNC0uOWMtMi4zLS41LTQuMy0xLjQtNi4xLTIuM1YxNTBjLjkuNSAyIC45IDIuOSAxLjQgMS4xLjUgMi4zLjkgMy42IDEuMSAxLjEuNSAyLjUuNyAzLjkuOSAxLjQgMCAyLjcuMiAzLjkuMiAxLjggMCAzLjYgMCA0LjgtLjUgMS40LS4yIDIuNS0uNyAzLjItMS40LjktLjcgMS42LTEuNCAxLjgtMi4zLjUtLjkuNy0xLjguNy0yLjlzMC0xLjgtLjUtMi41LS45LTEuNC0xLjYtMi4zYy0uNy0uNy0xLjgtMS42LTMuMi0yLjNzLTMuMi0xLjYtNS4yLTIuNS00LjEtMS44LTUuNy0yLjctMy4yLTEuOC00LjMtMi45LTItMi4zLTIuNy0zLjljLS43LTEuNC0uOS0zLjItLjktNS4ycy41LTMuOSAxLjEtNS40Yy45LTEuNiAyLTIuOSAzLjQtNC4xIDEuNi0xLjEgMy4yLTEuOCA1LjItMi41czQuMy0uOSA2LjgtLjkgNS40LjIgNy45LjkgNC44IDEuNCA2LjggMi41bC0yLjcgNi42Yy0xLjgtLjktMy45LTEuNi01LjktMi4zcy00LjEtLjktNi4xLS45Yy0yLjkgMC01LjIuNS02LjYgMS42LTEuNC45LTIuMyAyLjMtMi4zIDQuM3MwIDIgLjUgMi43LjkgMS42IDEuOCAyLjMgMiAxLjQgMy40IDJjMS40LjcgMy4yIDEuNCA1LjIgMi4zczQuMSAxLjggNS43IDIuNyAzLjIgMS44IDQuMyAyLjkgMiAyLjMgMi43IDMuOS45IDMuMi45IDVsLjIuMloiIGNsYXNzPSJjbHMtMiIvPjwvZz48L2c+PGcgaWQ9ImxheWVyMiI+PHBhdGggaWQ9InJlY3Q4MTg4IiBkPSJNMTA1LjYgNTkuM2MtMTguMSAwLTMyLjggMTQuNy0zMi44IDMyLjh2NjYuMWMwIDE4LjEgMTQuNyAzMi44IDMyLjggMzIuOGg2Ni4xYzE4LjEgMCAzMi44LTE0LjcgMzIuOC0zMi44VjkyLjFjMC0xOC4xLTE0LjctMzIuOC0zMi44LTMyLjh6bTMzIDExLjVjMzAuMSAwIDU0LjQgMjQuMiA1NC40IDU0LjQgMCAzMC4xLTI0LjIgNTQuNC01NC40IDU0LjRzLTU0LjQtMjQuMi01NC40LTU0LjQgMjQuMi01NC40IDU0LjQtNTQuNCIgc3R5bGU9ImZpbGw6dXJsKCNsaW5lYXItZ3JhZGllbnQpO3N0cm9rZS13aWR0aDowIi8+PC9nPjxwYXRoIGQ9Ik0zNDYgMTU5LjZoLS40VjE1N2gtLjh2LS4zaDIuMXYuM2gtLjh2Mi42Wm0yLjUgMC0uOS0yLjZ2Mi43aC0uM3YtM2guNmwuOCAyLjQuOC0yLjRoLjZ2M2gtLjR2LTIuNmwtLjkgMi42aC0uM1oiIGNsYXNzPSJjbHMtMiIvPjwvc3ZnPg==" alt="Rivos logo ™" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+            <li class="nav-item dropdown" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Company<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">公司</font></font></font></a>
+                <ul class="dropdown-menu" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                  <li>
+                      
+                      <a class="dropdown-item" href="/about-us/">About Us</a>
+                      
+                    </li>
+                  <li>
+                      
+                      <a class="dropdown-item" href="/technology/">Technology</a>
+                      
+                    </li>
+                  <li>
+                      
+                      <a class="dropdown-item" href="/team/">Team</a>
+                      
+                    </li>
+                  </ul>
+              </li>
+              <li class="nav-item dropdown" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Careers<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">职业</font></font></font></a>
+                <ul class="dropdown-menu" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                  <li>
+                      
+                      <a class="dropdown-item" href="https://jobs.lever.co/rivosinc/">Open Roles</a>
+                      
+                    </li>
+                  <li>
+                      
+                      <a class="dropdown-item" href="/international-hiring/">International Hiring</a>
+                      
+                    </li>
+                  </ul>
+              </li>
+              <li class="nav-item dropdown" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Resources<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">资源</font></font></font></a>
+                <ul class="dropdown-menu" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                  <li>
+                      
+                      <a class="dropdown-item" href="/announcements/">Announcements</a>
+                      
+                    </li>
+                  <li>
+                      
+                      <a class="dropdown-item" href="/blogs/">Blogs</a>
+                      
+                    </li>
+                  <li>
+                      
+                      <a class="dropdown-item" href="/newsroom/">Newsroom</a>
+                      
+                    </li>
+                  <li>
+                      
+                      <a class="dropdown-item" href="/talks/">Talks</a>
+                      
+                    </li>
+                  </ul>
+              </li>
+              <li class="nav-item" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                      <a class="nav-link" href="https://github.com/rivosinc/" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Open Source<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">开源</font></font></font></a>
+              </li></ul>
+          <div id="search" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><form class="d-flex" role="search" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><button class="btn" type="submit" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><svg class="svg-inline--fa fa-magnifying-glass" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg><!-- <i class="fa-solid fa-search"></i> Font Awesome fontawesome.com --></button></form>
+            
+          </div>
+          <ul class="navbar-nav align-items-center" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+            <li class="nav-item" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+              <a href="/contact-us/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><svg class="svg-inline--fa fa-envelope fa-xl py-1" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="envelope" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"></path></svg><!-- <i class="fas fa-envelope fa-xl py-1"></i> Font Awesome fontawesome.com --></a>
+            </li>
+            <li class="nav-item" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+              <a href="https://www.linkedin.com/company/rivos-inc" target="_blank" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><svg class="svg-inline--fa fa-linkedin fa-xl py-1" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="linkedin" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg><!-- <i class="fab fa-linkedin fa-xl py-1"></i> Font Awesome fontawesome.com --></a>
+            </li>
+            <li class="nav-item" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+              <a href="https://www.youtube.com/@RivosInc/videos" target="_blank" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><svg class="svg-inline--fa fa-youtube fa-xl py-1" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg><!-- <i class="fab fa-youtube fa-xl py-1"></i> Font Awesome fontawesome.com --></a>
+            </li>
+            <li class="nav-item" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+              <a href="https://github.com/rivosinc/" target="_blank" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><svg class="svg-inline--fa fa-github fa-xl py-1" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" data-fa-i2svg=""><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg><!-- <i class="fab fa-github fa-xl py-1"></i> Font Awesome fontawesome.com --></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+<div class="container-fluid bg-light" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+    <div class="container-lg py-3" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+        <h1 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">How AI is changing the rules for Software and Hardware design<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">AI 如何改变软件和硬件设计的规则</font></font></font></h1>
+        <div class="row text-left align-items-center" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+            <div class="col-lg" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+        <p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">21 November 2024<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">21 11月 2024</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Puneet Kumar, CEO and Co-founder of Rivos Inc<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">Puneet Kumar，Rivos Inc 首席执行官兼联合创始人</font></font></font></strong></p>
+<img alt="10x improve SW in 2 years slide" class="img-fluid rounded w-100" loading="lazy" decoding="async" src="data:image/webp;base64,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" width="600" height="337" srcset="/img/Reyx66sZ02-960.webp 2x">
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">As business leaders, we are navigating an era where Artificial Intelligence (AI) has rapidly moved from promise to reality, impacting nearly every sector. The speed of adoption has been unprecedented, with applications like ChatGPT shattering growth records by reaching 100 million users in just three months. This wave is redefining the way we think about both hardware and software, and ultimately, the foundations of how we innovate and grow.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">作为商业领袖，我们正在驾驭一个人工智能 （AI） 迅速从承诺变为现实的时代，几乎影响了每个行业。采用的速度是前所未有的，ChatGPT 等应用程序在短短三个月内就达到了 1 亿用户，打破了增长记录。这股浪潮正在重新定义我们对硬件和软件的思考方式，并最终重新定义我们如何创新和发展的基础。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">This transformation calls for both chip providers and end-users to fundamentally rethink strategies for AI servers. The traditional hierarchy between software and hardware has shifted; now, it’s software that dictates the pace, requiring hardware to continuously adapt to meet new demands.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">这种转变要求芯片提供商和最终用户从根本上重新思考 AI 服务器的策略。软件和硬件之间的传统层次结构已经发生了变化;现在，是软件决定着节奏，需要硬件不断适应以满足新的需求。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">To keep pace with this rapid design cycle of hardware for AI, this post enumerates key areas that are essential in developing adaptable, high-performance servers.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">为了跟上 AI 硬件的快速设计周期，本文列举了开发适应性强的高性能服务器所必需的关键领域。</font></font></font></p>
+<h2 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Rethinking hardware development cycles: Aligning with AI’s speed<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">重新思考硬件开发周期：与 AI 的速度保持一致</font></font></font></h2>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">AI applications, especially in the realm of Generative AI, require massive computational power. Traditionally, server hardware followed development cycles of 18 to 24 months. However, the rapid acceleration of the AI market has compressed this cadence to just 12 months, leaving less time for hardware innovations to be developed, implemented, and tested between generations.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">AI 应用程序，尤其是在生成式 AI 领域，需要强大的计算能力。传统上，服务器硬件的开发周期为 18 到 24 个月。然而，AI 市场的快速发展已将这一节奏压缩到仅 12 个月，留给各代之间开发、实施和测试硬件创新的时间更少。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Meanwhile, on the software side, advancements like optimized Attention mechanisms have demonstrated performance gains of up to 10x within a two-year span. This contrast underscores a new reality: software is advancing at a staggering rate, setting an aggressive pace for hardware to keep up.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">同时，在软件方面，优化的 Attention 机制等进步在两年内实现了高达 10 倍的性能提升。这种对比凸显了一个新的现实：软件正在以惊人的速度发展，为硬件的步伐设定了积极的步伐以跟上。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">The practical upshot of this is an increasing need for software-defined hardware: hardware super-optimized for the most critical software tasks.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">其实际结果是对软件定义硬件的需求不断增长：针对最关键的软件任务进行超级优化的硬件。</font></font></font></p>
+<h2 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Shifting customer expectations: Embracing flexibility and versatility<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">不断变化的客户期望：拥抱灵活性和多功能性</font></font></font></h2>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Today’s customers demand versatile systems that offer flexibility to support both legacy models and the latest innovations. They expect infrastructure that can adapt seamlessly to evolving workloads, providing a future-ready foundation for the performance requirements of diverse AI applications.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">当今的客户需要多功能系统，这些系统能够灵活地支持传统模型和最新创新。他们希望基础设施能够无缝适应不断发展的工作负载，为各种 AI 应用程序的性能要求提供面向未来的基础。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">The AI-driven market is inherently dynamic, requiring support for a wide range of frameworks, serving infrastructures and languages including — PyTorch, TensorFlow, JAX, Triton, Onnx, OpenVINO, and vLLM. Model development is continuing at a high pace, with even the “established” Transformer mechanism being displaced in the Mamba model.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">AI 驱动型市场本质上是动态的，需要支持各种框架，为基础设施和语言提供服务，包括 PyTorch、TensorFlow、JAX、Triton、Onnx、OpenVINO 和 vLLM。模型开发正在高速进行，甚至“已建立的”Transformer 机制也在 Mamba 模型中被取代。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Software-defined hardware enables the development of targeted solutions optimized for specific algorithms or algorithm families. In domains like embedded and wearable systems, this approach provides the short-term efficiency needed and often serves as an ideal solution. However, these specialized designs fall short of meeting the broader, more dynamic requirements of customers in the Server AI space, where flexibility and adaptability across diverse workloads are paramount.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">软件定义硬件支持开发针对特定算法或算法系列进行优化的目标解决方案。在嵌入式和可穿戴系统等领域，这种方法提供了所需的短期效率，通常是理想的解决方案。然而，这些专业设计无法满足 Server AI 领域客户更广泛、更动态的需求，其中不同工作负载的灵活性和适应性至关重要。</font></font></font></p>
+<h3 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">When selecting new hardware, customers require:<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">在选择新硬件时，客户需要：</font></font></font></h3>
+<ul data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+<li data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">(a) Existing models to run efficiently<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">（a） 现有模型高效运行</font></font></font></strong></li>
+<li data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">(b) New and future models are supported quickly and are performant<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">（b） 新模型和未来模型得到快速支持并且性能良好</font></font></font></strong></li>
+<li data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">(c) Any framework they choose is supported<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">（c） 他们选择的任何框架都受支持</font></font></font></strong></li>
+</ul>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">The specialized approaches only cover (a).
+A programmable approach is needed to support (b) and (c).<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">专业方法仅涵盖 （a）。需要一种可编程方法来支持 （b） 和 （c）。</font></font></font></p>
+<h3 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">How can software-defined hardware techniques be applied to enable Server AI acceleration?<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">如何应用软件定义的硬件技术来实现 Server AI 加速？</font></font></font></h3>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">The approach parallels what we see in traditional CPU design, but adapted to the needs of AI workloads. The existing programming model must be preserved to make the hardware intuitive and minimize porting efforts. The hardware designers can then analyze the extensive existing codebase to optimize the programmable engine. Additional gains are made by incorporating hardware features that super-optimize critical or anticipated tasks, while unnecessary functions are removed (or shifted to software implementations for backward compatibility) to reduce power usage and silicon area. Unlike traditional CPUs, however, these algorithms are designed specifically for highly parallel, multi-threaded processing.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">这种方法类似于我们在传统 CPU 设计中看到的方法，但适应了 AI 工作负载的需求。必须保留现有的编程模型，以使硬件直观并最大限度地减少移植工作。然后，硬件设计人员可以分析广泛的现有代码库，以优化可编程引擎。通过整合超级优化关键或预期任务的硬件功能，可以获得额外的收益，同时删除不必要的功能（或转移到软件实现以实现向后兼容）以减少功耗和芯片面积。但是，与传统 CPU 不同的是，这些算法是专为高度并行、多线程处理而设计的。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Historically, general-purpose parallel computations have been executed on GPUs, and software-defined hardware therefore points toward a General Purpose GPU (GPGPU) model, specialized for AI workloads. Practically speaking, much of today’s cutting-edge AI research, including the advancements in Attention models mentioned above, is developed on GPGPUs.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">从历史上看，通用并行计算是在 GPU 上执行的，因此软件定义的硬件指向专门用于 AI 工作负载的通用 GPU （GPGPU） 模型。实际上，当今的许多前沿 AI 研究，包括上述注意力模型的进步，都是在 GPGPU 上开发的。</font></font></font></p>
+<h2 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Leveraging the power of Open Source: Enabling collaborative innovation<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">利用开源的力量：实现协作创新</font></font></font></h2>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Being future-ready means not only addressing current customer needs but also anticipating and responding to rapid changes. A robust software and hardware co-design strategy, supported by the agility of open source technology, offers the flexibility to adapt to these shifts quickly and effectively. In addition it allows organizations to establish partnerships across multiple players in an ecosystem, creating a system where resources can be shared, modified, and customized on demand. The same is true of open standards. The combination of open source with open standards avoids the risk of being locked into single vendors.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">面向未来意味着不仅要满足当前的客户需求，还要预测和响应快速变化。在开源技术的敏捷性支持下，强大的软件和硬件协同设计策略提供了快速有效地适应这些转变的灵活性。此外，它还允许组织在生态系统中的多个参与者之间建立合作伙伴关系，从而创建一个可以按需共享、修改和自定义资源的系统。开放标准也是如此。开源与开放标准的结合避免了被锁定于单一供应商的风险。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Open source technology has proven invaluable for driving innovation through collective intelligence, reducing development costs, and speeding up time-to-market. The collaborative nature of open source initiatives allows companies to leverage shared knowledge, avoid duplication of efforts, and to quickly build upon the advances of others. Therefore it is vital to invest in partnerships, and ensure that solutions are transparent, modifiable, and adaptable to future needs.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">事实证明，开源技术对于通过集体智慧推动创新、降低开发成本和加快上市时间具有不可估量的价值。开源计划的协作性质使公司能够利用共享知识，避免重复工作，并快速利用其他公司的进步。因此，投资于合作伙伴关系并确保解决方案透明、可修改并适应未来需求至关重要。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Note that most of these open source benefits come from the collaborative nature of the community. On its own, providing sources does enable visibility of the technology used, but this is not where the power lies. The true value comes from collaborating and providing hardware specific source code into existing projects, especially ones maintained and audited by a cross-organization community of developers. AI Servers for general deployment should fit within an open source stack and use open standards to maximize their impact.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">请注意，这些开源优势中的大多数都来自社区的协作性质。就其本身而言，提供来源确实可以提高所用技术的可见性，但这并不是权力所在。真正的价值来自于协作并为现有项目提供特定于硬件的源代码，尤其是由跨组织开发人员社区维护和审计的项目。用于常规部署的 AI 服务器应适合开源堆栈，并使用开放标准来最大限度地发挥其影响。</font></font></font></p>
+<h2 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Future-proofing with software driven innovation<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">通过软件驱动型创新，面向未来</font></font></font></h2>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Server AI chip designers should follow a software-defined hardware approach and produce GPGPU architecture designs that support the open source and open standards community. This will enable the hardware to grow and evolve with the speed of software innovation.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">服务器 AI 芯片设计人员应遵循软件定义的硬件方法，并生成支持开源和开放标准社区的 GPGPU 架构设计。这将使硬件能够随着软件创新的速度而增长和发展。</font></font></font></p>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">End users of Server AI systems should be attracted to vendors who follow this approach and are seen to be active in the open source community. This will enable:<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">Server AI 系统的最终用户应该被遵循这种方法并被视为活跃于开源社区的供应商所吸引。这将启用：</font></font></font></p>
+<ul data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+<li data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">Optimized investments.</strong> The ease of programmability allows the hardware to run existing code efficiently while adapting at the cadence of software advances. This makes the server immediately useful, while extending its useful life.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">优化投资。</strong> 易于编程，使硬件能够高效运行现有代码，同时适应软件进步的节奏。这使得服务器立即可用，同时延长其使用寿命。</font></font></font></li>
+<li data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">Agility in adoption.</strong> Use of open source and open standards prevents vendor lock-in and enables differentiation across functionality, price and performance. Users can adopt the technology that works best for their application and datacenter needs.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">采用敏捷性。</strong> 使用开源和开放标准可以防止供应商锁定，并实现功能、价格和性能的差异化。用户可以采用最适合其应用程序和数据中心需求的技术。</font></font></font></li>
+<li data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">Sustainable growth.</strong> Targeting efficiency and lower power consumption enables a reduced operating cost while the extended lifetime from the programmability spreads the capital costs. Open standards decouple upgrades of different parts of the whole system. Scaling AI solutions therefore becomes manageable and sustainable.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1"><strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">可持续增长。</strong> 以效率和低功耗为目标可以降低运营成本，而可编程性延长的使用寿命可以分散资本成本。开放标准将整个系统不同部分的升级解耦。因此，扩展 AI 解决方案变得可管理且可持续。</font></font></font></li>
+</ul>
+<p data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">To succeed in the AI-driven landscape, leaders must prioritize adaptable, scalable, and future-ready AI Server solutions. By embracing software-defined, GPGPU-style architectures, and open standards, organizations can ensure flexibility, efficiency and seamless integration.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">要在 AI 驱动型环境中取得成功，领导者必须优先考虑适应性强、可扩展且面向未来的 AI Server 解决方案。通过采用软件定义的 GPGPU 式架构和开放标准，组织可以确保灵活性、效率和无缝集成。</font></font></font></p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="container-fluid text-light" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+      <div class="container-sm" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+        <div class="row justify-content-left px-4" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+          <div class="col-lg d-flex flex-column py-3" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+              <h5 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                <strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Company<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">公司</font></font></font></strong>
+              </h5>
+              
+                <a href="/about-us/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">About Us<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">关于我们</font></font></font></a>
+                      
+              
+                <a href="/technology/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Technology<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">科技</font></font></font></a>
+                      
+              
+                <a href="/team/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Team<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">团队</font></font></font></a>
+                      
+              </div>
+          <div class="col-lg d-flex flex-column py-3" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+              <h5 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                <strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Careers<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">职业</font></font></font></strong>
+              </h5>
+              
+                <a href="https://jobs.lever.co/rivosinc/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Open Roles<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">空缺角色</font></font></font></a>
+                      
+              
+                <a href="/international-hiring/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">International Hiring<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">国际招聘</font></font></font></a>
+                      
+              </div>
+          <div class="col-lg d-flex flex-column py-3" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+              <h5 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                <strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Resources<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">资源</font></font></font></strong>
+              </h5>
+              
+                <a href="/announcements/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Announcements<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">公告</font></font></font></a>
+                      
+              
+                <a href="/blogs/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Blogs<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">博客</font></font></font></a>
+                      
+              
+                <a href="/newsroom/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Newsroom<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">编辑部</font></font></font></a>
+                      
+              
+                <a href="/talks/" class="nav-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Talks<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">会谈</font></font></font></a>
+                      
+              </div>
+          <div class="col-lg d-flex flex-column py-3" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+              <h5 data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+                <strong data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Open Source<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><font class="notranslate" data-immersive-translate-translation-element-mark="1">&nbsp;&nbsp;</font><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-inline-wrapper-theme-none immersive-translate-target-translation-inline-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">开源</font></font></font></strong>
+              </h5>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="container-sm text-light border-top border-dark" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+      <div class="row p-2" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+        <div class="col-lg p-2" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">Copyright © 2025 Rivos Inc. All rights reserved.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">版权所有 © 2025 Rivos Inc.保留所有权利。</font></font></font><br data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">Ri logo and Rivos are trademarks of Rivos Inc.<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">Ri 徽标和 Rivos 是 Rivos Inc. 的商标。</font></font></font></div>
+        <div class="col-lg p-2" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+          <div data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">
+            <a href="/privacy-policy/" class="site-map-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">Privacy Policy</a>
+            |
+            <a href="/terms-and-conditions/" class="site-map-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">Terms &amp; Conditions</a><font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1"><a href="/privacy-policy/" class="site-map-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">隐私策略</a>
+            |
+<a href="/terms-and-conditions/" class="site-map-link" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">条款和条件</a></font></font></font>
+          </div>
+        </div>
+        <div class="col-lg p-2" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a" data-immersive-translate-paragraph="1">3315 Scott Boulevard, 4th Floor, Santa Clara, CA 95054, USA<font class="notranslate immersive-translate-target-wrapper" data-immersive-translate-translation-element-mark="1" lang="zh-CN"><br><font class="notranslate immersive-translate-target-translation-theme-none immersive-translate-target-translation-block-wrapper-theme-none immersive-translate-target-translation-block-wrapper" data-immersive-translate-translation-element-mark="1"><font class="notranslate immersive-translate-target-inner immersive-translate-target-translation-theme-none-inner" data-immersive-translate-translation-element-mark="1">3315 Scott Boulevard， 4th Floor， 圣克拉拉， CA 95054， 美国</font></font></font></div>
+      </div>
+    </div>
+    <div id="search-results-modal" class="modal" tabindex="-1" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+        <div class="modal-content" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+          <div class="modal-header" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+            <h5 class="modal-title" id="exampleModalLabel" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">Search Results</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"></button>
+          </div>
+          <div id="search-results" class="modal-body" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><div class="input-group mb-3" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><input id="modal-search-input" type="search" placeholder="Search" aria-label="Search" class="form-control" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><span class="input-group-text" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><svg class="svg-inline--fa fa-magnifying-glass" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg><!-- <i class="fa-solid fa-search"></i> Font Awesome fontawesome.com --></span></div><div class="list-group" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><div class="list-group-item" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a"><em>No Results</em></div></div></div>
+          <div class="modal-footer" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-immersive-translate-walked="a6d64729-13eb-469a-98ac-b8e7052e696a">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
