@@ -1,0 +1,828 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/中断/RISC-V_ KVM_ Introduce KVM_EXIT_FAIL_ENTRY_NO_VSFILE - Patchwork (2025-07-14 17：18：46).html
+ Page saved with X-Webpage-Conserve 
+ url: https://patchwork.kernel.org/project/linux-riscv/patch/20250714072051.1928-1-xiangwencheng@lanxincomputing.com/
+ Summary: 
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>RISC-V: KVM: Introduce KVM_EXIT_FAIL_ENTRY_NO_VSFILE - Patchwork</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.1999ae14de69.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/selectize.bootstrap3.604d8cc2f81a.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.15cf98d7fb55.css">
+    <script src="/static/js/jquery-3.6.0.min.8fb8fee4fcc3.js"></script>
+    <script src="/static/js/jquery.stickytableheaders.min.c02ed5dfea63.js"></script>
+    <script src="/static/js/jquery.checkboxes-1.2.2.min.8b93dcd0879a.js"></script>
+    <!-- IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js">
+      </script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.0.8/es5-shim.min.js"></script>
+    <![endif]-->
+    <script src="/static/js/bootstrap.min.abda843684d0.js"></script>
+    <script src="/static/js/selectize.min.d7d3bc8b8d8e.js"></script>
+    <script src="/static/js/clipboard.min.3e5e0fa949e0.js"></script>
+    <script src="/static/js/js.cookie.min.0c08bc1c340c.js"></script>
+    <script>
+      $(document).ready(function() {
+          new Clipboard(document.querySelectorAll('button.btn-copy'));
+      });
+    </script>
+
+    <script type="module" src="/static/js/submission.5f1f75eb6e49.js"></script>
+
+  <style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Patchwork</a>
+          <span class="navbar-subbrand">
+             Linux RISC-V
+          </span>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+
+
+          <ul class="nav navbar-nav">
+            <li class="">
+              <a href="/project/linux-riscv/list/">
+                <span class="glyphicon glyphicon-file"></span>
+                Patches
+              </a>
+            </li>
+            <li class="">
+              <a href="/project/linux-riscv/bundles/">
+                <span class="glyphicon glyphicon-gift"></span>
+                Bundles
+              </a>
+            </li>
+            <li class="">
+              <a href="/project/linux-riscv/">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                About this project
+              </a>
+            </li>
+          </ul>
+
+
+          <ul class="nav navbar-nav navbar-right">
+
+            <li><a href="/user/login/">Login</a></li>
+            <li><a href="/register/">Register</a></li>
+            <li><a href="/mail/">Mail settings</a></li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+<ul class="messages"></ul><div id="errors"></div>
+    <div id="main-content" class="container-fluid">
+
+
+<div>
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-default btn-copy" data-clipboard-text="14155364" title="Copy to Clipboard">
+    14155364
+  </button>
+
+  <a href="/project/linux-riscv/patch/20250714072051.1928-1-xiangwencheng@lanxincomputing.com/raw/" class="btn btn-default" role="button" title="Download patch diff">
+    diff
+  </a>
+  <a href="/project/linux-riscv/patch/20250714072051.1928-1-xiangwencheng@lanxincomputing.com/mbox/" class="btn btn-default" role="button" title="Download patch mbox">
+    mbox
+  </a>
+
+
+  <a href="/series/981937/mbox/" class="btn btn-default" role="button" title="Download patch mbox with dependencies">
+    series
+  </a>
+
+</div>
+
+  <h1>RISC-V: KVM: Introduce KVM_EXIT_FAIL_ENTRY_NO_VSFILE</h1>
+</div>
+
+<table id="patch-meta" class="patch-meta" data-submission-type="patches" data-submission-id="14155364">
+  <tbody><tr>
+    <th>Message ID</th>
+
+    <td>20250714072051.1928-1-xiangwencheng@lanxincomputing.com (<a href="https://lore.kernel.org/r/20250714072051.1928-1-xiangwencheng@lanxincomputing.com">mailing list archive</a>)</td>
+
+  </tr>
+
+  <tr>
+    <th>State</th>
+    <td>New</td>
+  </tr>
+
+
+
+  <tr>
+    <th>Headers</th>
+    <td>
+        <button id="toggle-patch-headers">show</button>
+        <div id="patch-headers" class="patch-headers" style="display:none;">
+            <pre>Return-Path: 
+ &lt;linux-riscv-bounces+linux-riscv=archiver.kernel.org@lists.infradead.org&gt;
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+	aws-us-west-2-korg-lkml-1.web.codeaurora.org
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F101C83F17
+	for &lt;linux-riscv@archiver.kernel.org&gt;; Mon, 14 Jul 2025 07:48:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:From:Mime-Version:
+	Subject:Cc:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rNbCuprk6gtrVCLu43zKCf4o5BiYIZAZfNYl0dc8zN4=; b=tDZmSqRbU4uUz5
+	fKy/cHxfdmC9y7Ne+Z6QVIHWq1G3NZ47fmdlGxW0h5Bg6spqFSAOnfBtMMT2UTeJz95u5tkH1FjiJ
+	K0e9Th1yTxSiXTpI9lVY7luIyGuXjfaiEHHN3fEgflo2fcWjz2heoQ4ApVfyo2HQuAPVfPy2mRlqx
+	+wew8NWp+SXeSIKhP2So4P3z+rRsHQVeDmH6TFZlOAARwbDKxODWZYsa2L8Dn4xHDyoJujDagBc+L
+	jgojv8cLQbAPoTkYbkqyMIS4KjWERt4e58qeCmpCjAtb8Cd3KiaqqXSzFAUfns2F6vdKNzRbgnKP7
+	1VenOnYAeX7gpI+R6U2g==;
+Received: from localhost ([::1] helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtp (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ubDvJ-00000001VxZ-1lQm;
+	Mon, 14 Jul 2025 07:48:29 +0000
+Received: from sg-1-31.ptr.blmpb.com ([118.26.132.31])
+	by bombadil.infradead.org with esmtps (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ubDVW-00000001SKo-0Guo
+	for linux-riscv@lists.infradead.org;
+	Mon, 14 Jul 2025 07:21:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=s1; d=lanxincomputing-com.20200927.dkim.feishu.cn; t=1752477700;
+  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
+ reply-to:content-type:mime-version:in-reply-to:message-id;
+ bh=y271lZtuVJ/3OzGRBrxJUOZ72ijQbIdeHDFq98NdTcY=;
+ b=TQbptem9p1NN+oU0ah1gVy0ynUC8I0w5xnA5fSTTHOMh18supbPsVMvc2VReRvlae278A1
+ /I44kffO9A2y/1I7KNLhARnDXmS9OzCWkiq8LaoN4b/jUnJ4agIWdC0UMpUbhOxpqiuaVj
+ KFMTIh+FqUA9gZJr8Fjb3HnjCu+WLKsLxe7+4oYIu5IMY79KwIW2TuDqPLgjS4Img2umPG
+ gWK2YiyzFs62UoXAEduLwvux5rajcZkqNspwNxCvnPGW6Pg3/hgVHHqdaGCzsSXZrr/7gP
+ vQiQxtRe8LcPkVTVIX4N+cULZ3uM6OzN3VJhVh3oZlgqD/Arpoqk0j3p6CyBdw==
+Received: from localhost.localdomain ([222.128.9.250]) by smtp.feishu.cn with
+ ESMTP; Mon, 14 Jul 2025 15:21:37 +0800
+X-Mailer: git-send-email 2.46.2.windows.1
+To: &lt;anup@brainfault.org&gt;
+Cc: &lt;atish.patra@linux.dev&gt;, &lt;paul.walmsley@sifive.com&gt;,
+	&lt;palmer@dabbelt.com&gt;, &lt;aou@eecs.berkeley.edu&gt;, &lt;alex@ghiti.fr&gt;,
+	&lt;kvm@vger.kernel.org&gt;, &lt;kvm-riscv@lists.infradead.org&gt;,
+	&lt;linux-riscv@lists.infradead.org&gt;, &lt;linux-kernel@vger.kernel.org&gt;,
+	&lt;xiangwencheng@lanxincomputing.com&gt;
+Subject: [PATCH] RISC-V: KVM: Introduce KVM_EXIT_FAIL_ENTRY_NO_VSFILE
+Mime-Version: 1.0
+From: "BillXiang" &lt;xiangwencheng@lanxincomputing.com&gt;
+X-Original-From: BillXiang &lt;xiangwencheng@lanxincomputing.com&gt;
+Date: Mon, 14 Jul 2025 15:20:50 +0800
+X-Lms-Return-Path: 
+ &lt;lba+26874b002+50df06+lists.infradead.org+xiangwencheng@lanxincomputing.com&gt;
+Message-Id: &lt;20250714072051.1928-1-xiangwencheng@lanxincomputing.com&gt;
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250714_002150_289162_FD6D29DA 
+X-CRM114-Status: UNSURE (   9.48  )
+X-CRM114-Notice: Please train this message.
+X-BeenThere: linux-riscv@lists.infradead.org
+X-Mailman-Version: 2.1.34
+Precedence: list
+List-Id: &lt;linux-riscv.lists.infradead.org&gt;
+List-Unsubscribe: &lt;http://lists.infradead.org/mailman/options/linux-riscv&gt;,
+ &lt;mailto:linux-riscv-request@lists.infradead.org?subject=unsubscribe&gt;
+List-Archive: &lt;http://lists.infradead.org/pipermail/linux-riscv/&gt;
+List-Post: &lt;mailto:linux-riscv@lists.infradead.org&gt;
+List-Help: &lt;mailto:linux-riscv-request@lists.infradead.org?subject=help&gt;
+List-Subscribe: &lt;http://lists.infradead.org/mailman/listinfo/linux-riscv&gt;,
+ &lt;mailto:linux-riscv-request@lists.infradead.org?subject=subscribe&gt;
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-riscv" &lt;linux-riscv-bounces@lists.infradead.org&gt;
+Errors-To: 
+ linux-riscv-bounces+linux-riscv=archiver.kernel.org@lists.infradead.org</pre>
+        </div>
+    </td>
+  </tr>
+
+  <tr>
+    <th>Series</th>
+    <td>
+      <a href="/project/linux-riscv/list/?series=981937">
+        RISC-V: KVM: Introduce KVM_EXIT_FAIL_ENTRY_NO_VSFILE
+      </a> |
+      <button id="toggle-patch-series">expand</button>
+      <div id="patch-series" class="submission-list" style="display:none;">
+        <ul>
+
+            <li>
+
+            </li>
+
+
+            <li>
+
+                RISC-V: KVM: Introduce KVM_EXIT_FAIL_ENTRY_NO_VSFILE
+
+            </li>
+
+        </ul>
+      </div>
+    </td>
+  </tr>
+
+
+</tbody></table>
+
+<div class="patchforms">
+
+
+
+  <div style="clear: both;">
+  </div>
+</div>
+
+
+
+
+<h2>Checks</h2>
+<table class="checks">
+<tbody><tr>
+  <th>Context</th>
+  <th>Check</th>
+  <th>Description</th>
+</tr>
+
+<tr>
+  <td>bjorn/pre-ci_am</td>
+  <td>
+    <span title="Updated 10&nbsp;hours ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+
+    <a href="https://github.com/linux-riscv/linux/pull/654">
+
+    Success
+
+    </a>
+
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv32-defconfig</td>
+  <td>
+    <span title="Updated 10&nbsp;hours ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+
+    build-rv32-defconfig
+
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv64-clang-allmodconfig</td>
+  <td>
+    <span title="Updated 10&nbsp;hours ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+
+    build-rv64-clang-allmodconfig
+
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv64-gcc-allmodconfig</td>
+  <td>
+    <span title="Updated 10&nbsp;hours ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+
+    build-rv64-gcc-allmodconfig
+
+  </td>
+</tr>
+
+<tr>
+  <td>bjorn/build-rv64-nommu-k210-defconfig</td>
+  <td>
+    <span title="Updated 10&nbsp;hours ago" class="state success">
+      success
+    </span>
+  </td>
+  <td>
+
+    build-rv64-nommu-k210-defconfig
+
+  </td>
+</tr>
+
+</tbody></table>
+
+
+
+<h2>Commit Message</h2>
+
+<div class="submission-message">
+  <div class="meta">
+    <span><a href="/project/linux-riscv/list/?submitter=216042">BillXiang</a></span>
+    <span class="message-date">July 14, 2025, 7:20 a.m. UTC</span>
+  </div>
+  <pre class="content">  Consider a system with 8 harts, where each hart supports 5
+Guest Interrupt Files (GIFs), yielding 40 total GIFs.
+If we launch a QEMU guest with over 5 vCPUs using
+"-M virt,aia='aplic-imsic' -accel kvm,riscv-aia=hwaccel" – which
+relies solely on VS-files (not SW-files) for higher performance – the
+guest requires more than 5 GIFs. However, the current Linux scheduler
+lacks GIF awareness, potentially scheduling &gt;5 vCPUs to a single hart.
+This triggers VS-file allocation failure, and since no handler exists
+for this error, the QEMU guest becomes corrupted.
+
+To address this, we introduce KVM_EXIT_FAIL_ENTRY_NO_VSFILE upon
+VS-file allocation failure. This provides an opportunity for graceful
+error handling instead of corruption. For example, QEMU can handle
+this exit by rescheduling vCPUs to alternative harts when VS-file
+allocation fails on the current hart [1].
+
+[1] https://github.com/BillXiang/qemu/tree/riscv-vsfile-alloc/
+<span class="signed-off-by">
+Signed-off-by: BillXiang &lt;xiangwencheng@lanxincomputing.com&gt;</span>
+---
+ arch/riscv/include/uapi/asm/kvm.h | 2 ++
+ arch/riscv/kvm/aia_imsic.c        | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+  </pre>
+</div>
+
+
+
+
+<div>
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-default btn-copy" data-clipboard-text="14155364" title="Copy to Clipboard">
+    14155364
+  </button>
+
+  <a href="/project/linux-riscv/patch/20250714072051.1928-1-xiangwencheng@lanxincomputing.com/raw/" class="btn btn-default" role="button" title="Download patch diff">
+    diff
+  </a>
+  <a href="/project/linux-riscv/patch/20250714072051.1928-1-xiangwencheng@lanxincomputing.com/mbox/" class="btn btn-default" role="button" title="Download patch mbox">
+    mbox
+  </a>
+
+
+  <a href="/series/981937/mbox/" class="btn btn-default" role="button" title="Download patch mbox with dependencies">
+    series
+  </a>
+
+</div>
+
+  <h2>Patch</h2>
+</div>
+<div id="patch" class="patch">
+  <pre class="content"><span class="p_header">diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h</span>
+<span class="p_header">index 5f59fd226cc5..be29c3502fe4 100644</span>
+<span class="p_header">--- a/arch/riscv/include/uapi/asm/kvm.h</span>
+<span class="p_header">+++ b/arch/riscv/include/uapi/asm/kvm.h</span>
+<span class="p_chunk">@@ -22,6 +22,8 @@</span> <span class="p_context"></span>
+ #define KVM_INTERRUPT_SET	-1U
+ #define KVM_INTERRUPT_UNSET	-2U
+ 
+<span class="p_add">+#define KVM_EXIT_FAIL_ENTRY_NO_VSFILE	(1ULL &lt;&lt; 0)</span>
+<span class="p_add">+</span>
+ /* for KVM_GET_REGS and KVM_SET_REGS */
+ struct kvm_regs {
+ };
+<span class="p_header">diff --git a/arch/riscv/kvm/aia_imsic.c b/arch/riscv/kvm/aia_imsic.c</span>
+<span class="p_header">index 29ef9c2133a9..69b0ab651389 100644</span>
+<span class="p_header">--- a/arch/riscv/kvm/aia_imsic.c</span>
+<span class="p_header">+++ b/arch/riscv/kvm/aia_imsic.c</span>
+<span class="p_chunk">@@ -760,7 +760,7 @@</span> <span class="p_context"> int kvm_riscv_vcpu_aia_imsic_update(struct kvm_vcpu *vcpu)</span>
+ 		/* For HW acceleration mode, we can't continue */
+ 		if (kvm-&gt;arch.aia.mode == KVM_DEV_RISCV_AIA_MODE_HWACCEL) {
+ 			run-&gt;fail_entry.hardware_entry_failure_reason =
+<span class="p_del">-								CSR_HSTATUS;</span>
+<span class="p_add">+								KVM_EXIT_FAIL_ENTRY_NO_VSFILE;</span>
+ 			run-&gt;fail_entry.cpu = vcpu-&gt;cpu;
+ 			run-&gt;exit_reason = KVM_EXIT_FAIL_ENTRY;
+ 			return 0;
+
+  </pre>
+</div>
+
+
+    </div>
+    <div id="footer">
+      <a href="http://jk.ozlabs.org/projects/patchwork/">patchwork</a> patch tracking system |
+      version v3.1.3 |
+      <a href="/about/">about patchwork</a>
+    </div>
+  
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
