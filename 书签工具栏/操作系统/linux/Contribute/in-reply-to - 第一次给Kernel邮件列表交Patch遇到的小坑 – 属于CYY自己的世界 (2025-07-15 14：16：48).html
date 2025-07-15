@@ -1,0 +1,849 @@
+<!-- Filename: 书签工具栏/操作系统/linux/Contribute/in-reply-to - 第一次给Kernel邮件列表交Patch遇到的小坑 – 属于CYY自己的世界 (2025-07-15 14：16：48).html
+ Page saved with X-Webpage-Conserve 
+ url: https://blog.cyyself.name/git-send-email-to-mailing-list/
+ Summary: 
+-->
+<html lang="en-US"><head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="profile" href="https://gmpg.org/xfn/11">
+
+	<title>第一次给Kernel邮件列表交Patch遇到的小坑 – 属于CYY自己的世界</title>
+<meta name="robots" content="max-image-preview:large">
+	<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
+	<link rel="alternate" type="application/rss+xml" title="属于CYY自己的世界 » Feed" href="https://blog.cyyself.name/feed/">
+<link rel="alternate" type="application/rss+xml" title="属于CYY自己的世界 » Comments Feed" href="https://blog.cyyself.name/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="属于CYY自己的世界 » 第一次给Kernel邮件列表交Patch遇到的小坑 Comments Feed" href="https://blog.cyyself.name/git-send-email-to-mailing-list/feed/">
+<link rel="stylesheet" id="wp-block-library-css" href="https://blog.cyyself.name/wp-includes/css/dist/block-library/style.min.css?ver=6.7.2" type="text/css" media="all">
+<style id="wp-block-library-theme-inline-css" type="text/css">
+.wp-block-audio :where(figcaption){color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-audio :where(figcaption){color:#ffffffa6}.wp-block-audio{margin:0 0 1em}.wp-block-code{border:1px solid #ccc;border-radius:4px;font-family:Menlo,Consolas,monaco,monospace;padding:.8em 1em}.wp-block-embed :where(figcaption){color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-embed :where(figcaption){color:#ffffffa6}.wp-block-embed{margin:0 0 1em}.blocks-gallery-caption{color:#555;font-size:13px;text-align:center}.is-dark-theme .blocks-gallery-caption{color:#ffffffa6}:root :where(.wp-block-image figcaption){color:#555;font-size:13px;text-align:center}.is-dark-theme :root :where(.wp-block-image figcaption){color:#ffffffa6}.wp-block-image{margin:0 0 1em}.wp-block-pullquote{border-bottom:4px solid;border-top:4px solid;color:currentColor;margin-bottom:1.75em}.wp-block-pullquote cite,.wp-block-pullquote footer,.wp-block-pullquote__citation{color:currentColor;font-size:.8125em;font-style:normal;text-transform:uppercase}.wp-block-quote{border-left:.25em solid;margin:0 0 1.75em;padding-left:1em}.wp-block-quote cite,.wp-block-quote footer{color:currentColor;font-size:.8125em;font-style:normal;position:relative}.wp-block-quote:where(.has-text-align-right){border-left:none;border-right:.25em solid;padding-left:0;padding-right:1em}.wp-block-quote:where(.has-text-align-center){border:none;padding-left:0}.wp-block-quote.is-large,.wp-block-quote.is-style-large,.wp-block-quote:where(.is-style-plain){border:none}.wp-block-search .wp-block-search__label{font-weight:700}.wp-block-search__button{border:1px solid #ccc;padding:.375em .625em}:where(.wp-block-group.has-background){padding:1.25em 2.375em}.wp-block-separator.has-css-opacity{opacity:.4}.wp-block-separator{border:none;border-bottom:2px solid;margin-left:auto;margin-right:auto}.wp-block-separator.has-alpha-channel-opacity{opacity:1}.wp-block-separator:not(.is-style-wide):not(.is-style-dots){width:100px}.wp-block-separator.has-background:not(.is-style-dots){border-bottom:none;height:1px}.wp-block-separator.has-background:not(.is-style-wide):not(.is-style-dots){height:2px}.wp-block-table{margin:0 0 1em}.wp-block-table td,.wp-block-table th{word-break:normal}.wp-block-table :where(figcaption){color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-table :where(figcaption){color:#ffffffa6}.wp-block-video :where(figcaption){color:#555;font-size:13px;text-align:center}.is-dark-theme .wp-block-video :where(figcaption){color:#ffffffa6}.wp-block-video{margin:0 0 1em}:root :where(.wp-block-template-part.has-background){margin-bottom:0;margin-top:0;padding:1.25em 2.375em}
+</style>
+<style id="classic-theme-styles-inline-css" type="text/css">
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+</style>
+<style id="global-styles-inline-css" type="text/css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}
+</style>
+<style id="md-style-inline-css" type="text/css">
+ .gfm-task-list { border: 1px solid transparent; list-style-type: none; } .gfm-task-list input { margin-right: 10px !important; } .katex-container { margin: 25px !important; text-align: center; } .katex-container.katex-inline { display: inline-block !important; background: none !important; margin: 0 !important; padding: 0 !important; } pre .katex-container { font-size: 1.4em !important; } .katex-inline { background: none !important; margin: 0 3px; } .copy-button { cursor: pointer; border: 0; font-size: 12px; text-transform: uppercase; font-weight: 500; padding: 3px 6px 3px 6px; background-color: rgba(255, 255, 255, 0.6); position: absolute; overflow: hidden; top: 5px; right: 5px; border-radius: 3px; } .copy-button:before { content: ""; display: inline-block; width: 16px; height: 16px; margin-right: 3px; background-size: contain; background-image: url("data:image/svg+xml,%3Csvg version=\'1.1\' xmlns=\'http://www.w3.org/2000/svg\' xmlns:xlink=\'http://www.w3.org/1999/xlink\' x=\'0px\' y=\'0px\' width=\'16px\' height=\'16px\' viewBox=\'888 888 16 16\' enable-background=\'new 888 888 16 16\' xml:space=\'preserve\'%3E %3Cpath fill=\'%23333333\' d=\'M903.143,891.429c0.238,0,0.44,0.083,0.607,0.25c0.167,0.167,0.25,0.369,0.25,0.607v10.857 c0,0.238-0.083,0.44-0.25,0.607s-0.369,0.25-0.607,0.25h-8.571c-0.238,0-0.44-0.083-0.607-0.25s-0.25-0.369-0.25-0.607v-2.571 h-4.857c-0.238,0-0.44-0.083-0.607-0.25s-0.25-0.369-0.25-0.607v-6c0-0.238,0.06-0.5,0.179-0.786s0.262-0.512,0.428-0.679 l3.643-3.643c0.167-0.167,0.393-0.309,0.679-0.428s0.547-0.179,0.786-0.179h3.714c0.238,0,0.44,0.083,0.607,0.25 c0.166,0.167,0.25,0.369,0.25,0.607v2.929c0.404-0.238,0.785-0.357,1.143-0.357H903.143z M898.286,893.331l-2.67,2.669h2.67V893.331 z M892.571,889.902l-2.669,2.669h2.669V889.902z M894.321,895.679l2.821-2.822v-3.714h-3.428v3.714c0,0.238-0.083,0.441-0.25,0.607 s-0.369,0.25-0.607,0.25h-3.714v5.714h4.571v-2.286c0-0.238,0.06-0.5,0.179-0.786C894.012,896.071,894.155,895.845,894.321,895.679z M902.857,902.857v-10.286h-3.429v3.714c0,0.238-0.083,0.441-0.25,0.607c-0.167,0.167-0.369,0.25-0.607,0.25h-3.714v5.715H902.857z\' /%3E %3C/svg%3E"); background-repeat: no-repeat; position: relative; top: 3px; } pre { position: relative; } pre:hover .copy-button { background-color: rgba(255, 255, 255, 0.9); } .md-widget-toc { padding: 15px; } .md-widget-toc a { color: #333333; } .post-toc-header { font-weight: 600; margin-bottom: 10px; } .md-post-toc { font-size: 0.9em; } .post h2 { overflow: hidden; } .post-toc-block { margin: 0 10px 20px 10px; overflow: hidden; } .post-toc-block.with-border { border: 1px #dddddd solid; padding: 10px; } .post-toc-block.float-right { max-width: 320px; float: right; } .post-toc-block.float-left { max-width: 320px; float: left; } .md-widget-toc ul, .md-widget-toc ol, .md-post-toc ul, .md-post-toc ol { padding-left: 15px; margin: 0; } .md-widget-toc ul ul, .md-widget-toc ul ol, .md-widget-toc ol ul, .md-widget-toc ol ol, .md-post-toc ul ul, .md-post-toc ul ol, .md-post-toc ol ul, .md-post-toc ol ol { padding-left: 2em; } .md-widget-toc ul ol, .md-post-toc ul ol { list-style-type: lower-roman; } .md-widget-toc ul ul ol, .md-widget-toc ul ol ol, .md-post-toc ul ul ol, .md-post-toc ul ol ol { list-style-type: lower-alpha; } .md-widget-toc ol ul, .md-widget-toc ol ol, .md-post-toc ol ul, .md-post-toc ol ol { padding-left: 2em; } .md-widget-toc ol ol, .md-post-toc ol ol { list-style-type: lower-roman; } .md-widget-toc ol ul ol, .md-widget-toc ol ol ol, .md-post-toc ol ul ol, .md-post-toc ol ol ol { list-style-type: lower-alpha; } 
+</style>
+<link rel="stylesheet" id="font-awesome-css" href="https://blog.cyyself.name/wp-content/themes/envy-blog/assets/css/font-awesome.min.css?ver=4.7.0" type="text/css" media="all">
+<link rel="stylesheet" id="envy-blog-style-css" href="https://blog.cyyself.name/wp-content/themes/envy-blog/style.css?ver=6.7.2" type="text/css" media="all">
+<link rel="stylesheet" id="prism-css-0-css" href="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/prism/themes/prism-tomorrow.min.css?ver=1.28.0" type="text/css" media="all">
+<link rel="stylesheet" id="prism-css-1-css" href="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/prism/plugins/line-numbers/prism-line-numbers.css?ver=1.28.0" type="text/css" media="all">
+<link rel="stylesheet" id="emojify-css" href="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/emojify/css/emojify.min.css?ver=1.1.0" type="text/css" media="all">
+<script type="text/javascript" src="https://blog.cyyself.name/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1" id="jquery-migrate-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/js/jquery.toc.min.js?ver=1.0.1" id="githuber-toc-js"></script>
+<link rel="https://api.w.org/" href="https://blog.cyyself.name/wp-json/"><link rel="alternate" title="JSON" type="application/json" href="https://blog.cyyself.name/wp-json/wp/v2/posts/2038"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://blog.cyyself.name/xmlrpc.php?rsd">
+<meta name="generator" content="WordPress 6.7.2">
+<link rel="canonical" href="https://blog.cyyself.name/git-send-email-to-mailing-list/">
+<link rel="shortlink" href="https://blog.cyyself.name/?p=2038">
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://blog.cyyself.name/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fblog.cyyself.name%2Fgit-send-email-to-mailing-list%2F">
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://blog.cyyself.name/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fblog.cyyself.name%2Fgit-send-email-to-mailing-list%2F&amp;format=xml">
+<link rel="pingback" href="https://blog.cyyself.name/xmlrpc.php"><style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>		<style type="text/css" id="wp-custom-css">
+			a:visited {
+    color: #E91E63;
+}
+a {
+    color: #E91E63;
+}
+.nav-bar {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+code {
+    margin-left: 5px;
+    margin-right: 4px;
+    border: 0 solid #ddd;
+    background: #f6f6f6;
+    padding: 3px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: #333;
+}
+
+pre > code {
+		padding: 0px;
+		margin-left: 0px;
+    margin-right: 0px;
+		background: transparent;
+}
+
+pre[class*="language-"].line-numbers {
+		line-height: 1.0;
+}		</style>
+		<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+
+<body class="post-template-default single single-post postid-2038 single-format-standard wp-embed-responsive">
+
+
+<div class="container">
+    <div class="row">
+
+        
+        <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+        <header class="nav-bar nav-down" style="top: 0px;">
+
+            
+            <div class="nav-bar-container header-layout-1">
+
+                <div class="site-branding">
+
+            <p class="site-title">
+            
+                            <a href="https://blog.cyyself.name/" rel="home">
+                    属于CYY自己的世界                </a>
+                    </p>
+    
+                <p class="site-description">https://blog.cyyself.name</p>
+            </div><!-- .site-branding -->
+
+<div id="site-navigation" class="main-navigation" role="navigation">
+    <div class="main-navigation-wrap d-none d-lg-block">
+        <div class="menu-pages-container"><ul id="menu-pages" class="menu"><li id="menu-item-301" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-301"><a href="/">Blog</a></li>
+<li id="menu-item-294" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-294"><a href="https://blog.cyyself.name/contact_me/">Contact</a></li>
+</ul></div>    </div>
+
+    <div class="main-navigation-wrap main-navigation-sm d-lg-none" style="top: 135.6px;">
+        <div class="menu-pages-container"><ul id="menu-pages-1" class="menu"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-301"><a href="/">Blog</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-294"><a href="https://blog.cyyself.name/contact_me/">Contact</a></li>
+</ul></div>    </div>
+
+    <div class="nav-bar-extended">
+                    <ul>
+                <li class="nav-bar-search-icon"><a href="#"><i class="pt-icon-search"></i></a></li>
+                            </ul>
+        
+        <div class="hamburger-menu hamburger-menu-primary">
+            <a href="#">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div><!-- .hamburger-menu -->
+    </div><!-- .nav-bar-extended -->
+    <div class="main-navigation-wrap main-navigation-sm mobile-only" style="top: 135.6px;">
+        <button class="circular-focus screen-reader-text" data-goto=".menu &gt; li:first-child &gt; a">Circular focus</button>
+            <div class="menu-pages-container"><ul id="menu-pages-2" class="menu"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-301"><a href="/">Blog</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-294"><a href="https://blog.cyyself.name/contact_me/">Contact</a></li>
+</ul></div>             <div class="hamburger-menu hamburger-menu-primary always-open">
+                <a href="#">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </a>
+            </div><!--.hamburger-menu -->
+        <button class="circular-focus screen-reader-text" data-goto=".menu &gt; li:first-child &gt; a">Circular focus</button>
+    </div>
+</div><!-- #site-navigation -->
+
+    <div class="nav-bar-search-wrap transition-5">
+        
+        <div class="nav-bar-search-holder">
+            <button class="circular-focus screen-reader-text" data-goto=".nav-bar-search-close">Circular focus</button>
+            <form role="search" method="get" class="search-form" action="https://blog.cyyself.name/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search …" value="" name="s">
+				</label>
+				<input type="submit" class="search-submit" value="Search">
+			</form>            <a class="nav-bar-search-close" href="#"><i class="pt-icon-close transition-5"></i></a>
+            <button class="circular-focus screen-reader-text" data-goto=".search-field">Circular focus</button>
+        </div><!-- .nav-bar-search-holder -->
+    </div><!-- .nav-bar-search-wrap -->
+
+            </div><!-- .nav-bar-container -->
+        </header><!-- .nav-bar -->
+
+        <div class="nav-bar-separator" style="height: 135.6px;"></div><!-- .nab-bar-separator -->
+    </div><!-- .row -->
+
+    
+<div id="breadcrumb">	
+	<div role="navigation" aria-label="Breadcrumbs" class="envy-blog-breadcrumbs breadcrumbs"><ul class="trail-items d-flex flex-wrap align-items-center p-0 mb-0 ml-0 ls-none"><meta name="numberOfItems" content="3"><meta name="itemListOrder" content="Ascending"><li class="trail-item trail-begin" typeof="v:Breadcrumb"><a href="https://blog.cyyself.name/" rel="v:url" property="v:title">Home</a><meta content="1"></li><li class="trail-item" typeof="v:Breadcrumb"><a href="https://blog.cyyself.name/category/%e6%8a%98%e8%85%be/" rel="v:url" property="v:title">折腾</a><meta content="2"></li><li class="trail-item trail-end" typeof="v:Breadcrumb">第一次给Kernel邮件列表交Patch遇到的小坑<meta content="3"></li></ul></div>	
+</div><!-- #breadcrumb --><div id="content" class="site-content">
+
+
+<div class="row post-layout has-full-width post-layout-1">
+    <div id="primary" class="content-area has-full-width">
+        <main id="main" class="site-main" role="main">
+
+            
+<article id="post-2038" class="post-2038 post type-post status-publish format-standard hentry category-linux category-31 content-wrap">
+    <div class="post-content align-left">
+
+        
+                    <header class="entry-header order-position order-position-1">
+                        <h1 class="entry-title">第一次给Kernel邮件列表交Patch遇到的小坑</h1>                    </header><!-- .entry-header -->
+
+                    
+                    <div class="entry-meta order-position order-position-2">
+                        <span class="posted-date"><label class="date-label">Published on: </label><span class="date-format"><a href="https://blog.cyyself.name/git-send-email-to-mailing-list/" rel="bookmark"><time class="entry-date published" datetime="2023-04-29T01:16:06+08:00">2023年4月29日</time><time class="updated" datetime="2024-06-08T01:16:54+08:00">2024年6月8日</time></a></span></span><span class="posted-author"><label class="author-label">Author: </label><span class="author vcard"><a class="url fn n" href="https://blog.cyyself.name/author/admin/">Yangyu Chen</a></span></span><span class="posted-comment"><label class="comments-label">Comments: </label><span class="comment"><a href="https://blog.cyyself.name/git-send-email-to-mailing-list/#comments">3</a></span></span>
+                    </div><!-- .entry-meta -->
+
+                    
+                    <div class="entry-content order-position order-position-3">
+                        <div class="post-toc-block float-default with-border"> 
+						<div class="post-toc-header">Table of Contents</div>
+						<nav id="md-post-toc" class="md-post-toc"><ol><li><a href="#toc-0">Post navigation</a></li></ol></nav>
+						</div><p>第一次交 PATCH ，交成了这样：</p>
+<p><a href="/wp-content/uploads/2023/04/Screenshot-from-2023-04-29-00-47-55.png"><img decoding="async" src="/wp-content/uploads/2023/04/Screenshot-from-2023-04-29-00-47-55.png" alt=""></a></p>
+<p>而我交 patch 的方式只不过是：</p>
+<div style="position: relative;"><pre class="line-numbers language-bash" tabindex="0"><code class="language-bash"><span class="token function">git</span> format-patch 457391b0380335d5e9a5babdec90ac53928b23b4 --cover-letter
+<span class="token comment"># edit cover letter</span>
+<span class="token function">git</span> send-email <span class="token punctuation">\</span>
+        --from <span class="token string">'Yangyu Chen &lt;cyy@cyyself.name&gt;'</span> <span class="token punctuation">\</span>
+        --to <span class="token variable">$to_list</span> <span class="token punctuation">\</span>
+        --cc <span class="token variable">$cc_list</span> <span class="token punctuation">\</span>
+        *.patch<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><button class="copy-button">Copy</button></div>
+<p>起初以为只是个意外，直到我交了PATCH v2，它依然是这样出现在邮件列表：</p>
+<p><a href="/wp-content/uploads/2023/04/Screenshot-from-2023-04-29-00-45-28.png"><img decoding="async" src="/wp-content/uploads/2023/04/Screenshot-from-2023-04-29-00-45-28.png" alt=""></a></p>
+<p>于是我开始寻找原因，最后发现是我的邮件服务提供商会override邮件中的Message ID，这个ID由git send-email生成，并在后续的patch使用直接In-reply-to指明该ID，但由于这个Message ID被Override了，所以会导致In-reply-to原有的ID找不到，因此导致了这样的结果。</p>
+<p><a href="/wp-content/uploads/2023/04/Screenshot-from-2023-04-29-01-02-34.png"><img decoding="async" src="/wp-content/uploads/2023/04/Screenshot-from-2023-04-29-01-02-34.png" alt=""></a></p>
+<p>既然这样，我们显然有一种简单的解决方法，除了换邮箱外（对于域名邮箱当然可以换提供商），一种workaround就是我们先发送cover letter，然后查看被邮件服务商override之后的Message ID，再将后续的patch作为这个Message ID的回复即可。</p>
+<p>后续经<a href="https://github.com/dramforever">dram</a>提醒，我们在使用这种方式发送邮件时需要在<code>git send-mail</code>加上<code>--no-thread</code>参数，否则就会导致除patch1外所有后续邮件加上<code>in-reply-to</code>第一个patch（而非cover letter），在这种情况下这是灾难，将导致邮件Thread变成这样：</p>
+<div style="position: relative;"><pre class="line-numbers language-bash" tabindex="0"><code class="language-bash">-  <span class="token punctuation">[</span>PATCH <span class="token number">0</span>/x<span class="token punctuation">]</span> cover letter
+  - <span class="token punctuation">[</span>PATCH <span class="token number">1</span>/x<span class="token punctuation">]</span> patch <span class="token number">1</span>
+    - <span class="token punctuation">[</span>PATCH <span class="token number">2</span>/x<span class="token punctuation">]</span> patch <span class="token number">2</span>
+    - <span class="token punctuation">[</span>PATCH <span class="token number">3</span>/x<span class="token punctuation">]</span> patch <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><button class="copy-button">Copy</button></div>
+<p>最后总结出发邮件方法如下：</p>
+<div style="position: relative;"><pre class="line-numbers language-bash" tabindex="0"><code class="language-bash"><span class="token function">git</span> send-email 0000-cover-letter.patch
+<span class="token comment"># 然后等待第一封邮件到达后查看被篡改的Message-ID，作为后续的in-reply-to</span>
+<span class="token function">git</span> send-email --in-reply-to<span class="token operator">=</span><span class="token string">'&lt;xxxx&gt;'</span> --no-thread 0001-xxxx.patch 0002-xxxx.patch<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><button class="copy-button">Copy</button></div>
+<p>目前已知，针对个人的Outlook和QQ邮箱（含deprecated域名邮箱）都有此问题，而exmail.qq.com无此问题。</p>
+<p>还要提醒大家注意的是，测试邮箱的时候需要小心git自动添加的CC，别打扰到别人了。</p>
+                    </div><!-- .entry-content -->
+
+                    <footer class="entry-footer">
+
+
+                        <div class="entry-meta">
+                            <span class="posted-category"><label class="categories-label">Categories: </label><span class="cat-links"><a href="https://blog.cyyself.name/category/linux/" rel="category tag">Linux</a>, <a href="https://blog.cyyself.name/category/%e6%8a%98%e8%85%be/" rel="category tag">折腾</a></span></span><span class="posted-tag"></span>                        </div><!-- .entry-meta -->
+
+
+                        
+                    </footer><!-- .entry-footer -->
+
+                    
+        <div class="post-navigation-wrap navigation-layout-2">
+            
+	<nav class="navigation post-navigation" aria-label="Posts">
+		<h2 class="screen-reader-text" id="toc-0">Post navigation</h2>
+		<div class="nav-links"><div class="nav-previous"><a href="https://blog.cyyself.name/ddr4-hbm-iops/" rel="prev"><span class="screen-reader-text">Previous Post</span><span class="nav-title">DDR4与HBM在UltraScale+ HBM上的IOPS测试</span></a></div><div class="nav-next"><a href="https://blog.cyyself.name/early-years-fault-tolerance-vm/" rel="next"><span class="screen-reader-text">Next Post</span><span class="nav-title">浅谈早期 Fault Tolerance 虚拟机原理</span></a></div></div>
+	</nav>        </div><!-- .post-navigation-wrap -->
+
+    
+    </div><!-- .post-content -->
+</article><!-- #post- -->
+
+<div id="comments" class="comments-area">
+
+			<h2 class="comments-title">
+			3 Responses		</h2>
+
+		
+		<ol class="comment-list">
+					<li id="comment-10099" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-10099" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/1132ab2c661f09be8afe740160c0fa9b?s=200&amp;d=mm&amp;r=g" srcset="https://secure.gravatar.com/avatar/1132ab2c661f09be8afe740160c0fa9b?s=400&amp;d=mm&amp;r=g 2x" class="avatar avatar-200 photo" height="200" width="200" decoding="async">						<b class="fn"><a href="https://l2dy.sourceforge.io/" class="url" rel="ugc external nofollow">l2dy</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://blog.cyyself.name/git-send-email-to-mailing-list/#comment-10099"><time datetime="2024-06-07T23:34:38+08:00">2024年6月7日 at pm11:34</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>请问git自动添加CC是什么机制呢？也想避免踩坑。</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://blog.cyyself.name/git-send-email-to-mailing-list/?replytocom=10099#respond" data-commentid="10099" data-postid="2038" data-belowelement="div-comment-10099" data-respondelement="respond" data-replyto="Reply to l2dy" aria-label="Reply to l2dy">Reply</a></div>			</article><!-- .comment-body -->
+		<ol class="children">
+		<li id="comment-10100" class="comment byuser comment-author-admin bypostauthor odd alt depth-2">
+			<article id="div-comment-10100" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/efaa306e25ed5842ace7210951d5a205?s=200&amp;d=mm&amp;r=g" srcset="https://secure.gravatar.com/avatar/efaa306e25ed5842ace7210951d5a205?s=400&amp;d=mm&amp;r=g 2x" class="avatar avatar-200 photo" height="200" width="200" decoding="async">						<b class="fn">陈泱宇</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://blog.cyyself.name/git-send-email-to-mailing-list/#comment-10100"><time datetime="2024-06-07T23:36:27+08:00">2024年6月7日 at pm11:36</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>当commit message里存在邮箱的时候会自动添加CC，比如你的patch可能有Reviewed-By等等。</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://blog.cyyself.name/git-send-email-to-mailing-list/?replytocom=10100#respond" data-commentid="10100" data-postid="2038" data-belowelement="div-comment-10100" data-respondelement="respond" data-replyto="Reply to 陈泱宇" aria-label="Reply to 陈泱宇">Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+		<li id="comment-12215" class="comment even thread-odd thread-alt depth-1">
+			<article id="div-comment-12215" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt="" src="https://secure.gravatar.com/avatar/96dd897174b5ff4e89c7e92568289da3?s=200&amp;d=mm&amp;r=g" srcset="https://secure.gravatar.com/avatar/96dd897174b5ff4e89c7e92568289da3?s=400&amp;d=mm&amp;r=g 2x" class="avatar avatar-200 photo" height="200" width="200" decoding="async">						<b class="fn">windowsair</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://blog.cyyself.name/git-send-email-to-mailing-list/#comment-12215"><time datetime="2025-04-16T09:28:51+08:00">2025年4月16日 at am9:28</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>exmail.qq.com 也有这个问题。 在 v2.40.0 以后的 git ，QQ 不认 “Message-ID” ，会把这个字段覆盖掉。 比较旧的 git 版本使用 “Message-Id”，反而不会被覆盖</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="https://blog.cyyself.name/git-send-email-to-mailing-list/?replytocom=12215#respond" data-commentid="12215" data-postid="2038" data-belowelement="div-comment-12215" data-respondelement="respond" data-replyto="Reply to windowsair" aria-label="Reply to windowsair">Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		</ol><!-- .comment-list -->
+
+			<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/git-send-email-to-mailing-list/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://blog.cyyself.name/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate=""><p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> <span class="required-field-message">Required fields are marked <span class="required">*</span></span></p><p class="comment-form-comment"><label for="comment">Comment <span class="required">*</span></label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required=""></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" autocomplete="name" required=""></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" autocomplete="email" required=""></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200" autocomplete="url"></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment"> <input type="hidden" name="comment_post_ID" value="2038" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="3dfc4a25f1"></p><p style="display: none !important;" class="akismet-fields-container" data-prefix="ak_"><label>Δ<textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100"></textarea></label><input type="hidden" id="ak_js_1" name="ak_js" value="1752560060695"><script>document.getElementById( "ak_js_1" ).setAttribute( "value", ( new Date() ).getTime() );</script></p></form>	</div><!-- #respond -->
+	
+</div><!-- #comments -->
+
+        </main><!-- #main -->
+    </div><!-- #primary -->
+
+    
+</div><!-- .row -->
+
+</div><!-- #content -->
+
+    <footer class="site-footer">
+
+        
+                <div class="footer-widgets footer-layout-8">
+                    
+<div class="footer-col-4">
+    <aside id="categories-5" class="widget widget_categories"><h3 class="widget-title">Categories</h3>
+			<ul>
+					<li class="cat-item cat-item-49"><a href="https://blog.cyyself.name/category/arch/">Arch</a>
+</li>
+	<li class="cat-item cat-item-53"><a href="https://blog.cyyself.name/category/bus/">bus</a>
+</li>
+	<li class="cat-item cat-item-54"><a href="https://blog.cyyself.name/category/chisel/">Chisel</a>
+</li>
+	<li class="cat-item cat-item-46"><a href="https://blog.cyyself.name/category/compiler/">Compiler</a>
+</li>
+	<li class="cat-item cat-item-48"><a href="https://blog.cyyself.name/category/fpga/">FPGA</a>
+</li>
+	<li class="cat-item cat-item-44"><a href="https://blog.cyyself.name/category/linux/">Linux</a>
+</li>
+	<li class="cat-item cat-item-45"><a href="https://blog.cyyself.name/category/network/">Networking</a>
+</li>
+	<li class="cat-item cat-item-32"><a href="https://blog.cyyself.name/category/oi/">OI</a>
+</li>
+	<li class="cat-item cat-item-52"><a href="https://blog.cyyself.name/category/paper-review/">paper-review</a>
+</li>
+	<li class="cat-item cat-item-47"><a href="https://blog.cyyself.name/category/risc-v/">RISC-V</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://blog.cyyself.name/category/%e6%88%91%e5%8f%aa%e6%98%af%e6%90%ac%e8%bf%90%e5%b7%a5/">我只是搬运工</a>
+</li>
+	<li class="cat-item cat-item-31"><a href="https://blog.cyyself.name/category/%e6%8a%98%e8%85%be/">折腾</a>
+</li>
+	<li class="cat-item cat-item-30"><a href="https://blog.cyyself.name/category/%e9%9a%8f%e7%ac%94/">随笔</a>
+</li>
+			</ul>
+
+			</aside></div><!-- .col-4 -->
+
+<div class="footer-col-4">
+    <aside id="search-7" class="widget widget_search"><form role="search" method="get" class="search-form" action="https://blog.cyyself.name/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search …" value="" name="s">
+				</label>
+				<input type="submit" class="search-submit" value="Search">
+			</form></aside><aside id="block-20" class="widget widget_block"><h3> ICP备案 </h3>
+<a href="https://beian.miit.gov.cn/">闽ICP备15008014号-1</a>
+
+<br>
+<br>
+
+<h3> Copyright </h3>
+
+All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.en">CC-BY-SA 4.0</a>.</aside><aside id="block-19" class="widget widget_block"></aside></div><!-- .col-4 -->
+
+<div class="footer-col-4">
+    <aside id="recent-comments-4" class="widget widget_recent_comments"><h3 class="widget-title">Recent Comments</h3><ul id="recentcomments"><li class="recentcomments"><span class="comment-author-link">Mandelbrot</span> on <a href="https://blog.cyyself.name/travel-esim-guide-with-physical-sim-only-phones/#comment-12514">非原生 eSIM 手机出国旅游 eSIM 使用指北</a></li><li class="recentcomments"><span class="comment-author-link">Yangyu Chen</span> on <a href="https://blog.cyyself.name/risc-v-summit-europe-2025/#comment-12320">RISC-V Summit Europe 2025 游记</a></li><li class="recentcomments"><span class="comment-author-link">Deleted Account</span> on <a href="https://blog.cyyself.name/risc-v-summit-europe-2025/#comment-12319">RISC-V Summit Europe 2025 游记</a></li><li class="recentcomments"><span class="comment-author-link">Deleted Account</span> on <a href="https://blog.cyyself.name/risc-v-summit-europe-2025/#comment-12318">RISC-V Summit Europe 2025 游记</a></li><li class="recentcomments"><span class="comment-author-link">windowsair</span> on <a href="https://blog.cyyself.name/git-send-email-to-mailing-list/#comment-12215">第一次给Kernel邮件列表交Patch遇到的小坑</a></li></ul></aside></div><!-- .col-4 -->
+
+<div class="footer-col-4">
+    <aside id="text-4" class="widget widget_text"><h3 class="widget-title">Friends</h3>			<div class="textwidget"><p><a href="https://soha.moe">潜入海底</a> <br>
+<a href="https://renjikai.com">杰克部落</a> <br>
+<a href="https://ringoer.com/">Ringo’s Coding Life</a> <br>
+<a href="https://www.luogu.org/blog/pantw/">Pantw</a> <br>
+<a href="https://twd2.me">Wandai Blog</a> <br>
+<a href="https://blog.mky.moe/">zbaxrl's blog</a> <br>
+<a href="https://xyenchi.github.io/">xyenchi's blog</a> <br>
+<a href="https://hack3r.moe/blog/">hacker's space</a> <br>
+<a href="https://shadowmov.com/">ShadowMov's Blog</a> <br>
+<a href="https://blog.eastonman.com/">Easton Man's Blog</a> <br>
+<a href="https://blog.mxpkx.com/">Kiritake Kumi ‘s Blog</a> <br>
+<a href="https://blog.rewired.moe/">Blog Rewired</a> <br>
+<a href="https://obliv.me/">Obliviated::Victor</a> <br>
+<a href="https://blog.centaurus99.top/">Centaurus99 的杂物堆</a> <br>
+<a href="https://blog.xhyeax.com">Xhy's Blog</a> </p>
+</div>
+		</aside></div><!-- .col-4 -->
+                </div><!-- .footer-widgets -->
+                
+    <div id="colophon" class="footer-bar align-center has-footer-bar-col-1" role="contentinfo">
+
+        
+                <div class="footer-copyright has-footer-bar-col-1">
+                    Copyright © 2025 <a href="https://blog.cyyself.name/">属于CYY自己的世界</a>. All rights reserved.<span class="sep"> | </span>Designed by <a href="http://precisethemes.com/" rel="designer" target="_blank">Precise Themes</a>                </div><!-- .footer-copyright -->
+
+            
+    </div><!-- #colophon -->
+
+
+    </footer><!-- .site-footer -->
+
+    
+        <div class="back-to-top">
+            Back to Top        </div><!-- #back-to-top -->
+
+    
+</div><!-- .container -->
+
+<script type="text/javascript" src="https://blog.cyyself.name/wp-includes/js/imagesloaded.min.js?ver=5.0.0" id="imagesloaded-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-includes/js/masonry.min.js?ver=4.2.2" id="masonry-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-content/themes/envy-blog/assets/js/theme-custom.min.js?ver=1.4.7" id="envy-blog-custom-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-includes/js/comment-reply.min.js?ver=6.7.2" id="comment-reply-js" async="async" data-wp-strategy="async"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/prism/components/prism-core.min.js?ver=1.28.0" id="prism-js-0-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/prism/prism.min.js?ver=1.28.0" id="prism-js-1-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/prism/plugins/line-numbers/prism-line-numbers.min.js?ver=1.28.0" id="prism-js-2-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/prism/plugins/autoloader/prism-autoloader.min.js?ver=1.28.0" id="prism-js-3-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-includes/js/clipboard.min.js?ver=2.0.11" id="clipboard-js"></script>
+<script type="text/javascript" src="https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/emojify/js/emojify.min.js?ver=1.1.0" id="emojify-js"></script>
+<script defer="" type="text/javascript" src="https://blog.cyyself.name/wp-content/plugins/akismet/_inc/akismet-frontend.js?ver=1734167391" id="akismet-frontend-js"></script>
+     <script>
+        /(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
+    </script>
+     <script id="module-flowchart"> (function($) { $(function() { if (typeof $.fn.flowChart !== "undefined") { if ($(".language-flow").length > 0) { $(".language-flow").parent("pre").attr("style", "text-align: center; background: none;"); $(".language-flow").addClass("flowchart").removeClass("language-flow"); $(".flowchart").flowChart(); } } }); })(jQuery); </script>  <script id="module-katex"> (function($) { $(function() { if (typeof katex !== "undefined") { if ($(".language-katex").length > 0) { $(".language-katex").parent("pre").attr("style", "text-align: center; background: none;"); $(".language-katex").addClass("katex-container").removeClass("language-katex"); $(".katex-container").each(function() { var katexText = $(this).text(); var el = $(this).get(0); if ($(this).parent("code").length == 0) { try { katex.render(katexText, el) } catch (err) { $(this).html("<span class='err'>" + err) } } }); } if ($(".katex-inline").length > 0) { $(".katex-inline").each(function() { var katexText = $(this).text(); var el = $(this).get(0); if ($(this).parent("code").length == 0) { try { katex.render(katexText, el) } catch (err) { $(this).html("<span class='err'>" + err) } } }); } } }); })(jQuery); </script>  <script id="module-sequence-diagram"> (function($) { $(function() { if (typeof $.fn.sequenceDiagram !== "undefined") { $(".language-sequence").parent("pre").attr("style", "text-align: center; background: none;"); $(".language-seq").parent("pre").attr("style", "text-align: center; background: none;"); $(".language-sequence").addClass("sequence-diagram").removeClass("language-sequence"); $(".language-seq").addClass("sequence-diagram").removeClass("language-seq"); $(".sequence-diagram").sequenceDiagram({ theme: "simple" }); } }); })(jQuery); </script>  <script id="module-mermaid"> (function($) { $(function() { if (typeof mermaid !== "undefined") { if ($(".language-mermaid").length > 0) { $(".language-mermaid").parent("pre").attr("style", "text-align: center; background: none;"); $(".language-mermaid").addClass("mermaid").removeClass("language-mermaid"); mermaid.init(); } } }); })(jQuery); </script>  <script id="auto_loader_config_scripts"> Prism.plugins.autoloader.languages_path = "https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/prism/components/"; </script>  <script id="module-prism-line-number"> (function($) { $(function() { $("code").each(function() { var parent_div = $(this).parent("pre"); var pre_css = $(this).attr("class"); if (typeof pre_css !== "undefined" && -1 !== pre_css.indexOf("language-")) { parent_div.addClass("line-numbers"); } }); }); })(jQuery); </script>  <script id="module-toc"> (function($) { $(function() { $("#md-post-toc").initTOC({ selector: "h2, h3, h4, h5, h6", scope: ".post", }); $("#md-post-toc a").click(function(e) { e.preventDefault(); var aid = $( this ).attr( "href" ); $( "html, body" ).animate( { scrollTop: $(aid).offset().top - 80 }, "slow" ); }); $("#md-widget-toc").initTOC({ selector: "h2, h3, h4, h5, h6", scope: ".post", }); $("#md-widget-toc a").click(function(e) { e.preventDefault(); var aid = $( this ).attr( "href" ); $( "html, body" ).animate( { scrollTop: $(aid).offset().top - 80 }, "slow" ); }); }); })(jQuery); </script>  <script id="module-clipboard"> (function($) { $(function() { var pre = document.getElementsByTagName("pre"); var pasteContent = document.getElementById("paste-content"); var hasLanguage = false; for (var i = 0; i < pre.length; i++) { var codeClass = pre[i].children[0].className; var isLanguage = codeClass.indexOf("language-"); var excludedCodeClassNames = [ "language-katex", "language-seq", "language-sequence", "language-flow", "language-flowchart", "language-mermaid", ]; var isExcluded = excludedCodeClassNames.indexOf(codeClass); if (isExcluded !== -1) { isLanguage = -1; } if (isLanguage !== -1) { var current_pre = pre[i]; var parent = current_pre.parentNode; var div = document.createElement("div"); div.style['position'] = 'relative'; parent.replaceChild(div, current_pre); var button = document.createElement("button"); button.className = "copy-button"; button.textContent = "Copy"; div.appendChild(current_pre); div.appendChild(button); hasLanguage = true; } }; if (hasLanguage) { var copyCode = new ClipboardJS(".copy-button", { target: function(trigger) { return trigger.previousElementSibling; } }); copyCode.on("success", function(event) { event.clearSelection(); event.trigger.textContent = "Copied"; window.setTimeout(function() { event.trigger.textContent = "Copy"; }, 2000); }); } }); })(jQuery); </script> 
+			<script id="module-emojify">
+				(function($) {
+					$(function() {
+						if (typeof emojify !== "undefined") {
+							emojify.setConfig({
+								img_dir: "https://blog.cyyself.name/wp-content/plugins/wp-githuber-md/assets/vendor/emojify/images",
+								blacklist: {
+									"classes": ["no-emojify"],
+									"elements": ["script", "textarea", "pre", "code"]
+								}
+							});
+							emojify.run();
+						} else {
+							console.log("[wp-githuber-md] emogify is undefined.");
+						}
+					});
+				})(jQuery);
+			</script>
+		
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
