@@ -1,0 +1,527 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/qemu/Contribute/Contribute to QEMU! - QEMU (2025-07-17 11：51：38).html
+ Page saved with X-Webpage-Conserve 
+ url: https://www.qemu.org/contribute/
+ Summary: 
+-->
+<html lang="en"><head>
+	<title>Contribute to QEMU! - QEMU</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="viewport" content="width=device-width">
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400%7cRoboto:300,400,500" rel="stylesheet" type="text/css">
+
+	<link rel="apple-touch-icon" sizes="180x180" href="../assets/favicons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../assets/favicons/favicon-16x16.png">
+	<link rel="manifest" href="../assets/favicons/manifest.json">
+	<link rel="mask-icon" href="../assets/favicons/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-config" content="../assets/favicons/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
+
+	<link rel="stylesheet" href="../assets/css/normalize.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../assets/css/skel-noscript.css?v=2">
+	<link rel="stylesheet" href="../assets/css/style.css">
+	<link rel="stylesheet" href="../assets/css/style-mobile.css" media="(max-width:699px)">
+	<link rel="stylesheet" href="../assets/css/style-desktop.css" media="(min-width:700px)">
+	<link rel="alternate" title="QEMU Blog (Atom feed)" href="../feed.xml" type="application/atom+xml">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	
+
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>html { font-family: sans-serif; line-height: 1.15; }body { margin: 0px; }article, aside, footer, header, nav, section { display: block; }h1 { font-size: 2em; margin: 0.67em 0px; }figcaption, figure, main { display: block; }figure { margin: 1em 40px; }hr { box-sizing: content-box; height: 0px; overflow: visible; }pre { font-family: monospace, monospace; font-size: 1em; }a { background-color: transparent; }a:active, a:hover { outline-width: 0px; }abbr[title] { border-bottom: medium; text-decoration: underline dotted; }b, strong { font-weight: inherit; }b, strong { font-weight: bolder; }code, kbd, samp { font-family: monospace, monospace; font-size: 1em; }dfn { font-style: italic; }mark { background-color: rgb(255, 255, 0); color: rgb(0, 0, 0); }small { font-size: 80%; }sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }sub { bottom: -0.25em; }sup { top: -0.5em; }audio, video { display: inline-block; }audio:not([controls]) { display: none; height: 0px; }img { border-style: none; }svg:not(:root) { overflow: hidden; }button, input, optgroup, select, textarea { font-family: sans-serif; font-size: 100%; line-height: 1.15; margin: 0px; }button, input { overflow: visible; }button, select { text-transform: none; }button, html [type="button"], [type="reset"], [type="submit"] { appearance: button; }button:focus-visible, [type="button"]:focus-visible, [type="reset"]:focus-visible, [type="submit"]:focus-visible { outline: buttontext dotted 1px; }fieldset { border: 1px solid rgb(192, 192, 192); margin: 0px 2px; padding: 0.35em 0.625em 0.75em; }legend { box-sizing: border-box; color: inherit; display: table; max-width: 100%; padding: 0px; white-space: normal; }progress { display: inline-block; vertical-align: baseline; }textarea { overflow: auto; }[type="checkbox"], [type="radio"] { box-sizing: border-box; padding: 0px; }[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button { height: auto; }[type="search"] { appearance: textfield; outline-offset: -2px; }[type="search"]::-webkit-search-cancel-button, [type="search"]::-webkit-search-decoration { appearance: none; }::-webkit-file-upload-button { appearance: button; font: inherit; }details, menu { display: block; }summary { display: list-item; }canvas { display: inline-block; }template { display: none; }[hidden] { display: none; }</style><style></style><style></style><style>.row > * { padding: 15px 0px 0px; float: none; margin-left: auto !important; margin-right: auto !important; }.row + .row > * { padding-top: 15px; }.only-desktop, .not-mobile { display: none !important; }body, input, textarea, select { line-height: 1.5em; font-size: 10.5pt; letter-spacing: 0px; }body { background: url("../images/qemu_head_200_faint.png") center center no-repeat fixed; }body.homepage { background-position: center 200px; background-attachment: scroll; }body.fixed { background-position: center 80px; background-attachment: fixed; }#featured { padding-top: 250px; }@media (min-width: 500px) {
+  body { background-image: url("../images/qemu_head_400_faint.png"); }
+  #featured { padding-top: 50px; }
+}section, article { clear: both; margin: 2em 0px; }.container { padding: 0em 1em; }header { margin-bottom: 1.6em; }header .byline { font-size: 1.2em; }.button { display: block; width: 100%; text-align: center; }.homepage h1 { font-size: 3em; padding-top: 0.6em; }h1, .homepage h2 { font-size: 2em; }h2, .homepage h3 { font-size: 1.6em; }h3, h4, h5, h6 { font-size: 1.5em; }#titleBar { width: 100%; background: rgb(22, 22, 22); height: 44px; overflow: hidden; position: fixed; margin-top: -44px; z-index: 2; }body.js { padding-top: 44px; }#titleBar .title { color: rgb(255, 255, 255); text-align: center; line-height: 44px; font-weight: 300; text-decoration: none; display: block; position: absolute; left: 0px; top: 0px; width: 100%; z-index: 1; }button[aria-controls="nav"] { float: left; position: relative; left: 0px; top: 0px; width: 80px; height: 44px; cursor: pointer; z-index: 2; background: transparent; border: 0px; color: rgb(128, 128, 128); }button[aria-controls="nav"] > span.fa { width: 20px; height: 12px; position: absolute; left: 12px; top: 10px; }button[aria-controls="nav"]:active { color: rgb(192, 192, 192); }#nav { padding: 0em; background: rgb(31, 31, 31); }#titleBar + #nav { position: fixed; margin-left: -80%; width: 80%; height: 100%; z-index: 2; left: 0px; top: 0px; }#nav > ul { margin: 0em; padding: 0.3em; }#nav > ul > li { border-top: 1px solid white; margin: 0px; padding: 0.3em; color: rgb(255, 255, 255); }#nav > ul > li:first-child { border-top: 0px; }#nav > ul > li > a, #nav > ul > li > span { display: block; padding: 0px 1em; letter-spacing: 1px; color: inherit; text-align: left; }#header { height: 9em; }#header h1 { margin-bottom: 0.2em; }#main { margin-left: 0%; width: 100%; }#sidebar { margin-left: 0%; width: 100%; }#main { padding: 2em 0em 1em; }#sidebar { clear: left; }#sidebar h1 { font-size: 1.6em; }#featured { padding-bottom: 3em; }#featured h3 { padding: 0.5em 0em; font-size: 1.4em; margin: 0em; }#featured h3 + p { margin-top: 0em; }#featured .pennant a { cursor: inherit; }#featured .pennant img { object-position: center bottom; background-position: center bottom; }@media (orientation: landscape) {
+  #featured .pennant img { height: 70vh; }
+}#welcome { padding: 4em 0em 3em; }.horiz-menu > ul { display: none !important; }.horiz-menu > article { display: block !important; border: 1px solid rgb(0, 0, 0); padding: 1em; margin-bottom: 1em; }.horiz-menu > article > header { display: block !important; }.horiz-menu pre { border: 0px; }#releases ul > li { width: 48%; }</style><style>@import url("cells.css");.row > * { padding-left: 50px; }.row > :first-child { padding-left: 0px; }.row + .row { padding-top: 50px; }.only-mobile, .not-desktop { display: none !important; }body { background: rgb(255, 255, 255) url("../images/qemu_head_200.png") 2em 80px no-repeat fixed; }body.homepage { background: rgb(255, 255, 255) url("../images/qemu_head_400_faint.png") center 60% no-repeat fixed; }body, input, textarea, select { }.homepage h1 { font-size: 7em; letter-spacing: -0.05em; }.homepage h2 { font-size: 2.2em; }h1 { font-size: 3em; }header { margin-bottom: 2em; }header .byline { font-size: 1.7em; }#header { padding: 5em 0px 2em; }#main, #sidebar { margin-top: 5em; }#sidebar h1 { font-size: 2.4em; letter-spacing: 0em; line-height: 1.2em; margin-top: -0.2em; }#featured { padding: 3em 0em 1em; }#featured p { line-height: 1.5em; font-size: 1.2em; }.\31 u img { height: 6vw; }.\32 u img { height: 12vw; }.\33 u img { height: 18vw; }.\34 u img { height: 24vw; }.\36 u img { height: 36vw; }.\37 u img { height: 42vw; }.\38 u img { height: 48vw; }.\39 u img { height: 54vw; }.\31 0u img { height: 60vw; }.\31 1u img { height: 66vw; }.\31 2u img { height: 72vw; }.horiz-menu > ul { width: 100%; margin: 0px; padding: 0px; display: table; border-collapse: collapse; }.horiz-menu > ul > li { width: 25%; border: 1px solid rgb(0, 0, 0); display: table-cell; color: rgb(240, 59, 17); }.horiz-menu > ul > li:hover { background: rgb(252, 236, 212); color: rgb(128, 36, 0); }.horiz-menu > ul > li > a { display: block; padding: 1em; border-bottom: 5px transparent; white-space: nowrap; color: inherit; }.horiz-menu > ul > li > a:hover { text-decoration: none; }.horiz-menu > ul > li.active > a { border-bottom: 5px solid rgb(240, 59, 17); }.horiz-menu > ul > li.active > a:hover { border-bottom: 5px solid rgb(128, 36, 0); }.horiz-menu > article { padding-top: 1em; margin: 0px; display: none; }.horiz-menu > article.active { display: block; }#titleBar { display: none !important; }#nav { display: block !important; z-index: 2; position: fixed; background: linear-gradient(rgb(128, 36, 0) 0%, rgb(128, 8, 0) 100%); left: 0px; top: 0px; width: 100%; }#nav > ul { text-align: right; margin: 0px; padding: 0px; }#nav > ul > li { display: inline-block; margin: 0px; padding: 0.5em 0.4em 0.5em 0em; color: rgb(255, 255, 255); letter-spacing: 0.06em; text-transform: uppercase; font-size: 1.1em; }#nav a { text-decoration: none; color: inherit; }#nav > ul > li > a, #nav > ul > li > span { display: inline-block; padding: 3px 0.5em; }#nav > ul > li:hover > a, #nav > ul > li:hover > span { border-bottom: 3px solid rgb(240, 168, 51); padding-bottom: 0px; }#nav li.current a { font-weight: 500; }#nav > ul > li.donations { display: block; float: left; }#nav > ul > li > ul { display: none; }body #cboxTitle { height: 50px; bottom: 24px; color: rgb(0, 0, 0); text-align: left; }body #cboxMiddleLeft, body #cboxMiddleRight, body #cboxContent { padding-bottom: 50px; box-sizing: content-box; }</style></head>
+<body>
+
+		<!-- Nav -->
+	<nav id="nav">
+		<ul>
+			
+			<li><a href="../">Home</a>
+			
+			</li><li><a href="../download">Download</a>
+			</li><li><a href="../support">Support</a>
+			</li><li class="current"><a href="../contribute">Contribute</a>
+			</li><li><a href="../documentation">Docs</a>
+			</li><li><a href="https://wiki.qemu.org">Wiki</a>
+			</li><li><a href="../blog">Blog</a></li>
+		</ul>
+	</nav>
+
+<script>
+$('body').addClass('js');
+$('#nav').hide().before('<div id="titleBar"><div><button role="button" aria-pressed="false" aria-controls="nav" aria-label="Toggle navigation bar"><span class="fa fa-lg fa-bars"></span></button></div></div>');
+$('button[aria-controls="nav"]').click(function() {
+	jqNav = $('#nav');
+	if ($(this).attr('aria-pressed') == 'true') {
+		$(this).attr('aria-pressed', false);
+		$('#nav, #titleBar>div').animate(
+			{ 'margin-left': '-=80%' },
+			{ 'duration': 400 });
+		jqNav.promise().done(function() { jqNav.hide().css('margin-left', 0); });
+	} else {
+		$(this).attr('aria-pressed', true);
+		jqNav.css('margin-left', '-80%').show();
+		$('#nav, #titleBar>div').animate(
+			{ 'margin-left': '+=80%' },
+			{ 'duration': 400 });
+	}
+});
+</script>
+
+	<div id="main">
+		<div class="container">
+			<header>
+				<h1>Contribute to QEMU!</h1>
+			</header>
+			<ul>
+  <li>
+    <p>Report a bug in our bugtracker:
+<a href="https://gitlab.com/qemu-project/qemu/-/issues">https://gitlab.com/qemu-project/qemu/-/issues</a><br>
+See also <a href="report-a-bug/">How to report a bug</a> or <a href="security-process/">How to report a security bug</a></p>
+  </li>
+  <li>
+    <p>Clone (<a href="https://gitlab.com/qemu-project/qemu">or browse</a>) the git repository: <br><code class="language-plaintext highlighter-rouge">git clone https://gitlab.com/qemu-project/qemu.git</code></p>
+  </li>
+  <li>
+    <p>Join the mailing list: <a href="https://lists.nongnu.org/mailman/listinfo/qemu-devel">qemu-devel@nongnu.org</a><br><a href="https://wiki.qemu.org/MailingLists">See the list of QEMU mailing lists</a></p>
+  </li>
+  <li>
+    <p>Chat with the developers on IRC: irc.oftc.net, channel #qemu</p>
+  </li>
+  <li>
+    <p>Read developer documentation: “<a href="https://wiki.qemu.org/Documentation/GettingStartedDevelopers">Getting started for developers</a>”,
+“<a href="https://wiki.qemu.org/Contribute/FAQ">Contributor FAQ</a>”,
+“<a href="https://www.qemu.org/2017/02/04/the-new-qemu-website-is-up/">Improve the website</a>”</p>
+  </li>
+</ul>
+
+<p>Please do not submit merge requests on GitLab; patches are sent to the mailing list according to QEMU’s <a href="submit-a-patch/">patch submissions guidelines</a>.</p>
+
+<p>Contributing to QEMU is subject to the <a href="https://qemu.org/docs/master/devel/code-of-conduct.html">QEMU Code of Conduct</a>.</p>
+
+		</div>
+	</div>
+	
+	<div id="footer">
+	<div id="external-links">
+		<ul class="style">
+			<li><a href="http://qemu-advent-calendar.org">Advent calendar</a></li>
+			<li><a href="https://planet.virt-tools.org/">Blog planet</a></li>
+			<li><a href="https://www.linux-kvm.org/">KVM</a></li>
+			<li><a href="http://libguestfs.org/">Libguestfs</a></li>
+			<li><a href="https://libvirt.org/">Libvirt</a></li>
+			<li><a href="https://xenproject.org">Xen</a></li>
+		</ul>
+	</div>
+	<div id="edit-page">
+		<a href="https://gitlab.com/qemu-project/qemu-web/-/blob/master/contribute.md">page source</a>
+	</div>
+	<div id="conservancy">
+		QEMU is a member of <a href="../conservancy/">Software Freedom Conservancy</a>
+	</div>
+	<div id="sponsors">
+		QEMU has <a href="../sponsors/">sponsors</a>
+	</div>
+	<div id="licenses">
+		<a href="../license.html">Website licenses</a>
+	</div>
+</div>
+
+
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
