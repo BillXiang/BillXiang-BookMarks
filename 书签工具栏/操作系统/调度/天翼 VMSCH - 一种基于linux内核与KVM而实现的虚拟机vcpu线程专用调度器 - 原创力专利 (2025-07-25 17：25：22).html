@@ -1,0 +1,684 @@
+<!-- Filename: 书签工具栏/操作系统/调度/天翼 VMSCH - 一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器 - 原创力专利 (2025-07-25 17：25：22).html
+ Page saved with X-Webpage-Conserve 
+ url: https://zhuanli.book118.com/view/1394370237t2sg2116937494.html
+ Summary: 
+-->
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器2024.pdf专利下载-原创力专利</title>
+    <meta name="description" content="本发明公开了一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器，主体为VMSCH，其特征在于：所述VMSCH即为虚拟机vcpu调度器，所述VMSCH优先级介于RT调度策略与CFS调度策略之间，优先级为99，并将RT优先级由1‑99调整为1‑98，所述VMSCH仅管理vcpu线程的调度，不管理其它线程。本发明中vcpu独占pcpu的占空比可动态配置，也无需开机启动配置，避免了采用isolate隔离出pcpu给vcpu使用方案缺少的灵活性，避免了RT调度策略在带宽限制发生之后且idle状态导致的pcpu资源浪费，且本发明具备CPU架构无关性，实现之后，即可天然支持任何CPU体系架构，比如X86、ARM和龙芯等，具有极为广泛的适用范围。">
+    <meta name="author" content="book118.com">
+    <meta name="copyright" content="book118.com">
+    <meta name="generator" content="book118.com">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <link rel="shortcut icon" href="/static/lib/icon/favicon.ico">
+    <link rel="stylesheet" href="/static/home/common/css/common.css?v=1.0.20230201">
+    <script src="https://hm.baidu.com/hm.js?1d9ce0aa0f5bc1823940d03a850503de"></script><script type="text/javascript" src="/static/plugin/jquery/jquery.min.js"></script>
+    <script type="text/javascript">
+        document.domain = 'book118.com';
+    </script>
+    <!--[if IE]>
+    <script type="text/javascript" src="/static/plugin/jquery/jquery.ie.js"></script>
+    <![endif]-->
+
+
+<link href="/static/home/view/css/index.css?v=1.0.20221111" rel="stylesheet" type="text/css">
+
+<link rel="stylesheet" href="https://zhuanli.book118.com/static/plugin/layer/theme/default/layer.css?v=3.1.1" id="layuicss-layer"><script type="text/javascript" src="/static/home/view/js/preview.pic.js?v=1.0.020221111"></script><link rel="stylesheet" type="text/css" href="https://static.book118.com/open/static/webpreview/theme/default/webpreview.css?v=2023.07.17"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+<body>
+<div id="header" class="header">
+    <div class="container">
+        <div class="logo">
+            <a href="https://max.book118.com" target="_blank" title="原创力文档网">
+                <img alt="logo" src="//static.book118.com/user_center_v1/static/home/images/logo.png">
+                <strong>原创力.专利</strong>
+                <span>知识共享平台</span>
+            </a>
+        </div>
+        <div class="nav">
+            <ul class="list">
+                <li><a class="" href="/" title="首页">首页</a></li>
+                <li><a class="" href="/cate-1.html" target="_blank" title="分类">分类</a></li>
+            </ul>
+        </div>
+        <div class="member">
+            <a href="javascript:;" id="btn_header_login" title="点击登陆">
+                <i class="icon-font icon-common icon-common-header"></i>
+                <span>登陆 / 注册</span>
+            </a>
+        </div>
+            <div class="search">
+                <input maxlength="50" class="search-control" name="keywords" type="text" aria-label="请输入专利标题或申请(专利）号搜索" placeholder="请输入专利标题或申请(专利）号搜索" autocomplete="off" value="一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器">
+                <i class="line"></i>
+                <button class="btn-search" title="点击搜索" id="btn_header_search">搜索</button>
+            </div>
+    </div>
+</div>
+
+<div id="site">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li>您所在位置：</li>
+            <li><a href="/" title="网站首页">网站首页</a></li>
+            <li><i class="icon-font icon-common icon-common-site"></i><a href="javascript:;" title="专利分类">专利分类</a></li><li><i class="icon-font icon-common icon-common-site"></i><a href="/cate-7.html" title="物理">物理</a></li>        </ol>
+    </div>
+</div>
+<div id="main">
+    <div class="container">
+        <div class="main">
+            <div class="detail">
+                <div class="title">
+                    <div class="type">发明</div>
+                    <h1>一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器2024</h1>
+                </div>
+                <div class="date">
+                    <span>2024-04-11 07:23:53</span>
+                    <span>发布于四川</span>
+                    <span><i class="icon-font icon-view icon-view-browse"></i> <em>0</em></span>
+                </div>
+                <div class="msg">
+                    <ul>
+                        <li>申请专利号：CN202311693749.4</li>
+                        <li>公开（公告）日：2024-04-09</li>
+                        <li>公开（公告）号：CN117850961A</li>
+                        <li>申请人：天翼云科技有限公司</li>
+                    </ul>
+                    <div class="abstract"> 摘要：本发明公开了一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器，主体为VMSCH，其特征在于：所述VMSCH即为虚拟机vcpu调度器，所述VMSCH优先级介于RT调度策略与CFS调度策略之间，优先级为99，并将RT优先级由1‑99调整为1‑98，所述VMSCH仅管理vcpu线程的调度，不管理其它线程。本发明中vcpu独占pcpu的占空比可动态配置，也无需开机启动配置，避免了采用isolate隔离出pcpu给vcpu使用方案缺少的灵活性，避免了RT调度策略在带宽限制发生之后且idle状态导致的pcpu资源浪费，且本发明具备CPU架构无关性，实现之后，即可天然支持任何CPU体系架构，比如X86、ARM和龙芯等，具有极为广泛的适用范围。</div>
+                </div>
+            </div>
+            <div class="preview">
+                <div class="preview-hd"></div>
+                <div class="preview-bd" style="cursor: grab;"><div class="webpreview-item" data-id="1" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" src="//view-cache.book118.com/view18/M04/19/01/wKh2D2YWOn2AJgHRAAC_vHA1zqw230.png" style="display: block;"><div class="pages"><span>1/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="2" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" src="//view-cache.book118.com/view23/M04/15/15/wKh2HWYWOn2AZWRMAAGUOlWKbYY212.png" style="display: block;"><div class="pages"><span>2/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="3" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view18/M01/19/01/wKh2D2YWOn2ADGPNAADGaV3ItVc957.png" src="//view-cache.book118.com/view18/M01/19/01/wKh2D2YWOn2ADGPNAADGaV3ItVc957.png" style="display: block;"><div class="pages"><span>3/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="4" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view21/M05/37/1C/wKh2EGYWOn2AA5o8AADThjfUQaA598.png" src="//view-cache.book118.com/view21/M05/37/1C/wKh2EGYWOn2AA5o8AADThjfUQaA598.png" style="display: block;"><div class="pages"><span>4/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="5" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view23/M02/16/0F/wKh2EGYWOn2AQ3rXAAF2psS_kk4852.png" src="//view-cache.book118.com/view23/M02/16/0F/wKh2EGYWOn2AQ3rXAAF2psS_kk4852.png" style="display: block;"><div class="pages"><span>5/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-grab"></div><div class="webpreview-item" data-id="6" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" src="//view-cache.book118.com/view32/M00/0A/1A/wKh2EmYWOn2AHTmqAAGgVtsIrwg728.png" style="display: block;"><div class="pages"><span>6/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="7" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view21/M00/37/1E/wKh2DmYWOn2AS7R_AAED2LoLqKY830.png" src="//view-cache.book118.com/view21/M00/37/1E/wKh2DmYWOn2AS7R_AAED2LoLqKY830.png" style="display: block;"><div class="pages"><span>7/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="8" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view18/M04/19/01/wKh2D2YWOn2Abxi8AAGM-obQDIA600.png" src="//view-cache.book118.com/view18/M04/19/01/wKh2D2YWOn2Abxi8AAGM-obQDIA600.png" style="display: block;"><div class="pages"><span>8/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="9" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view19/M00/3D/13/wKh2D2YWV2CAcCrlAAGH-h3r0VU855.png" src="//view-cache.book118.com/view19/M00/3D/13/wKh2D2YWV2CAcCrlAAGH-h3r0VU855.png" style="display: block;"><div class="pages"><span>9/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="10" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view21/M00/37/1C/wKh2EGYWOn2AOzcIAAFpmgDFZjQ054.png" src="//view-cache.book118.com/view21/M00/37/1C/wKh2EGYWOn2AOzcIAAFpmgDFZjQ054.png" style="display: block;"><div class="pages"><span>10/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="11" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view23/M03/16/0F/wKh2EGYWOn2AG7wYAAD9YuJhoOM510.png" src="//view-cache.book118.com/view23/M03/16/0F/wKh2EGYWOn2AG7wYAAD9YuJhoOM510.png" style="display: block;"><div class="pages"><span>11/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="12" style="min-height: 1121px;"><div class="loading"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><span>预览加载中，请您耐心等待几秒...</span></div><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="lazy" data-src="//view-cache.book118.com/view19/M00/39/2D/wKh2D2YWOn2AZdtfAAE0x81hw58820.png"><div class="pages"><span>12/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div></div>
+                <div class="preview-ft"><div class="btns"><span class="end-tips">免费预览已结束，剩余<em>2</em>页。请下载专利后查看完整内容。</span><button id="btn_download_max" class="btn-download" style="margin: 0px auto; display: block;">下载专利源文件</button></div><div class="tips"><i class="icon-font icon-view icon-view-tips"></i><span>提示：该技术已申请专利，仅供学习研究，如用于商业用途，请联系我们</span></div></div>
+            </div>
+                        <div class="substance">
+                <h2>专利内容</h2>
+                <p>
+   (19)国家知识产权局 
+                             (12)发明专利申请 
+                                                     (10)申请公布号 CN 117850961 A 
+                                                     (43)申请公布日 2024.04.09 
+   (21)申请号  202311693749.4 
+   (22)申请日  2023.12.11 
+   (71)申请人  天翼云科技有限公司 
+      地址  100007  北京市东城区青龙胡同甲1 
+          号、3号2幢2层205-32室 
+   (72)发明人  王春林　刘强　王夕波　曾健　 
+            韩丁　 
+   (51)Int.Cl. 
+      G06F  9/455 (2018.01) 
+    
+                                               权利要求书3页  说明书8页  附图2页 
+   (54)发明名称 
+      一种基于linux内核与KVM而实现的虚拟机 
+  vcpu线程专用调度器 
+   (57)摘要 
+      本发明公开了一种基于linux内核与KVM而 
+  实现的虚拟机vcpu线程专用调度器，主体为 
+  VMSCH ，其特征在于：所述VMSCH即为虚拟机vcpu 
+  调度器，所述VMSCH优先级介于RT调度策略与CFS 
+  调度策略之间，优先级为99，并将RT优先级由1‑ 
+  99调整为1‑98，所述VMSCH仅管理vcpu线程的调 
+  度，不管理其它线程。本发明中vcpu独占pcpu的 
+  占空比可动态配置，也无需开机启动配置，避免 
+  了采用isolate隔离出pcpu给vcpu使用方案缺少 
+  的灵活性，避免了RT调度策略在带宽限制发生之 
+  后且idle状态导致的pcpu资源浪费，且本发明具 
+A 备CPU架构无关性，实现之后，即可天然支持任何 
+  
+1 CPU体系架构，比如X86、ARM和龙芯等，具有极为 
+6 
+9 
+0 广泛的适用范围。 
+5 
+8 
+7 
+1 
+1 
+  
+N 
+C 
+</p>
+            </div>
+                        <div class="new">
+                <h2>最新专利</h2>
+                <div class="grant-list">
+                    <ul class="patent-view-list">
+                    <li class="item"><a href="/view/1u011902497e6q2100980215.html" title="林地树干提取方法及装置、模型的训练方法" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">林地树干提取方法及装置、模型的训练方法</em><em class="date">公开日期：2025-07-22</em><em class="open-num">公开号：CN117911868A</em><em class="apply-num">申请号：CN202410098021.5</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>林地树干提取方法及装置、模型的训练方法</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-04-21 07:49:31</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202410098021.5</dd><dd>公开号：CN117911868A</dd></dl></div></a></li><li class="item"><a href="/view/170433024589692100236709.html" title="一种基于自适应搜索的多项目晶圆版图拼接方法、装置及存储介质" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">一种基于自适应搜索的多项目晶圆版图拼接方法、装置及存储介质</em><em class="date">公开日期：2025-07-22</em><em class="open-num">公开号：CN117852479A</em><em class="apply-num">申请号：CN202410023670.9</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>一种基于自适应搜索的多项目晶圆版图拼接方法、装置及存储介质</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-04-11 07:29:22</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202410023670.9</dd><dd>公开号：CN117852479A</dd></dl></div></a></li><li class="item"><a href="/view/111y570239kx152118734988.html" title="一种目标跟踪方法、装置、设备及存储介质" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">一种目标跟踪方法、装置、设备及存储介质</em><em class="date">公开日期：2025-07-22</em><em class="open-num">公开号：CN117830357A</em><em class="apply-num">申请号：CN202311873498.8</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>一种目标跟踪方法、装置、设备及存储介质</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-04-07 07:31:09</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202311873498.8</dd><dd>公开号：CN117830357A</dd></dl></div></a></li><li class="item"><a href="/view/129054024293502100246537.html" title="一种用于请求的租户数据查询方法、系统、设备及介质" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">一种用于请求的租户数据查询方法、系统、设备及介质</em><em class="date">公开日期：2025-07-22</em><em class="open-num">公开号：CN117807297A</em><em class="apply-num">申请号：CN202410024653.7</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>一种用于请求的租户数据查询方法、系统、设备及介质</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-04-04 07:24:53</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202410024653.7</dd><dd>公开号：CN117807297A</dd></dl></div></a></li><li class="item"><a href="/view/18c68q023a24812118635056.html" title="数字高程模型的生成方法、装置、电子设备及存储介质" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">数字高程模型的生成方法、装置、电子设备及存储介质</em><em class="date">公开日期：2025-07-22</em><em class="open-num">公开号：CN117808984A</em><em class="apply-num">申请号：CN202311863505.6</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>数字高程模型的生成方法、装置、电子设备及存储介质</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-04-04 07:23:18</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202311863505.6</dd><dd>公开号：CN117808984A</dd></dl></div></a></li><li class="item"><a href="/view/18tz23023489952116049229.html" title="故障检测方法、装置、设备、存储介质和程序产品" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">故障检测方法、装置、设备、存储介质和程序产品</em><em class="date">公开日期：2025-07-22</em><em class="open-num">公开号：CN117806860A</em><em class="apply-num">申请号：CN202311604922.9</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>故障检测方法、装置、设备、存储介质和程序产品</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-04-04 07:18:28</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202311604922.9</dd><dd>公开号：CN117806860A</dd></dl></div></a></li></ul>
+                </div>
+            </div>
+        </div>
+        <!-- 侧边栏 -->
+        <div class="side">
+            <div class="mechanism-about">
+                <div class="icon icon-view icon-view-grant"></div>
+                <div class="logo">
+                    <img class="lazy-success" src="//img.book118.com/sr1/M00/0A/11/wKh2AmOALBeIJxFHAAAvK1dvuUUAA7YvgEL7gAAAC9D239.png" data-src="//img.book118.com/sr1/M00/0A/11/wKh2AmOALBeIJxFHAAAvK1dvuUUAA7YvgEL7gAAAC9D239.png" alt="logo">  
+                </div>
+                <ul class="list">
+                    <li>
+                        <a href="//img.book118.com/sr1/M00/0D/26/wKh2AmPbEemIFx-uAAJcfVyFn40AA8sCABg2TcAAlyV287.png" title="授权合同" target="_blank">
+                            <img class="lazy-success" src="//img.book118.com/sr1/M00/0D/26/wKh2AmPbEemIFx-uAAJcfVyFn40AA8sCABg2TcAAlyV287.png" data-src="//img.book118.com/sr1/M00/0D/26/wKh2AmPbEemIFx-uAAJcfVyFn40AA8sCABg2TcAAlyV287.png" alt="授权合同">                
+                            <span>授权合同</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="//img.book118.com/sr1/M00/02/25/wKh2AmfzLZaID0X-AAEtnMzTq_oAAzqvQAK3b0AAS6A805.jpg" title="服务协议" target="_blank">
+                            <img class="lazy-success" src="//img.book118.com/sr1/M00/02/25/wKh2AmfzLZaID0X-AAEtnMzTq_oAAzqvQAK3b0AAS6A805.jpg" data-src="//img.book118.com/sr1/M00/02/25/wKh2AmfzLZaID0X-AAEtnMzTq_oAAzqvQAK3b0AAS6A805.jpg" alt="服务协议">
+                            <span>服务协议</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="patent-about" style="display: block;">
+                <h2>相关专利</h2>
+                <ul class="list"><li><a href="/view/1k3w2f0249ia842205341247.html" title="一种散剂精确灌装装置" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种散剂精确灌装装置</strong></a></li><li><a href="/view/16gq6a02494dt82205329404.html" title="一种多充电口的锂电池组件" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种多充电口的锂电池组件</strong></a></li><li><a href="/view/16p4n20243294b220529755x.html" title="一种金属零件涂层加工输送机" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种金属零件涂层加工输送机</strong></a></li><li><a href="/view/1v563h024m8kwr2205259863.html" title="线缆绝缘层去除装置" target="_blank"><span class="type">【实用新型】</span><strong class="title">线缆绝缘层去除装置</strong></a></li><li><a href="/view/1u77fi0242a3j22205245818.html" title="一种心电图诊断专用平台" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种心电图诊断专用平台</strong></a></li><li><a href="/view/19079002428u282205243884.html" title="半导体芯片的封装结构和计算设备" target="_blank"><span class="type">【实用新型】</span><strong class="title">半导体芯片的封装结构和计算设备</strong></a></li><li><a href="/view/18xgy302490f132205243579.html" title="码垛机排列滚筒皮带结构" target="_blank"><span class="type">【实用新型】</span><strong class="title">码垛机排列滚筒皮带结构</strong></a></li><li><a href="/view/17d1qk024i8z762205223289.html" title="一种畜牧养殖草料粉碎装置" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种畜牧养殖草料粉碎装置</strong></a></li><li><a href="/view/15932d024cm83h2205188707.html" title="一种用于烟气净化的大气治理设备" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种用于烟气净化的大气治理设备</strong></a></li><li><a href="/view/10y774024h675p2205186792.html" title="一种可快速定位的调节式玻璃切割机" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种可快速定位的调节式玻璃切割机</strong></a></li></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 收藏点赞 -->
+<div id="collection">
+    <ul class="collection">
+        <li>
+            <em>0</em>
+            <a href="javascript:;" title="收藏" id="btn_view_collection">
+                <i class="icon icon-view icon-view-collection"></i>
+                <span>收藏</span>
+            </a>
+        </li>
+        <li>
+            <em>0</em>
+            <a href="javascript:;" title="点赞" id="btn_view_assist">
+                <i class="icon icon-view icon-view-assist"></i>
+                <span>点赞</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div id="footer" class="footer">
+    <div class="container">
+        <dl>
+            <dd><a href="/home/about/about.html" target="_blank" title="关于我们">关于我们</a></dd>
+            <dd><a href="/home/about/agreement.html" target="_blank" title="服务协议">服务协议</a></dd>
+            <dd><a href="/home/about/copyright.html" target="_blank" title="隐私声明">隐私声明</a></dd>
+        </dl>
+        <ul>
+            <li class="desc">原创力专利网是原创力文档旗下专业提供专利pdf下载、专利pdf在线阅读、专利检索、专利申请服务等一条龙的网站，目前网站的所有专利都是最新的，后续我们将提供国内更多的专利申请相关的服务，包括专利复审、专利交易、专利年费缴纳、专利权恢复等。本站所有资源均来源于“知识产权出版社”，且已获得正式授权，并达成长期战略合作关系。目前全站共有17173002件专利，后续我们会不断增加专利数量，努力争取达到内容数量最多最全的专利网站。我们将持续更新最新专利内容，完善相关专利服务，助您在专利查询、专利应用、专利学习查找、专利申请等方面用得开心、用得满意！</li>
+            <li><i class="icon-font icon-common icon-common-police"></i> 公安局备案号:51011502000106
+                    | 工信部备案号:<a href="http://beian.miit.gov.cn" title="蜀ICP备08101938号-1" target="_blank" rel="nofollow">蜀ICP备08101938号-1</a>
+                    | ICP经营许可证/EDI许可证:<a href="//max.book118.com/jyxkz.html" title="川B2-20180569" target="_blank">川B2-20180569</a>
+                    | <a href="//max.book118.com/yyzz.html" title="公司营业执照" target="_blank">公司营业执照</a>
+                    | 出版物经营许可证:<a href="//max.book118.com/html/cbwxkz.html" title="成新出发高新字第046号" target="_blank">成新出发高新字第046号</a>
+            </li>
+            <li>@2010-2025 zhuanli.book118.com原创力专利.All Rights Reserved 四川文动网络科技有限公司</li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var __SRV__ = '1.0.',
+        _STATIC_ = '/static',
+        __UTIL_ROOT__ = "/static/home/util",
+        __PLUGIN_ROOT__ = '/static/plugin',
+        __OPEN_HOST__ = '//openapi.book118.com/',
+        __LIB_ROOT__ = '/static/lib';
+    var base = {
+        member: {
+            status: 0,
+            token:'',
+            url: {
+                info: '/user/user/getUserInfo.html',//获取用户信息
+                login: '/user/index/login.html',//登陆
+                quit: '/user/user/logout.html'//退出登陆
+            },
+            auth: {
+                url: {
+                    status: '/user/index/getUserStatus.html'
+                }
+            }
+        },
+        url:{
+            user_center:'/user/user/readRecord.html',
+            search_url: '/search.html'
+        }
+    }
+</script>
+<script type="text/javascript" src="/static/plugin/layer/layer.js?v=1.20221111"></script>
+<script type="text/javascript" src="/static/home/util/js/util.js?v=1.0.20221111"></script>
+<script type="text/javascript" src="/static/home/common/js/common.js?v=1.0.20230825"></script>
+
+<script type="text/javascript">
+    var PAY_READ_TAG = 1,
+        NOT_DOWNLOAD_TAG = 1;
+    base.spider = 0;
+    base.detail = {
+        isCanDowload :1, //0 不可下载，1 可下载
+        noCanShow:2,//不可阅读页数
+        max_url : 'https://max.book118.com/html/2024/0410/7004156146006063.shtm?from=patent', //可下载时跳转max详情页链接
+        fav: 0,//收藏量
+        goodpost: 0,//点赞量
+        sid: '1394370237t2sg2116937494',//点赞收藏传值加密ID
+        request:{
+            isDigg: '/user/index/digg.html',//点赞接口
+            isCollect: '/user/user/setCollect.html',//收藏/取消收藏
+            newInfo:'/home/view/newInfo.html',//最新专利
+            relateInfo:'/home/view/relateInfo.html',//相关专利
+            extendInfo:'/home/view/extendInfo.html'//扩展信息
+        },
+        preview: {
+            pic: {
+                aid: 645830490, //解密后的id
+                actual_page: 14, //真实页数
+                preview_page: 12,  //可预览页数
+                view_token: 'iPeK7yzLDIwjGVXMm97fO2kW2xvI6uYwBEivXtcWHz0=' //预览的token
+            }
+        }
+    }
+</script>
+
+
+
+<script type="text/javascript" src="/static/home/view/js/index.js?v=1.0.20221111"></script>
+<script type="text/javascript" src="//static.book118.com/open/static/webpreview/webpreview.js?v=1.0.20221117"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?1d9ce0aa0f5bc1823940d03a850503de";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
