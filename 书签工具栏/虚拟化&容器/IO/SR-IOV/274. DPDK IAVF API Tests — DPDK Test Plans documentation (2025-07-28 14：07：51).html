@@ -1,0 +1,1368 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/IO/SR-IOV/274. DPDK IAVF API Tests — DPDK Test Plans documentation (2025-07-28 14：07：51).html
+ Page saved with X-Webpage-Conserve 
+ url: https://doc.dpdk.org/dts/test_plans/iavf_test_plan.html
+ Summary: 
+-->
+<html class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths" lang="en" style=""><!--<![endif]--><head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>274. DPDK IAVF API Tests — DPDK Test Plans  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: ''
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css">
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css">
+    <link rel="index" title="Index" href="genindex.html">
+    <link rel="search" title="Search" href="search.html">
+    <link rel="next" title="275. packet capture" href="packet_capture_test_plan.html">
+    <link rel="prev" title="273. Benchmark the performance of single core forwarding with XXV710 and 82599/500 Series 10G" href="nic_single_core_perf_test_plan.html"> 
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style>undefined</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DPDK Test Plans
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ABI_stable_test_plan.html">1. DPDK ABI Stable Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="asan_smoke_test_plan.html">2. AddressSanitizer Smoke Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blocklist_test_plan.html">3. Port Blocklist Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_4k_pages_cbdma_test_plan.html">4. Basic test with CBDMA in 4K-pages test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_4k_pages_dsa_test_plan.html">5. Basic 4k-pages test with DSA driver test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="checksum_offload_test_plan.html">6. RX/TX Checksum Offload Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coremask_test_plan.html">7. Coremask Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_rss_test_plan.html">8. ICE: Advanced RSS FOR ICE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_rss_gtpu_test_plan.html">9. ICE: Advanced RSS FOR GTPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_rss_pppoe_test_plan.html">10. ICE: Advanced RSS FOR PPPOE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_rss_gtpogre_test_plan.html">11. ICE: Advanced RSS FOR GTPoGRE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_iavf_rss_test_plan.html">12. ICE: IAVF Advanced RSS FOR ICE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_iavf_rss_gtpu_test_plan.html">13. ICE IAVF: Advanced RSS For GTPU</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_iavf_rss_gtpogre_test_plan.html">14. ICE IAVF Support GTPoGRE in RSS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_iavf_rss_vlan_esp_ah_l2tp_pfcp_test_plan.html">15. ICE IAVF: Advanced RSS FOR VLAN/ESP/AH/L2TP/PFCP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_iavf_rss_pppol2tpoudp_test_plan.html">16. ICE IAVF: Advanced RSS For PPPoL2TPv2oUDP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_advanced_rss_vlan_esp_ah_l2tp_pfcp_test_plan.html">17. ICE: Advanced RSS FOR VLAN/ESP/AH/L2TP/PFCP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_buffer_split_test_plan.html">18. ICE PF Enable Buffer Split</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_acl_filter_test_plan.html">19. ICE DCF ACL filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_disable_acl_filter_test_plan.html">20. ICE DCF DISABLE ACL engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_data_path_test_plan.html">21. ICE DCF Data Path Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_switch_filter_test_plan.html">22. ICE DCF Switch Filter Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_switch_filter_pppoe_test_plan.html">23. ICE DCF Switch Filter PPPOE Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_switch_filter_gtpu_test_plan.html">24. ICE DCF Switch Filter GTPU Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_flow_priority_test_plan.html">25. ICE Support Flow Priority in DCF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_header_split_perf_test_plan.html">26. Benchmark the performance of header split forwarding with E810</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_flow_priority_test_plan.html">27. ICE Support Flow Priority in PF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_qos_test_plan.html">28. ICE configure QoS for vf/vsi in DCF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_enable_basic_hqos_on_pf_test_plan.html">29. ICE Enable basic HQoS on PF driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_ecpri_test_plan.html">30. ICE support eCPRI protocol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_fdir_test_plan.html">31. ICE:Classification:Flow Director</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_rx_timestamp_test_plan.html">32. ICE Support Rx Timestamp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_ip_fragment_rte_flow_test_plan.html">33. ICE IP FRAGMENT RTE FLOW TEST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_iavf_flow_subscribe_test_plan.html">34. ICE IAVF Flow Subscription Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_iavf_ip_fragment_rte_flow_test_plan.html">35. ICE IAVF IP FRAGMENT RTE FLOW TEST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_iavf_packet_pacing_test_plan.html">36. ICE IAVF Enable Packet Pacing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_iavf_rss_configure_test_plan.html">37. IAVF: default RSS configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_iavf_rx_timestamp_test_plan.html">38. ICE IAVF Support Rx Timestamp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_iavf_fdir_pppol2tpoudp_test_plan.html">39. ICE IAVF: FDIR For PPPoL2TPv2oUDP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_limit_value_test_test_plan.html">40. ICE Limit Value Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_dcf_dual_vlan_test_plan.html">41. ICE support QinQ protocol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_rss_configure_test_plan.html">42. ICE: RSS CONFIGURE AND UPDATE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_switch_filter_test_plan.html">43. ICE Switch Filter Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_switch_filter_pppoe_test_plan.html">44. ICE Switch Filter Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_vf_support_multicast_address_test_plan.html">45. ICE: VF support multicast address</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_rss_protocol_agnostic_flow_test_plan.html">46. ICE PF enable Protocol agnostic flow offloading in RSS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_fdir_protocol_agnostic_flow_test_plan.html">47. ICE PF enable Protocol agnostic flow offloading in FDIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloud_filter_with_l4_port_test_plan.html">48. Cloud filter with l4 port test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcf_lifecycle_test_plan.html">49. ICE DCF Lifecycle Test Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcf_lifecycle_test_plan.html#ice-dcf-enable-device-reset-api">50. ICE DCF enable device reset API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crypto_perf_cryptodev_perf_test_plan.html">51. Cryptodev Performance Application Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ddp_gtp_qregion_test_plan.html">52. DDP GTP Qregion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ddp_gtp_test_plan.html">53. Intel® Ethernet 700 Series DDP GTP-C/GTP-U Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ddp_mpls_test_plan.html">54. Intel® Ethernet 700 Series DDP (Dynamic Device Personalization) Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ddp_ppp_l2tp_test_plan.html">55. DDP PPPoE/L2TPv2/PPPoL2TPv2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ddp_l2tpv3_test_plan.html">56. DDP L2TPV3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dual_vlan_test_plan.html">57. Dual VLAN Offload Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dynamic_config_test_plan.html">58. Dynamic Driver Configuration Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dynamic_flowtype_test_plan.html">59. Intel® Ethernet 700 Series Dynamic Mapping of Flow Types to PCTYPEs Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dynamic_queue_test_plan.html">60. Dynamic queue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eeprom_dump_test_plan.html">61. EEPROM Dump Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_memory_test_plan.html">62. Ability to use external memory test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_mempool_handler_test_plan.html">63. External Mempool Handler Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firmware_version_test_plan.html">64. Firmware Version Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="floating_veb_test_plan.html">65. VEB Switch and floating VEB Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="i40e_rss_input_test_plan.html">66. Intel® Ethernet 700 Series Configuration of RSS in RTE Flow Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generic_flow_api_test_plan.html">67. Generic filter/flow api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotplug_mp_test_plan.html">68. Hotplug on multi-processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotplug_test_plan.html">69. DPDK Hotplug API Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_iavf_fdir_test_plan.html">70. ICE:advanced iavf with FDIR capability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ice_iavf_fdir_gtpogre_test_plan.html">71. ICE IAVF Support GTPoGRE in FDIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iavf_flexible_descriptor_test_plan.html">72. ICE IAVF Flexible Descriptor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iavf_package_driver_error_handle_test_plan.html">73. IAVF Flexible Package and driver error handle check</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iavf_fdir_protocol_agnostic_flow_test_plan.html">74. IAVF enable Protocol agnostic flow offloading in FDIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iavf_rss_protocol_agnostic_flow_test_plan.html">75. IAVF enable Protocol agnostic flow offloading in RSS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ieee1588_test_plan.html">76. IEEE1588 Precise Time Protocol Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inline_ipsec_test_plan.html">77. 82599 Inline IPsec Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupt_pmd_test_plan.html">78. One-shot Rx Interrupt Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ip_pipeline_test_plan.html">79. IP Pipeline Application Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipfrag_test_plan.html">80. IP fragmentation Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipgre_test_plan.html">81. Generic Routing Encapsulation (GRE) Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipsec_gw_cryptodev_func_test_plan.html">82. CryptoDev API Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipv4_reassembly_test_plan.html">83. IP Reassembly Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ixgbe_vf_get_extra_queue_information_test_plan.html">84. 82599 ixgbe_get_vf_queue Include Extra Information Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jumboframes_test_plan.html">85. Jumbo Frame Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l2fwd_cryptodev_func_test_plan.html">86. CryptoDev API Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l2fwd_test_plan.html">87. L2 Forwarding Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l2tp_esp_coverage_test_plan.html">88. test coverage for L2TPv3 and ESP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l3fwd_test_plan.html">89. L3 Forwarding Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l3fwd_lpm_ipv4_test_plan.html">90. L3 forwarding test in LPM mode with IPV4 packets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l3fwd_lpm_ipv4_rfc2544_test_plan.html">91. L3 forwarding rfc2544 test in LPM mode with IPV4 packets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l3fwd_lpm_ipv6_test_plan.html">92. L3 forwarding test in LPM mode with IPV6 packets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l3fwd_func_test_plan.html">93. L3fwd Functional test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l3fwdacl_test_plan.html">94. Layer-3 Forwarding with Access Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="large_vf_test_plan.html">95. ICE: Large VF for 256 queues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="link_flowctrl_test_plan.html">96. Ethernet Link Flow Control Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="link_status_interrupt_test_plan.html">97. Link Status Detection Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linux_modules_test_plan.html">98. Linux Driver Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loopback_multi_paths_port_restart_test_plan.html">99. vhost/virtio loopback with multi-paths and port restart test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loopback_virtio_user_server_mode_test_plan.html">100. vhost/virtio-user loopback server mode test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loopback_virtio_user_server_mode_cbdma_test_plan.html">101. Loopback vhost/virtio-user server mode with CBDMA test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loopback_virtio_user_server_mode_dsa_test_plan.html">102. Loopback vhost-user/virtio-user server mode with DSA driver test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loopback_vhost_async_perf_dsa_test_plan.html">103. Loopback vhost/virtio multi-paths async data-path test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mac_filter_test_plan.html">104. Allowlisting Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macsec_for_ixgbe_test_plan.html">105. 82599 Media Access Control Security (MACsec) Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mtu_update_test_plan.html">106. MTU Check Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiple_pthread_test_plan.html">107. Multiple Pthread Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ntb_test_plan.html">108. NTB test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nvgre_test_plan.html">109. NVGRE Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perf_virtio_user_loopback_test_plan.html">110. vhost/virtio multi-paths loopback test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pf_smoke_test_plan.html">111. NIC PF Smoke Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_test_plan.html">112. Pipeline Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_virtio_user_multi_queues_port_restart_test_plan.html">113. vhost/virtio-user pvp with multi-queues and port restart test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pmd_bonded_8023ad_test_plan.html">114. Link Bonding for mode 4 (802.3ad)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pmd_bonded_test_plan.html">115. Bonding Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pmd_stacked_bonded_test_plan.html">116. stacked Bonded</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_pmd_bonded_test_plan.html">117. VF Bonding Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_pmd_bonded_8023ad_test_plan.html">118. VF Link Bonding for mode 4 (802.3ad)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_pmd_stacked_bonded_test_plan.html">119. VF Stacked Bonded</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pmd_test_plan.html">120. Poll Mode Driver Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pmdpcap_test_plan.html">121. TestPMD PCAP Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pmdrss_hash_test_plan.html">122. Intel® Ethernet 700 Series RSS - Configuring Hash Function Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pmdrssreta_test_plan.html">123. Reta (Redirection table) Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ptype_mapping_test_plan.html">124. PTYPE Mapping Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_multi_paths_performance_test_plan.html">125. vhost/virtio pvp multi-paths performance test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_multi_paths_vhost_single_core_performance_test_plan.html">126. vhost/virtio pvp multi-paths vhost single core test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_multi_paths_virtio_single_core_performance_test_plan.html">127. vhost/virtio pvp multi-paths virtio single core test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_vhost_async_multi_paths_performance_dsa_test_plan.html">128. PVP vhost/virtio multi-paths async data-path performance test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_vhost_async_virtio_pmd_perf_dsa_test_plan.html">129. PVP vhost/virtio-pmd async data-path perf test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qinq_filter_test_plan.html">130. Intel® Ethernet 700 Series Cloud filters for QinQ steering Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qos_api_test_plan.html">131. QoS API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qos_meter_test_plan.html">132. QoS Metering Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qos_sched_test_plan.html">133. QoS Scheduler Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="queue_region_test_plan.html">134. Intel® Ethernet 700 Series Configure RSS Queue Regions Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="queue_start_stop_test_plan.html">135. Shutdown API Queue Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rss_to_rte_flow_test_plan.html">136. Move RSS to rte_flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rss_key_update_test_plan.html">137. RSS Key Update Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rss_key_update_test_plan.html#prerequisites">138. Prerequisites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rxtx_offload_test_plan.html">139. PMD drivers adaption for new RXTX offload APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rte_flow_test_plan.html">140. rte_flow Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rte_flow_test_plan.html#prerequisites">141. Prerequisites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_vf_queue_number_kernel_test_plan.html">142. VF Request Queue Number From Kernel At Runtime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_vf_queue_number_maxinum_test_plan.html">143. VF Request Maximum Queue Number At Runtime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_vf_queue_number_test_plan.html">144. VF Request Queue Number At Runtime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rx_timestamp_perf_test_plan.html">145. Benchmark the performance of rx timestamp forwarding with E810</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scatter_test_plan.html">146. Scattered Packets Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="short_live_test_plan.html">147. Short-lived Application Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shutdown_api_test_plan.html">148. Shutdown API Feature Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="speed_capabilities_test_plan.html">149. Speed Capabilities Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_cbdma_test_plan.html">150. DMA-accelerated Tx/RX operations for vhost-user PMD test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_dsa_test_plan.html">151. PVP vhost async operation with DSA driver test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_async_robust_cbdma_test_plan.html">152. vhost async data-path robust with cbdma test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_user_interrupt_test_plan.html">153. vhost-user interrupt mode test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_user_interrupt_cbdma_test_plan.html">154. vhost-user interrupt mode with CBDMA test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sriov_kvm_test_plan.html">155. SRIOV and InterVM Communication Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats_checks_test_plan.html">156. Stats Check tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eventdev_pipeline_test_plan.html">157. Eventdev Pipeline SW PMD Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tso_test_plan.html">158. Transmit Segmentation Offload (TSO) Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tx_preparation_test_plan.html">159. Tx Preparation Forwarding Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testpmd_perf_test_plan.html">160. TestPmd rfc2544 test with IPV4/IPV6 packets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uni_pkt_test_plan.html">161. Unified Packet Type Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userspace_ethtool_test_plan.html">162. Userspace Ethtool Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vlan_ethertype_config_test_plan.html">163. VLAN Ethertype Config Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vlan_test_plan.html">164. VLAN Offload Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vxlan_test_plan.html">165. Intel® Ethernet 700/800 Series Vxlan Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="l2fwd_jobstats_test_plan.html">166. L2fwd Jobstats Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loopback_multi_queues_test_plan.html">167. vhost/virtio-user loopback with multi-queues test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="telemetry_test_plan.html">168. DPDK Telemetry API Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compressdev_isal_pmd_test_plan.html">169. CompressDev ISA-L PMD Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compressdev_qat_pmd_test_plan.html">170. CompressDev QAT PMD Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compressdev_zlib_pmd_test_plan.html">171. CompressDev ZLIB PMD Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enable_package_download_in_ice_driver_test_plan.html">172. Flexible pipeline package processing on E822 NIC mode Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multicast_test_plan.html">173. IPv4 Multicast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethtool_stats_test_plan.html">174. ethtool stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_test_plan.html">175. metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="veb_switch_test_plan.html">176. VEB Switch and floating VEB Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_daemon_test_plan.html">177. VFD as SRIOV Policy Manager Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_interrupt_pmd_test_plan.html">178. VF One-shot Rx Interrupt Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_jumboframe_test_plan.html">179. VF Jumboframe Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_kernel_test_plan.html">180. VFD as SRIOV Policy Manager Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_macfilter_test_plan.html">181. VF MAC Filter Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_offload_test_plan.html">182. VF Offload</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_packet_rxtx_test_plan.html">183. VF Packet RxTX Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_pf_reset_test_plan.html">184. VF PF Reset Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_port_start_stop_test_plan.html">185. VF Port Start Stop Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_rss_test_plan.html">186. VF RSS - Configuring Hash Function Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_single_core_perf_test_plan.html">187. Benchmark the performance of VF single core forwarding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_smoke_test_plan.html">188. NIC VF Smoke Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_to_vf_nic_bridge_test_plan.html">189. VF to VF Bridge Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_vlan_test_plan.html">190. VF VLAN Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_l3fwd_kernelpf_test_plan.html">191. VF L3 forwarding kernel PF tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_l3fwd_em_kernelpf_test_plan.html">192. VF L3 forwarding kernel PF test in EM mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_l3fwd_lpm_ipv4_kernelpf_test_plan.html">193. VF L3 forwarding kernel PF test in LPM mode with IPV4 packets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_l3fwd_lpm_ipv4_rfc2544_kernelpf_test_plan.html">194. VF L3 forwarding kernel PF rfc2544 test in LPM mode with IPV4 packets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_l3fwd_lpm_ipv6_kernelpf_test_plan.html">195. VF L3 forwarding kernel PF test in LPM mode with IPV6 packets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kernelpf_iavf_test_plan.html">196. Kernel PF + IAVF test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_multi_queue_qemu_test_plan.html">197. Vhost/Virtio multiple queue qemu test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_qemu_mtu_test_plan.html">198. Vhost MTU Test Plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_user_live_migration_test_plan.html">199. Vhost User Live Migration Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_pmd_xstats_test_plan.html">200. vhost PMD Xstats test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm_power_manager_test_plan.html">201. VM Power Management Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm_pw_mgmt_policy_test_plan.html">202. VM Power Management Tests (Policy/Turbo)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_bidirection_channel_test_plan.html">203. power bidirection channel test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_branch_ratio_test_plan.html">204. Power Policy Based on Branch Ratio Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_empty_poll_test_plan.html">205. Power Lib Empty Poll Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_pbf_test_plan.html">206. Power PBF Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_pmd_test_plan.html">207. PMD power management test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_pstate_test_plan.html">208. Power Lib Based on Intel Pstate Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_telemetry_test_plan.html">209. Power Lib Telemetry Test Plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_throughput_test_plan.html">210. Power managerment throughput test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vmdq_test_plan.html">211. VMDQ Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_l2fwd_test_plan.html">212. VF L2 Forwarding Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vf_l3fwd_test_plan.html">213. VF L3 Forwarding Performance Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="softnic_test_plan.html">214. softnic PMD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm_hotplug_test_plan.html">215. VM hotplug Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mdd_test_plan.html">216. Malicious Driver Detection (MDD) Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="malicious_driver_event_indication_test_plan.html">217. Malicious driver event indication process in Intel® Ethernet 700 Series PF driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_event_idx_interrupt_test_plan.html">218. vhost event idx interrupt mode test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_event_idx_interrupt_cbdma_test_plan.html">219. vhost event idx interrupt modei with CBDMA test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_virtio_pmd_interrupt_test_plan.html">220. vhost/virtio-pmd interrupt mode test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_virtio_pmd_interrupt_cbdma_test_plan.html">221. vhost/virtio-pmd interrupt mode with cbdma test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_virtio_user_interrupt_test_plan.html">222. vhost/virtio-user interrupt mode test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_virtio_user_interrupt_cbdma_test_plan.html">223. vhost/virtio-user interrupt mode with cbdma test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_virtio_user_interrupt_with_power_monitor_test_plan.html">224. Vhost_user virtio_user interrupt test with power monitor mode test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_event_idx_interrupt_test_plan.html">225. virtio event idx interrupt mode test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_event_idx_interrupt_cbdma_test_plan.html">226. Virtio event idx interrupt mode with cbdma test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_ipsec_cryptodev_func_test_plan.html">227. Cryptodev virtio ipsec Application Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_perf_cryptodev_func_test_plan.html">228. Cryptodev virtio Performance Application Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_smoke_test_plan.html">229. vhost/virtio-user smoke test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_net_perf_test_plan.html">230. vm2vm vhost-user/virtio-net test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_net_perf_cbdma_test_plan.html">231. VM2VM vhost-user/virtio-net with CBDMA test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_net_perf_dsa_test_plan.html">232. VM2VM vhost-user/virtio-net with DSA driver test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_pmd_test_plan.html">233. vm2vm vhost-user/virtio-pmd test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_pmd_cbdma_test_plan.html">234. vm2vm vhost-user/virtio-pmd with cbdma test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_pmd_dsa_test_plan.html">235. vm2vm vhost-user/virtio-pmd with DSA driver test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dpdk_gro_lib_test_plan.html">236. DPDK GRO lib test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dpdk_gro_lib_cbdma_test_plan.html">237. DPDK GRO lib with cbdma test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dpdk_gso_lib_test_plan.html">238. DPDK GSO lib test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vswitch_sample_cbdma_test_plan.html">239. Vswitch sample test with vhost async data path test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vswitch_sample_dsa_test_plan.html">240. Vswitch sample test with vhost async data path test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vswitch_pvp_multi_paths_performance_with_cbdma_test_plan.html">241. Vswitch PVP multi-paths performance with CBDMA test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vxlan_gpe_support_in_i40e_test_plan.html">242. I40E VXLAN-GPE Support Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_diff_qemu_version_test_plan.html">243. vhost/virtio different qemu version test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_share_lib_test_plan.html">244. Vhost/virtio-user pvp share lib test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_virtio_user_2M_hugepages_test_plan.html">245. vhost/virtio-user pvp with 2M hugepage test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_unit_cryptodev_func_test_plan.html">246. CryptoDev virtio unit Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_user_for_container_networking_test_plan.html">247. Virtio_user for container networking test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eventdev_perf_test_plan.html">248. Eventdev Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eventdev_pipeline_perf_test_plan.html">249. Eventdev Pipeline Perf Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_qemu_multi_paths_port_restart_test_plan.html">250. vhost/virtio qemu multi-paths and port restart test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_vhost_user_reconnect_test_plan.html">251. vhost-user/virtio pvp reconnect test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_virtio_bonding_test_plan.html">252. vhost-user/virtio-pmd pvp bonding test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pvp_virtio_user_4k_hugepages_test_plan.html">253. vhost/virtio-user pvp with 4K-pages test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vdev_primary_secondary_test_plan.html">254. Virtio-pmd primary/secondary process test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vhost_1024_ethports_test_plan.html">255. vhost 1023 ethports test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_pvp_regression_test_plan.html">256. vhost/virtio-pmd qemu regression test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="virtio_user_as_exceptional_path_test_plan.html">257. Virtio_user as an exceptional path test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meson_tests_test_plan.html">258. Meson tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmdline_test_plan.html">259. Sample Application Tests: Cmdline Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hello_world_test_plan.html">260. Sample Application Tests: Hello World Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keep_alive_test_plan.html">261. Sample Application Tests: Keep Alive Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiprocess_test_plan.html">262. Sample Application Tests: Multi-Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multiprocess_iavf_test_plan.html">263. Sample Application Tests: Multi-Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rxtx_callbacks_test_plan.html">264. Sample Application Tests: RX/TX Callbacks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="skeleton_test_plan.html">265. Sample Application Tests: Basic Forwarding/Skeleton Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timer_test_plan.html">266. Sample Application Tests: Timer Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ptpclient_test_plan.html">267. Sample Application Tests: IEEE1588</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributor_test_plan.html">268. Sample Application Tests: Packet distributor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="efd_test_plan.html">269. Sample Application Tests: Elastic Flow Distributor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_build_test_plan.html">270. Example Build</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flow_classify_test_plan.html">271. flow classify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dpdk_hugetlbfs_mount_size_test_plan.html">272. DPDK Hugetlbfs Mount Size Feature Test Plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nic_single_core_perf_test_plan.html">273. Benchmark the performance of single core forwarding with XXV710 and 82599/500 Series 10G</a></li>
+<li class="toctree-l1 current"><a class="reference internal current" href="#"><span class="toctree-expand"></span>274. DPDK IAVF API Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hardwares">274.1. Hardwares</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites"><span class="toctree-expand"></span>274.2. Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-vf-basic-rx-tx">274.2.1. Test case: VF basic RX/TX</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-cases-vf-mac-filter"><span class="toctree-expand"></span>274.3. Test Cases: VF mac filter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-unicast-test">274.3.1. Test Case: unicast test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-multicast-test">274.3.2. Test Case: multicast test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-broadcast-test">274.3.3. Test Case: broadcast test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-promiscuous-mode">274.3.4. Test Case: promiscuous mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-cases-vf-vlan-feature-vlan-filter-only-work-with-promisc-mode-off"><span class="toctree-expand"></span>274.4. Test Cases: VF VLAN feature vlan filter only work with promisc mode off</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-vlan-filter">274.4.1. Test Case: vlan filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-rx-vlan">274.4.2. Test Case: rx_vlan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-tx-vlan">274.4.3. Test Case: tx_vlan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-vlan-strip">274.4.4. Test Case: vlan strip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-vlan-promisc-mode">274.4.5. Test Case: vlan promisc mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-cases-vf-jumboframe"><span class="toctree-expand"></span>274.5. Test Cases: VF jumboframe</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-check-that-no-jumbo-frame-support">274.5.1. Test Case: Check that no jumbo frame support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-check-that-with-jumbo-frames-support">274.5.2. Test Case: Check that with jumbo frames support</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-cases-vf-rss"><span class="toctree-expand"></span>274.6. Test Cases: VF rss</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-test-redirection-table-config">274.6.1. Test Case: test redirection table config</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-cases-vf-offload"><span class="toctree-expand"></span>274.7. Test Cases:VF offload</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-enable-hw-checksum-offload">274.7.1. Test Case: enable HW checksum offload</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-sw-checksum-disable-hw-checksum-offload">274.7.2. Test Case: SW checksum, disable HW checksum offload</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-tso">274.7.3. Test Case: tso</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-case-rx-interrupt"><span class="toctree-expand"></span>274.8. Test case:  Rx interrupt</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">274.8.1. Test case: rx interrupt</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-cases-vf-veb"><span class="toctree-expand"></span>274.9. Test Cases:  VF veb</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-veb-performance">274.9.1. Test Case: veb performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test-case-vf-performance"><span class="toctree-expand"></span>274.10. Test Case: VF performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-vector-vf-performance">274.10.1. Test Case: vector vf performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-case-scalar-bulk-vf-performance">274.10.2. Test Case: scalar/bulk vf performance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="packet_capture_test_plan.html">275. packet capture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packet_ordering_test_plan.html">276. Sample Application Tests: Packet Ordering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bbdev_test_plan.html">277. Wireless device for Xeon SP 83xx/63xx-D (bbdev) for Turbo decoding/encoding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fips_cryptodev_test_plan.html">278. FIPS Validation Application Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flow_filtering_test_plan.html">279. Flow Filtering Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="af_xdp_test_plan.html">280. DPDK PMD for AF_XDP Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cbdma_test_plan.html">281. CBDMA test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dsa_test_plan.html">282. DSA test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flexible_rxd_test_plan.html">283. Flexible RXd Test Suites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipsec_gw_and_library_test_plan.html">284. IPSec gateway and library test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="port_control_test_plan.html">285. Port Control Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="port_representor_test_plan.html">286. Port Representor Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_user_test_plan.html">287. vm2vm vhost-user/virtio-user test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_user_cbdma_test_plan.html">288. VM2VM vhost-user/virtio-user with CBDMA test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vm2vm_virtio_user_dsa_test_plan.html">289. VM2VM vhost-user/virtio-user with DSA driver test plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vmdq_dcb_test_plan.html">290. Intel® Ethernet 700 Series: Support of RX Packet Filtering using VMDQ &amp; DCB Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acl_test_plan.html">291. ACL Test Plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power_negative_test_plan.html">292. Power Negative Test Plan</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DPDK Test Plans</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> »</li>
+        
+      <li>274. DPDK IAVF API Tests</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/iavf_test_plan.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="dpdk-iavf-api-tests">
+<h1>274. DPDK IAVF API Tests<a class="headerlink" href="#dpdk-iavf-api-tests" title="Permalink to this headline">¶</a></h1>
+<p>Intel Adaptive Virtual Function(IAVF)</p>
+<div class="section" id="hardwares">
+<h2>274.1. Hardwares<a class="headerlink" href="#hardwares" title="Permalink to this headline">¶</a></h2>
+<p>I40E driver NIC (Intel® Ethernet 700 Series XXV710, XL710, X710)</p>
+</div>
+<div class="section" id="prerequisites">
+<h2>274.2. Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Configure PF and VF:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">modprobe</span> <span class="n">uio</span><span class="p">;</span>
+<span class="n">insmod</span> <span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">kmod</span><span class="o">/</span><span class="n">igb_uio</span><span class="o">.</span><span class="n">ko</span><span class="p">;</span>
+<span class="o">./</span><span class="n">usertools</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">devbind</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">bind</span><span class="o">=</span><span class="n">igb_uio</span> <span class="mi">08</span><span class="p">:</span><span class="mf">00.0</span> <span class="mi">08</span><span class="p">:</span><span class="mf">00.1</span>
+
+<span class="n">echo</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">bus</span><span class="o">/</span><span class="n">pci</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">00.0</span><span class="o">/</span><span class="n">max_vfs</span>
+<span class="n">echo</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">bus</span><span class="o">/</span><span class="n">pci</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">00.1</span><span class="o">/</span><span class="n">max_vfs</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Start testpmd on host to configure VF ports’ mac:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1</span><span class="o">-</span><span class="mi">5</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span>  <span class="o">--</span> <span class="o">-</span><span class="n">i</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">vf</span> <span class="n">mac</span> <span class="n">addr</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">00</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">78</span><span class="p">:</span><span class="mi">01</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">vf</span> <span class="n">mac</span> <span class="n">addr</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">00</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">78</span><span class="p">:</span><span class="mi">02</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Pass through VF 09:02.0 and 09:0a.0 to VM0:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">taskset</span> <span class="o">-</span><span class="n">c</span> <span class="mi">24</span><span class="p">,</span><span class="mi">25</span> <span class="n">qemu</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">x86_64</span>  \n<span class="o">-</span><span class="n">name</span> <span class="n">vm0</span> <span class="o">-</span><span class="n">enable</span><span class="o">-</span><span class="n">kvm</span> <span class="o">-</span><span class="n">pidfile</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/.</span><span class="n">vm0</span><span class="o">.</span><span class="n">pid</span> <span class="o">-</span><span class="n">daemonize</span> <span class="o">-</span><span class="n">monitor</span> <span class="n">unix</span><span class="p">:</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">vm0_monitor</span><span class="o">.</span><span class="n">sock</span><span class="p">,</span><span class="n">server</span><span class="p">,</span><span class="n">nowait</span> \n<span class="o">-</span><span class="n">device</span> <span class="n">e1000</span><span class="p">,</span><span class="n">netdev</span><span class="o">=</span><span class="n">nttsip1</span>  <span class="o">-</span><span class="n">netdev</span> <span class="n">user</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="n">nttsip1</span><span class="p">,</span><span class="n">hostfwd</span><span class="o">=</span><span class="n">tcp</span><span class="p">:</span><span class="mf">10.240</span><span class="o">.</span><span class="mf">176.247</span><span class="p">:</span><span class="mi">6000</span><span class="o">-</span><span class="p">:</span><span class="mi">22</span> \n<span class="o">-</span><span class="n">device</span> <span class="n">vfio</span><span class="o">-</span><span class="n">pci</span><span class="p">,</span><span class="n">host</span><span class="o">=</span><span class="mi">0000</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mf">02.0</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="n">pt_0</span> <span class="o">-</span><span class="n">device</span> <span class="n">vfio</span><span class="o">-</span><span class="n">pci</span><span class="p">,</span><span class="n">host</span><span class="o">=</span><span class="mi">0000</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">0</span><span class="n">a</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span>\n<span class="nb">id</span><span class="o">=</span><span class="n">pt_1</span> <span class="o">-</span><span class="n">cpu</span> <span class="n">host</span> <span class="o">-</span><span class="n">smp</span> <span class="mi">2</span> <span class="o">-</span><span class="n">m</span> <span class="mi">10240</span> <span class="o">-</span><span class="n">chardev</span> <span class="n">socket</span><span class="p">,</span><span class="n">path</span><span class="o">=/</span><span class="n">tmp</span><span class="o">/</span><span class="n">vm0_qga0</span><span class="o">.</span><span class="n">sock</span><span class="p">,</span><span class="n">server</span><span class="p">,</span><span class="n">nowait</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="n">vm0_qga0</span> \n<span class="o">-</span><span class="n">device</span> <span class="n">virtio</span><span class="o">-</span><span class="n">serial</span> <span class="o">-</span><span class="n">device</span> <span class="n">virtserialport</span><span class="p">,</span><span class="n">chardev</span><span class="o">=</span><span class="n">vm0_qga0</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">qemu</span><span class="o">.</span><span class="n">guest_agent</span><span class="o">.</span><span class="mi">0</span> <span class="o">-</span><span class="n">vnc</span> <span class="p">:</span><span class="mi">1</span> \n<span class="o">-</span><span class="n">drive</span> <span class="n">file</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">image</span><span class="o">/</span><span class="n">sriov</span><span class="o">-</span><span class="n">fc25</span><span class="o">-</span><span class="mf">1.</span><span class="n">img</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="n">raw</span><span class="p">,</span><span class="k">if</span><span class="o">=</span><span class="n">virtio</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">media</span><span class="o">=</span><span class="n">disk</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Bind VF to igb_uio or vfio-pic in VM:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">usertools</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">devbind</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">bind</span><span class="o">=</span><span class="n">igb_uio</span> <span class="mi">00</span><span class="p">:</span><span class="mf">04.0</span> <span class="mi">00</span><span class="p">:</span><span class="mf">05.0</span>
+<span class="ow">or</span>
+<span class="o">./</span><span class="n">usertools</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">devbind</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">bind</span><span class="o">=</span><span class="n">vfio</span><span class="o">-</span><span class="n">pci</span> <span class="mi">00</span><span class="p">:</span><span class="mf">04.0</span> <span class="mi">00</span><span class="p">:</span><span class="mf">05.0</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="test-case-vf-basic-rx-tx">
+<h3>274.2.1. Test case: VF basic RX/TX<a class="headerlink" href="#test-case-vf-basic-rx-tx" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Start testpmd on VM:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x3</span> <span class="o">-</span><span class="n">n</span> <span class="mi">1</span>  <span class="o">--</span> <span class="o">-</span><span class="n">i</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Check and verify packets which received and forwarded</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="test-cases-vf-mac-filter">
+<h2>274.3. Test Cases: VF mac filter<a class="headerlink" href="#test-cases-vf-mac-filter" title="Permalink to this headline">¶</a></h2>
+<p>Start testpmd on VM:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x3</span> <span class="o">-</span><span class="n">n</span> <span class="mi">1</span>  <span class="o">--</span> <span class="o">-</span><span class="n">i</span>
+</pre></div>
+</div>
+<div class="section" id="test-case-unicast-test">
+<h3>274.3.1. Test Case: unicast test<a class="headerlink" href="#test-case-unicast-test" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">allmulti</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">mac_addr</span> <span class="nb">set</span> <span class="mi">0</span> <span class="mi">00</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">78</span><span class="p">:</span><span class="mi">03</span>
+</pre></div>
+</div>
+<p>disable promisc mode, verify VF packet rx/tx can work fine with the specific mac addr.</p>
+</div>
+<div class="section" id="test-case-multicast-test">
+<h3>274.3.2. Test Case: multicast test<a class="headerlink" href="#test-case-multicast-test" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">allmulti</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>Send packet with multicast MAC 01:80:C2:00:00:08, and check VF can not receive the packet.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">allmulti</span> <span class="nb">all</span> <span class="n">on</span>
+</pre></div>
+</div>
+<p>Send packet with multicast MAC 01:80:C2:00:00:08, and check VF can receive the packet.</p>
+</div>
+<div class="section" id="test-case-broadcast-test">
+<h3>274.3.3. Test Case: broadcast test<a class="headerlink" href="#test-case-broadcast-test" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>Send packets with broadcast address ff:ff:ff:ff:ff:ff, and check VF can receive the packet</p>
+</div>
+<div class="section" id="test-case-promiscuous-mode">
+<h3>274.3.4. Test Case: promiscuous mode<a class="headerlink" href="#test-case-promiscuous-mode" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">on</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>Send packet that different with vf mac, check packets can be received.</p>
+</div>
+</div>
+<div class="section" id="test-cases-vf-vlan-feature-vlan-filter-only-work-with-promisc-mode-off">
+<h2>274.4. Test Cases: VF VLAN feature vlan filter only work with promisc mode off<a class="headerlink" href="#test-cases-vf-vlan-feature-vlan-filter-only-work-with-promisc-mode-off" title="Permalink to this headline">¶</a></h2>
+<p>Start testpmd on VM:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x3</span> <span class="o">-</span><span class="n">n</span> <span class="mi">1</span>  <span class="o">--</span> <span class="o">-</span><span class="n">i</span>
+</pre></div>
+</div>
+<div class="section" id="test-case-vlan-filter">
+<h3>274.4.1. Test Case: vlan filter<a class="headerlink" href="#test-case-vlan-filter" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">stop</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">1</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">on</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">start</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>packet with vlan can not be received, packet without vlan packet can be received.</p>
+</div>
+<div class="section" id="test-case-rx-vlan">
+<h3>274.4.2. Test Case: rx_vlan<a class="headerlink" href="#test-case-rx-vlan" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">stop</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">1</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">on</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">rx_vlan</span> <span class="n">add</span> <span class="mi">20</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">start</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>packet vlan id equal to 20 can be received, packet vlan id not equal to 20 packet can be not received.</p>
+</div>
+<div class="section" id="test-case-tx-vlan">
+<h3>274.4.3. Test Case: tx_vlan<a class="headerlink" href="#test-case-tx-vlan" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">stop</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">on</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">tx_vlan</span> <span class="nb">set</span> <span class="mi">1</span> <span class="mi">20</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">start</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>packet out from VF contain the vlan tag and vlan id equal to 20.</p>
+</div>
+<div class="section" id="test-case-vlan-strip">
+<h3>274.4.4. Test Case: vlan strip<a class="headerlink" href="#test-case-vlan-strip" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">stop</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">on</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">on</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">start</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>send a packet with vlan tag, packet out from VF not contain the vlan tag.</p>
+</div>
+<div class="section" id="test-case-vlan-promisc-mode">
+<h3>274.4.5. Test Case: vlan promisc mode<a class="headerlink" href="#test-case-vlan-promisc-mode" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">stop</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="nb">filter</span> <span class="n">off</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">vlan</span> <span class="nb">set</span> <span class="n">strip</span> <span class="n">off</span> <span class="mi">1</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">on</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">start</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>send packet with vlan or without vlan, both can be received and forwarded.</p>
+</div>
+</div>
+<div class="section" id="test-cases-vf-jumboframe">
+<h2>274.5. Test Cases: VF jumboframe<a class="headerlink" href="#test-cases-vf-jumboframe" title="Permalink to this headline">¶</a></h2>
+<p>Ensure Tester’s ports support sending jumboframe:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ifconfig</span> <span class="s1">'tester interface'</span> <span class="n">mtu</span> <span class="mi">9000</span>
+</pre></div>
+</div>
+<div class="section" id="test-case-check-that-no-jumbo-frame-support">
+<h3>274.5.1. Test Case: Check that no jumbo frame support<a class="headerlink" href="#test-case-check-that-no-jumbo-frame-support" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Launch</span> <span class="n">testpmd</span> <span class="k">for</span> <span class="n">VF</span> <span class="n">ports</span> <span class="n">without</span> <span class="n">enabling</span> <span class="n">jumboframe</span> <span class="n">option</span>
+
+    <span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x3</span> <span class="o">-</span><span class="n">n</span> <span class="mi">1</span>  <span class="o">--</span> <span class="o">-</span><span class="n">i</span>
+
+    <span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+    <span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>packet less than the standard maximum frame (1518) can be received.
+packet more than the standard maximum frame (1518) can not be received.</p>
+</div>
+<div class="section" id="test-case-check-that-with-jumbo-frames-support">
+<h3>274.5.2. Test Case: Check that with jumbo frames support<a class="headerlink" href="#test-case-check-that-with-jumbo-frames-support" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Launch</span> <span class="n">testpmd</span> <span class="k">for</span> <span class="n">VF</span> <span class="n">ports</span> <span class="k">with</span> <span class="n">jumboframe</span> <span class="n">option</span>
+
+    <span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x3</span> <span class="o">-</span><span class="n">n</span> <span class="mi">1</span>  <span class="o">--</span> <span class="o">-</span><span class="n">i</span> <span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">pkt</span><span class="o">-</span><span class="nb">len</span><span class="o">=</span><span class="mi">3000</span> <span class="o">--</span><span class="n">tx</span><span class="o">-</span><span class="n">offloads</span><span class="o">=</span><span class="mh">0x8000</span>
+
+    <span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+    <span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>packet lengths greater than the standard maximum frame (1518) and
+lower or equal to the maximum frame length can be received.
+Check that packets larger than the configured maximum packet length are
+dropped by the hardware.</p>
+<p><strong>Note the following was expected!</strong> packet size &gt; 9001,  not forward , but RX-packets: counter increased</p>
+</div>
+</div>
+<div class="section" id="test-cases-vf-rss">
+<h2>274.6. Test Cases: VF rss<a class="headerlink" href="#test-cases-vf-rss" title="Permalink to this headline">¶</a></h2>
+<p>Start testpmd on VM:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x3</span> <span class="o">-</span><span class="n">n</span> <span class="mi">1</span>  <span class="o">--</span> <span class="o">-</span><span class="n">i</span> <span class="o">--</span><span class="n">txq</span><span class="o">=</span><span class="mi">4</span> <span class="o">--</span><span class="n">rxq</span><span class="o">=</span><span class="mi">4</span>
+</pre></div>
+</div>
+<div class="section" id="test-case-test-redirection-table-config">
+<h3>274.6.1. Test Case: test redirection table config<a class="headerlink" href="#test-case-test-redirection-table-config" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">config</span> <span class="mi">0</span> <span class="n">rss</span> <span class="n">reta</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">config</span> <span class="mi">0</span> <span class="n">rss</span> <span class="n">reta</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">config</span> <span class="mi">0</span> <span class="n">rss</span> <span class="n">reta</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">config</span> <span class="mi">0</span> <span class="n">rss</span> <span class="n">reta</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">config</span> <span class="mi">0</span> <span class="n">rss</span> <span class="n">reta</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">config</span> <span class="mi">0</span> <span class="n">rss</span> <span class="n">reta</span> <span class="p">(</span><span class="mi">61</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">config</span> <span class="mi">0</span> <span class="n">rss</span> <span class="n">reta</span> <span class="p">(</span><span class="mi">62</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">config</span> <span class="mi">0</span> <span class="n">rss</span> <span class="n">reta</span> <span class="p">(</span><span class="mi">63</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span> <span class="n">port</span> <span class="n">config</span> <span class="nb">all</span> <span class="n">rss</span> <span class="p">(</span><span class="nb">all</span><span class="o">|</span><span class="n">ip</span><span class="o">|</span><span class="n">tcp</span><span class="o">|</span><span class="n">udp</span><span class="o">|</span><span class="n">sctp</span><span class="o">|</span><span class="n">ether</span><span class="o">|</span><span class="n">port</span><span class="o">|</span><span class="n">vxlan</span><span class="o">|</span><span class="n">geneve</span><span class="o">|</span><span class="n">nvgre</span><span class="o">|</span><span class="n">none</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>send different flow type packets to VF port, check packets received by different queues.</p>
+</div>
+</div>
+<div class="section" id="test-cases-vf-offload">
+<h2>274.7. Test Cases:VF offload<a class="headerlink" href="#test-cases-vf-offload" title="Permalink to this headline">¶</a></h2>
+<p>Start testpmd on VM:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x3</span> <span class="o">-</span><span class="n">n</span> <span class="mi">1</span>  <span class="o">--</span> <span class="o">-</span><span class="n">i</span>
+</pre></div>
+</div>
+<div class="section" id="test-case-enable-hw-checksum-offload">
+<h3>274.7.1. Test Case: enable HW checksum offload<a class="headerlink" href="#test-case-enable-hw-checksum-offload" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">stop</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">ip</span> <span class="n">hw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">udp</span> <span class="n">hw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">tcp</span> <span class="n">hw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">sctp</span> <span class="n">hw</span> <span class="mi">0</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">ip</span> <span class="n">hw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">udp</span> <span class="n">hw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">tcp</span> <span class="n">hw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">sctp</span> <span class="n">hw</span> <span class="mi">1</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">csum</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">verbose</span> <span class="mi">1</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">start</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>Send packets with incorrect checksum to VF port, verify that the packets
+can be received by VF port and checksum error reported,
+the packets forwarded by VF port have the correct checksum value.</p>
+</div>
+<div class="section" id="test-case-sw-checksum-disable-hw-checksum-offload">
+<h3>274.7.2. Test Case: SW checksum, disable HW checksum offload<a class="headerlink" href="#test-case-sw-checksum-disable-hw-checksum-offload" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">stop</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">ip</span> <span class="n">sw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">udp</span> <span class="n">sw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">tcp</span> <span class="n">sw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">sctp</span> <span class="n">sw</span> <span class="mi">0</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">ip</span> <span class="n">sw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">udp</span> <span class="n">sw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">tcp</span> <span class="n">sw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">sctp</span> <span class="n">sw</span> <span class="mi">1</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">csum</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">verbose</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">start</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>Send packets with incorrect checksum to VF port, verify that the packets
+can be received by VF port and checksum error reported, the packets
+forwarded by VF port have the correct checksum value.</p>
+</div>
+<div class="section" id="test-case-tso">
+<h3>274.7.3. Test Case: tso<a class="headerlink" href="#test-case-tso" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">stop</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">verbose</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">ip</span> <span class="n">hw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">udp</span> <span class="n">hw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">tcp</span> <span class="n">hw</span> <span class="mi">0</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">sctp</span> <span class="n">hw</span> <span class="mi">0</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">ip</span> <span class="n">hw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">udp</span> <span class="n">hw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">tcp</span> <span class="n">hw</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">csum</span> <span class="nb">set</span> <span class="n">sctp</span> <span class="n">hw</span> <span class="mi">1</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">tso</span> <span class="nb">set</span> <span class="mi">800</span> <span class="mi">1</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">csum</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">port</span> <span class="n">start</span> <span class="nb">all</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>Send packet which loading size more than 800.
+Verify tcpdump packets send out by VF port is split according to tso size.</p>
+</div>
+</div>
+<div class="section" id="test-case-rx-interrupt">
+<h2>274.8. Test case:  Rx interrupt<a class="headerlink" href="#test-case-rx-interrupt" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>274.8.1. Test case: rx interrupt<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">build</span> <span class="n">l3fwd</span><span class="o">-</span><span class="n">power</span>
+    <span class="n">meson</span> <span class="n">configure</span> <span class="o">-</span><span class="n">Dexamples</span><span class="o">=</span><span class="n">l3fwd</span><span class="o">-</span><span class="n">power</span> <span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span>
+    <span class="n">ninja</span> <span class="o">-</span><span class="n">C</span> <span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span>
+
+<span class="n">enable</span> <span class="n">vfio</span> <span class="n">noiommu</span>
+    <span class="n">modprobe</span> <span class="o">-</span><span class="n">r</span> <span class="n">vfio_iommu_type1</span>
+    <span class="n">modprobe</span> <span class="o">-</span><span class="n">r</span> <span class="n">vfio</span>
+    <span class="n">modprobe</span>  <span class="n">vfio</span> <span class="n">enable_unsafe_noiommu_mode</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">cat</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">module</span><span class="o">/</span><span class="n">vfio</span><span class="o">/</span><span class="n">parameters</span><span class="o">/</span><span class="n">enable_unsafe_noiommu_mode</span>
+    <span class="n">modprobe</span> <span class="n">vfio</span><span class="o">-</span><span class="n">pci</span>
+
+<span class="n">start</span> <span class="n">l3fwd</span> <span class="n">power</span> <span class="k">with</span> <span class="n">one</span> <span class="n">queue</span> <span class="n">per</span> <span class="n">port</span><span class="o">.</span>
+    <span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">l3fwd</span><span class="o">-</span><span class="n">power</span> <span class="o">-</span><span class="n">l</span> <span class="mi">6</span><span class="p">,</span><span class="mi">7</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span>  <span class="o">--</span> \n    <span class="o">-</span><span class="n">p</span> <span class="mh">0x3</span> <span class="o">--</span><span class="n">config</span> <span class="s1">'(0,0,6),(1,0,7)'</span>
+
+<span class="n">Send</span> <span class="n">one</span> <span class="n">packet</span> <span class="n">to</span> <span class="n">VF0</span> <span class="ow">and</span> <span class="n">VF1</span><span class="p">,</span> <span class="n">check</span> <span class="n">that</span> <span class="n">thread</span> <span class="n">on</span> <span class="n">core6</span> <span class="ow">and</span> <span class="n">core7</span> <span class="n">waked</span> <span class="n">up</span><span class="p">::</span>
+
+<span class="n">L3FWD_POWER</span><span class="p">:</span> <span class="n">lcore</span> <span class="mi">6</span> <span class="ow">is</span> <span class="n">waked</span> <span class="n">up</span> <span class="kn">from</span> <span class="nn">rx</span> <span class="n">interrupt</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">0</span> <span class="n">queue</span> <span class="mi">0</span>
+<span class="n">L3FWD_POWER</span><span class="p">:</span> <span class="n">lcore</span> <span class="mi">7</span> <span class="ow">is</span> <span class="n">waked</span> <span class="n">up</span> <span class="kn">from</span> <span class="nn">rx</span> <span class="n">interrupt</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">0</span> <span class="n">queue</span> <span class="mi">0</span>
+
+<span class="n">Check</span> <span class="n">the</span> <span class="n">packet</span> <span class="n">has</span> <span class="n">been</span> <span class="n">normally</span> <span class="n">forwarded</span><span class="o">.</span>
+
+<span class="n">After</span> <span class="n">the</span> <span class="n">packet</span> <span class="n">forwarded</span><span class="p">,</span> <span class="n">thread</span> <span class="n">on</span> <span class="n">core6</span> <span class="ow">and</span> <span class="n">core</span> <span class="mi">7</span> <span class="n">will</span> <span class="k">return</span> <span class="n">to</span> <span class="n">sleep</span><span class="p">::</span>
+
+<span class="n">L3FWD_POWER</span><span class="p">:</span> <span class="n">lcore</span> <span class="mi">6</span> <span class="n">sleeps</span> <span class="n">until</span> <span class="n">interrupt</span> <span class="n">triggers</span>
+<span class="n">L3FWD_POWER</span><span class="p">:</span> <span class="n">lcore</span> <span class="mi">7</span> <span class="n">sleeps</span> <span class="n">until</span> <span class="n">interrupt</span> <span class="n">triggers</span>
+
+<span class="n">Send</span> <span class="n">packet</span> <span class="n">flows</span> <span class="n">to</span> <span class="n">VF0</span> <span class="ow">and</span> <span class="n">VF1</span><span class="p">,</span> <span class="n">check</span> <span class="n">that</span> <span class="n">thread</span> <span class="n">on</span> <span class="n">core1</span> <span class="ow">and</span> <span class="n">core2</span> <span class="n">will</span>
+<span class="n">keep</span> <span class="n">up</span> <span class="n">awake</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="test-cases-vf-veb">
+<h2>274.9. Test Cases:  VF veb<a class="headerlink" href="#test-cases-vf-veb" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="test-case-veb-performance">
+<h3>274.9.1. Test Case: veb performance<a class="headerlink" href="#test-case-veb-performance" title="Permalink to this headline">¶</a></h3>
+<p>create 2 VFs from 1 PF, start testpmd with 2VFs individually, verify throughput.</p>
+<p>create 2 VFs from 1 PF, and start PF:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="mi">2</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">bus</span><span class="o">/</span><span class="n">pci</span><span class="o">/</span><span class="n">devices</span><span class="o">/</span><span class="mi">0000</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mf">00.0</span><span class="o">/</span><span class="n">max_vfs</span><span class="p">;</span>
+<span class="o">./</span><span class="n">usertools</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">devbind</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">bind</span><span class="o">=</span><span class="n">vfio</span><span class="o">-</span><span class="n">pci</span> <span class="mi">09</span><span class="p">:</span><span class="mf">02.0</span> <span class="mi">09</span><span class="p">:</span><span class="mi">0</span><span class="n">a</span><span class="o">.</span><span class="mi">0</span>
+
+<span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span> <span class="o">--</span><span class="n">socket</span><span class="o">-</span><span class="n">mem</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span><span class="mi">1024</span> <span class="o">--</span><span class="n">file</span><span class="o">-</span><span class="n">prefix</span><span class="o">=</span><span class="n">pf</span> <span class="o">-</span><span class="n">a</span> <span class="mi">08</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">--</span> <span class="o">-</span><span class="n">i</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">vf</span> <span class="n">mac</span> <span class="n">addr</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">00</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">78</span><span class="p">:</span><span class="mi">01</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">vf</span> <span class="n">mac</span> <span class="n">addr</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">00</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">78</span><span class="p">:</span><span class="mi">02</span>
+</pre></div>
+</div>
+<p>start testpmd with 2VFs individually:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">l</span> <span class="mi">3</span><span class="o">-</span><span class="mi">5</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span> <span class="o">--</span><span class="n">master</span><span class="o">-</span><span class="n">lcore</span><span class="o">=</span><span class="mi">3</span> <span class="o">--</span><span class="n">socket</span><span class="o">-</span><span class="n">mem</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span><span class="mi">1024</span> <span class="o">--</span><span class="n">file</span><span class="o">-</span><span class="n">prefix</span><span class="o">=</span><span class="n">vf1</span> \n  <span class="o">-</span><span class="n">a</span> <span class="mi">09</span><span class="p">:</span><span class="mf">02.0</span> <span class="o">--</span> <span class="o">-</span><span class="n">i</span> <span class="o">--</span><span class="n">txq</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">rxq</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">rxd</span><span class="o">=</span><span class="mi">512</span> <span class="o">--</span><span class="n">txd</span><span class="o">=</span><span class="mi">512</span> <span class="o">--</span><span class="n">nb</span><span class="o">-</span><span class="n">cores</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">rss</span><span class="o">-</span><span class="n">ip</span> <span class="o">--</span><span class="n">eth</span><span class="o">-</span><span class="n">peer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="mi">00</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">78</span><span class="p">:</span><span class="mi">02</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">l</span> <span class="mi">6</span><span class="o">-</span><span class="mi">8</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span> <span class="o">--</span><span class="n">master</span><span class="o">-</span><span class="n">lcore</span><span class="o">=</span><span class="mi">6</span> <span class="o">--</span><span class="n">socket</span><span class="o">-</span><span class="n">mem</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span><span class="mi">1024</span> <span class="o">--</span><span class="n">file</span><span class="o">-</span><span class="n">prefix</span><span class="o">=</span><span class="n">vf2</span> \n   <span class="o">-</span><span class="n">a</span> <span class="mi">09</span><span class="p">:</span><span class="mi">0</span><span class="n">a</span><span class="o">.</span><span class="mi">0</span> <span class="o">--</span> <span class="o">-</span><span class="n">i</span> <span class="o">--</span><span class="n">txq</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">rxq</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">rxd</span><span class="o">=</span><span class="mi">512</span> <span class="o">--</span><span class="n">txd</span><span class="o">=</span><span class="mi">512</span> <span class="o">--</span><span class="n">nb</span><span class="o">-</span><span class="n">cores</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">rss</span><span class="o">-</span><span class="n">ip</span>
+
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">off</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+<span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+<p>send traffic and verify throughput.</p>
+</div>
+</div>
+<div class="section" id="test-case-vf-performance">
+<h2>274.10. Test Case: VF performance<a class="headerlink" href="#test-case-vf-performance" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="test-case-vector-vf-performance">
+<h3>274.10.1. Test Case: vector vf performance<a class="headerlink" href="#test-case-vector-vf-performance" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">start testpmd for PF:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x6</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span> <span class="o">--</span><span class="n">socket</span><span class="o">-</span><span class="n">mem</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span><span class="mi">1024</span> <span class="o">--</span><span class="n">file</span><span class="o">-</span><span class="n">prefix</span><span class="o">=</span><span class="n">pf</span> \n  <span class="o">-</span><span class="n">a</span> <span class="mi">08</span><span class="p">:</span><span class="mf">00.0</span> <span class="o">-</span><span class="n">a</span> <span class="mi">08</span><span class="p">:</span><span class="mf">00.1</span> <span class="o">--</span> <span class="o">-</span><span class="n">i</span>
+
+  <span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">vf</span> <span class="n">mac</span> <span class="n">addr</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">00</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">78</span><span class="p">:</span><span class="mi">01</span>
+  <span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">vf</span> <span class="n">mac</span> <span class="n">addr</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">00</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">34</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">78</span><span class="p">:</span><span class="mi">02</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">start testpmd for VF:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">x86_64</span><span class="o">-</span><span class="n">native</span><span class="o">-</span><span class="n">linuxapp</span><span class="o">-</span><span class="n">gcc</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">dpdk</span><span class="o">-</span><span class="n">testpmd</span> <span class="o">-</span><span class="n">c</span> <span class="mh">0x0f8</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span> <span class="o">--</span><span class="n">master</span><span class="o">-</span><span class="n">lcore</span><span class="o">=</span><span class="mi">3</span> <span class="o">--</span><span class="n">socket</span><span class="o">-</span><span class="n">mem</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span><span class="mi">1024</span> <span class="o">--</span><span class="n">file</span><span class="o">-</span><span class="n">prefix</span><span class="o">=</span><span class="n">vf</span> \n    <span class="o">-</span><span class="n">a</span> <span class="mi">09</span><span class="p">:</span><span class="mi">0</span><span class="n">a</span><span class="o">.</span><span class="mi">0</span> <span class="o">-</span><span class="n">a</span> <span class="mi">09</span><span class="p">:</span><span class="mf">02.0</span> <span class="o">--</span> <span class="o">-</span><span class="n">i</span> <span class="o">--</span><span class="n">txq</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">rxq</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">rxd</span><span class="o">=</span><span class="mi">512</span> <span class="o">--</span><span class="n">txd</span><span class="o">=</span><span class="mi">512</span> <span class="o">--</span><span class="n">nb</span><span class="o">-</span><span class="n">cores</span><span class="o">=</span><span class="mi">4</span> <span class="o">--</span><span class="n">rss</span><span class="o">-</span><span class="n">ip</span>
+
+ <span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">promisc</span> <span class="nb">all</span> <span class="n">off</span>
+ <span class="n">testpmd</span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">fwd</span> <span class="n">mac</span>
+ <span class="n">testpmd</span><span class="o">&gt;</span><span class="n">start</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">send traffic and verify throughput</p>
+</li>
+</ol>
+</div>
+<div class="section" id="test-case-scalar-bulk-vf-performance">
+<h3>274.10.2. Test Case: scalar/bulk vf performance<a class="headerlink" href="#test-case-scalar-bulk-vf-performance" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>repeat above test case: vector vf performance, by launch dpdk-testpmd with ‘–force-max-simd-bitwidth=64’.</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="packet_capture_test_plan.html" class="btn btn-neutral float-right" title="275. packet capture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="nic_single_core_perf_test_plan.html" class="btn btn-neutral float-left" title="273. Benchmark the performance of single core forwarding with XXV710 and 82599/500 Series 10G" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>
+        © Copyright 2017, dpdk.org
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
