@@ -1,0 +1,2429 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/产品/Virtualization_ How SmartOS Does it Differently (2025-07-29 16：18：27).html
+ Page saved with X-Webpage-Conserve 
+ url: https://wiki.smartos.org/smartos-virtualization/
+ Summary: 
+-->
+<html lang="en" class="js json svg checked target dataset details fetch supports csstransforms3d no-ios" style=""><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="https://docs.smartos.org/smartos-virtualization/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="..">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-4.4.0">
+    
+    
+      
+        <title>Machine Monitor Overview - SmartOS Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.0284f74d.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.01803549.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#3f51b5">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.74668098.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700|Open+Mono&amp;display=fallback">
+        <style>body,input{font-family:"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Open Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+      <link rel="stylesheet" href="../css/extra.css">
+    
+    
+      
+    
+    
+  <style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>html { box-sizing: border-box; }*, ::after, ::before { box-sizing: inherit; }html { -moz-text-size-adjust: none; }body { margin: 0px; }hr { overflow: visible; box-sizing: content-box; }a { }a, button, input, label { }a { color: inherit; text-decoration: none; }small, sub, sup { font-size: 80%; }sub, sup { position: relative; line-height: 0; vertical-align: baseline; }sub { bottom: -0.25em; }sup { top: -0.5em; }img { border-style: none; }table { border-collapse: separate; border-spacing: 0px; }td, th { font-weight: 400; vertical-align: top; }button { margin: 0px; padding: 0px; border: 0px; outline-style: none; background: transparent; font-size: inherit; }input { border: 0px; outline: 0px; }.md-clipboard::before, .md-icon, .md-nav__button, .md-nav__link::after, .md-nav__title::before, .md-search-result__article--document::before, .md-source-file::before, .md-typeset .admonition > .admonition-title::before, .md-typeset .admonition > summary::before, .md-typeset .critic.comment::before, .md-typeset .footnote-backref, .md-typeset .task-list-control .task-list-indicator::before, .md-typeset details > .admonition-title::before, .md-typeset details > summary::before, .md-typeset summary::after { font-family: Material Icons; font-style: normal; font-variant: normal; font-weight: 400; line-height: 1; text-transform: none; white-space: nowrap; overflow-wrap: normal; direction: ltr; }.md-content__icon, .md-footer-nav__button, .md-header-nav__button, .md-nav__button, .md-nav__title::before, .md-search-result__article--document::before { display: inline-block; margin: 0.2rem; padding: 0.4rem; font-size: 1.2rem; cursor: pointer; }.md-icon--arrow-back::before { content: ""; }.md-icon--arrow-forward::before { content: ""; }.md-icon--menu::before { content: ""; }.md-icon--search::before { content: ""; }[dir="rtl"] .md-icon--arrow-back::before { content: ""; }[dir="rtl"] .md-icon--arrow-forward::before { content: ""; }body { }body, input { color: rgba(0, 0, 0, 0.87); font-feature-settings: "kern", "liga"; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; }code, kbd, pre { color: rgba(0, 0, 0, 0.87); font-feature-settings: "kern"; font-family: Courier New, Courier, monospace; }.md-typeset { font-size: 0.8rem; line-height: 1.6; }.md-typeset blockquote, .md-typeset ol, .md-typeset p, .md-typeset ul { margin: 1em 0px; }.md-typeset h1 { margin: 0px 0px 2rem; color: rgba(0, 0, 0, 0.54); font-size: 1.5625rem; line-height: 1.3; }.md-typeset h1, .md-typeset h2 { font-weight: 300; letter-spacing: -0.01em; }.md-typeset h2 { margin: 2rem 0px 0.8rem; font-size: 1.25rem; line-height: 1.4; }.md-typeset h3 { margin: 1.6rem 0px 0.8rem; font-size: 1rem; font-weight: 400; letter-spacing: -0.01em; line-height: 1.5; }.md-typeset h2 + h3 { margin-top: 0.8rem; }.md-typeset h4 { font-size: 0.8rem; }.md-typeset h4, .md-typeset h5, .md-typeset h6 { margin: 0.8rem 0px; font-weight: 700; letter-spacing: -0.01em; }.md-typeset h5, .md-typeset h6 { color: rgba(0, 0, 0, 0.54); font-size: 0.64rem; }.md-typeset h5 { text-transform: uppercase; }.md-typeset hr { margin: 1.5em 0px; border-bottom: 0.05rem dotted rgba(0, 0, 0, 0.26); }.md-typeset a { color: rgb(63, 81, 181); word-break: break-word; }.md-typeset a, .md-typeset a::before { transition: color 0.125s; }.md-typeset a:active, .md-typeset a:hover { color: rgb(83, 109, 254); }.md-typeset code, .md-typeset pre { background-color: rgba(236, 236, 236, 0.5); color: rgb(55, 71, 79); font-size: 85%; direction: ltr; }.md-typeset code { margin: 0px 0.29412em; padding: 0.07353em 0px; border-radius: 0.1rem; box-shadow: rgba(236, 236, 236, 0.5) 0.29412em 0px 0px, rgba(236, 236, 236, 0.5) -0.29412em 0px 0px; word-break: break-word; box-decoration-break: clone; }.md-typeset h1 code, .md-typeset h2 code, .md-typeset h3 code, .md-typeset h4 code, .md-typeset h5 code, .md-typeset h6 code { margin: 0px; background-color: transparent; box-shadow: none; }.md-typeset a > code { margin: inherit; padding: inherit; border-radius: initial; background-color: inherit; color: inherit; box-shadow: none; }.md-typeset pre { position: relative; margin: 1em 0px; border-radius: 0.1rem; line-height: 1.4; }.md-typeset pre > code { display: block; margin: 0px; padding: 0.525rem 0.6rem; background-color: transparent; font-size: inherit; box-shadow: none; box-decoration-break: slice; overflow: auto; }.md-typeset pre > code::-webkit-scrollbar { width: 0.2rem; height: 0.2rem; }.md-typeset pre > code::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.26); }.md-typeset kbd { padding: 0px 0.29412em; border-radius: 0.15rem; border-width: 0.05rem; border-style: solid; border-color: rgb(201, 201, 201) rgb(201, 201, 201) rgb(188, 188, 188); border-image: none; background-color: rgb(252, 252, 252); color: rgb(85, 85, 85); font-size: 85%; box-shadow: rgb(176, 176, 176) 0px 0.05rem 0px; word-break: break-word; }.md-typeset mark { margin: 0px 0.25em; padding: 0.0625em 0px; border-radius: 0.1rem; background-color: rgba(255, 235, 59, 0.5); box-shadow: rgba(255, 235, 59, 0.5) 0.25em 0px 0px, rgba(255, 235, 59, 0.5) -0.25em 0px 0px; word-break: break-word; box-decoration-break: clone; }.md-typeset abbr { border-bottom: 0.05rem dotted rgba(0, 0, 0, 0.54); text-decoration: none; cursor: help; }.md-typeset small { opacity: 0.75; }.md-typeset sub, .md-typeset sup { margin-left: 0.07812em; }[dir="rtl"] .md-typeset sub, [dir="rtl"] .md-typeset sup { margin-right: 0.07812em; margin-left: 0px; }.md-typeset blockquote { padding-left: 0.6rem; border-left: 0.2rem solid rgba(0, 0, 0, 0.26); color: rgba(0, 0, 0, 0.54); }[dir="rtl"] .md-typeset blockquote { padding-right: 0.6rem; padding-left: 0px; border-right: 0.2rem solid rgba(0, 0, 0, 0.26); border-left: initial; }.md-typeset ul { list-style-type: disc; }.md-typeset ol, .md-typeset ul { margin-left: 0.625em; padding: 0px; }[dir="rtl"] .md-typeset ol, [dir="rtl"] .md-typeset ul { margin-right: 0.625em; margin-left: 0px; }.md-typeset ol ol, .md-typeset ul ol { list-style-type: lower-alpha; }.md-typeset ol ol ol, .md-typeset ul ol ol { list-style-type: lower-roman; }.md-typeset ol li, .md-typeset ul li { margin-bottom: 0.5em; margin-left: 1.25em; }[dir="rtl"] .md-typeset ol li, [dir="rtl"] .md-typeset ul li { margin-right: 1.25em; margin-left: 0px; }.md-typeset ol li blockquote, .md-typeset ol li p, .md-typeset ul li blockquote, .md-typeset ul li p { margin: 0.5em 0px; }.md-typeset ol li:last-child, .md-typeset ul li:last-child { margin-bottom: 0px; }.md-typeset ol li ol, .md-typeset ol li ul, .md-typeset ul li ol, .md-typeset ul li ul { margin: 0.5em 0px 0.5em 0.625em; }[dir="rtl"] .md-typeset ol li ol, [dir="rtl"] .md-typeset ol li ul, [dir="rtl"] .md-typeset ul li ol, [dir="rtl"] .md-typeset ul li ul { margin-right: 0.625em; margin-left: 0px; }.md-typeset dd { margin: 1em 0px 1em 1.875em; }[dir="rtl"] .md-typeset dd { margin-right: 1.875em; margin-left: 0px; }.md-typeset iframe, .md-typeset img, .md-typeset svg { max-width: 100%; }.md-typeset table:not([class]) { box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px; display: inline-block; max-width: 100%; border-radius: 0.1rem; font-size: 0.64rem; overflow: auto; }.md-typeset table:not([class]) + * { margin-top: 1.5em; }.md-typeset table:not([class]) td:not([align]), .md-typeset table:not([class]) th:not([align]) { text-align: left; }[dir="rtl"] .md-typeset table:not([class]) td:not([align]), [dir="rtl"] .md-typeset table:not([class]) th:not([align]) { text-align: right; }.md-typeset table:not([class]) th { min-width: 5rem; padding: 0.6rem 0.8rem; background-color: rgba(0, 0, 0, 0.54); color: rgb(255, 255, 255); vertical-align: top; }.md-typeset table:not([class]) td { padding: 0.6rem 0.8rem; border-top: 0.05rem solid rgba(0, 0, 0, 0.07); vertical-align: top; }.md-typeset table:not([class]) tr { transition: background-color 0.125s; }.md-typeset table:not([class]) tr:hover { background-color: rgba(0, 0, 0, 0.035); box-shadow: rgb(255, 255, 255) 0px 0.05rem 0px inset; }.md-typeset table:not([class]) tr:first-child td { border-top: 0px; }.md-typeset table:not([class]) a { word-break: normal; }.md-typeset__scrollwrap { margin: 1em -0.8rem; overflow-x: auto; }.md-typeset .md-typeset__table { display: inline-block; margin-bottom: 0.5em; padding: 0px 0.8rem; }.md-typeset .md-typeset__table table { display: table; width: 100%; margin: 0px; overflow: hidden; }html { font-size: 125%; overflow-x: hidden; }body, html { height: 100%; }body { position: relative; font-size: 0.5rem; }hr { display: block; height: 0.05rem; padding: 0px; border: 0px; }.md-svg { display: none; }.md-grid { max-width: 61rem; margin-right: auto; margin-left: auto; }.md-container, .md-main { overflow: auto; }.md-container { display: table; width: 100%; height: 100%; padding-top: 2.4rem; table-layout: fixed; }.md-main { display: table-row; height: 100%; }.md-main__inner { height: 100%; padding-top: 1.5rem; padding-bottom: 0.05rem; }.md-toggle { display: none; }.md-overlay { position: fixed; top: 0px; width: 0px; height: 0px; transition: width 0s 0.25s, height 0s 0.25s, opacity 0.25s; background-color: rgba(0, 0, 0, 0.54); opacity: 0; z-index: 3; }.md-flex { display: table; }.md-flex__cell { display: table-cell; position: relative; vertical-align: top; }.md-flex__cell--shrink { width: 0px; }.md-flex__cell--stretch { display: table; width: 100%; table-layout: fixed; }.md-flex__ellipsis { display: table-cell; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }.md-skip { position: fixed; width: 0.05rem; height: 0.05rem; margin: 0.5rem; padding: 0.3rem 0.5rem; transform: translateY(0.4rem); border-radius: 0.1rem; background-color: rgba(0, 0, 0, 0.87); color: rgb(255, 255, 255); font-size: 0.64rem; opacity: 0; overflow: hidden; }.md-skip:focus { width: auto; height: auto; clip: auto; transform: translateX(0px); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.175s 75ms, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; z-index: 10; }@page { margin: 25mm; }.md-clipboard { position: absolute; top: 0.3rem; right: 0.3rem; width: 1.4rem; height: 1.4rem; border-radius: 0.1rem; font-size: 0.8rem; cursor: pointer; z-index: 1; backface-visibility: hidden; }.md-clipboard::before { transition: color 0.25s, opacity 0.25s; color: rgba(0, 0, 0, 0.07); content: ""; }.codehilite:hover .md-clipboard::before, .md-typeset .highlight:hover .md-clipboard::before, pre:hover .md-clipboard::before { color: rgba(0, 0, 0, 0.54); }.md-clipboard:focus::before, .md-clipboard:hover::before { color: rgb(83, 109, 254); }.md-clipboard__message { display: block; position: absolute; top: 0px; right: 1.7rem; padding: 0.3rem 0.5rem; transform: translateX(0.4rem); transition: transform 0.25s cubic-bezier(0.9, 0.1, 0.9, 0), opacity 0.175s, transform 0.25s cubic-bezier(0.9, 0.1, 0.9, 0); border-radius: 0.1rem; background-color: rgba(0, 0, 0, 0.54); color: rgb(255, 255, 255); font-size: 0.64rem; white-space: nowrap; opacity: 0; pointer-events: none; }.md-clipboard__message--active { transform: translateX(0px); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.175s 75ms, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; pointer-events: auto; }.md-clipboard__message::before { content: attr(aria-label); }.md-clipboard__message::after { display: block; position: absolute; top: 50%; right: -0.2rem; width: 0px; margin-top: -0.2rem; border-color: transparent rgba(0, 0, 0, 0.54); border-style: solid; border-width: 0.2rem 0px 0.2rem 0.2rem; content: ""; }.md-content__inner { margin: 0px 0.8rem 1.2rem; padding-top: 0.6rem; }.md-content__inner::before { display: block; height: 0.4rem; content: ""; }.md-content__inner > :last-child { margin-bottom: 0px; }.md-content__icon { position: relative; margin: 0.4rem 0px; padding: 0px; float: right; }.md-typeset .md-content__icon { color: rgba(0, 0, 0, 0.26); }.md-header { position: fixed; top: 0px; right: 0px; left: 0px; height: 2.4rem; transition: background-color 0.25s, color 0.25s; background-color: rgb(63, 81, 181); color: rgb(255, 255, 255); box-shadow: none; z-index: 2; backface-visibility: hidden; }.no-js .md-header { transition: none; box-shadow: none; }.md-header[data-md-state="shadow"] { transition: background-color 0.25s, color 0.25s, box-shadow 0.25s; box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0.2rem, rgba(0, 0, 0, 0.2) 0px 0.2rem 0.4rem; }.md-header-nav { padding: 0px 0.2rem; }.md-header-nav__button { position: relative; transition: opacity 0.25s; z-index: 1; }.md-header-nav__button:hover { opacity: 0.7; }.md-header-nav__button.md-logo * { display: block; }.no-js .md-header-nav__button.md-icon--search { display: none; }.md-header-nav__topic { display: block; position: absolute; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1), opacity 0.15s, transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }.md-header-nav__topic + .md-header-nav__topic { transform: translateX(1.25rem); transition: transform 0.4s cubic-bezier(1, 0.7, 0.1, 0.1), opacity 0.15s, transform 0.4s cubic-bezier(1, 0.7, 0.1, 0.1); opacity: 0; z-index: -1; pointer-events: none; }[dir="rtl"] .md-header-nav__topic + .md-header-nav__topic { transform: translateX(-1.25rem); }.no-js .md-header-nav__topic { position: static; }.no-js .md-header-nav__topic + .md-header-nav__topic { display: none; }.md-header-nav__title { padding: 0px 1rem; font-size: 0.9rem; line-height: 2.4rem; }.md-header-nav__title[data-md-state="active"] .md-header-nav__topic { transform: translateX(-1.25rem); transition: transform 0.4s cubic-bezier(1, 0.7, 0.1, 0.1), opacity 0.15s, transform 0.4s cubic-bezier(1, 0.7, 0.1, 0.1); opacity: 0; z-index: -1; pointer-events: none; }[dir="rtl"] .md-header-nav__title[data-md-state="active"] .md-header-nav__topic { transform: translateX(1.25rem); }.md-header-nav__title[data-md-state="active"] .md-header-nav__topic + .md-header-nav__topic { transform: translateX(0px); transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1), opacity 0.15s, transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); opacity: 1; z-index: 0; pointer-events: auto; }.md-header-nav__source { display: none; }.md-hero { transition: background 0.25s; background-color: rgb(63, 81, 181); color: rgb(255, 255, 255); font-size: 1rem; overflow: hidden; }.md-hero__inner { margin-top: 1rem; padding: 0.8rem 0.8rem 0.4rem; transition-property: transform, opacity, transform; transition-duration: 0.4s, 0.25s, 0.4s; transition-timing-function: cubic-bezier(0.1, 0.7, 0.1, 1), ease, cubic-bezier(0.1, 0.7, 0.1, 1); transition-behavior: normal, normal, normal; transition-delay: 0.1s; }[data-md-state="hidden"] .md-hero__inner { pointer-events: none; transform: translateY(0.625rem); transition: transform 0s 0.4s, opacity 0.1s, transform 0s 0.4s; opacity: 0; }.md-hero--expand .md-hero__inner { margin-bottom: 1.2rem; }.md-footer-nav { background-color: rgba(0, 0, 0, 0.87); color: rgb(255, 255, 255); }.md-footer-nav__inner { padding: 0.2rem; overflow: auto; }.md-footer-nav__link { padding-top: 1.4rem; padding-bottom: 0.4rem; transition: opacity 0.25s; }.md-footer-nav__link:hover { opacity: 0.7; }.md-footer-nav__link--prev { width: 25%; float: left; }[dir="rtl"] .md-footer-nav__link--prev { float: right; }.md-footer-nav__link--next { width: 75%; float: right; text-align: right; }[dir="rtl"] .md-footer-nav__link--next { float: left; text-align: left; }.md-footer-nav__button { transition: background 0.25s; }.md-footer-nav__title { position: relative; padding: 0px 1rem; font-size: 0.9rem; line-height: 2.4rem; }.md-footer-nav__direction { position: absolute; right: 0px; left: 0px; margin-top: -1rem; padding: 0px 1rem; color: rgba(255, 255, 255, 0.7); font-size: 0.75rem; }.md-footer-meta { background-color: rgba(0, 0, 0, 0.895); }.md-footer-meta__inner { padding: 0.2rem; overflow: auto; }html .md-footer-meta.md-typeset a { color: rgba(255, 255, 255, 0.7); }html .md-footer-meta.md-typeset a:focus, html .md-footer-meta.md-typeset a:hover { color: rgb(255, 255, 255); }.md-footer-copyright { margin: 0px 0.6rem; padding: 0.4rem 0px; color: rgba(255, 255, 255, 0.3); font-size: 0.64rem; }.md-footer-copyright__highlight { color: rgba(255, 255, 255, 0.7); }.md-footer-social { margin: 0px 0.4rem; padding: 0.2rem 0px 0.6rem; }.md-footer-social__link { display: inline-block; width: 1.6rem; height: 1.6rem; font-size: 0.8rem; text-align: center; }.md-footer-social__link::before { line-height: 1.9; }.md-nav { font-size: 0.7rem; line-height: 1.3; }.md-nav__title { display: block; padding: 0px 0.6rem; font-weight: 700; text-overflow: ellipsis; overflow: hidden; }.md-nav__title::before { display: none; content: ""; }[dir="rtl"] .md-nav__title::before { content: ""; }.md-nav__title .md-nav__button { display: none; }.md-nav__list { margin: 0px; padding: 0px; list-style: none; }.md-nav__item { padding: 0px 0.6rem; }.md-nav__item:last-child { padding-bottom: 0.6rem; }.md-nav__item .md-nav__item { padding-right: 0px; }[dir="rtl"] .md-nav__item .md-nav__item { padding-right: 0.6rem; padding-left: 0px; }.md-nav__item .md-nav__item:last-child { padding-bottom: 0px; }.md-nav__button img { width: 100%; height: auto; }.md-nav__link { display: block; margin-top: 0.625em; transition: color 0.125s; text-overflow: ellipsis; cursor: pointer; overflow: hidden; }.md-nav__item--nested > .md-nav__link::after { content: ""; }html .md-nav__link[for="__toc"], html .md-nav__link[for="__toc"] + .md-nav__link::after, html .md-nav__link[for="__toc"] ~ .md-nav { display: none; }.md-nav__link[data-md-state="blur"] { color: rgba(0, 0, 0, 0.54); }.md-nav__link--active, .md-nav__link:active { color: rgb(63, 81, 181); }.md-nav__item--nested > .md-nav__link { color: inherit; }.md-nav__link:focus, .md-nav__link:hover { color: rgb(83, 109, 254); }.md-nav__source, .no-js .md-search { display: none; }.md-search__overlay { opacity: 0; z-index: 1; }.md-search__form { position: relative; }.md-search__input { position: relative; padding: 0px 2.2rem 0px 3.6rem; text-overflow: ellipsis; z-index: 2; }[dir="rtl"] .md-search__input { padding: 0px 3.6rem 0px 2.2rem; }.md-search__input::-webkit-input-placeholder { transition: color 0.25s cubic-bezier(0.1, 0.7, 0.1, 1); }.md-search__input::placeholder { transition: color 0.25s cubic-bezier(0.1, 0.7, 0.1, 1); }.md-search__input::placeholder { transition: color 0.25s cubic-bezier(0.1, 0.7, 0.1, 1); }.md-search__input::-webkit-input-placeholder, .md-search__input ~ .md-search__icon { color: rgba(0, 0, 0, 0.54); }.md-search__input::placeholder, .md-search__input ~ .md-search__icon { color: rgba(0, 0, 0, 0.54); }.md-search__input::placeholder, .md-search__input ~ .md-search__icon { color: rgba(0, 0, 0, 0.54); }.md-search__icon { position: absolute; transition: color 0.25s cubic-bezier(0.1, 0.7, 0.1, 1), opacity 0.25s; font-size: 1.2rem; cursor: pointer; z-index: 2; }.md-search__icon:hover { opacity: 0.7; }.md-search__icon[for="__search"] { top: 0.3rem; left: 0.5rem; }[dir="rtl"] .md-search__icon[for="__search"] { right: 0.5rem; left: auto; }.md-search__icon[for="__search"]::before { content: ""; }.md-search__icon[type="reset"] { top: 0.3rem; right: 0.5rem; transform: scale(0.125); transition: transform 0.15s cubic-bezier(0.1, 0.7, 0.1, 1), opacity 0.15s, transform 0.15s cubic-bezier(0.1, 0.7, 0.1, 1); opacity: 0; }[dir="rtl"] .md-search__icon[type="reset"] { right: auto; left: 0.5rem; }[data-md-toggle="search"]:checked ~ .md-header .md-search__input:valid ~ .md-search__icon[type="reset"] { transform: scale(1); opacity: 1; }[data-md-toggle="search"]:checked ~ .md-header .md-search__input:valid ~ .md-search__icon[type="reset"]:hover { opacity: 0.7; }.md-search__output { position: absolute; width: 100%; border-radius: 0px 0px 0.1rem 0.1rem; overflow: hidden; z-index: 1; }.md-search__scrollwrap { height: 100%; background-color: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.07) 0px 0.05rem 0px inset; overflow-y: auto; }.md-search-result { color: rgba(0, 0, 0, 0.87); word-break: break-word; }.md-search-result__meta { padding: 0px 0.8rem; background-color: rgba(0, 0, 0, 0.07); color: rgba(0, 0, 0, 0.54); font-size: 0.64rem; line-height: 1.8rem; }.md-search-result__list { margin: 0px; padding: 0px; border-top: 0.05rem solid rgba(0, 0, 0, 0.07); list-style: none; }.md-search-result__item { box-shadow: rgba(0, 0, 0, 0.07) 0px -0.05rem 0px; }.md-search-result__link { display: block; transition: background 0.25s; outline: 0px; overflow: hidden; }.md-search-result__link:hover, .md-search-result__link[data-md-state="active"] { background-color: rgba(83, 109, 254, 0.1); }.md-search-result__link:hover .md-search-result__article::before, .md-search-result__link[data-md-state="active"] .md-search-result__article::before { opacity: 0.7; }.md-search-result__link:last-child .md-search-result__teaser { margin-bottom: 0.6rem; }.md-search-result__article { position: relative; padding: 0px 0.8rem; overflow: auto; }.md-search-result__article--document::before { position: absolute; left: 0px; margin: 0.1rem; transition: opacity 0.25s; color: rgba(0, 0, 0, 0.54); content: ""; }[dir="rtl"] .md-search-result__article--document::before { right: 0px; left: auto; }.md-search-result__article--document .md-search-result__title { margin: 0.55rem 0px; font-size: 0.8rem; font-weight: 400; line-height: 1.4; }.md-search-result__title { margin: 0.5em 0px; font-size: 0.64rem; font-weight: 700; line-height: 1.4; }.md-search-result__teaser { display: -webkit-box; max-height: 1.65rem; margin: 0.5em 0px; color: rgba(0, 0, 0, 0.54); font-size: 0.64rem; line-height: 1.4; text-overflow: ellipsis; overflow: hidden; -webkit-line-clamp: 2; }.md-search-result em { font-style: normal; font-weight: 700; text-decoration: underline; }.md-sidebar { position: absolute; width: 12.1rem; padding: 1.2rem 0px; overflow: hidden; }.md-sidebar[data-md-state="lock"] { position: fixed; top: 2.4rem; }.md-sidebar--secondary { display: none; }.md-sidebar__scrollwrap { max-height: 100%; margin: 0px 0.2rem; overflow-y: auto; backface-visibility: hidden; }.md-sidebar__scrollwrap::-webkit-scrollbar { width: 0.2rem; height: 0.2rem; }.md-sidebar__scrollwrap::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.26); }@keyframes md-source__facts--done {
+0% { height: 0px; }
+100% { height: 0.65rem; }
+}@keyframes md-source__facts--done {
+0% { height: 0px; }
+100% { height: 0.65rem; }
+}@keyframes md-source__fact--done {
+0% { transform: translateY(100%); opacity: 0; }
+50% { opacity: 0; }
+100% { transform: translateY(0px); opacity: 1; }
+}@keyframes md-source__fact--done {
+0% { transform: translateY(100%); opacity: 0; }
+50% { opacity: 0; }
+100% { transform: translateY(0px); opacity: 1; }
+}.md-source { display: block; padding-right: 0.6rem; transition: opacity 0.25s; font-size: 0.65rem; line-height: 1.2; white-space: nowrap; }[dir="rtl"] .md-source { padding-right: 0px; padding-left: 0.6rem; }.md-source:hover { opacity: 0.7; }.md-source::after, .md-source__icon { display: inline-block; height: 2.4rem; content: ""; vertical-align: middle; }.md-source__icon { width: 2.4rem; }.md-source__icon svg { width: 1.2rem; height: 1.2rem; margin-top: 0.6rem; margin-left: 0.6rem; }[dir="rtl"] .md-source__icon svg { margin-right: 0.6rem; margin-left: 0px; }.md-source__icon + .md-source__repository { margin-left: -2rem; padding-left: 2rem; }[dir="rtl"] .md-source__icon + .md-source__repository { margin-right: -2rem; margin-left: 0px; padding-right: 2rem; padding-left: 0px; }.md-source__repository { display: inline-block; max-width: 100%; margin-left: 0.6rem; font-weight: 700; text-overflow: ellipsis; overflow: hidden; vertical-align: middle; }.md-source__facts { margin: 0px; padding: 0px; font-size: 0.55rem; font-weight: 700; list-style-type: none; opacity: 0.75; overflow: hidden; }[data-md-state="done"] .md-source__facts { animation: 0.25s ease-in md-source__facts--done; }.md-source__fact { float: left; }[dir="rtl"] .md-source__fact { float: right; }[data-md-state="done"] .md-source__fact { animation: 0.4s ease-out md-source__fact--done; }.md-source__fact::before { margin: 0px 0.1rem; content: "·"; }.md-source__fact:first-child::before { display: none; }.md-source-file { display: inline-block; margin: 1em 0.5em 1em 0px; padding-right: 0.25rem; border-radius: 0.1rem; background-color: rgba(0, 0, 0, 0.07); font-size: 0.64rem; list-style-type: none; cursor: pointer; overflow: hidden; }.md-source-file::before { display: inline-block; margin-right: 0.25rem; padding: 0.25rem; background-color: rgba(0, 0, 0, 0.26); color: rgb(255, 255, 255); font-size: 0.8rem; content: ""; vertical-align: middle; }html .md-source-file { transition: background 0.4s, color 0.4s, box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1); }html .md-source-file::before { transition: inherit; }html body .md-typeset .md-source-file { color: rgba(0, 0, 0, 0.54); }.md-source-file:hover { box-shadow: rgba(0, 0, 0, 0.18) 0px 0px 8px, rgba(0, 0, 0, 0.36) 0px 8px 16px; }.md-source-file:hover::before { background-color: rgb(83, 109, 254); }.md-tabs { width: 100%; transition: background 0.25s; background-color: rgb(63, 81, 181); color: rgb(255, 255, 255); overflow: auto; }.md-tabs__list { margin: 0px 0px 0px 0.2rem; padding: 0px; list-style: none; white-space: nowrap; }.md-tabs__item { display: inline-block; height: 2.4rem; padding-right: 0.6rem; padding-left: 0.6rem; }.md-tabs__link { display: block; margin-top: 0.8rem; transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1), opacity 0.25s, transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); font-size: 0.7rem; opacity: 0.7; }.md-tabs__link--active, .md-tabs__link:hover { color: inherit; opacity: 1; }.md-tabs__item:nth-child(2) .md-tabs__link { transition-delay: 0.02s; }.md-tabs__item:nth-child(3) .md-tabs__link { transition-delay: 0.04s; }.md-tabs__item:nth-child(4) .md-tabs__link { transition-delay: 0.06s; }.md-tabs__item:nth-child(5) .md-tabs__link { transition-delay: 0.08s; }.md-tabs__item:nth-child(6) .md-tabs__link { transition-delay: 0.1s; }.md-tabs__item:nth-child(7) .md-tabs__link { transition-delay: 0.12s; }.md-tabs__item:nth-child(8) .md-tabs__link { transition-delay: 0.14s; }.md-tabs__item:nth-child(9) .md-tabs__link { transition-delay: 0.16s; }.md-tabs__item:nth-child(10) .md-tabs__link { transition-delay: 0.18s; }.md-tabs__item:nth-child(11) .md-tabs__link { transition-delay: 0.2s; }.md-tabs__item:nth-child(12) .md-tabs__link { transition-delay: 0.22s; }.md-tabs__item:nth-child(13) .md-tabs__link { transition-delay: 0.24s; }.md-tabs__item:nth-child(14) .md-tabs__link { transition-delay: 0.26s; }.md-tabs__item:nth-child(15) .md-tabs__link { transition-delay: 0.28s; }.md-tabs__item:nth-child(16) .md-tabs__link { transition-delay: 0.3s; }.md-tabs[data-md-state="hidden"] { pointer-events: none; }.md-tabs[data-md-state="hidden"] .md-tabs__link { transform: translateY(50%); transition: color 0.25s, transform 0s 0.4s, opacity 0.1s, transform 0s 0.4s; opacity: 0; }.md-typeset .admonition, .md-typeset details { box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px, rgba(0, 0, 0, 0.2) 0px 3px 1px -2px; position: relative; margin: 1.5625em 0px; padding: 0px 0.6rem; border-left: 0.2rem solid rgb(68, 138, 255); border-radius: 0.1rem; font-size: 0.64rem; overflow: auto; }[dir="rtl"] .md-typeset .admonition, [dir="rtl"] .md-typeset details { border-right: 0.2rem solid rgb(68, 138, 255); border-left: medium; }html .md-typeset .admonition > :last-child, html .md-typeset details > :last-child { margin-bottom: 0.6rem; }.md-typeset .admonition .admonition, .md-typeset .admonition details, .md-typeset details .admonition, .md-typeset details details { margin: 1em 0px; }.md-typeset .admonition > .admonition-title, .md-typeset .admonition > summary, .md-typeset details > .admonition-title, .md-typeset details > summary { margin: 0px -0.6rem; padding: 0.4rem 0.6rem 0.4rem 2rem; border-bottom: 0.05rem solid rgba(68, 138, 255, 0.1); background-color: rgba(68, 138, 255, 0.1); font-weight: 700; }[dir="rtl"] .md-typeset .admonition > .admonition-title, [dir="rtl"] .md-typeset .admonition > summary, [dir="rtl"] .md-typeset details > .admonition-title, [dir="rtl"] .md-typeset details > summary { padding: 0.4rem 2rem 0.4rem 0.6rem; }.md-typeset .admonition > .admonition-title:last-child, .md-typeset .admonition > summary:last-child, .md-typeset details > .admonition-title:last-child, .md-typeset details > summary:last-child { margin-bottom: 0px; }.md-typeset .admonition > .admonition-title::before, .md-typeset .admonition > summary::before, .md-typeset details > .admonition-title::before, .md-typeset details > summary::before { position: absolute; left: 0.6rem; color: rgb(68, 138, 255); font-size: 1rem; content: ""; }[dir="rtl"] .md-typeset .admonition > .admonition-title::before, [dir="rtl"] .md-typeset .admonition > summary::before, [dir="rtl"] .md-typeset details > .admonition-title::before, [dir="rtl"] .md-typeset details > summary::before { right: 0.6rem; left: auto; }.md-typeset .admonition.abstract, .md-typeset .admonition.summary, .md-typeset .admonition.tldr, .md-typeset details.abstract, .md-typeset details.summary, .md-typeset details.tldr { border-left-color: rgb(0, 176, 255); }[dir="rtl"] .md-typeset .admonition.abstract, [dir="rtl"] .md-typeset .admonition.summary, [dir="rtl"] .md-typeset .admonition.tldr, [dir="rtl"] .md-typeset details.abstract, [dir="rtl"] .md-typeset details.summary, [dir="rtl"] .md-typeset details.tldr { border-right-color: rgb(0, 176, 255); }.md-typeset .admonition.abstract > .admonition-title, .md-typeset .admonition.abstract > summary, .md-typeset .admonition.summary > .admonition-title, .md-typeset .admonition.summary > summary, .md-typeset .admonition.tldr > .admonition-title, .md-typeset .admonition.tldr > summary, .md-typeset details.abstract > .admonition-title, .md-typeset details.abstract > summary, .md-typeset details.summary > .admonition-title, .md-typeset details.summary > summary, .md-typeset details.tldr > .admonition-title, .md-typeset details.tldr > summary { border-bottom-color: rgba(0, 176, 255, 0.1); background-color: rgba(0, 176, 255, 0.1); }.md-typeset .admonition.abstract > .admonition-title::before, .md-typeset .admonition.abstract > summary::before, .md-typeset .admonition.summary > .admonition-title::before, .md-typeset .admonition.summary > summary::before, .md-typeset .admonition.tldr > .admonition-title::before, .md-typeset .admonition.tldr > summary::before, .md-typeset details.abstract > .admonition-title::before, .md-typeset details.abstract > summary::before, .md-typeset details.summary > .admonition-title::before, .md-typeset details.summary > summary::before, .md-typeset details.tldr > .admonition-title::before, .md-typeset details.tldr > summary::before { color: rgb(0, 176, 255); content: ""; }.md-typeset .admonition.info, .md-typeset .admonition.todo, .md-typeset details.info, .md-typeset details.todo { border-left-color: rgb(0, 184, 212); }[dir="rtl"] .md-typeset .admonition.info, [dir="rtl"] .md-typeset .admonition.todo, [dir="rtl"] .md-typeset details.info, [dir="rtl"] .md-typeset details.todo { border-right-color: rgb(0, 184, 212); }.md-typeset .admonition.info > .admonition-title, .md-typeset .admonition.info > summary, .md-typeset .admonition.todo > .admonition-title, .md-typeset .admonition.todo > summary, .md-typeset details.info > .admonition-title, .md-typeset details.info > summary, .md-typeset details.todo > .admonition-title, .md-typeset details.todo > summary { border-bottom-color: rgba(0, 184, 212, 0.1); background-color: rgba(0, 184, 212, 0.1); }.md-typeset .admonition.info > .admonition-title::before, .md-typeset .admonition.info > summary::before, .md-typeset .admonition.todo > .admonition-title::before, .md-typeset .admonition.todo > summary::before, .md-typeset details.info > .admonition-title::before, .md-typeset details.info > summary::before, .md-typeset details.todo > .admonition-title::before, .md-typeset details.todo > summary::before { color: rgb(0, 184, 212); content: ""; }.md-typeset .admonition.hint, .md-typeset .admonition.important, .md-typeset .admonition.tip, .md-typeset details.hint, .md-typeset details.important, .md-typeset details.tip { border-left-color: rgb(0, 191, 165); }[dir="rtl"] .md-typeset .admonition.hint, [dir="rtl"] .md-typeset .admonition.important, [dir="rtl"] .md-typeset .admonition.tip, [dir="rtl"] .md-typeset details.hint, [dir="rtl"] .md-typeset details.important, [dir="rtl"] .md-typeset details.tip { border-right-color: rgb(0, 191, 165); }.md-typeset .admonition.hint > .admonition-title, .md-typeset .admonition.hint > summary, .md-typeset .admonition.important > .admonition-title, .md-typeset .admonition.important > summary, .md-typeset .admonition.tip > .admonition-title, .md-typeset .admonition.tip > summary, .md-typeset details.hint > .admonition-title, .md-typeset details.hint > summary, .md-typeset details.important > .admonition-title, .md-typeset details.important > summary, .md-typeset details.tip > .admonition-title, .md-typeset details.tip > summary { border-bottom-color: rgba(0, 191, 165, 0.1); background-color: rgba(0, 191, 165, 0.1); }.md-typeset .admonition.hint > .admonition-title::before, .md-typeset .admonition.hint > summary::before, .md-typeset .admonition.important > .admonition-title::before, .md-typeset .admonition.important > summary::before, .md-typeset .admonition.tip > .admonition-title::before, .md-typeset .admonition.tip > summary::before, .md-typeset details.hint > .admonition-title::before, .md-typeset details.hint > summary::before, .md-typeset details.important > .admonition-title::before, .md-typeset details.important > summary::before, .md-typeset details.tip > .admonition-title::before, .md-typeset details.tip > summary::before { color: rgb(0, 191, 165); content: ""; }.md-typeset .admonition.check, .md-typeset .admonition.done, .md-typeset .admonition.success, .md-typeset details.check, .md-typeset details.done, .md-typeset details.success { border-left-color: rgb(0, 200, 83); }[dir="rtl"] .md-typeset .admonition.check, [dir="rtl"] .md-typeset .admonition.done, [dir="rtl"] .md-typeset .admonition.success, [dir="rtl"] .md-typeset details.check, [dir="rtl"] .md-typeset details.done, [dir="rtl"] .md-typeset details.success { border-right-color: rgb(0, 200, 83); }.md-typeset .admonition.check > .admonition-title, .md-typeset .admonition.check > summary, .md-typeset .admonition.done > .admonition-title, .md-typeset .admonition.done > summary, .md-typeset .admonition.success > .admonition-title, .md-typeset .admonition.success > summary, .md-typeset details.check > .admonition-title, .md-typeset details.check > summary, .md-typeset details.done > .admonition-title, .md-typeset details.done > summary, .md-typeset details.success > .admonition-title, .md-typeset details.success > summary { border-bottom-color: rgba(0, 200, 83, 0.1); background-color: rgba(0, 200, 83, 0.1); }.md-typeset .admonition.check > .admonition-title::before, .md-typeset .admonition.check > summary::before, .md-typeset .admonition.done > .admonition-title::before, .md-typeset .admonition.done > summary::before, .md-typeset .admonition.success > .admonition-title::before, .md-typeset .admonition.success > summary::before, .md-typeset details.check > .admonition-title::before, .md-typeset details.check > summary::before, .md-typeset details.done > .admonition-title::before, .md-typeset details.done > summary::before, .md-typeset details.success > .admonition-title::before, .md-typeset details.success > summary::before { color: rgb(0, 200, 83); content: ""; }.md-typeset .admonition.faq, .md-typeset .admonition.help, .md-typeset .admonition.question, .md-typeset details.faq, .md-typeset details.help, .md-typeset details.question { border-left-color: rgb(100, 221, 23); }[dir="rtl"] .md-typeset .admonition.faq, [dir="rtl"] .md-typeset .admonition.help, [dir="rtl"] .md-typeset .admonition.question, [dir="rtl"] .md-typeset details.faq, [dir="rtl"] .md-typeset details.help, [dir="rtl"] .md-typeset details.question { border-right-color: rgb(100, 221, 23); }.md-typeset .admonition.faq > .admonition-title, .md-typeset .admonition.faq > summary, .md-typeset .admonition.help > .admonition-title, .md-typeset .admonition.help > summary, .md-typeset .admonition.question > .admonition-title, .md-typeset .admonition.question > summary, .md-typeset details.faq > .admonition-title, .md-typeset details.faq > summary, .md-typeset details.help > .admonition-title, .md-typeset details.help > summary, .md-typeset details.question > .admonition-title, .md-typeset details.question > summary { border-bottom-color: rgba(100, 221, 23, 0.1); background-color: rgba(100, 221, 23, 0.1); }.md-typeset .admonition.faq > .admonition-title::before, .md-typeset .admonition.faq > summary::before, .md-typeset .admonition.help > .admonition-title::before, .md-typeset .admonition.help > summary::before, .md-typeset .admonition.question > .admonition-title::before, .md-typeset .admonition.question > summary::before, .md-typeset details.faq > .admonition-title::before, .md-typeset details.faq > summary::before, .md-typeset details.help > .admonition-title::before, .md-typeset details.help > summary::before, .md-typeset details.question > .admonition-title::before, .md-typeset details.question > summary::before { color: rgb(100, 221, 23); content: ""; }.md-typeset .admonition.attention, .md-typeset .admonition.caution, .md-typeset .admonition.warning, .md-typeset details.attention, .md-typeset details.caution, .md-typeset details.warning { border-left-color: rgb(255, 145, 0); }[dir="rtl"] .md-typeset .admonition.attention, [dir="rtl"] .md-typeset .admonition.caution, [dir="rtl"] .md-typeset .admonition.warning, [dir="rtl"] .md-typeset details.attention, [dir="rtl"] .md-typeset details.caution, [dir="rtl"] .md-typeset details.warning { border-right-color: rgb(255, 145, 0); }.md-typeset .admonition.attention > .admonition-title, .md-typeset .admonition.attention > summary, .md-typeset .admonition.caution > .admonition-title, .md-typeset .admonition.caution > summary, .md-typeset .admonition.warning > .admonition-title, .md-typeset .admonition.warning > summary, .md-typeset details.attention > .admonition-title, .md-typeset details.attention > summary, .md-typeset details.caution > .admonition-title, .md-typeset details.caution > summary, .md-typeset details.warning > .admonition-title, .md-typeset details.warning > summary { border-bottom-color: rgba(255, 145, 0, 0.1); background-color: rgba(255, 145, 0, 0.1); }.md-typeset .admonition.attention > .admonition-title::before, .md-typeset .admonition.attention > summary::before, .md-typeset .admonition.caution > .admonition-title::before, .md-typeset .admonition.caution > summary::before, .md-typeset .admonition.warning > .admonition-title::before, .md-typeset .admonition.warning > summary::before, .md-typeset details.attention > .admonition-title::before, .md-typeset details.attention > summary::before, .md-typeset details.caution > .admonition-title::before, .md-typeset details.caution > summary::before, .md-typeset details.warning > .admonition-title::before, .md-typeset details.warning > summary::before { color: rgb(255, 145, 0); content: ""; }.md-typeset .admonition.fail, .md-typeset .admonition.failure, .md-typeset .admonition.missing, .md-typeset details.fail, .md-typeset details.failure, .md-typeset details.missing { border-left-color: rgb(255, 82, 82); }[dir="rtl"] .md-typeset .admonition.fail, [dir="rtl"] .md-typeset .admonition.failure, [dir="rtl"] .md-typeset .admonition.missing, [dir="rtl"] .md-typeset details.fail, [dir="rtl"] .md-typeset details.failure, [dir="rtl"] .md-typeset details.missing { border-right-color: rgb(255, 82, 82); }.md-typeset .admonition.fail > .admonition-title, .md-typeset .admonition.fail > summary, .md-typeset .admonition.failure > .admonition-title, .md-typeset .admonition.failure > summary, .md-typeset .admonition.missing > .admonition-title, .md-typeset .admonition.missing > summary, .md-typeset details.fail > .admonition-title, .md-typeset details.fail > summary, .md-typeset details.failure > .admonition-title, .md-typeset details.failure > summary, .md-typeset details.missing > .admonition-title, .md-typeset details.missing > summary { border-bottom-color: rgba(255, 82, 82, 0.1); background-color: rgba(255, 82, 82, 0.1); }.md-typeset .admonition.fail > .admonition-title::before, .md-typeset .admonition.fail > summary::before, .md-typeset .admonition.failure > .admonition-title::before, .md-typeset .admonition.failure > summary::before, .md-typeset .admonition.missing > .admonition-title::before, .md-typeset .admonition.missing > summary::before, .md-typeset details.fail > .admonition-title::before, .md-typeset details.fail > summary::before, .md-typeset details.failure > .admonition-title::before, .md-typeset details.failure > summary::before, .md-typeset details.missing > .admonition-title::before, .md-typeset details.missing > summary::before { color: rgb(255, 82, 82); content: ""; }.md-typeset .admonition.danger, .md-typeset .admonition.error, .md-typeset details.danger, .md-typeset details.error { border-left-color: rgb(255, 23, 68); }[dir="rtl"] .md-typeset .admonition.danger, [dir="rtl"] .md-typeset .admonition.error, [dir="rtl"] .md-typeset details.danger, [dir="rtl"] .md-typeset details.error { border-right-color: rgb(255, 23, 68); }.md-typeset .admonition.danger > .admonition-title, .md-typeset .admonition.danger > summary, .md-typeset .admonition.error > .admonition-title, .md-typeset .admonition.error > summary, .md-typeset details.danger > .admonition-title, .md-typeset details.danger > summary, .md-typeset details.error > .admonition-title, .md-typeset details.error > summary { border-bottom-color: rgba(255, 23, 68, 0.1); background-color: rgba(255, 23, 68, 0.1); }.md-typeset .admonition.danger > .admonition-title::before, .md-typeset .admonition.danger > summary::before, .md-typeset .admonition.error > .admonition-title::before, .md-typeset .admonition.error > summary::before, .md-typeset details.danger > .admonition-title::before, .md-typeset details.danger > summary::before, .md-typeset details.error > .admonition-title::before, .md-typeset details.error > summary::before { color: rgb(255, 23, 68); content: ""; }.md-typeset .admonition.bug, .md-typeset details.bug { border-left-color: rgb(245, 0, 87); }[dir="rtl"] .md-typeset .admonition.bug, [dir="rtl"] .md-typeset details.bug { border-right-color: rgb(245, 0, 87); }.md-typeset .admonition.bug > .admonition-title, .md-typeset .admonition.bug > summary, .md-typeset details.bug > .admonition-title, .md-typeset details.bug > summary { border-bottom-color: rgba(245, 0, 87, 0.1); background-color: rgba(245, 0, 87, 0.1); }.md-typeset .admonition.bug > .admonition-title::before, .md-typeset .admonition.bug > summary::before, .md-typeset details.bug > .admonition-title::before, .md-typeset details.bug > summary::before { color: rgb(245, 0, 87); content: ""; }.md-typeset .admonition.example, .md-typeset details.example { border-left-color: rgb(101, 31, 255); }[dir="rtl"] .md-typeset .admonition.example, [dir="rtl"] .md-typeset details.example { border-right-color: rgb(101, 31, 255); }.md-typeset .admonition.example > .admonition-title, .md-typeset .admonition.example > summary, .md-typeset details.example > .admonition-title, .md-typeset details.example > summary { border-bottom-color: rgba(101, 31, 255, 0.1); background-color: rgba(101, 31, 255, 0.1); }.md-typeset .admonition.example > .admonition-title::before, .md-typeset .admonition.example > summary::before, .md-typeset details.example > .admonition-title::before, .md-typeset details.example > summary::before { color: rgb(101, 31, 255); content: ""; }.md-typeset .admonition.cite, .md-typeset .admonition.quote, .md-typeset details.cite, .md-typeset details.quote { border-left-color: rgb(158, 158, 158); }[dir="rtl"] .md-typeset .admonition.cite, [dir="rtl"] .md-typeset .admonition.quote, [dir="rtl"] .md-typeset details.cite, [dir="rtl"] .md-typeset details.quote { border-right-color: rgb(158, 158, 158); }.md-typeset .admonition.cite > .admonition-title, .md-typeset .admonition.cite > summary, .md-typeset .admonition.quote > .admonition-title, .md-typeset .admonition.quote > summary, .md-typeset details.cite > .admonition-title, .md-typeset details.cite > summary, .md-typeset details.quote > .admonition-title, .md-typeset details.quote > summary { border-bottom-color: rgba(158, 158, 158, 0.1); background-color: rgba(158, 158, 158, 0.1); }.md-typeset .admonition.cite > .admonition-title::before, .md-typeset .admonition.cite > summary::before, .md-typeset .admonition.quote > .admonition-title::before, .md-typeset .admonition.quote > summary::before, .md-typeset details.cite > .admonition-title::before, .md-typeset details.cite > summary::before, .md-typeset details.quote > .admonition-title::before, .md-typeset details.quote > summary::before { color: rgb(158, 158, 158); content: ""; }.codehilite .o, .codehilite .ow, .md-typeset .highlight .o, .md-typeset .highlight .ow { color: inherit; }.codehilite .ge, .md-typeset .highlight .ge { color: rgb(0, 0, 0); }.codehilite .gr, .md-typeset .highlight .gr { color: rgb(170, 0, 0); }.codehilite .gh, .md-typeset .highlight .gh { color: rgb(153, 153, 153); }.codehilite .go, .md-typeset .highlight .go { color: rgb(136, 136, 136); }.codehilite .gp, .md-typeset .highlight .gp { color: rgb(85, 85, 85); }.codehilite .gs, .md-typeset .highlight .gs { color: inherit; }.codehilite .gu, .md-typeset .highlight .gu { color: rgb(170, 170, 170); }.codehilite .gt, .md-typeset .highlight .gt { color: rgb(170, 0, 0); }.codehilite .gd, .md-typeset .highlight .gd { background-color: rgb(255, 221, 221); }.codehilite .gi, .md-typeset .highlight .gi { background-color: rgb(221, 255, 221); }.codehilite .k, .md-typeset .highlight .k { color: rgb(59, 120, 231); }.codehilite .kc, .md-typeset .highlight .kc { color: rgb(167, 29, 93); }.codehilite .kd, .codehilite .kn, .md-typeset .highlight .kd, .md-typeset .highlight .kn { color: rgb(59, 120, 231); }.codehilite .kp, .md-typeset .highlight .kp { color: rgb(167, 29, 93); }.codehilite .kr, .codehilite .kt, .md-typeset .highlight .kr, .md-typeset .highlight .kt { color: rgb(62, 97, 162); }.codehilite .c, .codehilite .cm, .md-typeset .highlight .c, .md-typeset .highlight .cm { color: rgb(153, 153, 153); }.codehilite .cp, .md-typeset .highlight .cp { color: rgb(102, 102, 102); }.codehilite .c1, .codehilite .ch, .codehilite .cs, .md-typeset .highlight .c1, .md-typeset .highlight .ch, .md-typeset .highlight .cs { color: rgb(153, 153, 153); }.codehilite .na, .codehilite .nb, .md-typeset .highlight .na, .md-typeset .highlight .nb { color: rgb(194, 24, 91); }.codehilite .bp, .md-typeset .highlight .bp { color: rgb(62, 97, 162); }.codehilite .nc, .md-typeset .highlight .nc { color: rgb(194, 24, 91); }.codehilite .no, .md-typeset .highlight .no { color: rgb(62, 97, 162); }.codehilite .nd, .codehilite .ni, .md-typeset .highlight .nd, .md-typeset .highlight .ni { color: rgb(102, 102, 102); }.codehilite .ne, .codehilite .nf, .md-typeset .highlight .ne, .md-typeset .highlight .nf { color: rgb(194, 24, 91); }.codehilite .nl, .md-typeset .highlight .nl { color: rgb(59, 81, 121); }.codehilite .nn, .md-typeset .highlight .nn { color: rgb(236, 64, 122); }.codehilite .nt, .md-typeset .highlight .nt { color: rgb(59, 120, 231); }.codehilite .nv, .codehilite .vc, .codehilite .vg, .codehilite .vi, .md-typeset .highlight .nv, .md-typeset .highlight .vc, .md-typeset .highlight .vg, .md-typeset .highlight .vi { color: rgb(62, 97, 162); }.codehilite .nx, .md-typeset .highlight .nx { color: rgb(236, 64, 122); }.codehilite .il, .codehilite .m, .codehilite .mf, .codehilite .mh, .codehilite .mi, .codehilite .mo, .md-typeset .highlight .il, .md-typeset .highlight .m, .md-typeset .highlight .mf, .md-typeset .highlight .mh, .md-typeset .highlight .mi, .md-typeset .highlight .mo { color: rgb(231, 76, 60); }.codehilite .s, .codehilite .sb, .codehilite .sc, .md-typeset .highlight .s, .md-typeset .highlight .sb, .md-typeset .highlight .sc { color: rgb(13, 144, 79); }.codehilite .sd, .md-typeset .highlight .sd { color: rgb(153, 153, 153); }.codehilite .s2, .md-typeset .highlight .s2 { color: rgb(13, 144, 79); }.codehilite .se, .codehilite .sh, .codehilite .si, .codehilite .sx, .md-typeset .highlight .se, .md-typeset .highlight .sh, .md-typeset .highlight .si, .md-typeset .highlight .sx { color: rgb(24, 54, 145); }.codehilite .sr, .md-typeset .highlight .sr { color: rgb(0, 153, 38); }.codehilite .s1, .codehilite .ss, .md-typeset .highlight .s1, .md-typeset .highlight .ss { color: rgb(13, 144, 79); }.codehilite .err, .md-typeset .highlight .err { color: rgb(166, 23, 23); }.codehilite .w, .md-typeset .highlight .w { color: transparent; }.codehilite .hll, .md-typeset .highlight .hll { display: block; margin: 0px -0.6rem; padding: 0px 0.6rem; background-color: rgba(255, 235, 59, 0.5); }.md-typeset .codehilite, .md-typeset .highlight { position: relative; margin: 1em 0px; padding: 0px; border-radius: 0.1rem; background-color: rgba(236, 236, 236, 0.5); color: rgb(55, 71, 79); line-height: 1.4; }.md-typeset .codehilite code, .md-typeset .codehilite pre, .md-typeset .highlight code, .md-typeset .highlight pre { display: block; margin: 0px; padding: 0.525rem 0.6rem; background-color: transparent; overflow: auto; vertical-align: top; }.md-typeset .codehilite code::-webkit-scrollbar, .md-typeset .codehilite pre::-webkit-scrollbar, .md-typeset .highlight code::-webkit-scrollbar, .md-typeset .highlight pre::-webkit-scrollbar { width: 0.2rem; height: 0.2rem; }.md-typeset .codehilite code::-webkit-scrollbar-thumb, .md-typeset .codehilite pre::-webkit-scrollbar-thumb, .md-typeset .highlight code::-webkit-scrollbar-thumb, .md-typeset .highlight pre::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.26); }.md-typeset pre.codehilite, .md-typeset pre.highlight { overflow: visible; }.md-typeset pre.codehilite code, .md-typeset pre.highlight code { display: block; padding: 0.525rem 0.6rem; overflow: auto; }.md-typeset .codehilitetable, .md-typeset .highlighttable { display: block; margin: 1em 0px; border-radius: 0.2em; font-size: 0.8rem; overflow: hidden; }.md-typeset .codehilitetable tbody, .md-typeset .codehilitetable td, .md-typeset .highlighttable tbody, .md-typeset .highlighttable td { display: block; padding: 0px; }.md-typeset .codehilitetable tr, .md-typeset .highlighttable tr { display: flex; }.md-typeset .codehilitetable .codehilite, .md-typeset .codehilitetable .highlight, .md-typeset .codehilitetable .linenodiv, .md-typeset .highlighttable .codehilite, .md-typeset .highlighttable .highlight, .md-typeset .highlighttable .linenodiv { margin: 0px; border-radius: 0px; }.md-typeset .codehilitetable .linenodiv, .md-typeset .highlighttable .linenodiv { padding: 0.525rem 0.6rem; }.md-typeset .codehilitetable .linenos, .md-typeset .highlighttable .linenos { background-color: rgba(0, 0, 0, 0.07); color: rgba(0, 0, 0, 0.26); user-select: none; }.md-typeset .codehilitetable .linenos pre, .md-typeset .highlighttable .linenos pre { margin: 0px; padding: 0px; background-color: transparent; color: inherit; text-align: right; }.md-typeset .codehilitetable .code, .md-typeset .highlighttable .code { flex: 1 1 0%; overflow: hidden; }.md-typeset > .codehilitetable, .md-typeset > .highlighttable { box-shadow: none; }.md-typeset [id^="fnref:"] { display: inline-block; }.md-typeset [id^="fnref:"]:target { margin-top: -3.8rem; padding-top: 3.8rem; pointer-events: none; }.md-typeset [id^="fn:"]::before { display: none; height: 0px; content: ""; }.md-typeset [id^="fn:"]:target::before { display: block; margin-top: -3.5rem; padding-top: 3.5rem; pointer-events: none; }.md-typeset .footnote { color: rgba(0, 0, 0, 0.54); font-size: 0.64rem; }.md-typeset .footnote ol { margin-left: 0px; }.md-typeset .footnote li { transition: color 0.25s; }.md-typeset .footnote li:target { color: rgba(0, 0, 0, 0.87); }.md-typeset .footnote li :first-child { margin-top: 0px; }.md-typeset .footnote li:hover .footnote-backref, .md-typeset .footnote li:target .footnote-backref { transform: translateX(0px); opacity: 1; }.md-typeset .footnote li:hover .footnote-backref:hover, .md-typeset .footnote li:target .footnote-backref { color: rgb(83, 109, 254); }.md-typeset .footnote-ref { display: inline-block; pointer-events: auto; }.md-typeset .footnote-ref::before { display: inline; margin: 0px 0.2em; border-left: 0.05rem solid rgba(0, 0, 0, 0.26); font-size: 1.25em; content: ""; vertical-align: -0.25rem; }.md-typeset .footnote-backref { display: inline-block; transform: translateX(0.25rem); transition: transform 0.25s 0.125s, color 0.25s, opacity 0.125s 0.125s, transform 0.25s 0.125s; color: rgba(0, 0, 0, 0.26); font-size: 0px; opacity: 0; vertical-align: text-bottom; }[dir="rtl"] .md-typeset .footnote-backref { transform: translateX(-0.25rem); }.md-typeset .footnote-backref::before { display: inline-block; font-size: 0.8rem; content: ""; }[dir="rtl"] .md-typeset .footnote-backref::before { transform: scaleX(-1); }.md-typeset .headerlink { display: inline-block; margin-left: 0.5rem; transform: translateY(0.25rem); transition: transform 0.25s 0.25s, color 0.25s, opacity 0.125s 0.25s, transform 0.25s 0.25s; opacity: 0; }[dir="rtl"] .md-typeset .headerlink { margin-right: 0.5rem; margin-left: 0px; }html body .md-typeset .headerlink { color: rgba(0, 0, 0, 0.26); }.md-typeset h1[id]::before { display: block; margin-top: -9px; padding-top: 9px; content: ""; }.md-typeset h1[id]:target::before { margin-top: -3.45rem; padding-top: 3.45rem; }.md-typeset h1[id] .headerlink:focus, .md-typeset h1[id]:hover .headerlink, .md-typeset h1[id]:target .headerlink { transform: translate(0px); opacity: 1; }.md-typeset h1[id] .headerlink:focus, .md-typeset h1[id]:hover .headerlink:hover, .md-typeset h1[id]:target .headerlink { color: rgb(83, 109, 254); }.md-typeset h2[id]::before { display: block; margin-top: -8px; padding-top: 8px; content: ""; }.md-typeset h2[id]:target::before { margin-top: -3.4rem; padding-top: 3.4rem; }.md-typeset h2[id] .headerlink:focus, .md-typeset h2[id]:hover .headerlink, .md-typeset h2[id]:target .headerlink { transform: translate(0px); opacity: 1; }.md-typeset h2[id] .headerlink:focus, .md-typeset h2[id]:hover .headerlink:hover, .md-typeset h2[id]:target .headerlink { color: rgb(83, 109, 254); }.md-typeset h3[id]::before { display: block; margin-top: -9px; padding-top: 9px; content: ""; }.md-typeset h3[id]:target::before { margin-top: -3.45rem; padding-top: 3.45rem; }.md-typeset h3[id] .headerlink:focus, .md-typeset h3[id]:hover .headerlink, .md-typeset h3[id]:target .headerlink { transform: translate(0px); opacity: 1; }.md-typeset h3[id] .headerlink:focus, .md-typeset h3[id]:hover .headerlink:hover, .md-typeset h3[id]:target .headerlink { color: rgb(83, 109, 254); }.md-typeset h4[id]::before { display: block; margin-top: -9px; padding-top: 9px; content: ""; }.md-typeset h4[id]:target::before { margin-top: -3.45rem; padding-top: 3.45rem; }.md-typeset h4[id] .headerlink:focus, .md-typeset h4[id]:hover .headerlink, .md-typeset h4[id]:target .headerlink { transform: translate(0px); opacity: 1; }.md-typeset h4[id] .headerlink:focus, .md-typeset h4[id]:hover .headerlink:hover, .md-typeset h4[id]:target .headerlink { color: rgb(83, 109, 254); }.md-typeset h5[id]::before { display: block; margin-top: -11px; padding-top: 11px; content: ""; }.md-typeset h5[id]:target::before { margin-top: -3.55rem; padding-top: 3.55rem; }.md-typeset h5[id] .headerlink:focus, .md-typeset h5[id]:hover .headerlink, .md-typeset h5[id]:target .headerlink { transform: translate(0px); opacity: 1; }.md-typeset h5[id] .headerlink:focus, .md-typeset h5[id]:hover .headerlink:hover, .md-typeset h5[id]:target .headerlink { color: rgb(83, 109, 254); }.md-typeset h6[id]::before { display: block; margin-top: -11px; padding-top: 11px; content: ""; }.md-typeset h6[id]:target::before { margin-top: -3.55rem; padding-top: 3.55rem; }.md-typeset h6[id] .headerlink:focus, .md-typeset h6[id]:hover .headerlink, .md-typeset h6[id]:target .headerlink { transform: translate(0px); opacity: 1; }.md-typeset h6[id] .headerlink:focus, .md-typeset h6[id]:hover .headerlink:hover, .md-typeset h6[id]:target .headerlink { color: rgb(83, 109, 254); }.md-typeset .MJXc-display { margin: 0.75em 0px; padding: 0.75em 0px; overflow: auto; }.md-typeset .MathJax_CHTML { outline: 0px; }.md-typeset .critic.comment, .md-typeset del.critic, .md-typeset ins.critic { margin: 0px 0.25em; padding: 0.0625em 0px; border-radius: 0.1rem; box-decoration-break: clone; }.md-typeset del.critic { background-color: rgb(255, 221, 221); box-shadow: rgb(255, 221, 221) 0.25em 0px 0px, rgb(255, 221, 221) -0.25em 0px 0px; }.md-typeset ins.critic { background-color: rgb(221, 255, 221); box-shadow: rgb(221, 255, 221) 0.25em 0px 0px, rgb(221, 255, 221) -0.25em 0px 0px; }.md-typeset .critic.comment { background-color: rgba(236, 236, 236, 0.5); color: rgb(55, 71, 79); box-shadow: rgba(236, 236, 236, 0.5) 0.25em 0px 0px, rgba(236, 236, 236, 0.5) -0.25em 0px 0px; }.md-typeset .critic.comment::before { padding-right: 0.125em; color: rgba(0, 0, 0, 0.26); content: ""; vertical-align: -0.125em; }.md-typeset .critic.block { display: block; margin: 1em 0px; padding-right: 0.8rem; padding-left: 0.8rem; box-shadow: none; }.md-typeset .critic.block :first-child { margin-top: 0.5em; }.md-typeset .critic.block :last-child { margin-bottom: 0.5em; }.md-typeset details { display: block; padding-top: 0px; }.md-typeset details[open] > summary::after { transform: rotate(180deg); }.md-typeset details:not([open]) { padding-bottom: 0px; }.md-typeset details:not([open]) > summary { border-bottom: medium; }.md-typeset details summary { padding-right: 2rem; }[dir="rtl"] .md-typeset details summary { padding-left: 2rem; }.no-details .md-typeset details:not([open]) > * { display: none; }.no-details .md-typeset details:not([open]) summary { display: block; }.md-typeset summary { display: block; outline: none; cursor: pointer; }.md-typeset summary::-webkit-details-marker { display: none; }.md-typeset summary::after { position: absolute; top: 0.4rem; right: 0.6rem; color: rgba(0, 0, 0, 0.26); font-size: 1rem; content: ""; }[dir="rtl"] .md-typeset summary::after { right: auto; left: 0.6rem; }.md-typeset .emojione { width: 1rem; vertical-align: text-top; }.md-typeset code.codehilite, .md-typeset code.highlight { margin: 0px 0.29412em; padding: 0.07353em 0px; }.md-typeset .superfences-content { display: none; order: 99; width: 100%; background-color: rgb(255, 255, 255); }.md-typeset .superfences-content > * { margin: 0px; border-radius: 0px; }.md-typeset .superfences-tabs { display: flex; position: relative; flex-wrap: wrap; margin: 1em 0px; border: 0.05rem solid rgba(0, 0, 0, 0.07); border-radius: 0.2em; }.md-typeset .superfences-tabs > input { display: none; }.md-typeset .superfences-tabs > input:checked + label { font-weight: 700; }.md-typeset .superfences-tabs > input:checked + label + .superfences-content { display: block; }.md-typeset .superfences-tabs > label { width: auto; padding: 0.6rem; transition: color 0.125s; font-size: 0.64rem; cursor: pointer; }html .md-typeset .superfences-tabs > label:hover { color: rgb(83, 109, 254); }.md-typeset .task-list-item { position: relative; list-style-type: none; }.md-typeset .task-list-item [type="checkbox"] { position: absolute; top: 0.45em; left: -2em; }[dir="rtl"] .md-typeset .task-list-item [type="checkbox"] { right: -2em; left: auto; }.md-typeset .task-list-control .task-list-indicator::before { position: absolute; top: 0.15em; left: -1.25em; color: rgba(0, 0, 0, 0.26); font-size: 1.25em; content: ""; vertical-align: -0.25em; }[dir="rtl"] .md-typeset .task-list-control .task-list-indicator::before { right: -1.25em; left: auto; }.md-typeset .task-list-control [type="checkbox"]:checked + .task-list-indicator::before { content: ""; }.md-typeset .task-list-control [type="checkbox"] { opacity: 0; z-index: -1; }@media print {
+  .md-typeset a::after { color: rgba(0, 0, 0, 0.54); content: " [" attr(href) "]"; }
+  .md-typeset code, .md-typeset pre { white-space: pre-wrap; }
+  .md-typeset code { box-shadow: none; box-decoration-break: slice; }
+  .md-clipboard, .md-content__icon, .md-footer, .md-header, .md-sidebar, .md-tabs, .md-typeset .headerlink { display: none; }
+}@media only screen and (max-width: 44.9375em) {
+  .md-typeset pre { margin: 1em -0.8rem; border-radius: 0px; }
+  .md-typeset pre > code { padding: 0.525rem 0.8rem; }
+  .md-footer-nav__link--prev .md-footer-nav__title { display: none; }
+  .md-search-result__teaser { max-height: 2.5rem; -webkit-line-clamp: 3; }
+  .codehilite .hll, .md-typeset .highlight .hll { margin: 0px -0.8rem; padding: 0px 0.8rem; }
+  .md-typeset > .codehilite, .md-typeset > .highlight { margin: 1em -0.8rem; border-radius: 0px; }
+  .md-typeset > .codehilite code, .md-typeset > .codehilite pre, .md-typeset > .highlight code, .md-typeset > .highlight pre { padding: 0.525rem 0.8rem; }
+  .md-typeset > .codehilitetable, .md-typeset > .highlighttable { margin: 1em -0.8rem; border-radius: 0px; }
+  .md-typeset > .codehilitetable .codehilite > code, .md-typeset > .codehilitetable .codehilite > pre, .md-typeset > .codehilitetable .highlight > code, .md-typeset > .codehilitetable .highlight > pre, .md-typeset > .codehilitetable .linenodiv, .md-typeset > .highlighttable .codehilite > code, .md-typeset > .highlighttable .codehilite > pre, .md-typeset > .highlighttable .highlight > code, .md-typeset > .highlighttable .highlight > pre, .md-typeset > .highlighttable .linenodiv { padding: 0.5rem 0.8rem; }
+  .md-typeset > p > .MJXc-display { margin: 0.75em -0.8rem; padding: 0.25em 0.8rem; }
+  .md-typeset > .superfences-tabs { margin: 1em -0.8rem; border-width: 0.05rem 0px 0px; border-style: solid none none; border-color: rgba(0, 0, 0, 0.07) currentcolor currentcolor; border-image: none; border-radius: 0px; }
+  .md-typeset > .superfences-tabs code, .md-typeset > .superfences-tabs pre { padding: 0.525rem 0.8rem; }
+}@media only screen and (min-width: 100em) {
+  html { font-size: 137.5%; }
+}@media only screen and (min-width: 125em) {
+  html { font-size: 150%; }
+}@media only screen and (max-width: 59.9375em) {
+  body[data-md-state="lock"] { overflow: hidden; }
+  .ios body[data-md-state="lock"] .md-container { display: none; }
+  html .md-nav__link[for="__toc"] { display: block; padding-right: 2.4rem; }
+  html .md-nav__link[for="__toc"]::after { color: inherit; content: ""; }
+  html .md-nav__link[for="__toc"] + .md-nav__link { display: none; }
+  html .md-nav__link[for="__toc"] ~ .md-nav { display: flex; }
+  html [dir="rtl"] .md-nav__link { padding-right: 0.8rem; padding-left: 2.4rem; }
+  .md-nav__source { display: block; padding: 0px 0.2rem; background-color: rgba(50, 64, 144, 0.97); color: rgb(255, 255, 255); }
+  .md-search__overlay { position: absolute; top: 0.2rem; left: 0.2rem; width: 1.8rem; height: 1.8rem; transform-origin: center center 0px; transition: transform 0.3s 0.1s, opacity 0.2s 0.2s, transform 0.3s 0.1s; border-radius: 1rem; background-color: rgb(255, 255, 255); overflow: hidden; pointer-events: none; }
+  [dir="rtl"] .md-search__overlay { right: 0.2rem; left: auto; }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__overlay { transition: transform 0.4s, opacity 0.1s, transform 0.4s; opacity: 1; }
+  .md-search__inner { position: fixed; top: 0px; left: 100%; width: 100%; height: 100%; transform: translateX(5%); transition: right 0s 0.3s, left 0s 0.3s, transform 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0.15s, opacity 0.15s 0.15s, transform 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0.15s; opacity: 0; z-index: 2; }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__inner { left: 0px; transform: translateX(0px); transition: right, left, transform 0.15s cubic-bezier(0.1, 0.7, 0.1, 1) 0.15s, opacity 0.15s 0.15s, transform 0.15s cubic-bezier(0.1, 0.7, 0.1, 1) 0.15s; opacity: 1; }
+  [dir="rtl"] [data-md-toggle="search"]:checked ~ .md-header .md-search__inner { right: 0px; left: auto; }
+  html [dir="rtl"] .md-search__inner { right: 100%; left: auto; transform: translateX(-5%); }
+  .md-search__input { width: 100%; height: 2.4rem; font-size: 0.9rem; }
+  .md-search__icon[for="__search"] { top: 0.6rem; left: 0.8rem; }
+  .md-search__icon[for="__search"][for="__search"]::before { content: ""; }
+  [dir="rtl"] .md-search__icon[for="__search"][for="__search"]::before { content: ""; }
+  .md-search__icon[type="reset"] { top: 0.6rem; right: 0.8rem; }
+  .md-search__output { top: 2.4rem; bottom: 0px; }
+  .md-search-result__article--document::before { display: none; }
+}@media only screen and (max-width: 76.1875em) {
+  [data-md-toggle="drawer"]:checked ~ .md-overlay { width: 100%; height: 100%; transition: width, height, opacity 0.25s; opacity: 1; }
+  .md-header-nav__button.md-icon--home, .md-header-nav__button.md-logo { display: none; }
+  .md-hero__inner { margin-top: 2.4rem; margin-bottom: 1.2rem; }
+  .md-nav { background-color: rgb(255, 255, 255); }
+  .md-nav--primary, .md-nav--primary .md-nav { display: flex; position: absolute; top: 0px; right: 0px; left: 0px; flex-direction: column; height: 100%; z-index: 1; }
+  .md-nav--primary .md-nav__item, .md-nav--primary .md-nav__title { font-size: 0.8rem; line-height: 1.5; }
+  html .md-nav--primary .md-nav__title { position: relative; height: 5.6rem; padding: 3rem 0.8rem 0.2rem; background-color: rgba(0, 0, 0, 0.07); color: rgba(0, 0, 0, 0.54); font-weight: 400; line-height: 2.4rem; white-space: nowrap; cursor: pointer; }
+  html .md-nav--primary .md-nav__title::before { display: block; position: absolute; top: 0.2rem; left: 0.2rem; width: 2rem; height: 2rem; color: rgba(0, 0, 0, 0.54); }
+  html .md-nav--primary .md-nav__title ~ .md-nav__list { background-color: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.07) 0px 0.05rem 0px inset; }
+  html .md-nav--primary .md-nav__title ~ .md-nav__list > .md-nav__item:first-child { border-top: 0px; }
+  html .md-nav--primary .md-nav__title--site { position: relative; background-color: rgb(63, 81, 181); color: rgb(255, 255, 255); }
+  html .md-nav--primary .md-nav__title--site .md-nav__button { display: block; position: absolute; top: 0.2rem; left: 0.2rem; width: 3.2rem; height: 3.2rem; font-size: 2.4rem; }
+  html .md-nav--primary .md-nav__title--site::before { display: none; }
+  html [dir="rtl"] .md-nav--primary .md-nav__title--site .md-nav__button, html [dir="rtl"] .md-nav--primary .md-nav__title::before { right: 0.2rem; left: auto; }
+  .md-nav--primary .md-nav__list { flex: 1 1 0%; overflow-y: auto; }
+  .md-nav--primary .md-nav__item { padding: 0px; border-top: 0.05rem solid rgba(0, 0, 0, 0.07); }
+  [dir="rtl"] .md-nav--primary .md-nav__item { padding: 0px; }
+  .md-nav--primary .md-nav__item--nested > .md-nav__link { padding-right: 2.4rem; }
+  [dir="rtl"] .md-nav--primary .md-nav__item--nested > .md-nav__link { padding-right: 0.8rem; padding-left: 2.4rem; }
+  .md-nav--primary .md-nav__item--nested > .md-nav__link::after { content: ""; }
+  [dir="rtl"] .md-nav--primary .md-nav__item--nested > .md-nav__link::after { content: ""; }
+  .md-nav--primary .md-nav__link { position: relative; margin-top: 0px; padding: 0.6rem 0.8rem; }
+  .md-nav--primary .md-nav__link::after { position: absolute; top: 50%; right: 0.6rem; margin-top: -0.6rem; color: inherit; font-size: 1.2rem; }
+  [dir="rtl"] .md-nav--primary .md-nav__link::after { right: auto; left: 0.6rem; }
+  .md-nav--primary .md-nav--secondary .md-nav__link { position: static; }
+  .md-nav--primary .md-nav--secondary .md-nav { position: static; background-color: transparent; }
+  .md-nav--primary .md-nav--secondary .md-nav .md-nav__link { padding-left: 1.4rem; }
+  [dir="rtl"] .md-nav--primary .md-nav--secondary .md-nav .md-nav__link { padding-right: 1.4rem; padding-left: 0px; }
+  .md-nav--primary .md-nav--secondary .md-nav .md-nav .md-nav__link { padding-left: 2rem; }
+  [dir="rtl"] .md-nav--primary .md-nav--secondary .md-nav .md-nav .md-nav__link { padding-right: 2rem; padding-left: 0px; }
+  .md-nav--primary .md-nav--secondary .md-nav .md-nav .md-nav .md-nav__link { padding-left: 2.6rem; }
+  [dir="rtl"] .md-nav--primary .md-nav--secondary .md-nav .md-nav .md-nav .md-nav__link { padding-right: 2.6rem; padding-left: 0px; }
+  .md-nav--primary .md-nav--secondary .md-nav .md-nav .md-nav .md-nav .md-nav__link { padding-left: 3.2rem; }
+  [dir="rtl"] .md-nav--primary .md-nav--secondary .md-nav .md-nav .md-nav .md-nav .md-nav__link { padding-right: 3.2rem; padding-left: 0px; }
+  .md-nav__toggle ~ .md-nav { display: flex; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.8, 0, 0.6, 1), opacity 0.125s 0.05s, transform 0.25s cubic-bezier(0.8, 0, 0.6, 1); opacity: 0; }
+  [dir="rtl"] .md-nav__toggle ~ .md-nav { transform: translateX(-100%); }
+  .no-csstransforms3d .md-nav__toggle ~ .md-nav { display: none; }
+  .md-nav__toggle:checked ~ .md-nav { transform: translateX(0px); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.125s 0.125s, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); opacity: 1; }
+  .no-csstransforms3d .md-nav__toggle:checked ~ .md-nav { display: flex; }
+  .md-sidebar--primary { position: fixed; top: 0px; left: -12.1rem; width: 12.1rem; height: 100%; transform: translateX(0px); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); background-color: rgb(255, 255, 255); z-index: 3; }
+  [dir="rtl"] .md-sidebar--primary { right: -12.1rem; left: auto; }
+  .no-csstransforms3d .md-sidebar--primary { display: none; }
+  [data-md-toggle="drawer"]:checked ~ .md-container .md-sidebar--primary { box-shadow: rgba(0, 0, 0, 0.14) 0px 8px 10px 1px, rgba(0, 0, 0, 0.12) 0px 3px 14px 2px, rgba(0, 0, 0, 0.4) 0px 5px 5px -3px; transform: translateX(12.1rem); }
+  [dir="rtl"] [data-md-toggle="drawer"]:checked ~ .md-container .md-sidebar--primary { transform: translateX(-12.1rem); }
+  .no-csstransforms3d [data-md-toggle="drawer"]:checked ~ .md-container .md-sidebar--primary { display: block; }
+  .md-sidebar--primary .md-sidebar__scrollwrap { overflow: hidden; position: absolute; inset: 0px; margin: 0px; }
+  .md-tabs { display: none; }
+}@media only screen and (min-width: 60em) {
+  .md-content { margin-right: 12.1rem; }
+  [dir="rtl"] .md-content { margin-right: 0px; margin-left: 12.1rem; }
+  .md-header-nav__button.md-icon--search { display: none; }
+  .md-header-nav__source { display: block; width: 11.7rem; max-width: 11.7rem; padding-right: 0.6rem; }
+  [dir="rtl"] .md-header-nav__source { padding-right: 0px; padding-left: 0.6rem; }
+  .md-search { padding: 0.2rem; }
+  .md-search__overlay { position: fixed; top: 0px; left: 0px; width: 0px; height: 0px; transition: width 0s 0.25s, height 0s 0.25s, opacity 0.25s; background-color: rgba(0, 0, 0, 0.54); cursor: pointer; }
+  [dir="rtl"] .md-search__overlay { right: 0px; left: auto; }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__overlay { width: 100%; height: 100%; transition: width, height, opacity 0.25s; opacity: 1; }
+  .md-search__inner { position: relative; width: 11.5rem; margin-right: 0.8rem; padding: 0.1rem 0px; float: right; transition: width 0.25s cubic-bezier(0.1, 0.7, 0.1, 1); }
+  [dir="rtl"] .md-search__inner { margin-right: 0px; margin-left: 0.8rem; float: left; }
+  .md-search__form, .md-search__input { border-radius: 0.1rem; }
+  .md-search__input { width: 100%; height: 1.8rem; padding-left: 2.2rem; transition: background-color 0.25s cubic-bezier(0.1, 0.7, 0.1, 1), color 0.25s cubic-bezier(0.1, 0.7, 0.1, 1); background-color: rgba(0, 0, 0, 0.26); color: inherit; font-size: 0.8rem; }
+  [dir="rtl"] .md-search__input { padding-right: 2.2rem; }
+  .md-search__input + .md-search__icon { color: inherit; }
+  .md-search__input::-webkit-input-placeholder { color: rgba(255, 255, 255, 0.7); }
+  .md-search__input::placeholder { color: rgba(255, 255, 255, 0.7); }
+  .md-search__input::placeholder { color: rgba(255, 255, 255, 0.7); }
+  .md-search__input:hover { background-color: rgba(255, 255, 255, 0.12); }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__input { border-radius: 0.1rem 0.1rem 0px 0px; background-color: rgb(255, 255, 255); color: rgba(0, 0, 0, 0.87); text-overflow: clip; }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__input + .md-search__icon, [data-md-toggle="search"]:checked ~ .md-header .md-search__input::-webkit-input-placeholder { color: rgba(0, 0, 0, 0.54); }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__input + .md-search__icon, [data-md-toggle="search"]:checked ~ .md-header .md-search__input::placeholder { color: rgba(0, 0, 0, 0.54); }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__input + .md-search__icon, [data-md-toggle="search"]:checked ~ .md-header .md-search__input::placeholder { color: rgba(0, 0, 0, 0.54); }
+  .md-search__output { top: 1.9rem; transition: opacity 0.4s; opacity: 0; }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__output { box-shadow: rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px, rgba(0, 0, 0, 0.4) 0px 3px 5px -1px; opacity: 1; }
+  .md-search__scrollwrap { max-height: 0px; }
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__scrollwrap { max-height: 75vh; }
+  .md-search__scrollwrap::-webkit-scrollbar { width: 0.2rem; height: 0.2rem; }
+  .md-search__scrollwrap::-webkit-scrollbar-thumb { background-color: rgba(0, 0, 0, 0.26); }
+  .md-search-result__meta { padding-left: 2.2rem; }
+  [dir="rtl"] .md-search-result__meta { padding-right: 2.2rem; padding-left: 0px; }
+  .md-search-result__article { padding-left: 2.2rem; }
+  [dir="rtl"] .md-search-result__article { padding-right: 2.2rem; padding-left: 0.8rem; }
+  .md-sidebar--secondary { display: block; margin-left: 100%; transform: translate(-100%); }
+  [dir="rtl"] .md-sidebar--secondary { margin-right: 100%; margin-left: 0px; transform: translate(100%); }
+}@media only screen and (min-width: 76.25em) {
+  .md-content { margin-left: 12.1rem; }
+  [dir="rtl"] .md-content { margin-right: 12.1rem; }
+  .md-content__inner { margin-right: 1.2rem; margin-left: 1.2rem; }
+  .md-header-nav__button.md-icon--menu { display: none; }
+  .md-nav[data-md-state="animate"] { transition: max-height 0.25s cubic-bezier(0.86, 0, 0.07, 1); }
+  .md-nav__toggle ~ .md-nav { max-height: 0px; overflow: hidden; }
+  .no-js .md-nav__toggle ~ .md-nav { display: none; }
+  .md-nav[data-md-state="expand"], .md-nav__toggle:checked ~ .md-nav { max-height: 100%; }
+  .no-js .md-nav[data-md-state="expand"], .no-js .md-nav__toggle:checked ~ .md-nav { display: block; }
+  .md-nav__item--nested > .md-nav > .md-nav__title { display: none; }
+  .md-nav__item--nested > .md-nav__link::after { display: inline-block; transform-origin: 0.45em 0.45em 0px; transform-style: preserve-3d; vertical-align: -0.125em; }
+  .js .md-nav__item--nested > .md-nav__link::after { transition: transform 0.4s, transform 0.4s; }
+  .md-nav__item--nested .md-nav__toggle:checked ~ .md-nav__link::after { transform: rotateX(180deg); }
+  .md-search__inner { margin-right: 1.2rem; }
+  [dir="rtl"] .md-search__inner { margin-left: 1.2rem; }
+  .md-search__scrollwrap, [data-md-toggle="search"]:checked ~ .md-header .md-search__inner { width: 34.4rem; }
+  .md-sidebar--secondary { margin-left: 61rem; }
+  [dir="rtl"] .md-sidebar--secondary { margin-right: 61rem; margin-left: 0px; }
+  .md-tabs ~ .md-main .md-nav--primary > .md-nav__list > .md-nav__item--nested { font-size: 0px; visibility: hidden; }
+  .md-tabs--active ~ .md-main .md-nav--primary .md-nav__title { display: block; padding: 0px; }
+  .md-tabs--active ~ .md-main .md-nav--primary .md-nav__title--site { display: none; }
+  .no-js .md-tabs--active ~ .md-main .md-nav--primary .md-nav { display: block; }
+  .md-tabs--active ~ .md-main .md-nav--primary > .md-nav__list > .md-nav__item { font-size: 0px; visibility: hidden; }
+  .md-tabs--active ~ .md-main .md-nav--primary > .md-nav__list > .md-nav__item--nested { display: none; font-size: 0.7rem; overflow: auto; visibility: visible; }
+  .md-tabs--active ~ .md-main .md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__link { display: none; }
+  .md-tabs--active ~ .md-main .md-nav--primary > .md-nav__list > .md-nav__item--active { display: block; }
+  .md-tabs--active ~ .md-main .md-nav[data-md-level="1"] { max-height: none; overflow: visible; }
+  .md-tabs--active ~ .md-main .md-nav[data-md-level="1"] > .md-nav__list > .md-nav__item { padding-left: 0px; }
+  .md-tabs--active ~ .md-main .md-nav[data-md-level="1"] .md-nav .md-nav__title { display: none; }
+}@media only screen and (min-width: 45em) {
+  .md-footer-nav__link { width: 50%; }
+  .md-footer-copyright { max-width: 75%; float: left; }
+  [dir="rtl"] .md-footer-copyright { float: right; }
+  .md-footer-social { padding: 0.6rem 0px; float: right; }
+  [dir="rtl"] .md-footer-social { float: left; }
+}@media only screen and (max-width: 29.9375em) {
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__overlay { transform: scale(45); }
+}@media only screen and (min-width: 30em) and (max-width: 44.9375em) {
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__overlay { transform: scale(60); }
+}@media only screen and (min-width: 45em) and (max-width: 59.9375em) {
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__overlay { transform: scale(75); }
+}@media only screen and (min-width: 60em) and (max-width: 76.1875em) {
+  .md-search__scrollwrap, [data-md-toggle="search"]:checked ~ .md-header .md-search__inner { width: 23.4rem; }
+  .md-search-result__teaser { max-height: 2.5rem; -webkit-line-clamp: 3; }
+}</style><style>button[data-md-color-accent], button[data-md-color-primary] { width: 6.5rem; margin-bottom: 0.2rem; padding: 1.2rem 0.4rem 0.2rem; transition: background-color 0.25s, opacity 0.25s; border-radius: 0.1rem; color: rgb(255, 255, 255); font-size: 0.64rem; text-align: left; cursor: pointer; }button[data-md-color-accent]:hover, button[data-md-color-primary]:hover { opacity: 0.75; }button[data-md-color-primary="red"] { background-color: rgb(239, 83, 80); }[data-md-color-primary="red"] .md-typeset a { color: rgb(239, 83, 80); }[data-md-color-primary="red"] .md-header, [data-md-color-primary="red"] .md-hero { background-color: rgb(239, 83, 80); }[data-md-color-primary="red"] .md-nav__link--active, [data-md-color-primary="red"] .md-nav__link:active { color: rgb(239, 83, 80); }[data-md-color-primary="red"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="pink"] { background-color: rgb(233, 30, 99); }[data-md-color-primary="pink"] .md-typeset a { color: rgb(233, 30, 99); }[data-md-color-primary="pink"] .md-header, [data-md-color-primary="pink"] .md-hero { background-color: rgb(233, 30, 99); }[data-md-color-primary="pink"] .md-nav__link--active, [data-md-color-primary="pink"] .md-nav__link:active { color: rgb(233, 30, 99); }[data-md-color-primary="pink"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="purple"] { background-color: rgb(171, 71, 188); }[data-md-color-primary="purple"] .md-typeset a { color: rgb(171, 71, 188); }[data-md-color-primary="purple"] .md-header, [data-md-color-primary="purple"] .md-hero { background-color: rgb(171, 71, 188); }[data-md-color-primary="purple"] .md-nav__link--active, [data-md-color-primary="purple"] .md-nav__link:active { color: rgb(171, 71, 188); }[data-md-color-primary="purple"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="deep-purple"] { background-color: rgb(126, 87, 194); }[data-md-color-primary="deep-purple"] .md-typeset a { color: rgb(126, 87, 194); }[data-md-color-primary="deep-purple"] .md-header, [data-md-color-primary="deep-purple"] .md-hero { background-color: rgb(126, 87, 194); }[data-md-color-primary="deep-purple"] .md-nav__link--active, [data-md-color-primary="deep-purple"] .md-nav__link:active { color: rgb(126, 87, 194); }[data-md-color-primary="deep-purple"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="indigo"] { background-color: rgb(63, 81, 181); }[data-md-color-primary="indigo"] .md-typeset a { color: rgb(63, 81, 181); }[data-md-color-primary="indigo"] .md-header, [data-md-color-primary="indigo"] .md-hero { background-color: rgb(63, 81, 181); }[data-md-color-primary="indigo"] .md-nav__link--active, [data-md-color-primary="indigo"] .md-nav__link:active { color: rgb(63, 81, 181); }[data-md-color-primary="indigo"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="blue"] { background-color: rgb(33, 150, 243); }[data-md-color-primary="blue"] .md-typeset a { color: rgb(33, 150, 243); }[data-md-color-primary="blue"] .md-header, [data-md-color-primary="blue"] .md-hero { background-color: rgb(33, 150, 243); }[data-md-color-primary="blue"] .md-nav__link--active, [data-md-color-primary="blue"] .md-nav__link:active { color: rgb(33, 150, 243); }[data-md-color-primary="blue"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="light-blue"] { background-color: rgb(3, 169, 244); }[data-md-color-primary="light-blue"] .md-typeset a { color: rgb(3, 169, 244); }[data-md-color-primary="light-blue"] .md-header, [data-md-color-primary="light-blue"] .md-hero { background-color: rgb(3, 169, 244); }[data-md-color-primary="light-blue"] .md-nav__link--active, [data-md-color-primary="light-blue"] .md-nav__link:active { color: rgb(3, 169, 244); }[data-md-color-primary="light-blue"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="cyan"] { background-color: rgb(0, 188, 212); }[data-md-color-primary="cyan"] .md-typeset a { color: rgb(0, 188, 212); }[data-md-color-primary="cyan"] .md-header, [data-md-color-primary="cyan"] .md-hero { background-color: rgb(0, 188, 212); }[data-md-color-primary="cyan"] .md-nav__link--active, [data-md-color-primary="cyan"] .md-nav__link:active { color: rgb(0, 188, 212); }[data-md-color-primary="cyan"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="teal"] { background-color: rgb(0, 150, 136); }[data-md-color-primary="teal"] .md-typeset a { color: rgb(0, 150, 136); }[data-md-color-primary="teal"] .md-header, [data-md-color-primary="teal"] .md-hero { background-color: rgb(0, 150, 136); }[data-md-color-primary="teal"] .md-nav__link--active, [data-md-color-primary="teal"] .md-nav__link:active { color: rgb(0, 150, 136); }[data-md-color-primary="teal"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="green"] { background-color: rgb(76, 175, 80); }[data-md-color-primary="green"] .md-typeset a { color: rgb(76, 175, 80); }[data-md-color-primary="green"] .md-header, [data-md-color-primary="green"] .md-hero { background-color: rgb(76, 175, 80); }[data-md-color-primary="green"] .md-nav__link--active, [data-md-color-primary="green"] .md-nav__link:active { color: rgb(76, 175, 80); }[data-md-color-primary="green"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="light-green"] { background-color: rgb(124, 179, 66); }[data-md-color-primary="light-green"] .md-typeset a { color: rgb(124, 179, 66); }[data-md-color-primary="light-green"] .md-header, [data-md-color-primary="light-green"] .md-hero { background-color: rgb(124, 179, 66); }[data-md-color-primary="light-green"] .md-nav__link--active, [data-md-color-primary="light-green"] .md-nav__link:active { color: rgb(124, 179, 66); }[data-md-color-primary="light-green"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="lime"] { background-color: rgb(192, 202, 51); }[data-md-color-primary="lime"] .md-typeset a { color: rgb(192, 202, 51); }[data-md-color-primary="lime"] .md-header, [data-md-color-primary="lime"] .md-hero { background-color: rgb(192, 202, 51); }[data-md-color-primary="lime"] .md-nav__link--active, [data-md-color-primary="lime"] .md-nav__link:active { color: rgb(192, 202, 51); }[data-md-color-primary="lime"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="yellow"] { background-color: rgb(249, 168, 37); }[data-md-color-primary="yellow"] .md-typeset a { color: rgb(249, 168, 37); }[data-md-color-primary="yellow"] .md-header, [data-md-color-primary="yellow"] .md-hero { background-color: rgb(249, 168, 37); }[data-md-color-primary="yellow"] .md-nav__link--active, [data-md-color-primary="yellow"] .md-nav__link:active { color: rgb(249, 168, 37); }[data-md-color-primary="yellow"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="amber"] { background-color: rgb(255, 160, 0); }[data-md-color-primary="amber"] .md-typeset a { color: rgb(255, 160, 0); }[data-md-color-primary="amber"] .md-header, [data-md-color-primary="amber"] .md-hero { background-color: rgb(255, 160, 0); }[data-md-color-primary="amber"] .md-nav__link--active, [data-md-color-primary="amber"] .md-nav__link:active { color: rgb(255, 160, 0); }[data-md-color-primary="amber"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="orange"] { background-color: rgb(251, 140, 0); }[data-md-color-primary="orange"] .md-typeset a { color: rgb(251, 140, 0); }[data-md-color-primary="orange"] .md-header, [data-md-color-primary="orange"] .md-hero { background-color: rgb(251, 140, 0); }[data-md-color-primary="orange"] .md-nav__link--active, [data-md-color-primary="orange"] .md-nav__link:active { color: rgb(251, 140, 0); }[data-md-color-primary="orange"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="deep-orange"] { background-color: rgb(255, 112, 67); }[data-md-color-primary="deep-orange"] .md-typeset a { color: rgb(255, 112, 67); }[data-md-color-primary="deep-orange"] .md-header, [data-md-color-primary="deep-orange"] .md-hero { background-color: rgb(255, 112, 67); }[data-md-color-primary="deep-orange"] .md-nav__link--active, [data-md-color-primary="deep-orange"] .md-nav__link:active { color: rgb(255, 112, 67); }[data-md-color-primary="deep-orange"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="brown"] { background-color: rgb(121, 85, 72); }[data-md-color-primary="brown"] .md-typeset a { color: rgb(121, 85, 72); }[data-md-color-primary="brown"] .md-header, [data-md-color-primary="brown"] .md-hero { background-color: rgb(121, 85, 72); }[data-md-color-primary="brown"] .md-nav__link--active, [data-md-color-primary="brown"] .md-nav__link:active { color: rgb(121, 85, 72); }[data-md-color-primary="brown"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="grey"] { background-color: rgb(117, 117, 117); }[data-md-color-primary="grey"] .md-typeset a { color: rgb(117, 117, 117); }[data-md-color-primary="grey"] .md-header, [data-md-color-primary="grey"] .md-hero { background-color: rgb(117, 117, 117); }[data-md-color-primary="grey"] .md-nav__link--active, [data-md-color-primary="grey"] .md-nav__link:active { color: rgb(117, 117, 117); }[data-md-color-primary="grey"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="blue-grey"] { background-color: rgb(84, 110, 122); }[data-md-color-primary="blue-grey"] .md-typeset a { color: rgb(84, 110, 122); }[data-md-color-primary="blue-grey"] .md-header, [data-md-color-primary="blue-grey"] .md-hero { background-color: rgb(84, 110, 122); }[data-md-color-primary="blue-grey"] .md-nav__link--active, [data-md-color-primary="blue-grey"] .md-nav__link:active { color: rgb(84, 110, 122); }[data-md-color-primary="blue-grey"] .md-nav__item--nested > .md-nav__link { color: inherit; }button[data-md-color-primary="white"] { box-shadow: rgba(0, 0, 0, 0.54) 0px 0px 0.05rem inset; }[data-md-color-primary="white"] .md-header, [data-md-color-primary="white"] .md-hero, button[data-md-color-primary="white"] { background-color: rgb(255, 255, 255); color: rgba(0, 0, 0, 0.87); }[data-md-color-primary="white"] .md-hero--expand { border-bottom: 0.05rem solid rgba(0, 0, 0, 0.07); }button[data-md-color-accent="red"] { background-color: rgb(255, 23, 68); }[data-md-color-accent="red"] .md-typeset a:active, [data-md-color-accent="red"] .md-typeset a:hover { color: rgb(255, 23, 68); }[data-md-color-accent="red"] .md-nav__link:focus, [data-md-color-accent="red"] .md-nav__link:hover, [data-md-color-accent="red"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="red"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="red"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="red"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="red"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="red"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="red"] .md-typeset [id]:target .headerlink { color: rgb(255, 23, 68); }[data-md-color-accent="red"] .md-search-result__link:hover, [data-md-color-accent="red"] .md-search-result__link[data-md-state="active"] { background-color: rgba(255, 23, 68, 0.1); }[data-md-color-accent="red"] .md-source-file:hover::before { background-color: rgb(255, 23, 68); }button[data-md-color-accent="pink"] { background-color: rgb(245, 0, 87); }[data-md-color-accent="pink"] .md-typeset a:active, [data-md-color-accent="pink"] .md-typeset a:hover { color: rgb(245, 0, 87); }[data-md-color-accent="pink"] .md-nav__link:focus, [data-md-color-accent="pink"] .md-nav__link:hover, [data-md-color-accent="pink"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="pink"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="pink"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="pink"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="pink"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="pink"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="pink"] .md-typeset [id]:target .headerlink { color: rgb(245, 0, 87); }[data-md-color-accent="pink"] .md-search-result__link:hover, [data-md-color-accent="pink"] .md-search-result__link[data-md-state="active"] { background-color: rgba(245, 0, 87, 0.1); }[data-md-color-accent="pink"] .md-source-file:hover::before { background-color: rgb(245, 0, 87); }button[data-md-color-accent="purple"] { background-color: rgb(224, 64, 251); }[data-md-color-accent="purple"] .md-typeset a:active, [data-md-color-accent="purple"] .md-typeset a:hover { color: rgb(224, 64, 251); }[data-md-color-accent="purple"] .md-nav__link:focus, [data-md-color-accent="purple"] .md-nav__link:hover, [data-md-color-accent="purple"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="purple"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="purple"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="purple"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="purple"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="purple"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="purple"] .md-typeset [id]:target .headerlink { color: rgb(224, 64, 251); }[data-md-color-accent="purple"] .md-search-result__link:hover, [data-md-color-accent="purple"] .md-search-result__link[data-md-state="active"] { background-color: rgba(224, 64, 251, 0.1); }[data-md-color-accent="purple"] .md-source-file:hover::before { background-color: rgb(224, 64, 251); }button[data-md-color-accent="deep-purple"] { background-color: rgb(124, 77, 255); }[data-md-color-accent="deep-purple"] .md-typeset a:active, [data-md-color-accent="deep-purple"] .md-typeset a:hover { color: rgb(124, 77, 255); }[data-md-color-accent="deep-purple"] .md-nav__link:focus, [data-md-color-accent="deep-purple"] .md-nav__link:hover, [data-md-color-accent="deep-purple"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="deep-purple"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="deep-purple"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="deep-purple"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="deep-purple"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="deep-purple"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="deep-purple"] .md-typeset [id]:target .headerlink { color: rgb(124, 77, 255); }[data-md-color-accent="deep-purple"] .md-search-result__link:hover, [data-md-color-accent="deep-purple"] .md-search-result__link[data-md-state="active"] { background-color: rgba(124, 77, 255, 0.1); }[data-md-color-accent="deep-purple"] .md-source-file:hover::before { background-color: rgb(124, 77, 255); }button[data-md-color-accent="indigo"] { background-color: rgb(83, 109, 254); }[data-md-color-accent="indigo"] .md-typeset a:active, [data-md-color-accent="indigo"] .md-typeset a:hover { color: rgb(83, 109, 254); }[data-md-color-accent="indigo"] .md-nav__link:focus, [data-md-color-accent="indigo"] .md-nav__link:hover, [data-md-color-accent="indigo"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="indigo"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="indigo"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="indigo"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="indigo"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="indigo"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="indigo"] .md-typeset [id]:target .headerlink { color: rgb(83, 109, 254); }[data-md-color-accent="indigo"] .md-search-result__link:hover, [data-md-color-accent="indigo"] .md-search-result__link[data-md-state="active"] { background-color: rgba(83, 109, 254, 0.1); }[data-md-color-accent="indigo"] .md-source-file:hover::before { background-color: rgb(83, 109, 254); }button[data-md-color-accent="blue"] { background-color: rgb(68, 138, 255); }[data-md-color-accent="blue"] .md-typeset a:active, [data-md-color-accent="blue"] .md-typeset a:hover { color: rgb(68, 138, 255); }[data-md-color-accent="blue"] .md-nav__link:focus, [data-md-color-accent="blue"] .md-nav__link:hover, [data-md-color-accent="blue"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="blue"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="blue"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="blue"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="blue"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="blue"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="blue"] .md-typeset [id]:target .headerlink { color: rgb(68, 138, 255); }[data-md-color-accent="blue"] .md-search-result__link:hover, [data-md-color-accent="blue"] .md-search-result__link[data-md-state="active"] { background-color: rgba(68, 138, 255, 0.1); }[data-md-color-accent="blue"] .md-source-file:hover::before { background-color: rgb(68, 138, 255); }button[data-md-color-accent="light-blue"] { background-color: rgb(0, 145, 234); }[data-md-color-accent="light-blue"] .md-typeset a:active, [data-md-color-accent="light-blue"] .md-typeset a:hover { color: rgb(0, 145, 234); }[data-md-color-accent="light-blue"] .md-nav__link:focus, [data-md-color-accent="light-blue"] .md-nav__link:hover, [data-md-color-accent="light-blue"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="light-blue"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="light-blue"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="light-blue"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="light-blue"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="light-blue"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="light-blue"] .md-typeset [id]:target .headerlink { color: rgb(0, 145, 234); }[data-md-color-accent="light-blue"] .md-search-result__link:hover, [data-md-color-accent="light-blue"] .md-search-result__link[data-md-state="active"] { background-color: rgba(0, 145, 234, 0.1); }[data-md-color-accent="light-blue"] .md-source-file:hover::before { background-color: rgb(0, 145, 234); }button[data-md-color-accent="cyan"] { background-color: rgb(0, 184, 212); }[data-md-color-accent="cyan"] .md-typeset a:active, [data-md-color-accent="cyan"] .md-typeset a:hover { color: rgb(0, 184, 212); }[data-md-color-accent="cyan"] .md-nav__link:focus, [data-md-color-accent="cyan"] .md-nav__link:hover, [data-md-color-accent="cyan"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="cyan"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="cyan"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="cyan"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="cyan"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="cyan"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="cyan"] .md-typeset [id]:target .headerlink { color: rgb(0, 184, 212); }[data-md-color-accent="cyan"] .md-search-result__link:hover, [data-md-color-accent="cyan"] .md-search-result__link[data-md-state="active"] { background-color: rgba(0, 184, 212, 0.1); }[data-md-color-accent="cyan"] .md-source-file:hover::before { background-color: rgb(0, 184, 212); }button[data-md-color-accent="teal"] { background-color: rgb(0, 191, 165); }[data-md-color-accent="teal"] .md-typeset a:active, [data-md-color-accent="teal"] .md-typeset a:hover { color: rgb(0, 191, 165); }[data-md-color-accent="teal"] .md-nav__link:focus, [data-md-color-accent="teal"] .md-nav__link:hover, [data-md-color-accent="teal"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="teal"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="teal"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="teal"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="teal"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="teal"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="teal"] .md-typeset [id]:target .headerlink { color: rgb(0, 191, 165); }[data-md-color-accent="teal"] .md-search-result__link:hover, [data-md-color-accent="teal"] .md-search-result__link[data-md-state="active"] { background-color: rgba(0, 191, 165, 0.1); }[data-md-color-accent="teal"] .md-source-file:hover::before { background-color: rgb(0, 191, 165); }button[data-md-color-accent="green"] { background-color: rgb(0, 200, 83); }[data-md-color-accent="green"] .md-typeset a:active, [data-md-color-accent="green"] .md-typeset a:hover { color: rgb(0, 200, 83); }[data-md-color-accent="green"] .md-nav__link:focus, [data-md-color-accent="green"] .md-nav__link:hover, [data-md-color-accent="green"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="green"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="green"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="green"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="green"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="green"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="green"] .md-typeset [id]:target .headerlink { color: rgb(0, 200, 83); }[data-md-color-accent="green"] .md-search-result__link:hover, [data-md-color-accent="green"] .md-search-result__link[data-md-state="active"] { background-color: rgba(0, 200, 83, 0.1); }[data-md-color-accent="green"] .md-source-file:hover::before { background-color: rgb(0, 200, 83); }button[data-md-color-accent="light-green"] { background-color: rgb(100, 221, 23); }[data-md-color-accent="light-green"] .md-typeset a:active, [data-md-color-accent="light-green"] .md-typeset a:hover { color: rgb(100, 221, 23); }[data-md-color-accent="light-green"] .md-nav__link:focus, [data-md-color-accent="light-green"] .md-nav__link:hover, [data-md-color-accent="light-green"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="light-green"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="light-green"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="light-green"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="light-green"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="light-green"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="light-green"] .md-typeset [id]:target .headerlink { color: rgb(100, 221, 23); }[data-md-color-accent="light-green"] .md-search-result__link:hover, [data-md-color-accent="light-green"] .md-search-result__link[data-md-state="active"] { background-color: rgba(100, 221, 23, 0.1); }[data-md-color-accent="light-green"] .md-source-file:hover::before { background-color: rgb(100, 221, 23); }button[data-md-color-accent="lime"] { background-color: rgb(174, 234, 0); }[data-md-color-accent="lime"] .md-typeset a:active, [data-md-color-accent="lime"] .md-typeset a:hover { color: rgb(174, 234, 0); }[data-md-color-accent="lime"] .md-nav__link:focus, [data-md-color-accent="lime"] .md-nav__link:hover, [data-md-color-accent="lime"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="lime"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="lime"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="lime"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="lime"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="lime"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="lime"] .md-typeset [id]:target .headerlink { color: rgb(174, 234, 0); }[data-md-color-accent="lime"] .md-search-result__link:hover, [data-md-color-accent="lime"] .md-search-result__link[data-md-state="active"] { background-color: rgba(174, 234, 0, 0.1); }[data-md-color-accent="lime"] .md-source-file:hover::before { background-color: rgb(174, 234, 0); }button[data-md-color-accent="yellow"] { background-color: rgb(255, 214, 0); }[data-md-color-accent="yellow"] .md-typeset a:active, [data-md-color-accent="yellow"] .md-typeset a:hover { color: rgb(255, 214, 0); }[data-md-color-accent="yellow"] .md-nav__link:focus, [data-md-color-accent="yellow"] .md-nav__link:hover, [data-md-color-accent="yellow"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="yellow"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="yellow"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="yellow"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="yellow"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="yellow"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="yellow"] .md-typeset [id]:target .headerlink { color: rgb(255, 214, 0); }[data-md-color-accent="yellow"] .md-search-result__link:hover, [data-md-color-accent="yellow"] .md-search-result__link[data-md-state="active"] { background-color: rgba(255, 214, 0, 0.1); }[data-md-color-accent="yellow"] .md-source-file:hover::before { background-color: rgb(255, 214, 0); }button[data-md-color-accent="amber"] { background-color: rgb(255, 171, 0); }[data-md-color-accent="amber"] .md-typeset a:active, [data-md-color-accent="amber"] .md-typeset a:hover { color: rgb(255, 171, 0); }[data-md-color-accent="amber"] .md-nav__link:focus, [data-md-color-accent="amber"] .md-nav__link:hover, [data-md-color-accent="amber"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="amber"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="amber"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="amber"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="amber"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="amber"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="amber"] .md-typeset [id]:target .headerlink { color: rgb(255, 171, 0); }[data-md-color-accent="amber"] .md-search-result__link:hover, [data-md-color-accent="amber"] .md-search-result__link[data-md-state="active"] { background-color: rgba(255, 171, 0, 0.1); }[data-md-color-accent="amber"] .md-source-file:hover::before { background-color: rgb(255, 171, 0); }button[data-md-color-accent="orange"] { background-color: rgb(255, 145, 0); }[data-md-color-accent="orange"] .md-typeset a:active, [data-md-color-accent="orange"] .md-typeset a:hover { color: rgb(255, 145, 0); }[data-md-color-accent="orange"] .md-nav__link:focus, [data-md-color-accent="orange"] .md-nav__link:hover, [data-md-color-accent="orange"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="orange"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="orange"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="orange"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="orange"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="orange"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="orange"] .md-typeset [id]:target .headerlink { color: rgb(255, 145, 0); }[data-md-color-accent="orange"] .md-search-result__link:hover, [data-md-color-accent="orange"] .md-search-result__link[data-md-state="active"] { background-color: rgba(255, 145, 0, 0.1); }[data-md-color-accent="orange"] .md-source-file:hover::before { background-color: rgb(255, 145, 0); }button[data-md-color-accent="deep-orange"] { background-color: rgb(255, 110, 64); }[data-md-color-accent="deep-orange"] .md-typeset a:active, [data-md-color-accent="deep-orange"] .md-typeset a:hover { color: rgb(255, 110, 64); }[data-md-color-accent="deep-orange"] .md-nav__link:focus, [data-md-color-accent="deep-orange"] .md-nav__link:hover, [data-md-color-accent="deep-orange"] .md-typeset .footnote li:hover .footnote-backref:hover, [data-md-color-accent="deep-orange"] .md-typeset .footnote li:target .footnote-backref, [data-md-color-accent="deep-orange"] .md-typeset .md-clipboard:active::before, [data-md-color-accent="deep-orange"] .md-typeset .md-clipboard:hover::before, [data-md-color-accent="deep-orange"] .md-typeset [id] .headerlink:focus, [data-md-color-accent="deep-orange"] .md-typeset [id]:hover .headerlink:hover, [data-md-color-accent="deep-orange"] .md-typeset [id]:target .headerlink { color: rgb(255, 110, 64); }[data-md-color-accent="deep-orange"] .md-search-result__link:hover, [data-md-color-accent="deep-orange"] .md-search-result__link[data-md-state="active"] { background-color: rgba(255, 110, 64, 0.1); }[data-md-color-accent="deep-orange"] .md-source-file:hover::before { background-color: rgb(255, 110, 64); }@media only screen and (max-width: 59.9375em) {
+  [data-md-color-primary="red"] .md-nav__source { background-color: rgba(190, 66, 64, 0.97); }
+  [data-md-color-primary="pink"] .md-nav__source { background-color: rgba(185, 24, 79, 0.97); }
+  [data-md-color-primary="purple"] .md-nav__source { background-color: rgba(136, 57, 150, 0.97); }
+  [data-md-color-primary="deep-purple"] .md-nav__source { background-color: rgba(100, 69, 154, 0.97); }
+  [data-md-color-primary="indigo"] .md-nav__source { background-color: rgba(50, 64, 144, 0.97); }
+  [data-md-color-primary="blue"] .md-nav__source { background-color: rgba(26, 119, 193, 0.97); }
+  [data-md-color-primary="light-blue"] .md-nav__source { background-color: rgba(2, 134, 194, 0.97); }
+  [data-md-color-primary="cyan"] .md-nav__source { background-color: rgba(0, 150, 169, 0.97); }
+  [data-md-color-primary="teal"] .md-nav__source { background-color: rgba(0, 119, 108, 0.97); }
+  [data-md-color-primary="green"] .md-nav__source { background-color: rgba(60, 139, 64, 0.97); }
+  [data-md-color-primary="light-green"] .md-nav__source { background-color: rgba(99, 142, 53, 0.97); }
+  [data-md-color-primary="lime"] .md-nav__source { background-color: rgba(153, 161, 41, 0.97); }
+  [data-md-color-primary="yellow"] .md-nav__source { background-color: rgba(198, 134, 29, 0.97); }
+  [data-md-color-primary="amber"] .md-nav__source { background-color: rgba(203, 127, 0, 0.97); }
+  [data-md-color-primary="orange"] .md-nav__source { background-color: rgba(200, 111, 0, 0.97); }
+  [data-md-color-primary="deep-orange"] .md-nav__source { background-color: rgba(203, 89, 53, 0.97); }
+  [data-md-color-primary="brown"] .md-nav__source { background-color: rgba(96, 68, 57, 0.97); }
+  [data-md-color-primary="grey"] .md-nav__source { background-color: rgba(93, 93, 93, 0.97); }
+  [data-md-color-primary="blue-grey"] .md-nav__source { background-color: rgba(67, 88, 97, 0.97); }
+  [data-md-color-primary="white"] .md-nav__source { background-color: rgba(0, 0, 0, 0.07); color: rgba(0, 0, 0, 0.87); }
+}@media only screen and (max-width: 76.1875em) {
+  html [data-md-color-primary="red"] .md-nav--primary .md-nav__title--site { background-color: rgb(239, 83, 80); }
+  html [data-md-color-primary="pink"] .md-nav--primary .md-nav__title--site { background-color: rgb(233, 30, 99); }
+  html [data-md-color-primary="purple"] .md-nav--primary .md-nav__title--site { background-color: rgb(171, 71, 188); }
+  html [data-md-color-primary="deep-purple"] .md-nav--primary .md-nav__title--site { background-color: rgb(126, 87, 194); }
+  html [data-md-color-primary="indigo"] .md-nav--primary .md-nav__title--site { background-color: rgb(63, 81, 181); }
+  html [data-md-color-primary="blue"] .md-nav--primary .md-nav__title--site { background-color: rgb(33, 150, 243); }
+  html [data-md-color-primary="light-blue"] .md-nav--primary .md-nav__title--site { background-color: rgb(3, 169, 244); }
+  html [data-md-color-primary="cyan"] .md-nav--primary .md-nav__title--site { background-color: rgb(0, 188, 212); }
+  html [data-md-color-primary="teal"] .md-nav--primary .md-nav__title--site { background-color: rgb(0, 150, 136); }
+  html [data-md-color-primary="green"] .md-nav--primary .md-nav__title--site { background-color: rgb(76, 175, 80); }
+  html [data-md-color-primary="light-green"] .md-nav--primary .md-nav__title--site { background-color: rgb(124, 179, 66); }
+  html [data-md-color-primary="lime"] .md-nav--primary .md-nav__title--site { background-color: rgb(192, 202, 51); }
+  html [data-md-color-primary="yellow"] .md-nav--primary .md-nav__title--site { background-color: rgb(249, 168, 37); }
+  html [data-md-color-primary="amber"] .md-nav--primary .md-nav__title--site { background-color: rgb(255, 160, 0); }
+  html [data-md-color-primary="orange"] .md-nav--primary .md-nav__title--site { background-color: rgb(251, 140, 0); }
+  html [data-md-color-primary="deep-orange"] .md-nav--primary .md-nav__title--site { background-color: rgb(255, 112, 67); }
+  html [data-md-color-primary="brown"] .md-nav--primary .md-nav__title--site { background-color: rgb(121, 85, 72); }
+  html [data-md-color-primary="grey"] .md-nav--primary .md-nav__title--site { background-color: rgb(117, 117, 117); }
+  html [data-md-color-primary="blue-grey"] .md-nav--primary .md-nav__title--site { background-color: rgb(84, 110, 122); }
+  html [data-md-color-primary="white"] .md-nav--primary .md-nav__title--site { background-color: rgb(255, 255, 255); color: rgba(0, 0, 0, 0.87); }
+  [data-md-color-primary="white"] .md-hero { border-bottom: 0.05rem solid rgba(0, 0, 0, 0.07); }
+}@media only screen and (min-width: 76.25em) {
+  [data-md-color-primary="red"] .md-tabs { background-color: rgb(239, 83, 80); }
+  [data-md-color-primary="pink"] .md-tabs { background-color: rgb(233, 30, 99); }
+  [data-md-color-primary="purple"] .md-tabs { background-color: rgb(171, 71, 188); }
+  [data-md-color-primary="deep-purple"] .md-tabs { background-color: rgb(126, 87, 194); }
+  [data-md-color-primary="indigo"] .md-tabs { background-color: rgb(63, 81, 181); }
+  [data-md-color-primary="blue"] .md-tabs { background-color: rgb(33, 150, 243); }
+  [data-md-color-primary="light-blue"] .md-tabs { background-color: rgb(3, 169, 244); }
+  [data-md-color-primary="cyan"] .md-tabs { background-color: rgb(0, 188, 212); }
+  [data-md-color-primary="teal"] .md-tabs { background-color: rgb(0, 150, 136); }
+  [data-md-color-primary="green"] .md-tabs { background-color: rgb(76, 175, 80); }
+  [data-md-color-primary="light-green"] .md-tabs { background-color: rgb(124, 179, 66); }
+  [data-md-color-primary="lime"] .md-tabs { background-color: rgb(192, 202, 51); }
+  [data-md-color-primary="yellow"] .md-tabs { background-color: rgb(249, 168, 37); }
+  [data-md-color-primary="amber"] .md-tabs { background-color: rgb(255, 160, 0); }
+  [data-md-color-primary="orange"] .md-tabs { background-color: rgb(251, 140, 0); }
+  [data-md-color-primary="deep-orange"] .md-tabs { background-color: rgb(255, 112, 67); }
+  [data-md-color-primary="brown"] .md-tabs { background-color: rgb(121, 85, 72); }
+  [data-md-color-primary="grey"] .md-tabs { background-color: rgb(117, 117, 117); }
+  [data-md-color-primary="blue-grey"] .md-tabs { background-color: rgb(84, 110, 122); }
+  [data-md-color-primary="white"] .md-tabs { border-bottom: 0.05rem solid rgba(0, 0, 0, 0.07); background-color: rgb(255, 255, 255); color: rgba(0, 0, 0, 0.87); }
+}@media only screen and (min-width: 60em) {
+  [data-md-color-primary="white"] .md-search__input { background-color: rgba(0, 0, 0, 0.07); }
+  [data-md-color-primary="white"] .md-search__input::-webkit-input-placeholder { color: rgba(0, 0, 0, 0.54); }
+  [data-md-color-primary="white"] .md-search__input::placeholder { color: rgba(0, 0, 0, 0.54); }
+  [data-md-color-primary="white"] .md-search__input::placeholder { color: rgba(0, 0, 0, 0.54); }
+}</style><style>body, input { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; }code, kbd, pre { font-family: "Open Mono", "Courier New", Courier, monospace; }</style><style>@font-face { font-family: "Material Icons"; src: local("Material Icons"), local("MaterialIcons-Regular"), url("specimen/MaterialIcons-Regular.woff2") format("woff2"), url("specimen/MaterialIcons-Regular.woff") format("woff"), url("specimen/MaterialIcons-Regular.ttf") format("truetype"); font-style: normal; font-weight: 400; }</style><style>.youtube-player { position: relative; display: block; height: 0px; padding: 0px 0px 56.25%; overflow: hidden; }.youtube-player > iframe { position: absolute; top: 0px; bottom: 0px; left: 0px; width: 100%; height: 100%; border: 0px; }</style></head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="indigo" data-md-color-accent="light-blue" data-md-state="">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"></path></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#smartos-virtualization" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header" data-md-state="shadow">
+  <link rel="me" href="https://hostux.social/@smartosorg">
+  <link rel="me" href="https://github.com/TritonDataCenter/smartos-live">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://docs.smartos.org/" title="SmartOS Documentation" class="md-header-nav__button md-logo">
+          
+            <img src="../assets/images/smartos-logo.svg" width="64" height="64">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title" data-md-state="">
+          
+            <span class="md-header-nav__topic" style="width: 677px;">
+              SmartOS Documentation
+            </span>
+            <span class="md-header-nav__topic" style="width: 677px;">
+              
+                Machine Monitor Overview
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/TritonDataCenter/smartos-live" title="Go to repository" class="md-source" data-md-source="github" data-md-state="done">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    TritonDataCenter/smartos-live
+  <ul class="md-source__facts"><li class="md-source__fact">1.6k Stars</li><li class="md-source__fact">254 Forks</li></ul></div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" style="height: 820px;" data-md-state="">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://docs.smartos.org/" title="SmartOS Documentation" class="md-nav__button md-logo">
+      
+        <img src="../assets/images/smartos-logo.svg" width="48" height="48">
+      
+    </a>
+    SmartOS Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/TritonDataCenter/smartos-live" title="Go to repository" class="md-source" data-md-source="github" data-md-state="done">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    TritonDataCenter/smartos-live
+  <ul class="md-source__facts"><li class="md-source__fact">1.6k Stars</li><li class="md-source__fact">254 Forks</li></ul></div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-quick-start-guide/" title="Quick Start Guide" class="md-nav__link">
+      Quick Start Guide
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../download-smartos/" title="Download SmartOS" class="md-nav__link">
+      Download SmartOS
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      SmartOS User's Guide
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-4">
+        SmartOS User's Guide
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1">
+    
+    <label class="md-nav__link" for="nav-4-1">
+      Installation
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-4-1">
+        Installation
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../download-smartos/" title="Download SmartOS" class="md-nav__link">
+      Download SmartOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../creating-a-smartos-bootable-usb-key/" title="Creating a SmartOS Bootable USB Key" class="md-nav__link">
+      Creating a SmartOS Bootable USB Key
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-as-a-vmware-guest/" title="SmartOS as a VMware Guest" class="md-nav__link">
+      SmartOS as a VMware Guest
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-as-a-virtualbox-guest/" title="SmartOS as a VirtualBox Guest" class="md-nav__link">
+      SmartOS as a VirtualBox Guest
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-as-a-utm-guest/" title="SmartOS as a UTM Guest on Apple Silicon" class="md-nav__link">
+      SmartOS as a UTM Guest on Apple Silicon
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../install/" title="Installation Walkthrough" class="md-nav__link">
+      Installation Walkthrough
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../non-interactive-install/" title="Non-interactive Installation" class="md-nav__link">
+      Non-interactive Installation
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../getting-started-with-smartos/" title="Getting Started with SmartOS" class="md-nav__link">
+      Getting Started with SmartOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../web-interface/" title="Installing the SmartOS Web UI" class="md-nav__link">
+      Installing the SmartOS Web UI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-4" type="checkbox" id="nav-4-4">
+    
+    <label class="md-nav__link" for="nav-4-4">
+      Virtual Instances
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-4-4">
+        Virtual Instances
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../how-to-create-a-zone/" title="How to create a native SmartOS Instance" class="md-nav__link">
+      How to create a native SmartOS Instance
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../how-to-create-an-hvm-zone/" title="How to create a Hardware Virtual Machine" class="md-nav__link">
+      How to create a Hardware Virtual Machine
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../lx-branded-zones/" title="How to create a Linux container without a VM (LX Branded Zones)" class="md-nav__link">
+      How to create a Linux container without a VM (LX Branded Zones)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-4-4" type="checkbox" id="nav-4-4-4">
+    
+    <label class="md-nav__link" for="nav-4-4-4">
+      Instance Management
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="3" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-4-4-4">
+        Instance Management
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../managing-instances-with-vmamd/" title="Managing Instances with vmadm" class="md-nav__link">
+      Managing Instances with vmadm
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../customer_metadata/" title="Instance Metadata" class="md-nav__link">
+      Instance Metadata
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../managing-images/" title="Managing Images" class="md-nav__link">
+      Managing Images
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-6" type="checkbox" id="nav-4-6">
+    
+    <label class="md-nav__link" for="nav-4-6">
+      Administering SmartOS Native Instances
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-4-6">
+        Administering SmartOS Native Instances
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../working-with-packages/" title="Managing Packages" class="md-nav__link">
+      Managing Packages
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smf-quick-reference/" title="Managing Services" class="md-nav__link">
+      Managing Services
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../configuring-nfs-in-smartos/" title="Configuring NFS in SmartOS" class="md-nav__link">
+      Configuring NFS in SmartOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../configuring-smb-in-smartos/" title="Configuring SMB in SmartOS" class="md-nav__link">
+      Configuring SMB in SmartOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-core-technologies/" title="SmartOS Core Technologies" class="md-nav__link">
+      SmartOS Core Technologies
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-7" type="checkbox" id="nav-4-7">
+    
+    <label class="md-nav__link" for="nav-4-7">
+      Administering The Hypervisor (Global Zone)
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-4-7">
+        Administering The Hypervisor (Global Zone)
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../administering-the-global-zone/" title="Introduction to the Hypervisor (aka, Global Zone)" class="md-nav__link">
+      Introduction to the Hypervisor (aka, Global Zone)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../persistent-configuration-for-the-global-zone/" title="Persistent Configuration for the Global Zone" class="md-nav__link">
+      Persistent Configuration for the Global Zone
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../extra-configuration-options/" title="Extra Hypervisor Configuration Options" class="md-nav__link">
+      Extra Hypervisor Configuration Options
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smf-quick-reference-gz/" title="Managing Services" class="md-nav__link">
+      Managing Services
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../changing-the-root-password-in-the-global-zone/" title="Changing the Root Password in the Global Zone" class="md-nav__link">
+      Changing the Root Password in the Global Zone
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../managing-nics/" title="Managing NICs" class="md-nav__link">
+      Managing NICs
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-command-line-tips/" title="SmartOS Command Line Tips" class="md-nav__link">
+      SmartOS Command Line Tips
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-9" type="checkbox" id="nav-4-9">
+    
+    <label class="md-nav__link" for="nav-4-9">
+      Configuration Management on SmartOS
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-4-9">
+        Configuration Management on SmartOS
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../configuration-management-on-smartos/" title="Overview" class="md-nav__link">
+      Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../using-ansible/" title="Using Ansible" class="md-nav__link">
+      Using Ansible
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../using-cfengine/" title="Using CfEngine" class="md-nav__link">
+      Using CfEngine
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../using-chef/" title="Using Chef" class="md-nav__link">
+      Using Chef
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../using-puppet/" title="Using Puppet" class="md-nav__link">
+      Using Puppet
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../illumos-and-smartos-basics/glossary/" title="Glossary" class="md-nav__link">
+      Glossary
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../references/" title="References" class="md-nav__link">
+      References
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked="">
+    
+    <label class="md-nav__link" for="nav-5">
+      Core Technologies
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1" style="display: block; overflow: visible;">
+      <label class="md-nav__title" for="nav-5">
+        Core Technologies
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-core-technologies/" title="Technology Overview" class="md-nav__link">
+      Technology Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../performance/" title="Performance" class="md-nav__link">
+      Performance
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5-3" type="checkbox" id="nav-5-3" checked="">
+    
+    <label class="md-nav__link" for="nav-5-3">
+      Virtualization
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2" style="display: block; overflow: visible;">
+      <label class="md-nav__title" for="nav-5-3">
+        Virtualization
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Machine Monitor Overview
+      </label>
+    
+    <a href="./" title="Machine Monitor Overview" class="md-nav__link md-nav__link--active">
+      Machine Monitor Overview
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#virtualization-how-smartos-does-it-differently" title="Virtualization: How SmartOS Does it Differently" class="md-nav__link">
+    Virtualization: How SmartOS Does it Differently
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-non-virtualized-computer" title="A Non-Virtualized Computer" class="md-nav__link">
+    A Non-Virtualized Computer
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#virtualization-in-the-client-server-context" title="Virtualization in the Client-Server Context" class="md-nav__link">
+    Virtualization in the Client-Server Context
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hosted-virtualization" title="Hosted Virtualization" class="md-nav__link">
+    Hosted Virtualization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bare-metal-hardware-virtualization" title="Bare-Metal Hardware Virtualization" class="md-nav__link">
+    Bare-Metal Hardware Virtualization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paravirtualization" title="Paravirtualization" class="md-nav__link">
+    Paravirtualization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operating-system-virtualization" title="Operating System Virtualization" class="md-nav__link">
+    Operating System Virtualization
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#joyent-smartmachines-are-based-on-solaris-zones" title="Joyent SmartMachines are Based on Solaris Zones" class="md-nav__link">
+    Joyent SmartMachines are Based on Solaris Zones
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hvm-and-os-virtual-machines" title="HVM and OS Virtual Machines" class="md-nav__link">
+    HVM and OS Virtual Machines
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../zones/" title="Zones" class="md-nav__link">
+      Zones
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../kvm/" title="KVM" class="md-nav__link">
+      KVM
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bhyve/" title="Bhyve" class="md-nav__link">
+      Bhyve
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../zfs/" title="ZFS" class="md-nav__link">
+      ZFS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dtrace/" title="DTrace" class="md-nav__link">
+      DTrace
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mdb/" title="Modular Debugger (mdb)" class="md-nav__link">
+      Modular Debugger (mdb)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Advanced Topics
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-6">
+        Advanced Topics
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-technical-faqs/" title="SmartOS Technical FAQs" class="md-nav__link">
+      SmartOS Technical FAQs
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../illumos-and-smartos-basics/" title="illumos and SmartOS Basics" class="md-nav__link">
+      illumos and SmartOS Basics
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pxe-booting-smartos/" title="PXE Booting SmartOS" class="md-nav__link">
+      PXE Booting SmartOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../modifying-boot-files/" title="Modifying Kernel Boot Files" class="md-nav__link">
+      Modifying Kernel Boot Files
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../setting-up-ipv6-in-a-zone/" title="Configuring IPv6 for Instances" class="md-nav__link">
+      Configuring IPv6 for Instances
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../how-to-create-a-virtual-machine-from-scratch/" title="How to boot a Virtual Machine From an ISO" class="md-nav__link">
+      How to boot a Virtual Machine From an ISO
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Developers Guide
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-7">
+        Developers Guide
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smartos-developers-guide/" title="Developer Overview" class="md-nav__link">
+      Developer Overview
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../extending-smartos-live/" title="Extending smartos-live" class="md-nav__link">
+      Extending smartos-live
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../building-individual-drivers-in-smartos/" title="Building Individual Drivers in SmartOS" class="md-nav__link">
+      Building Individual Drivers in SmartOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../porting-network-device-drivers-from-freebsd/" title="Porting Network Device Drivers from FreeBSD" class="md-nav__link">
+      Porting Network Device Drivers from FreeBSD
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../running-smartos-on-omnios-kvm/" title="Running SmartOS on OmniOS KVM" class="md-nav__link">
+      Running SmartOS on OmniOS KVM
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../debugging/" title="Debugging problems" class="md-nav__link">
+      Debugging problems
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../lx-dev/" title="LX Brand Development" class="md-nav__link">
+      LX Brand Development
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      The SmartOS Community
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1" style="display: none; overflow: hidden;">
+      <label class="md-nav__title" for="nav-8">
+        The SmartOS Community
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix="">
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../CODE_OF_CONDUCT/" title="Code of Conduct" class="md-nav__link">
+      Code of Conduct
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mailing-lists-and-irc/" title="Mailing Lists, Forums, and Chat" class="md-nav__link">
+      Mailing Lists, Forums, and Chat
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../community-history/" title="History" class="md-nav__link">
+      History
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../community-experiments/" title="Community Experiments" class="md-nav__link">
+      Community Experiments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="https://github.com/TritonDataCenter/smartos-docs/" title="Edit This Documentation" class="md-nav__link">
+      Edit This Documentation
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" style="height: 820px;" data-md-state="">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#virtualization-how-smartos-does-it-differently" title="Virtualization: How SmartOS Does it Differently" class="md-nav__link" data-md-state="">
+    Virtualization: How SmartOS Does it Differently
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-non-virtualized-computer" title="A Non-Virtualized Computer" class="md-nav__link" data-md-state="">
+    A Non-Virtualized Computer
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#virtualization-in-the-client-server-context" title="Virtualization in the Client-Server Context" class="md-nav__link" data-md-state="">
+    Virtualization in the Client-Server Context
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hosted-virtualization" title="Hosted Virtualization" class="md-nav__link" data-md-state="">
+    Hosted Virtualization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bare-metal-hardware-virtualization" title="Bare-Metal Hardware Virtualization" class="md-nav__link" data-md-state="">
+    Bare-Metal Hardware Virtualization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paravirtualization" title="Paravirtualization" class="md-nav__link" data-md-state="">
+    Paravirtualization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operating-system-virtualization" title="Operating System Virtualization" class="md-nav__link" data-md-state="">
+    Operating System Virtualization
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#joyent-smartmachines-are-based-on-solaris-zones" title="Joyent SmartMachines are Based on Solaris Zones" class="md-nav__link" data-md-state="">
+    Joyent SmartMachines are Based on Solaris Zones
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hvm-and-os-virtual-machines" title="HVM and OS Virtual Machines" class="md-nav__link">
+    HVM and OS Virtual Machines
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/TritonDataCenter/smartos-docs/edit/master/docs/smartos-virtualization.md" title="Edit this page" class="md-icon md-content__icon"></a>
+                
+                
+                <h1 id="smartos-virtualization">SmartOS Virtualization</h1>
+<h2 id="virtualization-how-smartos-does-it-differently">Virtualization: How SmartOS Does it Differently<a class="headerlink" href="#virtualization-how-smartos-does-it-differently" title="Permanent link">¶</a></h2>
+<h3 id="a-non-virtualized-computer">A Non-Virtualized Computer<a class="headerlink" href="#a-non-virtualized-computer" title="Permanent link">¶</a></h3>
+<p><img alt="A non-virtualized computer" src="../assets/images/smartos-virtualization-non-virtualized-computer.png"></p>
+<p>This is a diagram of a basic computer, such as your laptop.</p>
+<p>The bottom layer shows the system's hardware resources: CPU, memory,
+storage, NIC.</p>
+<p>The operating system runs directly on the hardware, and has two
+components:</p>
+<ul>
+<li>kernel: manages system resources and communications between those
+  resources and applications running (in userland) on the system.</li>
+<li>userland: the software layer where user applications and software
+  libraries run.</li>
+</ul>
+<p>Note that, although this diagram shows all the applications as the same
+"size", some applications need more resources than others, and an
+application's resource needs may vary depending on the work it is
+performing.</p>
+<p>The operating system manages (schedules) competing demands for system
+resources.</p>
+<h2 id="virtualization-in-the-client-server-context">Virtualization in the Client-Server Context<a class="headerlink" href="#virtualization-in-the-client-server-context" title="Permanent link">¶</a></h2>
+<p>Datacenters used to commonly run one application per server, for the
+following reasons:</p>
+<ul>
+<li>Application-specific requirements: Many applications are certified
+  to run only on specific versions of an OS with a specific
+  patch level. They might also require a specific software stack or
+  specific configuration with its own particular version and
+  patch-level requirements. This can prevent applications from sharing
+  an environment with other applications.</li>
+<li>Application conflict: Similarly, some applications are incompatible
+  with each other.</li>
+<li>Resource contention: A heavily-used application cannot crowd out
+  other applications if they are on separate machines.</li>
+<li>Security: Isolation prevents attacks against one system from
+  compromising another.</li>
+<li>Resilience: Application crashes won't bring down other applications.</li>
+<li>Maintenance: You can upgrade and reboot one system without
+  affecting others.</li>
+<li>Business needs: Many enterprise IT projects involve launching a
+  specific application; for budget and management reasons, each
+  project might get its own server and application.</li>
+</ul>
+<p>The one-app-per-server model worked well in the 1980s and 1990s, when a
+single application placed heavy demand on a server's resources.</p>
+<p>However, Moore's Law meant that more powerful servers were soon being
+severely under-utilized: utilization of only 8-15% was common.</p>
+<p>Obviously, this was a very inefficient use of equipment, facilities,
+power and IT management resources. Virtualization came to the fore as a
+solution.</p>
+<h3 id="hosted-virtualization">Hosted Virtualization<a class="headerlink" href="#hosted-virtualization" title="Permanent link">¶</a></h3>
+<p><img alt="Hosted Virtualization" src="../assets/images/smartos-virtualization-hosted-virt.png"></p>
+<p>In hosted virtualization, a hypervisor running on top of a standard
+operating system <strong>emulates</strong> real hardware to create and manage one or
+many virtual machines.</p>
+<p>It is called "hosted virtualization", because the hypervisor sits on a
+Host OS, and above this are the Guest OSes.</p>
+<p>It is also known as "application-level virtualization", because the
+hypervisor runs as an application on a Host OS.</p>
+<p>Hosted virtualization was used to consolidate servers, making it
+possible to put multiple servers on a single physical machine, while
+maintaining isolation.</p>
+<p>Any "guest" operating system running this virtual machine believes
+itself to be running on its own separate, real computer, but it actually
+only has access to a limited set of hardware resources (as defined by
+the administrator).</p>
+<p>An operating system is also known as a "supervisor". Thus we use the
+term "hypervisor" for a supervisor of supervisors.</p>
+<p>The hypervisor modifies the operating system at runtime through a
+process known as "binary translation". Operating system calls to
+hardware are intercepted ("trapped") and redirected.</p>
+<p>Hosted virtualization introduced other infrastructure management
+benefits:</p>
+<ul>
+<li>Load balancing</li>
+<li>Backups, migration, cloning</li>
+<li>Disaster recovery</li>
+</ul>
+<p>This approach increased utilization, but still had huge inefficiencies:</p>
+<ul>
+<li>In order to perform work on the physical hardware, an application
+  has to go through two operating systems and two sets of hardware.</li>
+<li>One of those sets of hardware is "emulated hardware": a software
+  program acting like hardware, which is much slower than
+  real hardware.</li>
+</ul>
+<h3 id="bare-metal-hardware-virtualization">Bare-Metal Hardware Virtualization<a class="headerlink" href="#bare-metal-hardware-virtualization" title="Permanent link">¶</a></h3>
+<p><img alt="Bare-metal hardware virtualization" src="../assets/images/smartos-virtualization-bare-metal.png"></p>
+<p>Bare-metal virtualization addresses some of these inefficiencies by
+consolidating the hypervisor and the Host OS. The Host OS is stripped
+down to a Virtual Machine Monitor - only what it needs to run a
+hypervisor. It is optimized for that purpose, and the hypervisor
+embedded in it. (The userland is stripped down to only the
+virtualization vendor's tools.)</p>
+<p>Drawbacks:</p>
+<ul>
+<li>Still uses hardware emulation (= slow).</li>
+<li>The hypervisor may need its own hardware drivers; you can't be sure
+  these will be as easily available as with a standard OS.</li>
+</ul>
+<h3 id="paravirtualization">Paravirtualization<a class="headerlink" href="#paravirtualization" title="Permanent link">¶</a></h3>
+<p><img alt="Paravirtualization" src="../assets/images/smartos-virtualization-paravirt.png"></p>
+<p>Paravirtualization is similar to bare-metal virtualization, but it
+removes the virtual machine hardware emulation.</p>
+<p>The hypervisor directly coordinates a "privileged guest" operating
+system which has access to the underlying hardware. The hypervisor
+manages the OSes like OSes manage apps: allowing one OS to access
+underlying hardware resources, while preventing any other OS from
+accessing the same resources at the same time.</p>
+<p>However, to accomplish this, the OS must be modified to be "aware" that
+it is basically running on an "OS for OSes". In the case of hardware
+virtualization, the OS is fooled (at runtime, by binary translation)
+into believing it is running directly on hardware, as it was designed to
+do.</p>
+<p>The privileged guest coordinates access to hardware resources (drivers):</p>
+<ul>
+<li>Hardware drivers reside in the privileged guest.</li>
+<li>The privileged guest&nbsp;accesses hardware drivers directly; the Guest
+  OSes do it through the Privileged Guest. They do this using shared
+  memory (memory that can be accessed by two different applications),
+  which speeds up performance.</li>
+</ul>
+<p>Advantages:</p>
+<ul>
+<li>Very efficient – no Host OS, no hardware emulation (which means no
+  runtime binary translation of OS calls).</li>
+<li>Like hosted virtualization, bare-metal virtualization can use any
+  device drivers that the privileged guest has installed; the
+  hypervisor does not contain any device drivers.</li>
+</ul>
+<p>Disadvantages:</p>
+<ul>
+<li>Requires the guest OS to be modified so that it is "aware" it is
+  running in a paravirtualized environment.</li>
+<li>These modifications are done in the kernel when possible (with
+  access to the source code), or by installing system tools in the
+  operating system.</li>
+</ul>
+<p>In addition, with the release in 2006 of virtualization-enabled CPUs
+(Intel VT and AMD-V), paravirtualization has lost some of its edge over
+the other forms of virtualization:</p>
+<ul>
+<li>Virtualization-enabled CPUs eliminate some of the binary translation
+  that virtual machines had to perform. More of the instructions are
+  run directly on the hardware without emulation.</li>
+<li>Silicon is faster than software, so moving some of the
+  virtualization functions to the chip gives better performance.</li>
+</ul>
+<h3 id="operating-system-virtualization">Operating System Virtualization<a class="headerlink" href="#operating-system-virtualization" title="Permanent link">¶</a></h3>
+<p><img alt="Operating System Virtualization" src="../assets/images/smartos-virtualization-os-virt.png"></p>
+<p>The most efficient method is to tackle virtualization at the operating
+system level.</p>
+<p>Benefits:</p>
+<ul>
+<li>Very efficient – no duplication of resources.</li>
+<li>Only one copy of the kernel on a server (all other forms of
+  virtualization, including paravirtualization, require each
+  application to go through multiple OS kernels)</li>
+<li>Each zone has its own userland (file system, system libraries,
+  network configurations, process table (which contains the processes
+  for individual applications), and its own approved user population.</li>
+<li>No hardware emulation.</li>
+<li>Utilize the OS scheduler: applications can "burst" across system
+  resources when needed, just as applications on a single operating
+  system can. They are not handcuffed by arbitrary virtual machine
+  resource settings (even in the paravirtualization, OSes are assigned
+  a certain amount of resources and cannot "burst" beyond them).</li>
+<li>Patches and upgrades automatically propagate to all containers; no
+  need to manage and upgrade the various OSes individually.</li>
+</ul>
+<p>Drawbacks:</p>
+<ul>
+<li>All operating environments are identical; you cannot run different
+  OSs with different versions and patch levels. (However, for web
+  applications this is not a problem: Apache, MySQL and PHP can all
+  run on Windows, Linux or SmartOS.)</li>
+</ul>
+<h2 id="joyent-smartmachines-are-based-on-solaris-zones">Joyent SmartMachines are Based on Solaris Zones<a class="headerlink" href="#joyent-smartmachines-are-based-on-solaris-zones" title="Permanent link">¶</a></h2>
+<p>Which gives us:</p>
+<ul>
+<li>CPU scheduling</li>
+<li>network virtualization</li>
+<li>security</li>
+</ul>
+<p>Zones virtualization was added to Solaris 10 in 2005.</p>
+<h2 id="hvm-and-os-virtual-machines">HVM and OS Virtual Machines<a class="headerlink" href="#hvm-and-os-virtual-machines" title="Permanent link">¶</a></h2>
+<p><img alt="HVM and OS Virtualization" src="../assets/images/smartos-virtualization-hvm%2Bos.png"></p>
+<p>OS virtualization is great for applications that can run natively in
+SmartOS, but many of us have legacy apps that must run in Windows or
+Linux, eg&nbsp;for Windows, Active Directory, Windows video encoding.\
+What can we do for them?\
+Joyent uses hosted virtualization for its virtual machine solution.</p>
+<p>Remember that when you lose the Host OS, you lose any valuable
+capabilities it provided. In the case of Vmware, this came down to
+device drivers. Since they could embed these in the hypervisor,
+bare-metal HW virtualization made more sense.</p>
+<p>SmartOS provides two types of hardware virtualization: KVM and Bhyve.
+Each provides hardware emulation and is a VMM (virtual machine
+monitor). Notice that it is not a strict hypervisor layer. Each HVM is
+independent -- there is one per Guest OS instead of one supporting
+several VMs. This is because it has combined both the VM and the VMM.</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../performance/" title="Performance" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Performance
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../zones/" title="Zones" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Zones
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.70a49928.js"></script>
+      
+      <script>app.initialize({version:"1.5.3",url:{base:".."}})</script>
+      
+        <script src="../search/main.js"></script>
+      
+    
+  
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
