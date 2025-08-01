@@ -1,0 +1,877 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/IO/IOMMU/Rethinking the I_O Memory Management Unit (IOMMU) - DocsLib (2025-08-01 16：36：07).html
+ Page saved with X-Webpage-Conserve 
+ url: https://docslib.org/doc/13321416/rethinking-the-i-o-memory-management-unit-iommu
+ Summary: 
+-->
+<html lang="en"><head>
+		<meta charset="utf-8">
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Rethinking the I/O Memory Management Unit (IOMMU) - DocsLib</title>
+		<meta name="description" content="Rethinking the I/O Memory Management Unit (IOMMU) Moshe Malka Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Technion -">
+		<link rel="shortcut icon" href="/favicon.ico">
+		<meta name="robots" content="index, follow">
+		<meta property="og:type" content="article">
+		<meta property="og:title" content="Rethinking the I/O Memory Management Unit (IOMMU)">
+		<meta property="og:description" content="Rethinking the I/O Memory Management Unit (IOMMU) Moshe Malka Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Technion -">
+		<meta property="og:url" content="https://docslib.org/doc/13321416/rethinking-the-i-o-memory-management-unit-iommu">
+		<meta property="og:image" content="https://docslib.b-cdn.net/poster/1416/rethinking-the-i-o-memory-management-unit-iommu-13321416.webp">
+		<meta property="og:site_name" content="Docslib">
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="Rethinking the I/O Memory Management Unit (IOMMU)">
+		<meta name="twitter:description" content="Rethinking the I/O Memory Management Unit (IOMMU) Moshe Malka Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Technion -">
+		<meta name="twitter:image" content="https://docslib.b-cdn.net/poster/1416/rethinking-the-i-o-memory-management-unit-iommu-13321416.webp">
+		<meta name="twitter:image:src" content="https://docslib.org/images/og_image.png">
+		<link rel="stylesheet" href="/css/common.css">
+		<link rel="stylesheet" href="/css/docview.css">
+		<link rel="stylesheet" href="/iconfont/iconfont.css">
+		<script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8519364510543070" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<style>	.stl_02 {margin: -30px !important;}</style>
+		<script>
+			const h5Data = {
+			h5Style:'<style>.stl_ sup { vertical-align: baseline; position: relative; top: -0.4em; } .stl_ sub { vertical-align: baseline; position: relative; top: 0.4em; } .stl_ a:link {text-decoration:none;} .stl_ a:visited {text-decoration:none;} @media screen and (min-device-pixel-ratio:0), (-webkit-min-device-pixel-ratio:0), (min--moz-device-pixel-ratio: 0) {.stl_view{ font-size:10em; transform:scale(0.1); -moz-transform:scale(0.1); -webkit-transform:scale(0.1); -moz-transform-origin:top left; -webkit-transform-origin:top left; } } .stl_layer { } .stl_grlink { position:relative;width:100%;height:100%;z-index:1000000; } .stl_01 { position: absolute; white-space: nowrap; } .stl_02 { font-size: 1em; line-height: 0.0em; width: 53.75em; height: 76em; border-style: none; display: block; margin: 0em; } @supports(-ms-ime-align:auto) { .stl_02 {overflow: hidden;}} .stl_03 { position: relative; width: 53.75em; } .stl_04 { height: 7.6em; }  .stl_05 { font-size: 2.238133em;  color: #000000; } .stl_06 { line-height: 1.001em; } .stl_07 { letter-spacing: 0.0004em; } .stl_08 { letter-spacing: -0.0013em; } .stl_09 { font-size: 1.554452em;  color: #000000; } .stl_10 { letter-spacing: -0.0074em; } @font-face { font-family:"KVUPMJ+Times New Roman"; src:url("https://docslib.b-cdn.net/font/1416/13321416-1.woff2") format("woff2");font-display: swap; } .stl_11 { font-size: 0.993108em; font-family: "KVUPMJ+Times New Roman"; color: #A6A6A6; } .stl_12 { line-height: 1.107422em; } .stl_13 { letter-spacing: 0.0001em; } .stl_14 { letter-spacing: 0em; } .stl_15 { letter-spacing: -0em; }</style>',
+			h5Html: ' <div id="page_0" class="stl_ stl_02"> <div class="stl_view"> <div class="stl_03 stl_04"> <div class="stl_01" style="left:13.0545em;top:13.4803em;"><span class="stl_05 stl_06 stl_07" style="word-spacing:0.1248em;">Rethinking the I/O Memory </span></div> <div class="stl_01" style="left:12.7478em;top:16.179em;"><span class="stl_05 stl_06 stl_08" style="word-spacing:0.1281em;">Management Unit (IOMMU) </span></div> <div class="stl_01" style="left:23.6716em;top:43.4624em;"><span class="stl_09 stl_06 stl_10" style="word-spacing:0.1401em;">Moshe Malka </span></div> <div class="stl_01" style="left:1.8216em;top:72.4066em;"><span class="stl_11 stl_12 stl_13" style="word-spacing:-0.0001em;">Technion - Computer Science Department - M.Sc. Thesis</span><span class="stl_11 stl_12 stl_14" style="word-spacing:0.2498em;"> </span><span class="stl_11 stl_12 stl_15" style="word-spacing:0em;">MSC-2015-10 - 2015 </span></div> </div> </div> </div> '
+			};
+		</script>
+<style>.stl_ sup { vertical-align: baseline; position: relative; top: -0.4em; } .stl_ sub { vertical-align: baseline; position: relative; top: 0.4em; } .stl_ a:link {text-decoration:none;} .stl_ a:visited {text-decoration:none;} @media screen and (min-device-pixel-ratio:0), (-webkit-min-device-pixel-ratio:0), (min--moz-device-pixel-ratio: 0) {.stl_view{ font-size:10em; transform:scale(0.1); -moz-transform:scale(0.1); -webkit-transform:scale(0.1); -moz-transform-origin:top left; -webkit-transform-origin:top left; } } .stl_layer { } .stl_grlink { position:relative;width:100%;height:100%;z-index:1000000; } .stl_01 { position: absolute; white-space: nowrap; } .stl_02 { font-size: 1em; line-height: 0.0em; width: 53.75em; height: 76em; border-style: none; display: block; margin: 0em; } @supports(-ms-ime-align:auto) { .stl_02 {overflow: hidden;}} .stl_03 { position: relative; width: 53.75em; } .stl_04 { height: 7.6em; }  .stl_05 { font-size: 2.238133em;  color: #000000; } .stl_06 { line-height: 1.001em; } .stl_07 { letter-spacing: 0.0004em; } .stl_08 { letter-spacing: -0.0013em; } .stl_09 { font-size: 1.554452em;  color: #000000; } .stl_10 { letter-spacing: -0.0074em; } @font-face { font-family:"KVUPMJ+Times New Roman"; src:url("https://docslib.b-cdn.net/font/1416/13321416-1.woff2") format("woff2");font-display: swap; } .stl_11 { font-size: 0.993108em; font-family: "KVUPMJ+Times New Roman"; color: #A6A6A6; } .stl_12 { line-height: 1.107422em; } .stl_13 { letter-spacing: 0.0001em; } .stl_14 { letter-spacing: 0em; } .stl_15 { letter-spacing: -0em; }</style><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>header { position: fixed; right: 0px; left: 0px; z-index: 999; background-color: rgb(250, 250, 251); border-top: 3px solid rgb(244, 128, 36); min-height: 50px; margin-bottom: 20px; }header .border-bm { border-bottom: 1px solid rgb(238, 238, 238); min-height: 50px; }header .navbar-header { float: left; }header .navbar-header a { color: rgb(119, 119, 119); float: left; height: 50px; padding: 15px; font-size: 18px; line-height: 20px; }header .navbar-right { float: right; }header .navbar-right form { float: right; }header .navbar-right form .input-group { margin-top: 8px; display: flex; align-items: center; justify-content: center; }header .navbar-right form .input-group .form-control { position: relative; z-index: 2; float: left; width: 100%; height: 34px; padding: 6px 12px; font-size: 14px; color: rgb(85, 85, 85); background-color: rgb(255, 255, 255); background-image: none; border: 1px solid rgb(204, 204, 204); box-sizing: border-box; box-shadow: rgba(0, 0, 0, 0.075) 0px 1px 1px inset; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }header .navbar-right form .input-group .form-control::placeholder { color: rgb(153, 153, 153); }header .navbar-right form .input-group .input-group-btn { display: block; }header .navbar-right form .input-group .input-group-btn .btn { position: relative; height: 34px; text-align: center; z-index: 2; margin-left: -1px; display: inline-block; padding: 6px 12px; margin-bottom: 0px; font-size: 14px; font-weight: 400; white-space: nowrap; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; }header .navbar-right form .input-group .input-group-btn .btn-default { color: rgb(51, 51, 51); background-color: rgb(255, 255, 255); border-color: rgb(204, 204, 204); }header .navbar-right form .input-group .input-group-btn .btn-default:hover { background-color: rgb(230, 230, 230); }header .navbar-right form .input-group .input-group-btn .i-color { color: rgb(0, 0, 0); }header .navbar-right .nav-btn { float: right; }header .navbar-right .nav-btn ul { margin-left: 10px; }header .navbar-right .nav-btn ul li { float: left; }header .navbar-right .nav-btn ul li a { position: relative; display: block; padding: 17px 15px; color: rgb(119, 119, 119); font-size: 14px; }header .navbar-right .nav-btn ul li a:hover { color: rgb(0, 0, 0); }header .nav-menu { display: none; float: right; margin: 5px 12px 0px 0px; cursor: pointer; }header .nav-menu .size { font-size: 40px; color: rgb(153, 153, 153); }header .nav-menu .size:hover { color: rgb(51, 51, 51); }footer { background-color: rgb(45, 45, 48); color: rgb(245, 245, 245); padding: 12px 0px 6px; }footer .container-fluid { padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; text-align: center; }footer span { position: relative; top: 1px; display: inline-block; font-family: "Glyphicons Halflings"; font-style: normal; font-weight: 400; line-height: 1; margin-bottom: 10px; }.menu-list { display: none; position: relative; width: 100%; background: rgb(250, 250, 251); border-bottom: 1px solid rgb(238, 238, 238); max-height: 340px; overflow-y: auto; padding-right: 15px; padding-left: 15px; box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 0px inset; }.menu-list ul { margin: 10px 0px; }.menu-list ul li { height: 40px; line-height: 40px; }.menu-list ul li:hover { background: rgb(214, 236, 255); }.menu-list ul li a { display: block; width: 100%; height: 100%; color: rgb(119, 119, 119); }.menu-list ul li a:hover { color: rgb(51, 51, 51); }.flex-justify { display: flex; align-items: center; justify-content: center; }@media (min-width: 768px) {
+  main .content { width: 750px; }
+  main .content .waterfall { column-count: 3; }
+}@media (min-width: 992px) {
+  main .content { width: 970px; }
+  main .content .waterfall { column-count: 4; }
+  header .menu-list { display: none !important; }
+}@media (min-width: 1200px) {
+  main .content { width: 1280px; }
+}@media (max-width: 992px) {
+  header .navbar-right form { display: none !important; }
+  main .content .row .rw-left .recommend .panel-body-width { width: 100%; }
+  main .content .row .rw-left { width: 100% !important; }
+  main .content .row .rw-right { width: 100% !important; }
+  main .content .row .rw-left article .reader-tools-flex { width: 100%; margin: 0px; left: 0px; }
+  .download-pop .pop-box { width: 400px; }
+  main .content .row .rw-left article .header .header-section { display: flex; flex-wrap: wrap; }
+  main .content .row .rw-left article .header .header-section .header-aside { padding: 0px !important; }
+}@media (max-width: 768px) {
+  header .navbar-right { display: none !important; }
+  header .nav-menu { display: block !important; }
+  main { width: 100%; margin: auto; }
+  main .head-container { width: auto; max-width: none; padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; }
+  main .head-container .jumbotron { padding-right: 10px; padding-left: 10px; }
+  main .content { width: auto; max-width: none; padding-right: 15px; padding-left: 15px; margin-right: auto; margin-left: auto; margin-bottom: 20px; }
+  main .content .row { display: flex; flex-wrap: wrap; }
+  main .content .row .row-lf { width: 100%; }
+  main .content .row .row-rg { width: 100%; }
+  main .content .row .rw-left article .reader-tools-bar .bar-download button .i-size { font-size: 14px; }
+  main .content .row .rw-left article .reader-tools-bar .bar-download button { width: auto; font-size: 14px; }
+  .download-pop .pop-box { width: 320px; }
+}@media screen and (min-width: 768px) {
+  main .head-container .jumbotron { padding: 48px 60px; }
+}@media screen and (min-width: 992px) {
+  main .content .row .rw-left article .reader-tools-flex { width: 678px; margin-left: -475px; }
+}@media screen and (min-width: 1200px) {
+  main .content .row .rw-left article .reader-tools-flex { width: 902px; margin-left: -630px; }
+}.text-overflow-clamp2 { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -moz-box-orient: vertical; }.text-overflow-clamp3 { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -moz-box-orient: vertical; }.text-overflow-clamp7 { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 7; -moz-box-orient: vertical; }.animated { animation-duration: 1s; animation-fill-mode: both; }.fadeInDown { animation-name: fadeInDown; }@keyframes fadeInDown {
+0% { opacity: 0; transform: translateY(-20px); }
+100% { opacity: 1; transform: translateY(0px); }
+}.adspace { width: 100%; display: flex; align-items: center; justify-content: center; }</style><style>html, body, ol, ul, li, dl, dt, dd, i, a, p, em, div { margin: 0px; padding: 0px; border: 0px; font: inherit; vertical-align: baseline; box-sizing: border-box; }article, aside, footer, header, nav, section { display: block; }ol, ul { list-style: none; }input[type="text"], input[type="search"] { outline: none; }a { color: inherit; text-decoration: none; }body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; }body { background: rgb(246, 247, 251); }main { padding-top: 68px; width: 100%; height: auto; margin-bottom: 30px; }main .content { margin-right: auto; margin-left: auto; }main .content .row { display: flex; flex-wrap: wrap; width: 100%; }main .content .row .rw-pd { float: left; position: relative; min-height: 1px; padding-right: 10px; padding-left: 10px; }main .content .row .rw-left { width: 72%; }main .content .row .rw-right { width: 28%; }.panel { margin-top: 20px; margin-bottom: 20px; background-color: rgb(255, 255, 255); border: 1px solid rgb(51, 122, 183); border-radius: 4px; box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 1px; }.panel .panel-heading { padding: 10px 15px; border-bottom: 1px solid rgb(51, 122, 183); border-top-left-radius: 3px; border-top-right-radius: 3px; color: rgb(255, 255, 255); background-color: rgb(51, 122, 183); border-color: rgb(51, 122, 183); }.panel .panel-body { padding: 15px; }.panel .panel-body ul li { line-height: 24px; margin: 6px 0px; }.panel .panel-body ul li a { color: rgb(51, 122, 183); }.panel .panel-body ul li a:hover { color: rgb(35, 82, 124); text-decoration: underline; }.load-box { width: 100%; background: rgb(255, 255, 255); overflow: hidden; }.load-content { width: 100%; height: auto; background: rgb(255, 255, 255); border-top: 1px solid rgb(221, 221, 221); border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); padding: 20px 0px 30px; text-align: center; }.load-content .load-p { display: inline-block; text-align: center; font-size: 18px; color: rgb(153, 153, 153); margin: 30px 0px 20px; }.load-content .load-p span { cursor: pointer; color: rgb(28, 164, 114); }.load-content .load-p span i { float: right; margin-left: 4px; font-size: 18px; color: rgb(28, 164, 114); }.load-content .load-p span .right { transform: rotate(90deg); }.load-content .ml-mb { margin-bottom: 25px; }.load-content .ml-pt { margin-top: 25px; }.load-content b { font-size: 15px; font-weight: normal; margin: 20px 0px 30px; }.load-content button { width: 340px; height: 70px; background: rgb(255, 70, 40); border: 1px solid rgb(235, 235, 235); font-weight: 400; font-size: 18px; color: rgb(255, 255, 255); border-radius: 50px; margin-bottom: 30px; cursor: pointer; }.load-content button:hover { filter: brightness(1.1); }.reader-tools-bar { width: 100%; height: 64px; border: 1px solid rgb(221, 221, 221); background: rgb(255, 255, 255); box-shadow: rgba(185, 185, 185, 0.25) 0px 15px 15px -15px, rgba(185, 185, 185, 0.25) -15px 0px 15px -15px, rgba(185, 185, 185, 0.25) 15px 0px 15px -15px; overflow: hidden; }.tools { float: left; height: 64px; }.tools .tools-prev { float: left; height: 36px; width: 30px; overflow: hidden; margin: 0px 2px; }.tools .tools-prev .left { transform: rotate(-90deg); color: rgb(174, 174, 174); }.tools .page-cur { float: left; width: 40px; height: 24px; background: rgb(255, 255, 255); text-align: center; border-radius: 4px; border: 1px solid rgb(235, 235, 235); }.tools span { font-weight: 400; font-size: 14px; color: rgb(0, 0, 0); line-height: 18px; }.tools .tools-next { float: left; height: 36px; width: 30px; overflow: hidden; margin: 0px 2px; }.tools .tools-next .right { transform: rotate(90deg); color: rgb(174, 174, 174); }.bar-download { float: right; }.bar-download a { display: block; text-align: center; line-height: 48px; margin: 8px 10px 0px 0px; cursor: pointer; width: 160px; height: 48px; font-size: 16px; color: rgb(37, 97, 169); background: rgb(255, 255, 255); border-radius: 4px; border: 1px solid rgb(37, 97, 169); box-sizing: border-box; }.bar-download a:hover { background: rgb(210, 230, 255); }.bar-download a .i-size { font-size: 20px; }.header { width: 100%; height: auto; border: 1px solid rgb(221, 221, 221); box-sizing: border-box; background: rgb(255, 255, 255); margin-bottom: 20px; }.header h1 { font-weight: 400; font-size: 22px; line-height: 48px; padding: 0px; margin: 0px; color: rgb(0, 0, 0); }.content-box .tag-head { border-top: 1px solid rgb(221, 221, 221); border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); background: rgb(255, 255, 255); }.content-box .tag-head ul { display: flex; overflow: hidden; }.content-box .tag-head ul .tag-li { float: left; }.content-box .tag-head ul .title-bt { display: block; cursor: pointer; padding: 30px 20px; font-size: 16px; border-right: 1px solid rgb(221, 221, 221); color: rgb(157, 157, 157); background: rgb(250, 250, 250); border-bottom: 1px solid rgb(221, 221, 221); }.content-box .tag-head ul .is-active { background: rgb(255, 255, 255); color: rgb(0, 0, 0); border-bottom: medium; }.content-box .tag-head ul .active-bt { float: left; flex: 1 1 0%; background: rgb(250, 250, 250); border-bottom: 1px solid rgb(221, 221, 221); }.content-box .tag-list .tag-content { display: none; }.content-box .tag-list .tag-list-active { display: block; }.content-box .tag-list .article-li { width: 100%; border: 1px solid rgb(221, 221, 221); box-sizing: border-box; height: auto; background: rgb(255, 255, 255); margin-bottom: 20px; box-shadow: rgba(185, 185, 185, 0.25) 0px 0px 15px 0px; }.content-box .tag-list .article-li:nth-of-type(1) { border-image: none; border-width: 0px 1px 1px; border-style: none solid solid; border-color: currentcolor rgb(221, 221, 221) rgb(221, 221, 221); box-shadow: none; }.content-box .tag-list .article-li:last-child { margin-bottom: 0px; border-bottom: 0px; }.content-box .tag-list .article-li .box-pd img { width: 100%; }.reader-tools-flex { position: fixed; bottom: 0px; left: 50%; margin-left: -575px; z-index: 99; width: 811px; border: 1px solid rgb(221, 221, 221); box-shadow: rgba(185, 185, 185, 0.25) 0px 0px 15px 0px; background: rgb(255, 255, 255); }.pub-text { display: none; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(221, 221, 221); }.header-section { padding: 15px 30px; display: flex; justify-content: space-between; }.header-section .header-detail { flex: 1 1 0%; display: flex; flex-direction: column; justify-content: space-between; }.header-section .header-detail p { color: rgb(85, 85, 85); line-height: 2; font-style: italic; }.header-section .header-aside { padding: 0px 0px 0px 30px; width: 302px; }.header-section .header-aside .aside-flex { box-shadow: transparent 0px 0px 0px 0px; border-radius: 0.125rem; padding: 20px; border: 1px solid rgba(221, 221, 221, 0.867); display: flex; align-items: center; }.mt-1 { margin-bottom: 10px; }.aside-img { width: 80px; height: 110px; margin-right: 20px; position: relative; }.aside-img img { width: 100%; height: 100%; }.aside-img .i-top { position: absolute; top: 0px; right: -5px; font-size: 32px; z-index: 3; color: rgb(0, 163, 158); }.aside-btn { flex: 1 1 0%; display: flex; flex-direction: column; }.aside-btn .btn-type, .aside-btn .btn-type1 { width: 100%; height: auto; background: rgb(0, 128, 255); color: rgb(255, 255, 255); margin: 5px 0px 10px; line-height: 1; padding: 10px 20px; display: block; border: 1px solid rgb(0, 128, 255); }.aside-btn .btn-type:hover, .aside-btn .btn-type1:hover { filter: brightness(1.1); }.aside-btn .btn-type .load-icon, .aside-btn .btn-type1 .load-icon { font-size: 18px; margin-right: 4px; }.aside-btn .btn-type1 { border: 1px solid rgb(0, 128, 255); width: 100%; height: auto; background: rgb(255, 255, 255); color: rgb(0, 128, 255); margin: 5px 0px 10px; line-height: 1; }.aside-btn .btn-type1:hover { background: rgb(0, 128, 255); border: 1px solid rgb(0, 128, 255); color: rgb(255, 255, 255); }.header-abstract { background: rgb(244, 244, 244); padding: 20px; border-left: 1px solid rgb(221, 221, 221); border-right: 1px solid rgb(221, 221, 221); overflow: hidden; }.header-abstract .ab-item { width: 100%; display: flex; flex-direction: column; background: rgb(255, 255, 255); border: 1px solid rgb(221, 221, 221); }.header-abstract .ab-item .item-head { border-bottom: 1px solid rgb(221, 221, 221); padding: 20px; }.header-abstract .ab-item .item-head h2 { padding: 0px; margin: 0px; color: rgb(85, 85, 85); font-size: 14px; font-weight: normal; }.header-abstract .ab-item .item-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }.header-abstract .ab-item .item-content .cont-font { position: relative; }.header-abstract .ab-item .item-content .cont-font .ft-box { line-height: 1.6; font-size: 16px; position: relative; overflow: hidden; color: rgb(30, 30, 30); }.header-abstract .ab-item .item-content .cont-font .ft-hg { line-height: 1.8; font-size: 17px; max-height: none; position: relative; overflow: hidden; }.header-abstract .ab-item .item-content .cont-font .ft-hg img { width: 140px; float: left; object-fit: contain; margin-right: 10px; }.header-abstract .ab-item .item-content .cont-font .ft-hg .text { overflow: hidden; text-align: justify; }.header-abstract .ab-item .item-content .cont-font .ft-cover { position: relative; }.header-abstract .ab-item .item-content .cont-font .ft-cover a { display: block; width: 100%; height: 60px; color: rgb(233, 24, 57); text-align: center; }.header-abstract .ab-item article { padding: 20px; line-height: 1.6; font-size: 16px; }.header-abstract .ab-item article p { margin-bottom: 10px; }.load-more-bottom { color: rgb(226, 66, 90) !important; cursor: pointer; }.recommend { width: 100%; box-sizing: border-box; }.recommend .panel-box { padding: 32px 0px; }.recommend .panel-success { border: 1px solid rgb(221, 221, 221); box-sizing: border-box; background: rgb(255, 255, 255); display: flex; flex-direction: column; }.recommend .panel-heading { border-bottom: 1px solid rgb(221, 221, 221); padding: 20px 20px 14px; }.recommend .panel-flex { overflow: hidden; display: flex; align-items: center; justify-content: space-between; }.recommend .panel-left { padding: 10px 0px 10px 20px; }.recommend .panel-left h2 { margin: 0px; padding: 0px; font-size: 14px; font-weight: normal; }.recommend .panel-body { padding: 20px; }.recommend .panel-body-ul { display: flex; flex-wrap: wrap; list-style: none; padding: 0px; margin: 0px; }.recommend .panel-body-li { padding-left: 10px; padding-right: 10px; margin-bottom: 20px; }.recommend .li-box { position: relative; min-height: 210px; padding: 20px; flex-grow: 1; display: flex; flex-direction: column; border: 1px solid rgb(221, 221, 221); }.recommend .box-relative { background-color: rgb(255, 255, 255); box-shadow: none; min-height: 0px; padding: 0px; }.recommend .box-relative h3 { font-size: 16px; color: rgb(0, 0, 0); line-height: 20px; margin: 0px 0px 14px; font-weight: normal; }.recommend .box-relative strong { font-size: 16px; color: rgb(0, 0, 0); line-height: 20px; margin: 0px 0px 14px; }.recommend .box-relative ul { list-style: none; padding: 0px; margin: 6px 0px; font-size: 13px; display: inline-block; }.recommend .box-relative ul li { display: inline; float: left; padding: 0px 6px 0px 0px; }.recommend .box-relative ul li a, .recommend .relative-content a { display: inline; text-decoration: none; }.recommend .box-relative ul li a:hover { color: rgb(0, 128, 255); text-decoration: underline; }.recommend .relative-content { word-break: break-word; color: rgb(136, 136, 136); margin-bottom: 15px; font-size: 14px; line-height: 1.4; }.recommend .color-a { color: rgb(37, 97, 169); font-size: 14px; cursor: pointer; }.recommend .color-a:hover { color: rgb(0, 128, 255); }.recommend .panel-rg { position: absolute; right: 20px; bottom: 20px; }.recommend .panel-body-width { width: 50%; }.side { width: 100%; height: auto; background: rgb(255, 255, 255); border: 1px solid rgb(221, 221, 221); }.side .side-download { padding: 20px 20px 10px; }.side .side-download .side-load-a { cursor: pointer; width: 100%; height: 40px; font-weight: 400; font-size: 18px; color: rgb(0, 0, 0); border: 0px; background: rgb(250, 194, 11); border-radius: 4px; }.side .side-download .side-load-a:hover { filter: brightness(1.1); }.side .side-download .side-load-a .icon-load { display: block; width: 32px; height: 26px; margin-right: 12px; background: url("../images/download.png") 0% 0% / 100% 100% no-repeat; }.side .side-tag { padding: 0px 20px 10px; }.side .side-tag .side-tag-ul { height: 40px; border-bottom: 2px solid rgb(221, 221, 221); }.side .side-tag .side-tag-ul li { float: left; width: 33.33%; overflow: hidden; }.side .side-tag .side-tag-ul li a { display: block; height: 39px; text-align: center; line-height: 39px; font-size: 12px; cursor: pointer; color: rgb(153, 153, 153); }.side .side-tag .side-tag-ul li .active { font-weight: 600; border-bottom: 2px solid rgb(37, 97, 169); color: rgb(37, 97, 169); }.side .side-tag .tab-items .tab-item { display: none; padding: 10px 0px 0px; height: auto; overflow: hidden; position: relative; border-bottom: 2px solid rgb(235, 235, 237); }.side .side-tag .tab-items .tab-item ul { padding: 0px 9px; }.side .side-tag .tab-items .tab-item ul li { width: 100%; height: auto; margin-bottom: 10px; border-bottom: 1px solid rgb(235, 235, 237); }.side .side-tag .tab-items .tab-item ul li:last-child { border-bottom: 0px; }.side .side-tag .tab-items .tab-item ul li a { font-weight: 400; font-size: 14px; color: rgb(0, 0, 0); line-height: 20px; margin: 0px 0px 10px; }.side .side-tag .tab-items .tab-item ul li a:hover { color: rgb(0, 128, 255); text-decoration: underline; }.side .side-tag .tab-items .active { display: block; }.side .side-message { padding: 0px 20px; }.side .side-message ul { width: 100%; overflow: hidden; }.side .side-message ul li { margin: 15px 0px 0px; display: flex; padding-bottom: 15px; border-bottom: 1px solid rgb(235, 235, 237); }.side .side-message ul li:nth-of-type(1) { margin: 10px 0px; }.side .side-message ul li:last-child { border-bottom: 0px; }.side .side-message ul li .message-lf { float: left; width: 70px; margin-right: 10px; border: 1px solid rgb(221, 221, 221); box-sizing: border-box; border-radius: 4px; overflow: hidden; }.side .side-message ul li .message-lf img { width: 100%; transition: 0.6s; }.side .side-message ul li .message-lf img:hover { transform: scale(1.4); }.side .side-message ul li .message-rg { float: right; flex: 1 1 0%; padding: 10px 0px 0px; }.side .side-message ul li .message-rg a { cursor: pointer; width: 100%; font-weight: 400; font-size: 14px; color: rgb(0, 0, 0); line-height: 20px; }.side .side-message ul li .message-rg a:hover { color: rgb(0, 128, 255); text-decoration: underline; }.article-container { position: relative; background: rgb(244, 244, 244); border-right: 1px solid rgb(221, 221, 221); border-left: 1px solid rgb(221, 221, 221); margin-bottom: 0px; }.article-container-pd { padding: 0px 20px 20px; }.placeholder { min-height: 580px; background: rgb(255, 255, 255); position: relative; border: 1px solid rgb(221, 221, 221); margin: 0px 0px 20px; }.placeholder:last-child { margin: 0px; }.placeholder .loading { position: relative; width: 100%; height: 600px; background: url("../images/loading.gif") center center no-repeat; }.placeholder .loading span { position: absolute; top: 50%; left: 50%; margin: 40px 0px 0px -110px; display: block; width: 220px; height: 30px; line-height: 30px; text-align: center; font-size: 14px; color: rgb(17, 17, 17); }.placeholder .pl-content { padding: 20px; }.placeholder .pl-content img { width: 100%; }.copy-text { display: block; width: 100%; height: 100%; text-align: center; line-height: 48px; font-size: 16px; cursor: pointer; color: rgb(255, 255, 255); background: rgb(37, 97, 169); border-radius: 4px; border: 1px solid rgb(37, 97, 169); box-sizing: border-box; }.copy-text:hover { filter: brightness(1.1); }.content-floating { position: fixed !important; top: 56px; left: 50%; z-index: 99; margin-left: 280px; width: 359px; padding: 12px 10px 18px; margin-bottom: 20px; }.panel-body-ul-flex { width: 100%; display: grid; gap: 20px; grid-template-columns: repeat(1, 1fr); }.panel-body-ul-flex .panel-item { display: flex; align-items: center; background-color: rgb(255, 255, 254); width: 100%; overflow: hidden; border: 1px solid rgb(221, 221, 221); }.panel-body-ul-flex .panel-item .panel-item-left { width: 201px; box-sizing: border-box; border-right: 1px solid rgb(239, 239, 239); }.panel-body-ul-flex .panel-item .panel-item-left img { object-fit: contain; display: block; }.panel-body-ul-flex .panel-item .panel-item-right { margin: 20px; flex: 1 1 0%; align-self: center; }.panel-body-ul-flex .panel-item .panel-item-right h3 { color: rgb(0, 0, 0); font-size: 16px; font-weight: 700; line-height: 20px; margin: 0px 0px 10px; }.panel-body-ul-flex .panel-item .panel-item-right .panel-item-right-p { color: rgb(19, 19, 20); font-size: 14px; line-height: 1.6; word-break: break-word; overflow-wrap: break-word; }.panel-body-ul-flex .panel-item .panel-item-right a { text-decoration: none; color: inherit; }@media (max-width: 768px) {
+  .placeholder { min-height: auto; }
+  .header-section { flex-wrap: wrap; }
+  .header-section .header-aside { padding: 0px; }
+  .panel-item-left { width: 151px !important; }
+  .panel-item-left img { width: 100% !important; }
+  .panel-item-right { margin: 15px !important; }
+  .panel-item-right .panel-item-right-p { -webkit-line-clamp: 3 !important; }
+  main .content .row .rw-pd { padding: 0px; }
+}</style><style>@font-face { font-family: "iconfont"; src: url("iconfont.woff2?t=1716887210296") format("woff2"), url("iconfont.woff?t=1716887210296") format("woff"), url("iconfont.ttf?t=1716887210296") format("truetype"); }.iconfont { font-family: "iconfont" !important; font-size: 16px; font-style: normal; }.icon-24gf-successCircle::before { content: ""; }.icon-wendang::before { content: ""; }.icon-wendangxiazai::before { content: ""; }.icon-fenxiang::before { content: ""; }.icon-aixin::before { content: ""; }.icon-jia::before { content: ""; }.icon-sousuo1::before { content: ""; }.icon-you::before { content: ""; }.icon-xiazai1::before { content: ""; }.icon-jurassic_openeyes::before { content: ""; }.icon-xiazai::before { content: ""; }.icon-guanbi::before { content: ""; }.icon-lianjie::before { content: ""; }.icon-xiaoxi::before { content: ""; }.icon-shijian-xianxing::before { content: ""; }.icon-caidan-::before { content: ""; }.icon-top-1-copy::before { content: ""; }.icon-yonghu::before { content: ""; }.icon-xiala::before { content: ""; }.icon-sousuo::before { content: ""; }.icon-logindenglu::before { content: ""; }.icon-shangchuan-yuan-L::before { content: ""; }</style><style>.stl_02 { margin: -30px !important; }</style><style>.stl_ sup { vertical-align: baseline; position: relative; top: -0.4em; }.stl_ sub { vertical-align: baseline; position: relative; top: 0.4em; }.stl_ a:link { text-decoration: none; }.stl_ a:visited { text-decoration: none; }@media screen and (min-device-pixel-ratio:0), (-webkit-min-device-pixel-ratio: 0), (min--moz-device-pixel-ratio: 0) {
+  .stl_view { font-size: 10em; transform: scale(0.1); transform-origin: left top 0px; }
+}.stl_layer { }.stl_grlink { position: relative; width: 100%; height: 100%; z-index: 1000000; }.stl_01 { position: absolute; white-space: nowrap; }.stl_02 { font-size: 1em; line-height: 0em; width: 53.75em; height: 76em; border-style: none; display: block; margin: 0em; }@supports (-ms-ime-align:auto) {
+  .stl_02 { overflow: hidden; }
+}.stl_03 { position: relative; width: 53.75em; }.stl_04 { height: 7.6em; }.stl_05 { font-size: 2.23813em; color: rgb(0, 0, 0); }.stl_06 { line-height: 1.001em; }.stl_07 { letter-spacing: 0.0004em; }.stl_08 { letter-spacing: -0.0013em; }.stl_09 { font-size: 1.55445em; color: rgb(0, 0, 0); }.stl_10 { letter-spacing: -0.0074em; }@font-face { font-family: "KVUPMJ+Times New Roman"; src: url("https://docslib.b-cdn.net/font/1416/13321416-1.woff2") format("woff2"); font-display: swap; }.stl_11 { font-size: 0.993108em; font-family: "KVUPMJ+Times New Roman"; color: rgb(166, 166, 166); }.stl_12 { line-height: 1.10742em; }.stl_13 { letter-spacing: 0.0001em; }.stl_14 { letter-spacing: 0em; }.stl_15 { letter-spacing: 0em; }</style></head>
+<body>
+    <header>
+        <div class="border-bm">
+            <div class="navbar-header"> <a href="/">DOCSLIB.ORG</a> </div>
+            <div class="navbar-right">
+                <div class="nav-btn">
+                    <ul>
+                        <li> <a href="/profile/signup"> <i class="iconfont icon-yonghu"></i> Sign Up </a> </li>
+                        <li> <a href="/profile/login"> <i class="iconfont icon-logindenglu"></i> Log In </a> </li>
+                        <li> <a href="#"> <i class="iconfont icon-shangchuan-yuan-L"></i> Upload </a> </li>
+                    </ul>
+                </div>
+                <form action="/search/" method="post">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Keywords">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-default" title=""> <i class="iconfont icon-sousuo i-color"></i> Search </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="nav-menu"> <i class="iconfont icon-caidan- size"></i> </div>
+        </div>
+        <div class="menu-list">
+            <ul>
+                <li> <a href="/profile/signup"> <i class="iconfont icon-yonghu"></i> Sign Up </a> </li>
+                <li> <a href="/profile/login"> <i class="iconfont icon-logindenglu"></i> Log In </a> </li>
+                <li> <a href="#"> <i class="iconfont icon-shangchuan-yuan-L"></i> Upload </a> </li>
+            </ul>
+        </div>
+    </header>
+    <script>$('head').append(h5Data.h5Style)</script>
+<script>
+	const screenWidth = window.innerWidth;
+	if(screenWidth<860){
+	const scale = (screenWidth-40)/860;
+	const styleSheet = document.createElement('style');
+	styleSheet.type = 'text/css';
+	styleSheet.innerHTML = `.ft-box {height: calc(1000px * `+scale+`);}.stl_ {transform:scale(`+scale+`);transform-origin: left top;}`;
+	document.head.appendChild(styleSheet);
+	}
+</script>
+<main>
+	<div class="content">
+		<div class="row">
+			<div class="adspace" id="adTopBanner"><div class="adspace"><ins style="display: inline-block; width: 970px; height: 90px;" class="adsbygoogle" data-ad-client="ca-pub-8519364510543070" data-ad-slot="4648461951"></ins><script type="text/javascript" data-cfasync="false">(adsbygoogle=window.adsbygoogle||[]).push({})</script></div></div>
+			<div class="rw-left rw-pd">
+				<div class="header">
+					<div class="header-section">
+						<div class="header-detail">
+							<h1>Rethinking the I/O Memory Management Unit (IOMMU)</h1>
+							<div class="mt-1">
+								<p>Total Page：<b>16</b></p>
+								<p>File Type：<b>pdf</b>, Size：<b>1020Kb</b></p>
+							</div>
+						</div>
+						<div class="header-aside">
+							<div class="aside-flex">
+								<div class="aside-btn">
+									<a href="/download/13321416/rethinking-the-i-o-memory-management-unit-iommu" class="btn-type" rel="nofollow">
+										<i class="iconfont icon-wendangxiazai load-icon"></i>Download full-text PDF
+									</a>
+									<a href="javascript:;" class="btn-type1"><i class="iconfont icon-wendang load-icon"></i> Read full-text</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="content-box" id="top">
+					<div class="tag-head">
+						<ul>
+							<li class="tag-li">
+								<a href="javascript:;" class="title-bt tag-active is-active" data-tab-target="describe">Html View </a>
+							</li>
+							<li class="tag-li">
+								<a href="javascript:;" class="title-bt" data-tab-target="article">Text View</a>
+							</li>
+							<li class="active-bt"></li>
+						</ul>
+					</div>
+					<div class="about-ul" id="htmlView">
+						<div class="about-item about-active" data-tab-item="describe">
+							<div class="header-abstract">
+								<div class="ab-item">
+									<div class="item-content">
+										<div class="cont-font">
+											<div class="ft-box" id="contents"> <div id="page_0" class="stl_ stl_02"> <div class="stl_view"> <div class="stl_03 stl_04"> <div class="stl_01" style="left:13.0545em;top:13.4803em;"><span class="stl_05 stl_06 stl_07" style="word-spacing:0.1248em;">Rethinking the I/O Memory </span></div> <div class="stl_01" style="left:12.7478em;top:16.179em;"><span class="stl_05 stl_06 stl_08" style="word-spacing:0.1281em;">Management Unit (IOMMU) </span></div> <div class="stl_01" style="left:23.6716em;top:43.4624em;"><span class="stl_09 stl_06 stl_10" style="word-spacing:0.1401em;">Moshe Malka </span></div> <div class="stl_01" style="left:1.8216em;top:72.4066em;"><span class="stl_11 stl_12 stl_13" style="word-spacing:-0.0001em;">Technion - Computer Science Department - M.Sc. Thesis</span><span class="stl_11 stl_12 stl_14" style="word-spacing:0.2498em;"> </span><span class="stl_11 stl_12 stl_15" style="word-spacing:0em;">MSC-2015-10 - 2015 </span></div> </div> </div> </div> </div>
+													<script>
+														$("#contents").html(h5Data.h5Html)
+													</script>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="about-item" data-tab-item="article">
+								<div class="article-container">
+									<div class="article-container-pd" id="loader"><div class="placeholder" id="placeholder-2"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-2.jpg" alt=""></div></div><div class="adspace"><ins style="display: inline-block; width: 728px; height: 90px;" class="adsbygoogle" data-ad-client="ca-pub-8519364510543070" data-ad-slot="9574449252"></ins><script type="text/javascript" data-cfasync="false">(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="placeholder" id="placeholder-3"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-3.jpg" alt=""></div></div><div class="adspace"><ins style="display: inline-block; width: 728px; height: 90px;" class="adsbygoogle" data-ad-client="ca-pub-8519364510543070" data-ad-slot="9574449252"></ins><script type="text/javascript" data-cfasync="false">(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="placeholder" id="placeholder-4"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-4.jpg" alt=""></div></div><div class="adspace"><ins style="display: inline-block; width: 728px; height: 90px;" class="adsbygoogle" data-ad-client="ca-pub-8519364510543070" data-ad-slot="9574449252"></ins><script type="text/javascript" data-cfasync="false">(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="placeholder" id="placeholder-5"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-5.jpg" alt=""></div></div><div class="adspace"><ins style="display: inline-block; width: 728px; height: 90px;" class="adsbygoogle" data-ad-client="ca-pub-8519364510543070" data-ad-slot="9574449252"></ins><script type="text/javascript" data-cfasync="false">(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="placeholder" id="placeholder-6"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-6.jpg" alt=""></div></div><div class="adspace"><ins style="display: inline-block; width: 728px; height: 90px;" class="adsbygoogle" data-ad-client="ca-pub-8519364510543070" data-ad-slot="9574449252"></ins><script type="text/javascript" data-cfasync="false">(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="placeholder" id="placeholder-7"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-7.jpg" alt=""></div></div><div class="adspace"><ins style="display: inline-block; width: 728px; height: 90px;" class="adsbygoogle" data-ad-client="ca-pub-8519364510543070" data-ad-slot="9574449252"></ins><script type="text/javascript" data-cfasync="false">(adsbygoogle=window.adsbygoogle||[]).push({})</script></div><div class="placeholder" id="placeholder-8"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-8.jpg" alt=""></div></div><div class="placeholder" id="placeholder-9"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-9.jpg" alt=""></div></div><div class="placeholder" id="placeholder-10"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-10.jpg" alt=""></div></div><div class="placeholder" id="placeholder-11"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-11.jpg" alt=""></div></div><div class="placeholder" id="placeholder-12"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-12.jpg" alt=""></div></div><div class="placeholder" id="placeholder-13"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-13.jpg" alt=""></div></div><div class="placeholder" id="placeholder-14"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-14.jpg" alt=""></div></div><div class="placeholder" id="placeholder-15"><div class="pl-content"><img src="https://data.docslib.org/img/fa9f029ccda75121f7bcd99c89c76000-15.jpg" alt=""></div></div></div>
+								</div>
+								<div class="load-content flex-column-center">
+									<p class="load-p load-more-bottom" id="loadMore" style="display: none;">Load more</p>
+									<p class="load-p" id="onLoadMore"><span id="surplus">106 pages remaining, click to load more.<i class="iconfont icon-you right"></i></span></p>
+									<p class="load-p" id="load-text"></p>
+								</div>
+								<div id="downTop">
+									<div class="reader-tools-bar">
+										<div class="tools flex-justify">
+											<a href="javascript:void(0);" title="previous page" class="tools-prev flex-justify">
+												<i class="iconfont icon-top-1-copy left"></i>
+											</a>
+											<input type="text" class="page-cur" value="1"><span class="page-num">&nbsp; 121</span>
+											<a href="javascript:void(0);" title="next page" class="tools-next flex-justify" style=""><i class="iconfont icon-top-1-copy right" style=""></i></a>
+										</div>
+										<div class="bar-download">
+											<a href="javascript:;" id="copyLink"><i class="iconfont icon-lianjie i-size"></i> Copy Link</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="pub-text" id="pubText">
+							<div class="header-abstract">
+								<div class="ab-item">
+									<article>
+									Rethinking the I/O Memory Management Unit (IOMMU) Moshe Malka Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Rethinking the I/O Memory Management Unit (IOMMU) Research Thesis Submitted in partial fulﬁllment of the requirements for the degree of Master of Science in Computer Science Moshe Malka Submitted to the Senate of the Technion | Israel Institute of Technology Adar 5775 Haifa March 2015 Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 This research was carried out under the supervision of Prof. Dan Tsafrir, in the Faculty of Computer Science. Some results in this thesis have been published as articles by the author and research collaborators in conferences and journals during the course of the author's research period, the most up-to-date versions of which being: 1. Moshe Malka, Nadav Amit, Muly Ben-Yehuda and Dan Tsafrir. rIOMMU: Eﬃcient IOMMU for I/O Devices that Employ Ring. In proceeding of the 20th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS 2015). 2. Moshe Malka, Nadav Amit, and Dan Tsafrir. Eﬃcient IOMMU Intra-Operating System Protection. In proceeding of the 13th USENIX Conference on File and Storage Technologies (FAST 2015) . Acknowledgements I would like to thank my advisor Dan Tsafrir for his devoted guidance and help, my research team Nadav Amit and Muli Ben-Yehuda, my parents and my friends. The generous ﬁnancial help of the Technion is gratefully acknowledged. Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Contents List of Figures Abstract 1 Abbreviations and Notations 3 1 Introduction 5 2 Background 7 2.1 Virtual Memory . .8 2.1.1 Physical and Virtual Addressing . .8 2.1.2 Address Spaces . 10 2.1.3 Page Table . 10 2.1.4 Virtual Memory as a Tool for Memory Protection . 11 2.1.5 Address Translation . 13 2.2 Direct Memory Access . 22 2.2.1 Transferring Data from the Memory to the Device . 23 2.2.2 Transferring Data from the Device to the Memory . 23 2.3 Adding Virtual Memory to I/O Transactions . 24 3 rIOMMU: Eﬃcient IOMMU for I/O Devices that Employ Ring Buﬀers 27 3.1 Introduction . 27 3.2 Background . 29 3.2.1 Operating System DMA Protection . 29 3.2.2 IOMMU Design and Implementation . 30 3.2.3 I/O Devices Employing Ring Buﬀers . 31 3.3 Cost of Safety . 32 3.3.1 Overhead Components . 33 3.3.2 Protection Modes and Measured Overhead . 33 3.3.3 Performance Model . 37 3.4 Design . 38 3.5 Evaluation . 44 Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 3.5.1 Methodology . 44 3.5.2 Results . 47 3.5.3 When IOTLB Miss Penalty Matters . 50 3.5.4 Comparing to TLB Prefetchers . 50 3.6 Related Work . 51 4 Eﬃcient IOMMU Intra-Operating System Protection 53 4.1 Introduction . 53 4.2 Intra-OS Protection . 55 4.3 IOVA Allocation and Mapping . 57 4.4 Long-Lasting Ring Interference . 59 4.5 The EiovaR Optimization . 61 4.5.1 EiovaR with Strict Protection . 63 4.5.2 EiovaR with Deferred Protection . 65 4.6 Evaluation . 66 4.6.1 Methodology . 66 4.6.2 Results . 69 4.7 Related Work . 75 5 Reducing the IOTLB Miss Overhead 77 5.1 Introduction . 77 5.2 General description of all the prefetchers we explore . 78 5.3 Markov Prefetcher (MP) . 79 5.3.1 Markov Chain Theorem . 80 5.3.2 Prefetching Using the Markov Chain . 81 5.3.3 Extension to IOMMU . 81 5.4 Recency Based Prefetching (RP) . 81 5.4.1 TLB hit . 82 5.4.2 TLB miss . 82 5.4.3 Extension to IOMMU . 84 5.5 Distance Prefetching (DP) . 84 5.6 Evaluation . 86 5.6.1 Methodology . 86 5.6.2 Results . 86 5.7 Measuring the cost of an Intel IOTLB miss . 90 6 Conclusions 93 6.1 rIOMMU . 93 6.2 eIOVAR . 93 6.3 Reducing the IOTLB Miss Overhead . 93 Hebrew Abstract i Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 List of Figures 2.1 A system that uses physical addressing. .8 2.2 A system that uses virtual addressing. .9 2.3 Flat page table. 11 2.4 Allocating a new virtual page. 12 2.5 Using virtual memory to provide page-level memory protection. 13 2.6 Addressing translation with page table. 14 2.7 Page hit. 14 2.8 Components of a virtual address that are used to access the TLB. 15 2.9 TLB hit. 16 2.10 TLB miss. 17 2.11 A two-level page table hierarchy. Notice that addresses increase from top to bottom. 18 2.12 Address translation with a k-level page table. 19 2.13 Addressing for small memory system. Assume 14-bit virtual addresses (n = 14), 12-bit physical addresses (m = 12), and 64-byte pages (P = 64). 20 2.14 TLB, page table, and cache for small memory system. All values in the TLB, page table, and cache are in hexadecimal notation. 21 2.15 DMA transaction ﬂow with IOMMU sequence diagram. 24 3.1 IOMMU is for devices what the MMU is for processes. 28 3.2 Intel IOMMU data structures for IOVA translation. 30 3.3 A driver drives its device through a ring. With an IOMMU, pointers are IOVAs (both registers and target buﬀers). 32 3.4 The I/O device driver maps an IOVA v to a physical target buﬀer p. It then assigns v to the DMA descriptor. 34 3.5 The I/O device writes the packet it receives to the target buﬀer through v, which the IOMMU translates to p..................... 34 3.6 After the DMA completes, the I/O device driver unmaps v and passes p to a higher-level software layer. 34 3.7 CPU cycles used for processing one packet. The top bar labels are relative to Cnone=1,816 (bottommost grid line). 36 Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 3.8 Throughput of Netperf TCP stream as a function of the average number of cycles spent on processing one packet. 36 3.9 The rIOMMU data structures. e) is used only by hardware. The last two ﬁelds of rRING are used only by software. 38 3.10 rIOMMU data structures for IOVA translation. 39 3.11 Outline of the rIOMMU logic. All DMAs are carried out with IOVAs that are translated by the rtranslate routine. 40 3.12 Outline of the rIOMMU OS driver, implementing map and unmap, which respectively correspond to Figures 3.4 and 3.6. 41 3.13 Absolute performance numbers of the IOMMU modes when using the Mellanox (top) and Broadcom (bottom) NICs. 47 4.1 IOVA translation using the Intel IOMMU. ................... 56 4.2 Pseudo code of the baseline IOVA allocation scheme. The functions rb next and rb prev return the successor and predecessor of the node they receive, respectively. 59 4.3 The length of each alloc iova search loop in a 40K (sub)sequence of alloc iova calls performed by one Netperf run. One Rx-Tx interference leads to regular linearity. .................................... 61 4.4 Netperf TCP stream iteratively executed under strict protection. The x axis shows the iteration number. .......................... 63 4.5 Average cycles breakdown of map with Netperf/strict. ............ 64 4.6 Average cycles breakdown of unmap with Netperf/strict. ........... 64 4.7 Netperf TCP stream iteratively executed under deferred protection. The x axis shows the iteration number. .......................... 65 4.8 Under deferred protection, EiovaRk eliminates costly linear searches when k exceeds the high-water mark W . ........................ 67 4.9 Length of the alloc iova search loop under the EiovaRk deferred protection regime for three k values when running Netperf TCP Stream. Bigger capacity implies that the searches become shorter on average. Big enough capacity (k ≥ W = 250) eliminates the searches altogether. ............... 67 4.10 The performance of baseline vs. EiovaR allocation, under strict and deferred protection regimes for the Mellanox (top) and Broadcom (bottom) setups. Except for in the case of Netperf RR, higher values indicated better performance. 68 4.11 Netperf Stream throughput (top) and used CPU (bottom) for diﬀerent message sizes in the Broadcom setup. .......................... 74 4.12 Impact of increased concurrency on Memcached in the Mellanox setup. EiovaR allows the performance to scale. ........................ 75 5.1 General scheme. 78 5.2 Markov state transition diagram, which is represented as a directed graph (right) or a matrix (left). 80 Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 5.3 Schematic implementation of the Markov Prefetcher. 82 5.4 Schematic depiction of the recency prefetcher on a TLB hit. 83 5.5 Schematic depiction of the recency prefetcher on a TLB miss. 84 5.6 Schematic depiction of the distance prefetcher on a TLB miss. 85 5.7 Hit rate simulation of Apache benchmarks with message sizes of 1k (top) and 1M (bottom). 87 5.8 Hit rate simulation of Netperf stream with message sizes of 1k (top) and 4k (bottom). 88 5.9 Hit rate simulation of Netperf RR (top) and Memcached (bottom). 89 5.10 Subtraction between the RTT when the IOMMU is enabled and the RTT when the IOMMU is disabled. 91 Technion - Computer Science Department - M.Sc. Thesis MSC-2015-10 - 2015 Technion - Computer Science Department - M.Sc.
+									</article>
+								</div>
+
+								</div>
+							</div>
+						</div>
+				<section class="recommend">
+					<div class="panel-box">
+						<div class="panel-success">
+							<div class="panel-heading">
+								<div class="panel-flex">
+									<div class="panel-left">
+										Recommended publications
+									</div>
+								</div>
+							</div>
+							<div class="panel-body">
+								<ul class="panel-body-ul-flex">
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/7507/memory-protection-at-option-117507.webp" alt="Memory Protection at Option" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/117507/memory-protection-at-option" title="Memory Protection at Option" class="text-overflow-clamp2">
+														Memory Protection at Option</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">Memory Protection at Option Application-Tailored Memory Safety in Safety-Critical Embedded Systems – Speicherschutz nach Wahl Auf die Anwendung zugeschnittene Speichersicherheit in sicherheitskritischen eingebetteten Systemen Der Technischen Fakultät der Universität Erlangen-Nürnberg zur Erlangung des Grades Doktor-Ingenieur vorgelegt von Michael Stilkerich Erlangen — 2012 Als Dissertation genehmigt von der Technischen Fakultät Universität Erlangen-Nürnberg Tag der Einreichung: 09.07.2012 Tag der Promotion: 30.11.2012 Dekan: Prof. Dr.-Ing. Marion Merklein Berichterstatter: Prof. Dr.-Ing. Wolfgang Schröder-Preikschat Prof. Dr. Michael Philippsen Abstract With the increasing capabilities and resources available on microcontrollers, there is a trend in the embedded industry to integrate multiple software functions on a single system to save cost, size, weight, and power. The integration raises new requirements, thereunder the need for spatial isolation, which is commonly established by using a memory protection unit (MPU) that can constrain access to the physical address space to a ﬁxed set of address regions. MPU-based protection is limited in terms of available hardware, ﬂexibility, granularity and ease of use. Software-based memory protection can provide an alternative or complement MPU-based protection, but has found little attention in the embedded domain. In this thesis, I evaluate qualitative and quantitative advantages and limitations of MPU-based memory protection and software-based protection based on a multi-JVM. I developed a framework composed of the AUTOSAR OS-like operating system CiAO and KESO, a Java implementation for deeply embedded systems. The framework allows choosing from no memory protection, MPU-based protection, software-based protection, and a combination of the two.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/3494/a-minimal-powerpc-boot-sequence-for-executing-compiled-c-programs-343494.webp" alt="A Minimal Powerpc™ Boot Sequence for Executing Compiled C Programs" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/343494/a-minimal-powerpc-boot-sequence-for-executing-compiled-c-programs" title="A Minimal Powerpc™ Boot Sequence for Executing Compiled C Programs" class="text-overflow-clamp2">
+														A Minimal Powerpc™ Boot Sequence for Executing Compiled C Programs</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">Order Number: AN1809/D Rev. 0, 3/2000 Semiconductor Products Sector Application Note A Minimal PowerPCª Boot Sequence for Executing Compiled C Programs PowerPC Systems Architecture &amp; Performance risc10@email.sps.mot.com This document describes the procedures necessary to successfully initialize a PowerPC processor and begin executing programs compiled using the PowerPC embedded application interface (EABI). The items discussed in this document have been tested for MPC603eª, MPC750, and MPC7400 microprocessors. The methods and source code presented in this document may work unmodiÞed on similar PowerPC platforms as well. This document contains the following topics: ¥ Part I, ÒOverview,Ó provides an overview of the conditions and exceptions for the procedures described in this document. ¥ Part II, ÒPowerPC Processor Initialization,Ó provides information on the general setup of the processor registers, caches, and MMU. ¥ Part III, ÒPowerPC EABI Compliance,Ó discusses aspects of the EABI that apply directly to preparing to jump into a compiled C program. ¥ Part IV, ÒSample Boot Sequence,Ó describes the basic operation of the boot sequence and the many options of conÞguration, explains in detail a sample conÞgurable boot and how the code may be modiÞed for use in different environments, and discusses the compilation procedure using the supporting GNU build environment. ¥ Part V, ÒSource Files,Ó contains the complete source code for the Þles ppcinit.S, ppcinit.h, reg_defs.h, ld.script, and MakeÞle. This document contains information on a new product under development by Motorola. Motorola reserves the right to change or discontinue this product without notice. © Motorola, Inc., 2000. All rights reserved. Overview Part I Overview The procedures discussed in this document perform only the minimum amount of work necessary to execute a user program.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/6918/memory-management-766918.webp" alt="Memory Management" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/766918/memory-management" title="Memory Management" class="text-overflow-clamp2">
+														Memory Management</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">Memory Management These slides are created by Dr. Huang of George Mason University. Students registered in Dr. Huang’s courses at GMU can make a single machine readable copy and print a single copy of each slide for their own reference as long as the slide contains the copyright statement, and the GMU facilities are not used to produce the paper copies. Permission for any other use, either in machine-readable or printed form, must be obtained form the author in writing. CS471 1 Memory 0000  A a set of data entries 0001 indexed by addresses 0002 0003  Typically the basic data 0004 0005 unit is byte 0006 0007  In 32 bit machines, 4 bytes 0008 0009 grouped to words 000A 000B  Have you seen those 000C 000D DRAM chips in your PC ? 000E 000F CS471 2 1 Logical vs. Physical Address Space  The addresses used by the RAM chips are called physical addresses.  In primitive computing devices, the address a programmer/processor use is the actual address. – When the process fetches byte 000A, the content of 000A is provided. CS471 3  In advanced computers, the processor operates in a separate address space, called logical address, or virtual address.  A Memory Management Unit (MMU) is used to map logical addresses to physical addresses. – Various mapping technologies to be discussed – MMU is a hardware component – Modern processors have their MMU on the chip (Pentium, Athlon, …) CS471 4 2 Continuous Mapping: Dynamic Relocation Virtual Physical Memory Memory Space Processor 4000  The processor want byte 0010, the 4010th byte is fetched CS471 5 MMU for Dynamic Relocation CS471 6 3 Segmented Mapping Virtual Physical Memory Memory Space Processor  Obviously, more sophisticated MMU needed to implement this CS471 7 Swapping  A process can be swapped temporarily out of memory to a backing store (a hard drive), and then brought back into memory for continued execution.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/3404/arm-system-memory-management-unit-architecture-specification-803404.webp" alt="Arm System Memory Management Unit Architecture Specification" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/803404/arm-system-memory-management-unit-architecture-specification" title="Arm System Memory Management Unit Architecture Specification" class="text-overflow-clamp2">
+														Arm System Memory Management Unit Architecture Specification</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">Arm® System Memory Management Unit Architecture Speciﬁcation SMMU architecture version 3 Document number ARM IHI 0070 Document version D.a Document conﬁdentiality Non-conﬁdential Copyright © 2016-2020 Arm Limited or its afﬁliates. All rights reserved. Arm System Memory Management Unit Architecture Speciﬁca- tion Release information Date Version Changes 2020/Aug/31 D.a• Update with SMMUv3.3 architecture • Amendments and clariﬁcations 2019/Jul/18 C.a• Amendments and clariﬁcations 2018/Mar/16 C• Update with SMMUv3.2 architecture • Further amendments and clariﬁcations 2017/Jun/15 B• Amendments and clariﬁcations 2016/Oct/15 A• First release ii Non-Conﬁdential Proprietary Notice This document is protected by copyright and other related rights and the practice or implementation of the information contained in this document may be protected by one or more patents or pending patent applications. No part of this document may be reproduced in any form by any means without the express prior written permission of Arm. No license, express or implied, by estoppel or otherwise to any intellectual property rights is granted by this document unless speciﬁcally stated. Your access to the information in this document is conditional upon your acceptance that you will not use or permit others to use the information for the purposes of determining whether implementations infringe any third party patents. THIS DOCUMENT IS PROVIDED “AS IS”. ARM PROVIDES NO REPRESENTATIONS AND NO WARRANTIES, EXPRESS, IMPLIED OR STATUTORY, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY, SATISFACTORY QUALITY, NON-INFRINGEMENT OR FITNESS FOR A PARTICULAR PURPOSE WITH RESPECT TO THE DOCUMENT. For the avoidance of doubt, Arm makes no representation with respect to, and has undertaken no analysis to identify or understand the scope and content of, patents, copyrights, trade secrets, or other rights.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/8690/quantifying-the-performance-of-garbage-collection-vs-explicit-memory-management-1048690.webp" alt="Quantifying the Performance of Garbage Collection Vs. Explicit Memory Management" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/1048690/quantifying-the-performance-of-garbage-collection-vs-explicit-memory-management" title="Quantifying the Performance of Garbage Collection Vs. Explicit Memory Management" class="text-overflow-clamp2">
+														Quantifying the Performance of Garbage Collection Vs. Explicit Memory Management</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">Quantifying the Performance of Garbage Collection vs. Explicit Memory Management ¤ Matthew Hertz Emery D. Berger Computer Science Department Dept. of Computer Science Canisius College University of Massachusetts Amherst Buffalo, NY 14208 Amherst, MA 01003 matthew.hertz@canisius.edu emery@cs.umass.edu ABSTRACT physical memory is scarce, paging causes garbage collection to run Garbage collection yields numerous software engineering beneﬁts, an order of magnitude slower than explicit memory management. but its quantitative impact on performance remains elusive. One Categories and Subject Descriptors can compare the cost of conservative garbage collection to explicit memory management in C/C++ programs by linking in an appro- D.3.3 [Programming Languages]: Dynamic storage management; priate collector. This kind of direct comparison is not possible for D.3.4 [Processors]: Memory management (garbage collection) languages designed for garbage collection (e.g., Java), because pro- General Terms grams in these languages naturally do not contain calls to free. Experimentation, Measurement, Performance Thus, the actual gap between the time and space performance of explicit memory management and precise, copying garbage collec- Keywords tion remains unknown. oracular memory management, garbage collection, explicit mem- We introduce a novel experimental methodology that lets us quan- ory management, performance analysis, time-space tradeoff, through- tify the performance of precise garbage collection versus explicit put, paging memory management. Our system allows us to treat unaltered Java programs as if they used explicit memory management by relying 1. Introduction on oracles to insert calls to free. These oracles are generated Garbage collection, or automatic memory management, provides from proﬁle information gathered in earlier application runs.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/8993/introduction-to-uclinux-1138993.webp" alt="Introduction to Uclinux" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/1138993/introduction-to-uclinux" title="Introduction to Uclinux" class="text-overflow-clamp2">
+														Introduction to Uclinux</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">Introduction to uClinux V M Introduction to uClinux Michael Opdenacker Free Electrons http://free-electrons.com Created with OpenOffice.org 2.x Thanks to Nicolas Rougier (Copyright 2003, http://webloria.loria.fr/~rougier/) for the Tux image Introduction to uClinux © Copyright 2004-2007, Free Electrons Creative Commons Attribution-ShareAlike 2.5 license http://free-electrons.com Nov 20, 2007 1 Rights to copy Attribution ± ShareAlike 2.5 © Copyright 2004-2007 You are free Free Electrons to copy, distribute, display, and perform the work feedback@free-electrons.com to make derivative works to make commercial use of the work Document sources, updates and translations: Under the following conditions http://free-electrons.com/articles/uclinux Attribution. You must give the original author credit. Corrections, suggestions, contributions and Share Alike. If you alter, transform, or build upon this work, you may distribute the resulting work only under a license translations are welcome! identical to this one. For any reuse or distribution, you must make clear to others the license terms of this work. Any of these conditions can be waived if you get permission from the copyright holder. Your fair use and other rights are in no way affected by the above. License text: http://creativecommons.org/licenses/by-sa/2.5/legalcode Introduction to uClinux © Copyright 2004-2007, Free Electrons Creative Commons Attribution-ShareAlike 2.5 license http://free-electrons.com Nov 20, 2007 2 Best viewed with... This document is best viewed with a recent PDF reader or with OpenOffice.org itself! Take advantage of internal or external hyperlinks. So, don't hesitate to click on them! Find pages quickly thanks to automatic search.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/4883/i-t-s-o-powerpc-an-inside-view-1254883.webp" alt="I.T.S.O. Powerpc an Inside View" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/1254883/i-t-s-o-powerpc-an-inside-view" title="I.T.S.O. Powerpc an Inside View" class="text-overflow-clamp2">
+														I.T.S.O. Powerpc an Inside View</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">SG24-4299-00 PowerPC An Inside View IBM SG24-4299-00 PowerPC An Inside View Take Note! Before using this information and the product it supports, be sure to read the general information under “Special Notices” on page xiii. First Edition (September 1995) This edition applies to the IBM PC PowerPC hardware and software products currently announced at the date of publication. Order publications through your IBM representative or the IBM branch office serving your locality. Publications are not stocked at the address given below. An ITSO Technical Bulletin Evaluation Form for reader′s feedback appears facing Chapter 1. If the form has been removed, comments may be addressed to: IBM Corporation, International Technical Support Organization Dept. JLPC Building 014 Internal Zip 5220 1000 NW 51st Street Boca Raton, Florida 33431-1328 When you send information to IBM, you grant IBM a non-exclusive right to use or distribute the information in any way it believes appropriate without incurring any obligation to you.  Copyright International Business Machines Corporation 1995. All rights reserved. Note to U.S. Government Users — Documentation related to restricted rights — Use, duplication or disclosure is subject to restrictions set forth in GSA ADP Schedule Contract with IBM Corp. Abstract This document provides technical details on the PowerPC technology. It focuses on the features and advantages of the PowerPC Architecture and includes an historical overview of the development of the reduced instruction set computer (RISC) technology. It also describes in detail the IBM Power Series product family based on PowerPC technology, including IBM Personal Computer Power Series 830 and 850 and IBM ThinkPad Power Series 820 and 850.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/8479/understanding-the-linux-kernel-3rd-edition-by-daniel-p-1448479.webp" alt="Understanding the Linux Kernel, 3Rd Edition by Daniel P" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/1448479/understanding-the-linux-kernel-3rd-edition-by-daniel-p" title="Understanding the Linux Kernel, 3Rd Edition by Daniel P" class="text-overflow-clamp2">
+														Understanding the Linux Kernel, 3Rd Edition by Daniel P</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">1 Understanding the Linux Kernel, 3rd Edition By Daniel P. Bovet, Marco Cesati ............................................... Publisher: O'Reilly Pub Date: November 2005 ISBN: 0-596-00565-2 Pages: 942 Table of Contents | Index In order to thoroughly understand what makes Linux tick and why it works so well on a wide variety of systems, you need to delve deep into the heart of the kernel. The kernel handles all interactions between the CPU and the external world, and determines which programs will share processor time, in what order. It manages limited memory so well that hundreds of processes can share the system efficiently, and expertly organizes data transfers so that the CPU isn't kept waiting any longer than necessary for the relatively slow disks. The third edition of Understanding the Linux Kernel takes you on a guided tour of the most significant data structures, algorithms, and programming tricks used in the kernel. Probing beyond superficial features, the authors offer valuable insights to people who want to know how things really work inside their machine. Important Intel-specific features are discussed. Relevant segments of code are dissected line by line. But the book covers more than just the functioning of the code; it explains the theoretical underpinnings of why Linux does things the way it does. This edition of the book covers Version 2.6, which has seen significant changes to nearly every kernel subsystem, particularly in the areas of memory management and block devices. The book focuses on the following topics: • Memory management, including file buffering, process swapping, and Direct memory Access (DMA) • The Virtual Filesystem layer and the Second and Third Extended Filesystems • Process creation and scheduling • Signals, interrupts, and the essential interfaces to device drivers • Timing • Synchronization within the kernel • Interprocess Communication (IPC) • Program execution Understanding the Linux Kernel will acquaint you with all the inner workings of Linux, but it's more than just an academic exercise.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/6868/18-447-computer-architecture-lecture-18-virtual-memory-iii-1566868.webp" alt="18-447: Computer Architecture Lecture 18: Virtual Memory III" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/1566868/18-447-computer-architecture-lecture-18-virtual-memory-iii" title="18-447: Computer Architecture Lecture 18: Virtual Memory III" class="text-overflow-clamp2">
+														18-447: Computer Architecture Lecture 18: Virtual Memory III</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">18-447: Computer Architecture Lecture 18: Virtual Memory III Yoongu Kim Carnegie Mellon University Spring 2013, 3/1 Upcoming Schedule • Today: Lab 3 Due • Today: Lecture/Recitation • Monday (3/4): Lecture – Q&amp;A Session • Wednesday (3/6): Midterm 1 – 12:30 – 2:20 – Closed book – One letter-sized cheat sheet • Can be double-sided • Can be either typed or written Readings • Required – P&amp;H, Chapter 5.4 – Hamacher et al., Chapter 8.8 • Recommended – Denning, P. J. Virtual Memory. ACM Computing Surveys. 1970 – Jacob, B., &amp; Mudge, T. Virtual Memory in Contemporary Microprocessors. IEEE Micro. 1998. • References – Intel Manuals for 8086/80286/80386/IA32/Intel64 – MIPS Manual Review of Last Lecture • Two approaches to virtual memory 1. Segmentation • Not as popular today 2. Paging • What is usually meant today by “virtual memory” • Virtual memory requires HW+SW support – HW component is called the MMU • Memory management unit – How to translate: virtual ↔ physical addresses? Review of Last Lecture (cont’d) 1. Segmentation – Divide the address space into segments • Physical Address = BASE + Virtual Address – Case studies: Intel 8086, 80286, x86, x86-64 – Advantages • Modularity/Isolation/Protection • Translation is simple – Disadvantages • Complicated management • Fragmentation • Only a few segments are addressable at the same time Review of Last Lecture (cont’d) 2. Paging – Virtual address space: Large, contiguous, imaginary – Page: A fixed-sized chunk of the address space – Mapping: Virtual pages → physical pages – Page table: The data structure that stores the mappings • Problem #1: Too large – Solution: Hierarchical page tables • Problem #2: Large latency – Solution: Translation Lookaside Buffer (TLB) – Case study: Intel 80386 – Today, we’ll talk more about paging ..</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/8108/virtual-memory-and-linux-1848108.webp" alt="Virtual Memory and Linux" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/1848108/virtual-memory-and-linux" title="Virtual Memory and Linux" class="text-overflow-clamp2">
+														Virtual Memory and Linux</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">Virtual Memory and Linux Matt Porter Embedded Linux Conference Europe October 13, 2016 About the original author, Alan Ott ● Unfortunately, he is unable to be here at ELCE 2016. ● Veteran embedded systems and Linux developer ● Linux Architect at SoftIron – 64-bit ARM servers and data center appliances – Hardware company, strong on software – Overdrive 3000, more products in process Physical Memory Single Address Space ● Simple systems have a single address space ● Memory and peripherals share – Memory is mapped to one part – Peripherals are mapped to another ● All processes and OS share the same memory space – No memory protection! – Processes can stomp one another – User space can stomp kernel mem! Single Address Space ● CPUs with single address space ● 8086-80206 ● ARM Cortex-M ● 8- and 16-bit PIC ● AVR ● SH-1, SH-2 ● Most 8- and 16-bit systems x86 Physical Memory Map ● Lots of Legacy ● RAM is split (DOS Area and Extended) ● Hardware mapped between RAM areas. ● High and Extended accessed differently Limitations ● Portable C programs expect flat memory ● Multiple memory access methods limit portability ● Management is tricky ● Need to know or detect total RAM ● Need to keep processes separated ● No protection ● Rogue programs can corrupt the entire system Virtual Memory What is Virtual Memory? ● Virtual Memory is a system that uses an address mapping ● Maps virtual address space to physical address space – Maps virtual addresses to physical RAM – Maps virtual addresses to hardware devices ● PCI devices ● GPU RAM ● On-SoC IP blocks What is Virtual Memory? ● Advantages ● Each processes can have a different memory mapping – One process's RAM is inaccessible (and invisible) to other processes.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/4165/acdc-towards-a-universal-mutator-for-benchmarking-heap-management-systems-2354165.webp" alt="ACDC: Towards a Universal Mutator for Benchmarking Heap Management Systems" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/2354165/acdc-towards-a-universal-mutator-for-benchmarking-heap-management-systems" title="ACDC: Towards a Universal Mutator for Benchmarking Heap Management Systems" class="text-overflow-clamp2">
+														ACDC: Towards a Universal Mutator for Benchmarking Heap Management Systems</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">ACDC: Towards a Universal Mutator for Benchmarking Heap Management Systems Martin Aigner Christoph M. Kirsch University of Salzburg ﬁrstname.lastname@cs.uni-salzburg.at Abstract liveness deallocation delay We present ACDC, an open-source benchmark that may be conﬁg- ured to emulate explicit single- and multi-threaded memory alloca- tion, sharing, access, and deallocation behavior to expose virtually time any relevant allocator performance differences. ACDC mimics pe- ... ... allocation accesses last access deallocation riodic memory allocation and deallocation (AC) as well as persis- tent memory (DC). Memory may be allocated thread-locally and shared among multiple threads to study multicore scalability and even false sharing. Memory may be deallocated by threads other lifetime than the allocating threads to study blowup memory fragmentation. Memory may be accessed and deallocated sequentially in alloca- Figure 1: The lifecycle of an object tion order or in tree-like traversals to expose allocator deﬁciencies in exploiting spatial locality. We demonstrate ACDC’s capabili- ties with seven state-of-the-art allocators for C/C++ in an empir- ical study which also reveals interesting performance differences accesses to the allocated memory, and ends with the deallocation between the allocators. of the allocated memory. The time from allocation to deallocation is called the lifetime of an object. The time from allocation to last Categories and Subject Descriptors D.3.4 [Programming Lan- access is called the liveness of an object which ACDC, unlike other guages]: Memory management benchmarking tools, also emulates explicitly by controlling object General Terms Performance, Measurement access. The difference between lifetime and liveness of an object, here called deallocation delay, emulates mutator inefﬁciencies in Keywords benchmark; explicit heap management; multicore identifying dead objects for deallocation which may in turn expose allocator inefﬁciencies in handling dead memory.</div>
+											</div>
+										</li>
+											<li class="panel-item">
+												<div class="panel-item-left">
+													<img src="https://docslib.b-cdn.net/cover/9139/memory-management-in-2509139.webp" alt="Memory Management In" width="200">
+												</div>
+											<div class="panel-item-right">
+												<h3>
+													<a href="/doc/2509139/memory-management-in" title="Memory Management In" class="text-overflow-clamp2">
+														Memory Management In</a>
+												</h3>
+												<div class="panel-item-right-p text-overflow-clamp7">Memory Management Prof. James L. Frankel Harvard University Version of 7:34 PM 2-Oct-2018 Copyright © 2018, 2017, 2015 James L. Frankel. All rights reserved. Memory Management • Ideal memory • Large • Fast • Non-volatile (keeps state without power) • Memory hierarchy • Extremely limited number of registers in CPU • Small amount of fast, expensive memory – caches • Lots of medium speed, medium price main memory • Terabytes of slow, cheap disk storage • Memory manager handles the memory hierarchy Basic Memory Management Three simple ways of organizing memory for monoprogramming without swapping or paging (this is, an operating system with one user process) Multiprogramming with Fixed Partitions • Fixed memory partitions • separate input queues for each partition • single input queue Probabilistic Model of Multiprocessing • Each process is in CPU wait for fraction f of the time • There are n processes with one processor • If the processes are independent of each other, then the probability that all processes are in CPU wait is fn • So, the probability that the CPU is busy is 1 – fn • However, the processes are not independent • They are all competing for one processor • More than one process may be using any one I/O device • Better model would be constructed using queuing theory Modeling Multiprogramming Degree of multiprogramming CPU utilization as a function of number of processes in memory Analysis of Multiprogramming System Performance • Arrival and work requirements of 4 jobs • CPU utilization for 1 – 4 jobs with 80% I/O wait • Sequence of events as jobs arrive and finish • note numbers show amout of CPU time jobs get in each interval Relocation and Protection • At time program is written, uncertain where program will be loaded in memory • Therefore, address locations of variables and code cannot be absolute – enforce relocation • Must ensure that a program does not access other processes’ memory – enforce protection • Static vs.</div>
+											</div>
+										</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+			<div class="rw-pd rw-right row-pd" id="side-right">
+				<aside class="side" id="side-list">
+					<div class="side-download">
+						<a href="/download/13321416/rethinking-the-i-o-memory-management-unit-iommu" class="side-load-a flex-justify" title="Download">
+							<i class="icon-load"></i>
+							<span>Download</span>
+						</a>
+					</div>
+					<div class="side-tag">
+						<ul class="side-tag-ul">
+							<li><a href="javascript:;" data-tab-target="featured" class="active">Featured</a></li>
+							<li><a href="javascript:;" data-tab-target="last" class="">Last Commenis</a> </li>
+							<li><a href="javascript:;" data-tab-target="popular" class="">Popular</a></li>
+						</ul>
+						<div class="tab-items">
+							<div class="tab-item active" data-tab-item="featured">
+								<ul>
+												<li><a href="/doc/117507/memory-protection-at-option" class="text-overflow-clamp3">Memory Protection at Option</a></li>
+												<li><a href="/doc/343494/a-minimal-powerpc-boot-sequence-for-executing-compiled-c-programs" class="text-overflow-clamp3">A Minimal Powerpc™ Boot Sequence for Executing Compiled C Programs</a></li>
+												<li><a href="/doc/766918/memory-management" class="text-overflow-clamp3">Memory Management</a></li>
+												<li><a href="/doc/803404/arm-system-memory-management-unit-architecture-specification" class="text-overflow-clamp3">Arm System Memory Management Unit Architecture Specification</a></li>
+												<li><a href="/doc/1048690/quantifying-the-performance-of-garbage-collection-vs-explicit-memory-management" class="text-overflow-clamp3">Quantifying the Performance of Garbage Collection Vs. Explicit Memory Management</a></li>
+												<li><a href="/doc/1138993/introduction-to-uclinux" class="text-overflow-clamp3">Introduction to Uclinux</a></li>
+								</ul>
+							</div>
+							<div class="tab-item" data-tab-item="last">
+								<ul>
+												<li><a href="/doc/1254883/i-t-s-o-powerpc-an-inside-view" class="text-overflow-clamp3">I.T.S.O. Powerpc an Inside View</a></li>
+												<li><a href="/doc/1448479/understanding-the-linux-kernel-3rd-edition-by-daniel-p" class="text-overflow-clamp3">Understanding the Linux Kernel, 3Rd Edition by Daniel P</a></li>
+												<li><a href="/doc/1566868/18-447-computer-architecture-lecture-18-virtual-memory-iii" class="text-overflow-clamp3">18-447: Computer Architecture Lecture 18: Virtual Memory III</a></li>
+												<li><a href="/doc/1848108/virtual-memory-and-linux" class="text-overflow-clamp3">Virtual Memory and Linux</a></li>
+												<li><a href="/doc/2354165/acdc-towards-a-universal-mutator-for-benchmarking-heap-management-systems" class="text-overflow-clamp3">ACDC: Towards a Universal Mutator for Benchmarking Heap Management Systems</a></li>
+												<li><a href="/doc/2509139/memory-management-in" class="text-overflow-clamp3">Memory Management In</a></li>
+								</ul>
+							</div>
+							<div class="tab-item" data-tab-item="popular">
+								<ul>
+												<li><a href="/doc/2563832/linux-multicore-performance-analysis-and-optimization-in-a-nutshell" class="text-overflow-clamp3">Linux Multicore Performance Analysis and Optimization in a Nutshell</a></li>
+												<li><a href="/doc/2786196/powerpc-mmu-simulation" class="text-overflow-clamp3">Powerpc MMU Simulation</a></li>
+												<li><a href="/doc/3221004/avr32113-configuration-and-use-of-the-memory-management-unit" class="text-overflow-clamp3">AVR32113: Configuration and Use of the Memory Management Unit</a></li>
+												<li><a href="/doc/3364166/parallel-architecture-hardware-and-general-purpose-operating-system" class="text-overflow-clamp3">Parallel Architecture Hardware and General Purpose Operating System</a></li>
+												<li><a href="/doc/3401969/software-virtual-memory-management-for-mmu-less-embedded-systems" class="text-overflow-clamp3">Software Virtual Memory Management for MMU-Less Embedded Systems</a></li>
+												<li><a href="/doc/3506765/virtual-memory-in-contemporary-microprocessors" class="text-overflow-clamp3">Virtual Memory in Contemporary Microprocessors</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="adspace">
+						<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8519364510543070" data-ad-slot="2167091933" data-ad-format="auto"></ins>
+						<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+					</div>
+					<div class="side-message">
+						<ul>
+										<li>
+										
+											<div class="message-rg">
+												<a class="text-overflow-clamp3" href="/doc/3606175/an10389-getting-started-uclinux-with-lpc22xx">AN10389 Getting Started Uclinux with Lpc22xx</a>
+											</div>
+										</li>
+										<li>
+										
+											<div class="message-rg">
+												<a class="text-overflow-clamp3" href="/doc/3812023/cyrix-5x86-fifth-generation-design-emphasizes-maximum-performance-while-minimizing-transistor-count">Cyrix 5X86: Fifth-Generation Design Emphasizes Maximum Performance While Minimizing Transistor Count</a>
+											</div>
+										</li>
+										<li>
+										
+											<div class="message-rg">
+												<a class="text-overflow-clamp3" href="/doc/4021642/powerpc-core-tutorial-introduction">Powerpc Core Tutorial Introduction</a>
+											</div>
+										</li>
+						</ul>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</div>
+</main>
+<script>
+	var totalPage = 121;
+	var dId = 13321416;
+	var docId = 'fa9f029ccda75121f7bcd99c89c76000';
+</script>
+
+<script src="/js/article.js"></script>
+    <footer>
+        <div class="container-fluid">
+            <a href="#Top" data-toggle="tooltip" data-original-title="TO TOP"> <i class="iconfont icon-top-1-copy"></i> </a> <br>
+            <br>
+            <span>© 2024 Docslib.org&nbsp;&nbsp;&nbsp;&nbsp;</span><span><a href="/help/feedback">Feedback</a></span>
+        </div>
+    </footer>
+    <script>
+        $(".nav-menu").click(function () {
+            $(".menu-list").toggle();
+        });
+    </script>
+    <script>
+        var sc_project = 11552861;
+        var sc_invisible = 1;
+        var sc_security = "b956b151";
+    </script>
+    <script src="https://www.statcounter.com/counter/counter.js" async=""></script>
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
