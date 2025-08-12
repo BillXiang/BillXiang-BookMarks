@@ -38,8 +38,9 @@ html_head="<!DOCTYPE html>
               <tr><td><a href='./docs.html'><b>Docs</b></a></td></tr>
               <tr><td>"
               
-    html_mid="    </td>
-                  <td><a href=\"https://github.akams.cn/\">Github Proxy:</a><input id='github-proxy' value=\"https://gh.llkk.cc/\"></input></td>
+    html_mid="</td></tr>
+              <tr>
+                 <td><a href=\"https://github.akams.cn/\">Github Proxy:</a><input id='github-proxy' value=\"https://gh.llkk.cc/\"></input></td>
               </tr>
             </tbody>
           </table>
@@ -125,7 +126,14 @@ awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' ur
 awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- >> all_content.html
 cat docs.tmp |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
 echo "    </tbody>
-      </table>" | tee -a index_content.html all_content.html docs_content.html
+      </table>
+      <script>
+        window.addEventListener("message", function(event) {
+          var github-proxy = event.data.github-proxy;
+          console.log(github-proxy);
+        });
+      </script>
+      " | tee -a index_content.html all_content.html docs_content.html
 rm -f url.tmp
 
 echo "<iframe id='index-content-frame' src='./index_content.html'  frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> index.html
