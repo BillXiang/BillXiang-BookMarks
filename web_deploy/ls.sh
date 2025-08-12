@@ -24,7 +24,7 @@ html_head="<!DOCTYPE html>
           iframe.onload = function() {
             var github_proxy_input = document.getElementById('github-proxy');
             var github_proxy = github_proxy_input.value;
-            iframe.contentWindow.postMessage({ github_proxy }, "*");
+            iframe.contentWindow.postMessage({ github_proxy }, \"*\");
           };
         };
         window.onload = setHeightToContent;
