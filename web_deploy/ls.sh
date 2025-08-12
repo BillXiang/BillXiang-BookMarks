@@ -22,8 +22,8 @@ html_head="<!DOCTYPE html>
           var iframe = document.getElementById('content-frame');
           iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
           iframe.onload = function() {
-            var github-proxy-input = document.getElementById('github-proxy');
-            var github-proxy = github-proxy-input.value;
+            var github_proxy_input = document.getElementById('github-proxy');
+            var github_proxy = github_proxy_input.value;
             iframe.contentWindow.postMessage({ github_proxy }, "*");
           };
         };
