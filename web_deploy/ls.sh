@@ -157,14 +157,20 @@ echo "
       var index-content-frame = document.getElementById('index-content-frame');
       var all-content-frame = document.getElementById('all-content-frame');
       var docs-content-frame = document.getElementById('docs-content-frame');
-      var onload = function() {
+      function onload(iframe) {
         var github-proxy-input = document.getElementById('github-proxy');
         var github-proxy = github-proxy-input.value;
-        iframe.contentWindow.postMessage({ github-proxy}, "*");
+        iframe.contentWindow.postMessage({ github-proxy }, "*");
       };
-      index-content-frame.onload = onload;
-      all-content-frame.onload = onload;
-      docs-content-frame.onload = onload;
+      index-content-frame.onload = function() {
+        onload(index-content-frame);
+      };
+      all-content-frame.onload = function() {
+        onload(all-content-frame);
+      };
+      docs-content-frame.onload = function() {
+        onload(docs-content-frame);
+      };
       </script>
     </body>
 </html>" >> index.html
