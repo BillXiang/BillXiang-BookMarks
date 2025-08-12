@@ -24,7 +24,7 @@ html_head="<!DOCTYPE html>
           iframe.onload = function() {
             var github-proxy-input = document.getElementById('github-proxy');
             var github-proxy = github-proxy-input.value;
-            iframe.contentWindow.postMessage({ github-proxy }, "*");
+            iframe.contentWindow.postMessage({ github_proxy }, "*");
           };
         };
         window.onload = setHeightToContent;
@@ -134,8 +134,8 @@ echo "    </tbody>
       </table>
       <script>
         window.addEventListener("message", function(event) {
-          var github-proxy = event.data.github-proxy;
-          console.log(github-proxy);
+          var github_proxy = event.data.github_proxy;
+          console.log(github_proxy);
         });
       </script>
       " | tee -a index_content.html all_content.html docs_content.html
