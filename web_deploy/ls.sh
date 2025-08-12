@@ -38,7 +38,9 @@ html_head="<!DOCTYPE html>
               <tr><td><a href='./docs.html'><b>Docs</b></a></td></tr>
               <tr><td>"
               
-    html_mid="</td></tr>
+    html_mid="    </td>
+                  <td><a href=\"https://github.akams.cn/\">Github Proxy:</a><input id='github-proxy' value=\"https://gh.llkk.cc/\"></input></td>
+              </tr>
             </tbody>
           </table>
         </td>
@@ -138,7 +140,7 @@ echo "
         <tr><td><a href='https://addons.mozilla.org/zh-CN/firefox/addon/immersive-translate'><b>Translated by 【沉浸式翻译】</b></a></td></tr>
         </tbody>
       </table>
-      <div id="gitalk-container"></div>
+      <div id='gitalk-container'></div>
       <script>
       const gitalk = new Gitalk({
         clientID: 'Ov23likAQqUjMmw0YgcJ',
@@ -151,6 +153,18 @@ echo "
       })
        
       gitalk.render('gitalk-container')
+
+      var index-content-frame = document.getElementById('index-content-frame');
+      var all-content-frame = document.getElementById('all-content-frame');
+      var docs-content-frame = document.getElementById('docs-content-frame');
+      var onload = function() {
+        var github-proxy-input = document.getElementById('github-proxy');
+        var github-proxy = github-proxy-input.value;
+        iframe.contentWindow.postMessage({ github-proxy}, "*");
+      };
+      index-content-frame.onload = onload;
+      all-content-frame.onload = onload;
+      docs-content-frame.onload = onload;
       </script>
     </body>
 </html>" >> index.html
