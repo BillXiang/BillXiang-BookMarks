@@ -133,7 +133,7 @@ cat docs.tmp |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.htm
 echo "    </tbody>
       </table>
       <script>
-        window.addEventListener("message", function(event) {
+        window.addEventListener(\"message\", function(event) {
           var github_proxy = event.data.github_proxy;
           console.log(github_proxy);
         });
