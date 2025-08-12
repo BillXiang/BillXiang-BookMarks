@@ -126,9 +126,9 @@ echo "    </tbody>
       </table>" | tee -a index_content.html all_content.html docs_content.html
 rm -f url.tmp
 
-echo "<iframe id='content-frame' src='./index_content.html'  frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> index.html
-echo "<iframe id='content-frame' src='./all_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> all.html
-echo "<iframe id='content-frame' src='./docs_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> docs.html
+echo "<iframe id='index-content-frame' src='./index_content.html'  frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> index.html
+echo "<iframe id='all-content-frame' src='./all_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> all.html
+echo "<iframe id='docs-content-frame' src='./docs_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> docs.html
 
 echo " 
           </td>
