@@ -21,6 +21,11 @@ html_head="<!DOCTYPE html>
         function setHeightToContent() {
           var iframe = document.getElementById('content-frame');
           iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
+          iframe.onload = function() {
+            var github-proxy-input = document.getElementById('github-proxy');
+            var github-proxy = github-proxy-input.value;
+            iframe.contentWindow.postMessage({ github-proxy }, "*");
+          };
         };
         window.onload = setHeightToContent;
       </script>
@@ -136,9 +141,9 @@ echo "    </tbody>
       " | tee -a index_content.html all_content.html docs_content.html
 rm -f url.tmp
 
-echo "<iframe id='index-content-frame' src='./index_content.html'  frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> index.html
-echo "<iframe id='all-content-frame' src='./all_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> all.html
-echo "<iframe id='docs-content-frame' src='./docs_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> docs.html
+echo "<iframe id='content-frame' src='./index_content.html'  frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> index.html
+echo "<iframe id='content-frame' src='./all_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> all.html
+echo "<iframe id='content-frame' src='./docs_content.html' frameborder='0' width="100%">Your browser does't support iframe</iframe>" >> docs.html
 
 echo " 
           </td>
@@ -161,24 +166,6 @@ echo "
       })
        
       gitalk.render('gitalk-container')
-
-      var index-content-frame = document.getElementById('index-content-frame');
-      var all-content-frame = document.getElementById('all-content-frame');
-      var docs-content-frame = document.getElementById('docs-content-frame');
-      function onload(iframe) {
-        var github-proxy-input = document.getElementById('github-proxy');
-        var github-proxy = github-proxy-input.value;
-        iframe.contentWindow.postMessage({ github-proxy }, "*");
-      };
-      index-content-frame.onload = function() {
-        onload(index-content-frame);
-      };
-      all-content-frame.onload = function() {
-        onload(all-content-frame);
-      };
-      docs-content-frame.onload = function() {
-        onload(docs-content-frame);
-      };
       </script>
     </body>
 </html>" >> index.html
