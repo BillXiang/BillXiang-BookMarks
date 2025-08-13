@@ -130,8 +130,12 @@ echo "<!DOCTYPE html>
     <head>
       <script>
         function clickBackup(obj) {
-          var value = obj.getAttribute(\"herf\");
-          console.log(value);
+          var href = obj.getAttribute(\"href\");
+          var github_proxy_input = document.getElementById('github-proxy');
+          var github_proxy = github_proxy_input.value;
+          var new_href = href + \"&github_proxy=\" + github_proxy;
+          console.log(new_href);
+          obj.setAttribute(\"href\", new_href);
           return true;
         }
         window.addEventListener(\"message\", function(event) {
