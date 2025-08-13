@@ -129,7 +129,7 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <script>
-        function clickBackup(this) {
+        function clickBackup(obj) {
           var value = obj.getAttribute(\"herf\");
           console.log(value);
           return true;
