@@ -5,7 +5,7 @@ const params = new URLSearchParams(window.location.search);
 
 const rawUrl = params.get('rawUrl');
 const github_proxy = params.get('github_proxy');
-const targetUrl = github_proxy + '/' + rawUrl;
+const targetUrl = github_proxy + rawUrl;
 /*
 const params = {};
 const queryString = window.location.search.substring(1);
@@ -31,3 +31,4 @@ fetch(targetUrl)
     })
 
     .catch(error => console.error('Failed to load:', error));
+
