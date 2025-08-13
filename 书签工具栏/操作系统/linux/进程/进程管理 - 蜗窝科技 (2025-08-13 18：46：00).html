@@ -1,0 +1,931 @@
+<!-- Filename: 书签工具栏/操作系统/linux/进程/进程管理 - 蜗窝科技 (2025-08-13 18：46：00).html
+ Page saved with X-Webpage-Conserve 
+ url: http://www.wowotech.net/sort/process_management
+ Summary: 
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>进程管理 - 蜗窝科技</title>
+<meta name="keywords" content="Linux 嵌入式 ARM RTOS Technology 享受 C语言">
+<meta name="description" content="">
+<meta name="generator" content="emlog">
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.wowotech.net/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.wowotech.net/wlwmanifest.xml">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://www.wowotech.net/rss.php">
+<link href="http://www.wowotech.net/content/templates/default/main.css" rel="stylesheet" type="text/css">
+<link href="http://www.wowotech.net/admin/editor/plugins/code/prettify.css" rel="stylesheet" type="text/css">
+<script src="//hm.baidu.com/hm.js?9d3da49d9cb9a5eaca161fc2905551df"></script><script src="https://hm.baidu.com/hm.js?2ad61992fe96234e26ecafbcd2647630"></script><script src="http://www.wowotech.net/admin/editor/plugins/code/prettify.js" type="text/javascript"></script>
+<script src="http://www.wowotech.net/include/lib/js/common_tpl.js" type="text/javascript"></script>
+<!--[if IE 6]>
+<script src="http://www.wowotech.net/content/templates/default/iefix.js" type="text/javascript"></script>
+<![endif]-->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?2ad61992fe96234e26ecafbcd2647630";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>body { background: rgb(255, 255, 255); color: rgb(50, 50, 50); text-align: center; font: 13px / 18px Arial, Helvetica, sans-serif; margin: 0px auto; padding: 0px; }#wrap { background: rgb(255, 255, 255); width: 960px; text-align: left; margin: 0px auto; padding: 0px; }img { border: medium; }a:link, a:active, a:visited { color: rgb(136, 99, 83); text-decoration: none; }a:hover { color: rgb(136, 99, 83); text-decoration: underline; }#header h1 { color: rgb(31, 31, 31); font-size: 30px; font-weight: normal; letter-spacing: 0px; margin: 10px 0px 3px; padding: 20px 0px 0px; font-family: Georgia, "Times New Roman", Times, serif; line-height: normal; }#header h1 a:link { color: rgb(31, 31, 31); text-decoration: none; }#header h1 a:active { color: rgb(31, 31, 31); text-decoration: none; }#header h1 a:visited { color: rgb(31, 31, 31); text-decoration: none; }#header h1 a:hover { color: rgb(31, 31, 31); text-decoration: none; }#header h3 { color: rgb(82, 82, 82); font-style: italic; font-size: 15px; font-weight: normal; margin: 0px 0px 0px 40px; padding: 10px 0px; }#nav { margin: 10px 0px 0px; border: 1px solid rgb(238, 238, 238); }#nav .bar { margin: 0px; padding: 0px; height: 30px; }#nav .bar .item { height: 30px; line-height: 30px; display: block; float: left; padding: 0px 18px; position: relative; }#nav a:link { color: rgb(31, 31, 31); text-decoration: none; }#nav a:active { color: rgb(31, 31, 31); text-decoration: none; }#nav a:visited { color: rgb(31, 31, 31); text-decoration: none; }#nav a:hover { color: rgb(31, 31, 31); text-decoration: underline; }#nav .current { background-color: rgb(239, 239, 239); }#nav .item:hover .sub-nav, #nav .li-hover .sub-nav { display: block; }#nav .sub-nav { display: none; position: absolute; background-color: rgb(255, 255, 255); margin: 0px; padding: 0px; list-style: none; border: 1px solid rgb(238, 238, 238); top: 30px; left: 0px; }#nav .sub-nav li { min-width: 120px; white-space: nowrap; }#nav .sub-nav a { display: block; padding: 0px 18px; }* html #nav .sub-nav a { display: inline; zoom: 1; width: 120px; }#nav .sub-nav a:hover { background-color: rgb(238, 238, 238); }#banner { height: 134px; }#pagenavi { text-align: center; font-size: 14px; }#pagenavi a { padding: 0px 3px; }#pagenavi a:hover { text-decoration: overline; }#pagenavi span { font-size: 16px; color: rgb(153, 153, 153); }#content { width: 960px; margin: 0px auto; padding: 0px; }#content p { padding: 0px 0px 15px; margin: 0px; line-height: 20px; }#content h1 { display: none; }#content h2 { color: rgb(31, 31, 31); font-size: 18px; font-weight: bold; padding: 0px; margin: 25px 0px 10px; }#content h2 a:link { color: rgb(31, 31, 31); text-decoration: none; }#content h2 a:active { color: rgb(31, 31, 31); text-decoration: none; }#content h2 a:visited { color: rgb(31, 31, 31); text-decoration: none; }#content h2 a:hover { color: rgb(31, 31, 31); text-decoration: underline; }#content h2.widgettitle { color: rgb(68, 68, 68); font-size: 12px; font-weight: bold; margin: 25px 0px 0px; padding: 10px 0px; }#content h3 { color: rgb(68, 68, 68); font-size: 14px; font-weight: bold; margin: 15px 0px 0px; padding: 8px 0px; }#contentleft { float: left; width: 678px; margin: 0px; padding: 0px 20px 20px; border-left: 1px solid rgb(238, 238, 238); border-right: 1px solid rgb(238, 238, 238); }blockquote { margin: 0px 20px 20px; padding: 25px 20px; background: rgb(239, 239, 239); border-left: 5px solid rgb(105, 105, 105); border-right: 5px solid rgb(105, 105, 105); }#contentleft .date { color: rgb(169, 121, 101); font-size: 12px; }#contentleft .att { color: rgb(169, 121, 101); font-size: 12px; margin: 5px 0px 0px; }#contentleft .tag { color: rgb(169, 121, 101); font-size: 12px; margin: 0px; }#contentleft .count { text-align: right; font-size: 12px; }#contentleft img { max-width: 690px; }img.alignright { float: right; border: medium; margin: 0px 0px 10px 10px; }img.alignleft { float: left; border: medium; margin: 0px 10px 10px 0px; }img.aligncenter { display: block; border: medium; margin: 10px auto; }a img.alignright { float: right; border: medium; margin: 0px 0px 10px 10px; }a img.alignleft { float: left; border: medium; margin: 0px 10px 10px 0px; }a img.aligncenter { display: block; border: medium; margin: 10px auto; }#sidebar { float: right; width: 200px; margin: 0px; padding: 0px 19px 20px; border-right: 1px solid rgb(238, 238, 238); font: 12px / 18px Verdana, Arial, Helvetica, sans-serif; overflow: hidden; }#sidebar ul { list-style-type: none; margin: 0px; padding: 0px; }#sidebar ul li { background: transparent url("images/bullet.png") 0px 3px no-repeat; margin: 0px; padding: 0px 0px 0px 18px; }#sidebar ul li ul li { background: transparent url("images/bullet.png") 0px 3px no-repeat; margin: 0px; padding: 0px 0px 0px 18px; }#sidebar li { list-style-type: none; }#sidebar .search { background: transparent url("images/search.png") 5px 3px no-repeat; border: 1px solid rgb(204, 204, 204); border-radius: 3px; font-size: 12px; line-height: 1.2em; padding: 4px 10px 4px 28px; }#footerbar { margin: 40px auto 30px; padding: 10px 0px; width: 960px; text-align: center; overflow: hidden; border-top: 1px solid rgb(238, 238, 238); }.footerbox { width: 31%; float: left; margin: 5px 0px 0px; padding: 0px 10px 20px; }.footerbox ul { list-style-type: none; margin: 0px; padding: 0px; }.footerbox ul li { background: transparent url("images/bullet.png") 0px 3px no-repeat; margin: 0px; padding: 0px 0px 0px 18px; }#contentleft .nextlog { text-align: center; margin: 5px 0px; font-size: 12px; }#contentleft .comment-header { margin: 15px 0px 5px; }#contentleft .comment-post { clear: both; }#contentleft .comment-post p { margin: 5px 0px; }#contentleft .comment-post .cancel-reply { float: right; font-size: 12px; cursor: pointer; padding-right: 10%; }#contentleft .comment-post .cancel-reply:hover { text-decoration: underline; }#contentleft .comment-post small { font-size: 12px; color: rgb(153, 153, 153); }#contentleft .comment-post input { padding: 5px; border: 1px solid rgb(182, 182, 182); font-size: 12px; color: rgb(51, 51, 51); width: 40%; }#contentleft .comment-post #comment { width: 90%; border: 1px solid rgb(182, 182, 182); font-size: 12px; color: rgb(51, 51, 51); }#contentleft .comment-post #comment_submit { background: url("images/em_button.gif") no-repeat; border: 0px; color: rgb(0, 0, 0); width: 111px; height: 29px; text-align: center; cursor: pointer; }#contentleft .comment-post .input { width: 100px; }#contentleft .comment { margin: 10px 0px; padding: 10px 0px; font-size: 12px; border-bottom: 1px solid rgb(247, 247, 247); overflow: hidden; color: rgb(51, 51, 51); height: 100%; zoom: 1; }#contentleft .comment span { color: rgb(255, 122, 21); }#contentleft .comment .comment-time { color: rgb(153, 153, 153); display: inline; font-size: 10px; }#contentleft .comment .avatar { float: left; margin: 5px; }#contentleft .comment .comment-info { float: left; width: 90%; }#contentleft .comment .comment-content { margin: 8px 0px 0px; }#contentleft .comment .comment-reply { float: right; font-size: 12px; cursor: pointer; }#contentleft .comment .comment-reply:hover { text-decoration: underline; }#contentleft .comment-children { width: 95%; margin: auto; clear: both; border: medium; padding: 0px; }#contentleft .comment .comment-post { width: 90%; margin: 15px auto; }.calendartop { text-align: center; font-size: 12px; margin-left: 30px; }.calendar { margin-bottom: 10px; }.calendar td { font-size: 11px; text-align: center; padding: 1px 5px; line-height: 1.6; }.calendar td a:link { color: rgb(136, 99, 83); text-decoration: none; }.calendar td a:hover { color: rgb(136, 99, 83); text-decoration: none; }.day { background: url("images/bg_cal_today.gif") 2px 1px no-repeat; }.day2 { font-weight: bold; }.sun { color: rgb(51, 51, 51); font-weight: bold; }.week { color: rgb(51, 51, 51); }.rss { margin: 20px 0px; }.attachment { margin: 0px 3px; padding: 0px 0px 0px 20px; font-weight: bold; background: url("images/att.png") 2px -1px no-repeat; }#twitter li { border-bottom: 1px dotted rgb(204, 204, 204); list-style: none; }#twitter li p { font-size: 10px; text-align: right; padding: 5px 0px 2px; }#twitter p { font-size: 12px; text-align: right; }#twitter li small { font-size: 10px; padding: 0px 10px; }#twitter li .t_img { background: url("images/img.gif") no-repeat; padding: 0px 7px; margin: 0px 0px 0px 10px; }#tw .main_img { border: 1px solid rgb(39, 114, 174); float: left; }#tw .main_img img { border: 1px solid rgb(255, 255, 255); }#tw .op { float: left; height: 18px; margin: 6px 5px 3px; }#tw ul { margin: 5px 0px 3px 25px; width: 520px; line-height: 1.8; padding: 0px; }#tw ul .li { margin: 10px 0px; padding: 5px 0px; border-bottom: 1px solid rgb(247, 247, 247); }#tw ul li { margin: 0px; padding: 0px; }#tw ul li .main_img { margin-top: 5px; }#tw ul li .post1 { float: left; font-size: 13px; margin: 0px; width: 470px; padding: 0px 0px 0px 8px; }#tw ul li .post1 span { color: rgb(136, 99, 83); font-weight: bold; }#tw ul li { clear: both; padding: 0px; margin: 0px; }#tw ul li .bttome { margin: 3px 0px; vertical-align: middle; }#tw ul li .bttome .time { float: left; line-height: 14px; margin: 0px; }#tw ul li .bttome .post { float: right; font-size: 12px; line-height: 14px; margin: 0px; }#tw .time { font-size: 12px; color: rgb(153, 153, 153); padding-left: 43px; }#tw ul .r { margin: 5px 0px 0px 40px; color: rgb(102, 102, 102); border: 0px; padding: 0px; }#tw ul .r li { padding: 5px 3px 3px; border-bottom: 1px solid rgb(247, 247, 247); width: 475px; }#tw ul .r .num { font-size: 16px; font-weight: bold; color: rgb(0, 121, 183); padding: 0px 5px; float: left; width: 20px; }#tw ul .r .time { padding: 0px 5px; }#tw ul .r .name { padding: 0px; font-size: 12px; color: rgb(51, 102, 153); }#tw ul .r em a { font-style: normal; }#tw ul .huifu { margin: 5px 0px 0px 43px; background: rgb(245, 245, 245); border: 1px solid rgb(204, 204, 204); text-align: center; display: none; }#tw ul .huifu textarea { margin: 5px; width: 460px; border: 1px solid rgb(204, 204, 204); overflow: auto; }#tw ul .huifu input { margin: 0px 5px; }#tw ul .huifu div { padding: 0px 5px; text-align: center; }#tw ul .huifu .text { width: 60px; }#tw ul .button_p { background: url("images/weibe_button.gif") no-repeat; border: 0px; cursor: pointer; width: 63px; height: 25px; }#tw .tbutton { font-size: 12px; float: none; margin-bottom: 3px; }#tw .tbutton input { width: 90px; border: 1px solid rgb(204, 204, 204); }#tw .tbutton .button_p { background: url("images/weibe_button.gif") no-repeat; border: 0px; cursor: pointer; width: 60px; height: 25px; }#tw .tbutton .tinfo { float: left; }#tw .msg { clear: both; }#tw li { list-style: none; }#tw ul .huifu textarea { background-color: rgb(255, 255, 255); }#tw ul .huifu input { background-color: rgb(255, 255, 255); }#tw ul li ul { line-height: 0; font-size: 0px; }#tw ul li ul li { font-size: 12px; line-height: 22px; }#tw .top { width: 650px; }#tw ul li .post1 { width: 560px; }#tw ul { width: 610px; }#tw ul .r li { width: 565px; }#tw ul .huifu textarea { width: 550px; }#tw ul li .bttome .post { font-size: 12px; line-height: 14px; margin: 0px; text-align: right; float: none; clear: both; width: 610px; background: 0px center; border: 0px; }#tw ul li .bttome .time { float: none; margin-top: -25px; }#tw p .t_img { background: url("images/img.gif") no-repeat; padding: 0px 7px; margin: 0px 0px 0px 10px; }</style><style>pre.prettyprint { border: 0px solid rgb(136, 136, 136); font-family: "Courier New", Courier, monospace; font-size: 12px; overflow: auto; margin: 5px 0px; padding: 0px; line-height: 12pt; }.code { width: 90%; border: 1px solid rgb(136, 136, 136); }.pln { color: rgb(0, 0, 0); }@media screen {
+  .str { color: rgb(0, 136, 0); }
+  .kwd { color: rgb(0, 0, 136); font-weight: bold; }
+  .com { color: rgb(136, 0, 0); }
+  .typ { color: rgb(102, 0, 102); }
+  .lit { color: rgb(0, 102, 102); }
+  .pun, .opn, .clo { color: rgb(102, 102, 0); }
+  .tag { color: rgb(0, 0, 136); }
+  .atn { color: rgb(102, 0, 102); }
+  .atv { color: rgb(0, 136, 0); }
+  .dec, .var { color: rgb(102, 0, 102); }
+  .fun { color: red; }
+}@media print, projection {
+  .str { color: rgb(0, 102, 0); }
+  .kwd { color: rgb(0, 0, 102); font-weight: bold; }
+  .com { color: rgb(102, 0, 0); font-style: italic; }
+  .typ { color: rgb(68, 0, 68); font-weight: bold; }
+  .lit { color: rgb(0, 68, 68); }
+  .pun, .opn, .clo { color: rgb(68, 68, 0); }
+  .tag { color: rgb(0, 0, 102); font-weight: bold; }
+  .atn { color: rgb(68, 0, 68); }
+  .atv { color: rgb(0, 102, 0); }
+}ol.linenums { margin-top: 0px; margin-bottom: 0px; background: rgb(255, 255, 255); }li.L0, li.L1, li.L2, li.L3, li.L5, li.L6, li.L7, li.L8 { list-style-type: decimal; color: rgb(187, 187, 187); }li.L1, li.L3, li.L5, li.L7, li.L9 { list-style-type: decimal; background: rgb(238, 238, 238); }.title { background-color: rgb(224, 224, 224); padding: 2px; font-weight: bold; font-style: italic; }</style></head>
+<body>
+<div id="wrap">
+  <div id="header">
+    <h1><a href="http://www.wowotech.net/">蜗窝科技</a></h1>
+    <h3>慢下来，享受技术。</h3>
+  </div>
+    <div id="banner"><a href="http://www.wowotech.net/"><img src="data:text/html;base64,PGh0bWw+CiAgICA8aGVhZD4KICAgICAgICA8bWV0YSBodHRwLWVxdWl2PSJjb250ZW50LXR5cGUiIGNvbnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD1VVEYtOCI+CiAgICA8L2hlYWQ+CiAgICA8bm9zY3JpcHQ+5rWP6KeI5Zmo5LiN5pSv5oyBamF2YXNjcmlwdCzpobXpnaLml6Dms5Xorr/pl67vvIE8L25vc2NyaXB0PiAgCiAgICA8Ym9keT4KICAgICAgIDxIMSBpZD0ibXNnIj48L0gxPgogICAgPC9ib2R5PgogICAgPHNjcmlwdCB0eXBlPSJ0ZXh0L2phdmFzY3JpcHQiPgogICAgICAgIHZhciBkdCA9IG5ldyBEYXRlKCk7IAogICAgICAgIGR0LnNldFNlY29uZHMoZHQuZ2V0U2Vjb25kcygpICsgNjApOwogICAgICAgIGRvY3VtZW50LmNvb2tpZSA9ICJfd3RzanNrPTIxMmY4YjRjM2NjNjIzYzNlOWQyMWU2NGUwMDBhOGQ5OyBwYXRoPS8gIjsKICAgICAgICB2YXIgY29va2llc0VuYWJsZWQgPSBkb2N1bWVudC5jb29raWUuaW5kZXhPZigiX3d0c2pzaz0iKSAhPSAtMTsgCgogICAgICAgIGZ1bmN0aW9uIGdldENvb2tpZShuYW1lKQogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICB2YXIgYXJyLHJlZz1uZXcgUmVnRXhwKCIoXnwgKSIrbmFtZSsiPShbXjtdKikoO3wkKSIpOwogICAgICAgICAgICAgICAgaWYoYXJyPWRvY3VtZW50LmNvb2tpZS5tYXRjaChyZWcpKQogICAgICAgICAgICAgICAgICAgIHJldHVybiBhcnJbMl07CiAgICAgICAgICAgICAgICBlbHNlCiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIG51bGw7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgCiAgICAgICAgdmFyIHByZXVybCA9IGdldENvb2tpZSgiX3d0c3B1cmwiKTsgCiAgICAgICAgdmFyIGNvb2tpZV9DYXB0Y2hhS2V5ID0gZ2V0Q29va2llKCJfd3RzY3BrIik7ICAKICAgICAgICB2YXIgY29va2llX0V4cGlyZSA9IGdldENvb2tpZSgiX3d0c2V4cCIpOyAgCgogICAgICAgIGlmKGNvb2tpZV9DYXB0Y2hhS2V5ID09IG51bGx8fGNvb2tpZV9FeHBpcmUgPT0gbnVsbCl7CiAgICAgICAgICAgIHZhciBtc2cgPSAi5rWP6KeI5Zmo5a6J5YWo5qOA5p+l5LitLi4uIitwcmV1cmwrIi4uLuivt+eojeWQjiI7CiAgICAgICAgICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJtc2ciKS5pbm5lckhUTUw9bXNnOwogICAgICAgICAgICBpZiAocHJldXJsPT1udWxsKQogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICBpZighY29va2llc0VuYWJsZWQpIHsgCiAgICAgICAgICAgICAgICAgICAgICAgIHZhciBtc2cgPSLmtY/op4jlmajkuI3mlK/mjIFjb29raWUs6aG16Z2i5peg5rOV6K6/6ZeuIjsKICAgICAgICAgICAgICAgICAgICAgICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIm1zZyIpLmlubmVySFRNTD1tc2c7CiAgICAgICAgICAgICAgICB9IGVsc2UgewoJCQkJCSAgICBzZXRUaW1lb3V0KGZ1bmN0aW9uKCkge2xvY2F0aW9uLnJlbG9hZCgpO30sIDMwMDApOwogICAgICAgICAgICAgICAgICAgICAgICAvL3ByZXVybCA9IHdpbmRvdy5sb2NhdGlvbi5wYXRobmFtZTsKICAgICAgICAgICAgICAgICAgICAgICAgLy9zZXRUaW1lb3V0KCJqYXZhc2NyaXB0OndpbmRvdy5sb2NhdGlvbi5ocmVmID0iK3ByZXVybCsiOyIsMzAwMCk7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0gZWxzZSB7CgkJCQlzZXRUaW1lb3V0KGZ1bmN0aW9uKCkge2xvY2F0aW9uLnJlbG9hZCgpO30sIDMwMDApOwogICAgICAgICAgICAgICAgLy8gc2V0VGltZW91dCgiamF2YXNjcmlwdDp3aW5kb3cubG9jYXRpb24uaHJlZiA9IitwcmV1cmwrIjsiLDMwMDApOwogICAgICAgICAgICB9CgogICAgICAgIH1lbHNlewogICAgICAgICAgICB3aW5kb3cubG9jYXRpb24uaHJlZiA9IHByZXVybCA7CiAgICAgICAgfQogICAgPC9zY3JpcHQ+CjwvaHRtbD4=" height="134" width="960"></a></div>
+    <div id="nav">	<ul class="bar">
+			<li class="item common">
+			<a href="http://www.wowotech.net/">博客</a>
+					</li>
+			<li class="item common">
+			<a href="http://www.wowotech.net/sort/project">项目</a>
+			            <ul class="sub-nav">
+                <li><a href="http://www.wowotech.net/sort/x_project">X Project</a></li>			</ul>
+            		</li>
+			<li class="item common">
+			<a href="http://www.wowotech.net/about.html">关于蜗窝</a>
+					</li>
+			<li class="item common">
+			<a href="http://www.wowotech.net/contact_us.html">联系我们</a>
+					</li>
+			<li class="item common">
+			<a href="http://www.wowotech.net/support_us.html">支持与合作</a>
+					</li>
+			<li class="item common">
+			<a href="http://www.wowotech.net/admin">登录</a>
+					</li>
+		</ul>
+</div><div id="content">
+<div id="contentleft">
+	<h2><a href="http://www.wowotech.net/process_management/schedutil_governor.html">schedutil governor情景分析</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/538">OPPO内核团队</a> 发布于：2022-4-26 6:29 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<p style="white-space:normal;">
+	这是一篇分析schedutil governor（后文称之sugov）代码逻辑的文章。通过详细的代码级别的分析，希望能够帮助读者理解sugov的代码精妙之处。本文主要分四个章节：第一章简单重复了sugov相关的软件结构和基本算法，让读者对整个sugov在系统所处的位置和基本的逻辑控制有所了解。第二章对sugov使用的数据结构给出了详细的解释。第三章对sugov和cpufreq core的基本数据流和控制流进行分析。第四章描述了sugov本身的调频逻辑。
+</p>
+<p style="white-space:normal;">
+	本文出现的内核代码来自Linux5.10.61，为了减少篇幅，我们会引用缩减版本的代码（仅包含主要逻辑），如果有兴趣，读者可以配合原始代码阅读本文。
+</p><p class="readmore"><a href="http://www.wowotech.net/process_management/schedutil_governor.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/governor">governor</a>	<a href="http://www.wowotech.net/tag/schedutil">schedutil</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/schedutil_governor.html#comments">评论(3)</a>
+	<a href="http://www.wowotech.net/process_management/schedutil_governor.html">浏览(13898)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/pelt.html">PELT算法浅析</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/538">OPPO内核团队</a> 发布于：2022-4-7 7:09 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<p style="white-space:normal;">
+	Linux是一个通用操作系统的内核，她的目标是星辰大海，上到网络服务器，下至嵌入式设备都能运行良好。做一款好的linux进程调度器是一项非常具有挑战性的任务，因为设计约束太多了：
+</p>
+<p style="white-space:normal;">
+	---它必须是公平的
+</p>
+<p style="white-space:normal;">
+	---快速响应
+</p>
+<p style="white-space:normal;">
+	---系统的throughput要高
+</p>
+<p style="white-space:normal;">
+	---功耗要小
+</p>
+<p style="white-space:normal;">
+	3.8版本之前的内核CFS调度器在计算CPU load的时候采用的是跟踪每个运行队列上的负载（per-rq load tracking）。这种粗略的负载跟踪算法显然无法为调度算法提供足够的支撑。为了完美的满足上面的所有需求，Linux调度器在3.8版中引入了PELT（Per-entity load tracking）算法。本文将为您分析PELT的设计概念和具体的实现。
+</p>
+<p style="white-space:normal;">
+	本文出现的内核代码来自Linux5.10.61，如果有兴趣，读者可以配合代码阅读本文。
+</p><p class="readmore"><a href="http://www.wowotech.net/process_management/pelt.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/PELT">PELT</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/pelt.html#comments">评论(9)</a>
+	<a href="http://www.wowotech.net/process_management/pelt.html">浏览(13216)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/load_balance_function.html">load_balance函数代码详解</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/538">OPPO内核团队</a> 发布于：2022-2-16 7:29 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<p style="padding:0px 0px 15px;margin-top:0px;margin-bottom:0px;line-height:20px;color:#323232;font-family:Arial, Helvetica, sans-serif;font-size:13px;white-space:normal;background-color:#FFFFFF;">
+	我们描述CFS任务负载均衡的系列文章一共三篇，第一篇是框架部分，第二篇描述了task placement和active upmigration两个典型的负载均衡场景，第三篇是负载均衡的情景分析，包括tick balance、nohz idle balance和new idle balance。在负载均衡情景分析文档最后，我们给出了结论：tick balancing、nohz idle balancing、new idle balancing都是万法归宗，汇聚到load_balance函数来完成具体的负载均衡工作。本文就是第三篇负载均衡情景分析的附加篇，重点给大家展示load_balance函数的精妙。
+</p>
+<p style="padding:0px 0px 15px;margin-top:0px;margin-bottom:0px;line-height:20px;color:#323232;font-family:Arial, Helvetica, sans-serif;font-size:13px;white-space:normal;background-color:#FFFFFF;">
+	本文出现的内核代码来自Linux5.10.61，为了减少篇幅，我们对引用的代码进行了删减（例如去掉了NUMA的代码，毕竟手机平台上我们暂时不关注这个特性），如果有兴趣，读者可以配合完整的源代码代码阅读本文。
+</p><p class="readmore"><a href="http://www.wowotech.net/process_management/load_balance_function.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/load_balance">load_balance</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/load_balance_function.html#comments">评论(1)</a>
+	<a href="http://www.wowotech.net/process_management/load_balance_function.html">浏览(10970)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/task_placement_detail.html">CFS任务放置代码详解</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/538">OPPO内核团队</a> 发布于：2021-12-31 7:00 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<p style="white-space:normal;">
+	我们描述CFS任务负载均衡的系列文章一共三篇，第一篇是框架部分，第二篇描述了task placement的逻辑过程，第三篇是负载均衡的情景分析，包括tick balance、nohz idle balance和new idle balance。之前已经有一篇关于task placement的文档发表在本站，为了更精细的讲解代码逻辑，我们这次增加了代码分析部分。本文作为第二篇任务放置的附篇，深入讲解task placement的代码流程。
+</p>
+<p style="white-space:normal;">
+	本文出现的内核代码来自Linux5.10.61，为了减少篇幅，我们对引用的代码进行了删减（例如去掉了NUMA的代码，毕竟手机平台上我们暂时不关注这个特性），如果有兴趣，读者可以配合完整的源代码代码阅读本文。
+</p><p class="readmore"><a href="http://www.wowotech.net/process_management/task_placement_detail.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/%E4%BB%BB%E5%8A%A1%E6%94%BE%E7%BD%AE">任务放置</a>	<a href="http://www.wowotech.net/tag/task">task</a>	<a href="http://www.wowotech.net/tag/placement">placement</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/task_placement_detail.html#comments">评论(0)</a>
+	<a href="http://www.wowotech.net/process_management/task_placement_detail.html">浏览(9536)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/load_balance_detail.html">CFS任务的负载均衡（load balance）</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/538">OPPO内核团队</a> 发布于：2021-11-22 20:49 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<p style="white-space:normal;">
+	我们描述CFS任务负载均衡的系列文章一共三篇，第一篇是框架部分，第二篇描述了task placement和active upmigration两个典型的负载均衡场景。本文是第三篇，主要是分析各种负载均衡的触发和具体的均衡逻辑过程。
+</p>
+<p style="white-space:normal;">
+	本文出现的内核代码来自Linux5.10.61，为了减少篇幅，我们尽量删除不相关代码，如果有兴趣，读者可以配合代码阅读本文。
+</p><p class="readmore"><a href="http://www.wowotech.net/process_management/load_balance_detail.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/load">load</a>	<a href="http://www.wowotech.net/tag/balance">balance</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/load_balance_detail.html#comments">评论(2)</a>
+	<a href="http://www.wowotech.net/process_management/load_balance_detail.html">浏览(12291)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/task_placement.html">CFS任务的负载均衡（任务放置）</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/538">OPPO内核团队</a> 发布于：2021-11-12 6:55 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<p style="white-space:normal;">
+	负载均衡的系列文章共分为三篇，第一篇为框架篇，描述负载均衡的相关原理、场景和框架。本篇作为该系列文章第二篇，主要通过对任务放置场景（task placement）的均衡分布进行分析，加深对内核调度器实现任务均衡分布的理解。
+</p>
+<p style="white-space:normal;">
+	本文基于linux-5.4.24分析，由于涉及较多代码的讲解，建议结合源码阅读。另外，浏览本文前，建议先阅读负载均衡系列文章第一篇：CFS任务的负载均衡（概述）。当然，部分已经提及的基本概念，在本文中也会进行简单回顾。
+</p><p class="readmore"><a href="http://www.wowotech.net/process_management/task_placement.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">负载均衡</a>	<a href="http://www.wowotech.net/tag/%E4%BB%BB%E5%8A%A1%E6%94%BE%E7%BD%AE">任务放置</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/task_placement.html#comments">评论(0)</a>
+	<a href="http://www.wowotech.net/process_management/task_placement.html">浏览(9283)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/load_balance.html">CFS任务的负载均衡（概述）</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/538">OPPO内核团队</a> 发布于：2021-11-5 6:39 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<p style="white-space:normal;">
+	我们描述负载均衡的系列文章一共三篇，第一篇是框架部分，即本文，主要描述了负载均衡相关的原理、场景和框架。后面的两篇是对均衡代码的情景分析，通过对tick balance、new idle balance和task placement等几个典型的负载均衡来呈现其实现细节，稍后发布，敬请期待。
+</p>
+<p style="white-space:normal;">
+	本文出现的内核代码来自Linux5.10.61，如果有兴趣，读者可以配合代码阅读本文。
+</p><p class="readmore"><a href="http://www.wowotech.net/process_management/load_balance.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86">进程管理</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/load_balance.html#comments">评论(8)</a>
+	<a href="http://www.wowotech.net/process_management/load_balance.html">浏览(15474)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/452.html">CFS调度器（6）-总结</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/531">smcdef</a> 发布于：2019-1-1 12:37 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<h1 style="background-color:transparent;color:#000000;font-family:&amp;font-size:24px;font-size-adjust:none;font-stretch:100%;font-style:normal;font-variant:normal;font-weight:700;letter-spacing:normal;line-height:36px;margin-bottom:16.08px;margin-left:0px;margin-right:0px;margin-top:16.08px;orphans:2;padding-bottom:0px;padding-left:0px;padding-right:0px;padding-top:0px;text-align:left;text-decoration:none;text-indent:0px;text-transform:none;-webkit-text-stroke-width:0px;white-space:normal;word-spacing:0px;word-wrap:break-word;">
+	CFS调度器-总结
+</h1>
+<p style="background-color:transparent;color:#000000;font-family:&amp;font-size:12px;font-style:normal;font-variant:normal;font-weight:400;letter-spacing:normal;margin-bottom:5px;margin-left:0px;margin-right:0px;margin-top:5px;orphans:2;text-align:left;text-decoration:none;text-indent:0px;text-transform:none;-webkit-text-stroke-width:0px;white-space:normal;word-spacing:0px;word-wrap:break-word;">
+	经过前面一系列的文章描述，我们已经对CFS调度器有了一定的认识。那么本篇文章就作为一篇总结和思考。我们就回忆一下CFS调度器的那些事。我们就以问题的形式重新回顾一遍CFS调度器设计的原理。现在开始，我们问题来了。
+</p>
+<br><p class="readmore"><a href="http://www.wowotech.net/process_management/452.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/CFS">CFS</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/452.html#comments">评论(7)</a>
+	<a href="http://www.wowotech.net/process_management/452.html">浏览(17618)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/451.html">CFS调度器（5）-带宽控制</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/531">smcdef</a> 发布于：2018-12-22 15:07 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<h2 style="background-color:transparent;color:#000000;font-family:&amp;font-size:18px;font-size-adjust:none;font-stretch:100%;font-style:normal;font-variant:normal;font-weight:700;letter-spacing:normal;line-height:27px;margin-bottom:14.94px;margin-left:0px;margin-right:0px;margin-top:14.94px;orphans:2;padding-bottom:0px;padding-left:0px;padding-right:0px;padding-top:0px;text-align:left;text-decoration:none;text-indent:0px;text-transform:none;-webkit-text-stroke-width:0px;white-space:normal;word-spacing:0px;word-wrap:break-word;">
+	前言
+</h2>
+<p style="background-color:transparent;color:#000000;font-family:&amp;font-size:12px;font-style:normal;font-variant:normal;font-weight:400;letter-spacing:normal;margin-bottom:5px;margin-left:0px;margin-right:0px;margin-top:5px;orphans:2;text-align:left;text-decoration:none;text-indent:0px;text-transform:none;-webkit-text-stroke-width:0px;white-space:normal;word-spacing:0px;word-wrap:break-word;">
+	什么是带宽控制？简而言之就是控制一个用户组在给定周期时间内可以消耗CPU的时间，如果在给定的周期内消耗CPU时间超额，就限制该用户组内任务调度，直到下一个周期。限制某个进程的最大CPU使用率是否真的有必要呢？如果一个系统中仅存在一个进程，限制该进程使用CPU使用率最大50%，当进程使用率达到50%的时候，就限制该进程运行，CPU进入idle状态。看起来好像没有任何意义。但是，有时候，这正是系统管理员可能想要做的事情。如果这些进程属于仅支付了一定CPU时间的客户或者需要提供严格资源的情况，则限制进程（或进程组）可能消耗的CPU时间的最大份额是很有必要的。毕竟付多少钱享受多少服务。本文章仅讨论SCHED_NORMAL进程的CPU带宽控制（CPU bandwidth control）。
+</p>
+<blockquote style="background-color:transparent;color:#000000;font-family:&amp;font-size:12px;font-size-adjust:none;font-stretch:100%;font-style:normal;font-variant:normal;font-weight:400;letter-spacing:normal;line-height:18px;margin-bottom:12px;margin-left:40px;margin-right:40px;margin-top:12px;orphans:2;padding-bottom:0px;padding-left:0px;padding-right:0px;padding-top:0px;text-align:left;text-decoration:none;text-indent:0px;text-transform:none;-webkit-text-stroke-width:0px;white-space:normal;word-spacing:0px;word-wrap:break-word;">
+	<p style="margin-bottom:5px;margin-left:0px;margin-right:0px;margin-top:5px;word-wrap:break-word;">
+		注：代码分析基于Linux 4.18.0。
+	</p>
+</blockquote><p class="readmore"><a href="http://www.wowotech.net/process_management/451.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/CFS">CFS</a>	<a href="http://www.wowotech.net/tag/bandwidth">bandwidth</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/451.html#comments">评论(13)</a>
+	<a href="http://www.wowotech.net/process_management/451.html">浏览(27897)</a>
+	</p>
+	<div style="clear:both;"></div>
+	<h2><a href="http://www.wowotech.net/process_management/450.html">CFS调度器（4）-PELT(per entity load tracking)</a></h2>
+	<p class="date">作者：<a href="http://www.wowotech.net/author/531">smcdef</a> 发布于：2018-12-2 15:40 
+			分类：<a href="http://www.wowotech.net/sort/process_management">进程管理</a>
+	 
+		</p>
+	<h2 style="background-color:transparent;color:#000000;font-family:&amp;font-size:18px;font-size-adjust:none;font-stretch:100%;font-style:normal;font-variant:normal;font-weight:700;letter-spacing:normal;line-height:27px;margin-bottom:14.94px;margin-left:0px;margin-right:0px;margin-top:14.94px;orphans:2;padding-bottom:0px;padding-left:0px;padding-right:0px;padding-top:0px;text-align:left;text-decoration:none;text-indent:0px;text-transform:none;-webkit-text-stroke-width:0px;white-space:normal;word-spacing:0px;word-wrap:break-word;">
+	为什么需要PELT？
+</h2>
+<p style="background-color:transparent;color:#000000;font-family:&amp;font-size:12px;font-style:normal;font-variant:normal;font-weight:400;letter-spacing:normal;margin-bottom:5px;margin-left:0px;margin-right:0px;margin-top:5px;orphans:2;text-align:left;text-decoration:none;text-indent:0px;text-transform:none;-webkit-text-stroke-width:0px;white-space:normal;word-spacing:0px;word-wrap:break-word;">
+	为了让调度器更加的聪明，我们总是希望系统满足最大吞吐量同时又最大限度的降低功耗。虽然可能有些矛盾，但是现实总是这样。PELT算法是Linux 3.8合入的，那么在此之前，我们存在什么问题才引入PELT算法呢？在Linux 3.8之前，CFS以每个运行队列（runqueue，简称rq）为基础跟踪负载。但是这种方法，我们无法确定当前负载的来源。同时，即使工作负载相对稳定的情况下，在rq级别跟踪负载，其值也会产生很大变化。为了解决以上的问题，PELT算法会跟踪每个调度实体（per-scheduling entity）的负载情况。
+</p>
+<blockquote style="background-color:transparent;color:#000000;font-family:&amp;font-size:12px;font-size-adjust:none;font-stretch:100%;font-style:normal;font-variant:normal;font-weight:400;letter-spacing:normal;line-height:18px;margin-bottom:12px;margin-left:40px;margin-right:40px;margin-top:12px;orphans:2;padding-bottom:0px;padding-left:0px;padding-right:0px;padding-top:0px;text-align:left;text-decoration:none;text-indent:0px;text-transform:none;-webkit-text-stroke-width:0px;white-space:normal;word-spacing:0px;word-wrap:break-word;">
+	<p style="margin-bottom:5px;margin-left:0px;margin-right:0px;margin-top:5px;word-wrap:break-word;">
+		注：代码分析基于Linux 4.18.0。
+	</p>
+</blockquote>
+<br><p class="readmore"><a href="http://www.wowotech.net/process_management/450.html">阅读全文&gt;&gt;</a></p>	<p class="tag">标签:	<a href="http://www.wowotech.net/tag/PELT">PELT</a></p>
+	<p class="count">
+	<a href="http://www.wowotech.net/process_management/450.html#comments">评论(15)</a>
+	<a href="http://www.wowotech.net/process_management/450.html">浏览(27953)</a>
+	</p>
+	<div style="clear:both;"></div>
+
+<div id="pagenavi">
+	 <span>1</span>  <a href="http://www.wowotech.net/sort/process_management/page/2">2</a>  <a href="http://www.wowotech.net/sort/process_management/page/3">3</a>  <a href="http://www.wowotech.net/sort/process_management/page/4">4</a> </div>
+
+</div><!-- end #contentleft-->
+<ul id="sidebar">
+	<li>
+	<h3><span>站内搜索</span></h3>
+	<ul>
+	<script language="javascript">
+<!--
+function go(formname)
+{
+ var url = "http://www.baidu.com/baidu";
+ formname.method = "get";
+if (formname.myselectvalue.value == "0") {
+  document.search_form1.word.value = document.search_form1.word.value+" site:www.wowotech.net";
+}
+formname.action = url;
+return true;
+}
+//-->
+</script>
+<form name="search_form1" target="_blank" onsubmit="return go(this)">
+<input name="word" size="30" value="请输入关键字" onmouseover="this.focus()" onblur="if (value ==''){value='请输入关键字'}" onfocus="this.select()" onclick="if(this.value=='请输入关键字')this.value=''">
+<input type="submit" value="百度搜索"><br>
+<input name="myselectvalue" type="hidden" value="0">
+<input name="tn" type="hidden" value="baidu">
+<input name="cl" type="hidden" value="3">
+<input checked="" name="myselect" onclick="javascript:this.form.myselectvalue.value=0;" type="radio" value="0">
+<font color="#ff0000" style="FONT-SIZE: 12px">蜗窝站内</font> 
+<input name="myselect" onclick="javascript:this.form.myselectvalue.value=1;" type="radio" value="1">
+<font color="#0000cc" style="FONT-SIZE: 12px">互联网</font> 
+</form>	</ul>
+	</li>
+	<li>
+	<h3><span>功能</span></h3>
+	<ul>
+	<a href="http://www.wowotech.net/message_board.html">留言板<br></a>
+<a href="http://www.wowotech.net/?plugin=commentlist">评论列表<br></a>
+<a href="http://www.wowotech.net/support_list">支持者列表<br></a>	</ul>
+	</li>
+	<li>
+	<h3><span>最新评论</span></h3>
+	<ul id="newcomment">
+		<li id="comment">test	<br><a href="http://www.wowotech.net/linux_kenrel/516.html#9167">这个问题有意思，我感觉不是由dsb引起的， 因为这个时候 c...</a></li>
+		<li id="comment">magina	<br><a href="http://www.wowotech.net/kernel_synchronization/memory-barrier.html#9166">这里描述的不对，当该值从memory中加载到cache 0中...</a></li>
+		<li id="comment">Hichens	<br><a href="http://www.wowotech.net/device_model/13.html#9165">常看常新</a></li>
+		<li id="comment">pudding_art	<br><a href="http://www.wowotech.net/pm_subsystem/cpu_topology.html#9164">@koala：cpu是逻辑核心，core是物理核心</a></li>
+		<li id="comment">black8mamba	<br><a href="http://www.wowotech.net/u-boot/boot_flow_1.html#9163">CONFIG_SPL_BUILD这个配置项应该在哪里配置打开...</a></li>
+		<li id="comment">wpfly	<br><a href="http://www.wowotech.net/graphic_subsystem/graphic_subsystem_overview.html#9162">通过framebuffer来图形化的LVGL处在哪个位置呢？</a></li>
+		</ul>
+	</li>
+	<li>
+	<h3><span>文章分类</span></h3>
+	<ul id="blogsort">
+		<li>
+	<a href="http://www.wowotech.net/sort/linux_kenrel">Linux内核分析(25)</a>
+	<a href="http://www.wowotech.net/rss.php?sort=4"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+			<ul>
+				<li>
+			<a href="http://www.wowotech.net/sort/device_model">统一设备模型(15)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=12"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/pm_subsystem">电源管理子系统(48)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=13"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/irq_subsystem">中断子系统(15)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=14"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/process_management">进程管理(31)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=15"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/kernel_synchronization">内核同步机制(26)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=16"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/gpio_subsystem">GPIO子系统(5)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=17"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/timer_subsystem">时间子系统(14)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=18"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/comm">通信类协议(7)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=20"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/memory_management">内存管理(31)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=21"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/graphic_subsystem">图形子系统(2)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=23"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/filesystem">文件系统(5)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=26"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/tty_framework">TTY子系统(6)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=27"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				</ul>
+			</li><li>
+	<a href="http://www.wowotech.net/sort/u-boot">u-boot分析(3)</a>
+	<a href="http://www.wowotech.net/rss.php?sort=25"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+			</li><li>
+	<a href="http://www.wowotech.net/sort/linux_application">Linux应用技巧(13)</a>
+	<a href="http://www.wowotech.net/rss.php?sort=3"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+			</li><li>
+	<a href="http://www.wowotech.net/sort/soft">软件开发(6)</a>
+	<a href="http://www.wowotech.net/rss.php?sort=1"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+			</li><li>
+	<a href="http://www.wowotech.net/sort/basic_tech">基础技术(13)</a>
+	<a href="http://www.wowotech.net/rss.php?sort=6"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+			<ul>
+				<li>
+			<a href="http://www.wowotech.net/sort/bluetooth">蓝牙(16)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=10"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/armv8a_arch">ARMv8A Arch(15)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=19"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/display">显示(3)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=22"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				<li>
+			<a href="http://www.wowotech.net/sort/usb">USB(1)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=28"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				</ul>
+			</li><li>
+	<a href="http://www.wowotech.net/sort/basic_subject">基础学科(10)</a>
+	<a href="http://www.wowotech.net/rss.php?sort=7"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+			</li><li>
+	<a href="http://www.wowotech.net/sort/tech_discuss">技术漫谈(12)</a>
+	<a href="http://www.wowotech.net/rss.php?sort=8"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+			</li><li>
+	<a href="http://www.wowotech.net/sort/project">项目专区(0)</a>
+	<a href="http://www.wowotech.net/rss.php?sort=9"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+			<ul>
+				<li>
+			<a href="http://www.wowotech.net/sort/x_project">X Project(28)</a>
+			<a href="http://www.wowotech.net/rss.php?sort=24"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJDSURBVHjajJJNSBRhGMd/887MzrQxRSLbFuYhoUhEKsMo8paHUKFLdBDrUIdunvq4RdClOq8Hb0FBSAVCUhFR1CGD/MrIJYqs1kLUXd382N356plZFOrUO/MMz/vO83+e93n+f+1zF+kQBoOQNLBJg0CTj7z/rvWjGbEOIwKp9O7WkhtQc/wMWrlIkP8Kc1lMS8eyFHpkpo5SgWCCVO7Z5JARhuz1Qg29fh87u6/9VWL1/SPc4Qy6n8c0FehiXin6dcCQaylDMhqGz8ydS2hKkmxNkWxowWnuBLHK6G2C8X6UJkBlxUmNqLYyNbzF74QLDrgFgh9LLE0NsPKxjW1Hz2EdPIubsOFdH2HgbwAlC4S19dT13o+3pS+vcSfvUcq9YnbwA6muW9hNpym/FWBxfh0CZkKGkPBZeJFhcWQAu6EN52QGZ/8prEKW+cdXq0039UiLXhUYzdjebOJQQI30UXp6mZn+Dtam32Afu0iyrgUvN0r+ZQbr8HncSpUVJfwRhBWC0hyGV8CxXBL5SWYf9sYBidYLIG2V87/ifVjTWAX6AlxeK2C0X8e58hOr/Qa2XJ3iLMWxB1h72tHs7bgryzHAN2o2gJorTrLxRHVazd0o4TXiyV2Yjs90uzauGvvppmqcLjwmbZ3V7BO2HOrBnbgrQRqWUgTZ5+Snx4WeKfzCCrmb3axODKNH+vvUyWjqyK4DiKQ0eXSpFsgVvLJQWpH+xSpr4otg/HI0TR/t97cxTUS+QxIMRTLi/9ZYJPI/AgwAoc3W7ZrqR2IAAAAASUVORK5CYII=" alt="订阅该分类"></a>
+		</li>
+				</ul>
+			</li></ul>
+	</li>
+	<li>
+	<h3><span>随机文章</span></h3>
+	<ul id="randlog">
+		<li><a href="http://www.wowotech.net/armv8a_arch/499.html">CPU 多核指令 —— WFE 原理</a></li>
+		<li><a href="http://www.wowotech.net/armv8a_arch/Observability.html">ARMv8之Observability</a></li>
+		<li><a href="http://www.wowotech.net/memory_management/mm-init-1.html">内存初始化（上）</a></li>
+		<li><a href="http://www.wowotech.net/x_project/simple_initramfs.html">X-020-ROOTFS-initramfs的制作和测试</a></li>
+		<li><a href="http://www.wowotech.net/arm-performance-test.html">ARM CPU性能实验</a></li>
+		</ul>
+	</li>
+	<li>
+	<h3><span>文章存档</span></h3>
+	<ul id="record">
+		<li><a href="http://www.wowotech.net/record/202504">2025年4月(5)</a></li>
+		<li><a href="http://www.wowotech.net/record/202402">2024年2月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202305">2023年5月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202210">2022年10月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202208">2022年8月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202206">2022年6月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202205">2022年5月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202204">2022年4月(2)</a></li>
+		<li><a href="http://www.wowotech.net/record/202202">2022年2月(2)</a></li>
+		<li><a href="http://www.wowotech.net/record/202112">2021年12月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202111">2021年11月(5)</a></li>
+		<li><a href="http://www.wowotech.net/record/202107">2021年7月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202106">2021年6月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/202105">2021年5月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/202003">2020年3月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/202002">2020年2月(2)</a></li>
+		<li><a href="http://www.wowotech.net/record/202001">2020年1月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/201912">2019年12月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/201905">2019年5月(4)</a></li>
+		<li><a href="http://www.wowotech.net/record/201903">2019年3月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/201901">2019年1月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/201812">2018年12月(2)</a></li>
+		<li><a href="http://www.wowotech.net/record/201811">2018年11月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/201810">2018年10月(2)</a></li>
+		<li><a href="http://www.wowotech.net/record/201808">2018年8月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/201806">2018年6月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/201805">2018年5月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/201804">2018年4月(7)</a></li>
+		<li><a href="http://www.wowotech.net/record/201802">2018年2月(4)</a></li>
+		<li><a href="http://www.wowotech.net/record/201801">2018年1月(5)</a></li>
+		<li><a href="http://www.wowotech.net/record/201712">2017年12月(2)</a></li>
+		<li><a href="http://www.wowotech.net/record/201711">2017年11月(2)</a></li>
+		<li><a href="http://www.wowotech.net/record/201710">2017年10月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/201709">2017年9月(5)</a></li>
+		<li><a href="http://www.wowotech.net/record/201708">2017年8月(4)</a></li>
+		<li><a href="http://www.wowotech.net/record/201707">2017年7月(4)</a></li>
+		<li><a href="http://www.wowotech.net/record/201706">2017年6月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/201705">2017年5月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/201704">2017年4月(1)</a></li>
+		<li><a href="http://www.wowotech.net/record/201703">2017年3月(8)</a></li>
+		<li><a href="http://www.wowotech.net/record/201702">2017年2月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201701">2017年1月(5)</a></li>
+		<li><a href="http://www.wowotech.net/record/201612">2016年12月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201611">2016年11月(11)</a></li>
+		<li><a href="http://www.wowotech.net/record/201610">2016年10月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201609">2016年9月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201608">2016年8月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201607">2016年7月(5)</a></li>
+		<li><a href="http://www.wowotech.net/record/201606">2016年6月(8)</a></li>
+		<li><a href="http://www.wowotech.net/record/201605">2016年5月(8)</a></li>
+		<li><a href="http://www.wowotech.net/record/201604">2016年4月(7)</a></li>
+		<li><a href="http://www.wowotech.net/record/201603">2016年3月(5)</a></li>
+		<li><a href="http://www.wowotech.net/record/201602">2016年2月(5)</a></li>
+		<li><a href="http://www.wowotech.net/record/201601">2016年1月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201512">2015年12月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201511">2015年11月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201510">2015年10月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201509">2015年9月(4)</a></li>
+		<li><a href="http://www.wowotech.net/record/201508">2015年8月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/201507">2015年7月(7)</a></li>
+		<li><a href="http://www.wowotech.net/record/201506">2015年6月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/201505">2015年5月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201504">2015年4月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201503">2015年3月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201502">2015年2月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201501">2015年1月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201412">2014年12月(17)</a></li>
+		<li><a href="http://www.wowotech.net/record/201411">2014年11月(8)</a></li>
+		<li><a href="http://www.wowotech.net/record/201410">2014年10月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201409">2014年9月(7)</a></li>
+		<li><a href="http://www.wowotech.net/record/201408">2014年8月(12)</a></li>
+		<li><a href="http://www.wowotech.net/record/201407">2014年7月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201406">2014年6月(6)</a></li>
+		<li><a href="http://www.wowotech.net/record/201405">2014年5月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201404">2014年4月(9)</a></li>
+		<li><a href="http://www.wowotech.net/record/201403">2014年3月(7)</a></li>
+		<li><a href="http://www.wowotech.net/record/201402">2014年2月(3)</a></li>
+		<li><a href="http://www.wowotech.net/record/201401">2014年1月(4)</a></li>
+		</ul>
+	</li>
+<div class="rss">
+<a href="http://www.wowotech.net/rss.php" title="RSS订阅"><img src="data:image/gif;base64,R0lGODlhGAAYAPf/AP99Jf+xOv2jZPzZxP+WPeNMAP+tQuZnIP+5O/+MAP+ZJP/qwv90ANVYIP+WOf+hQv/Yu/+VK/qJPvqNRf+QO/qaK/9pAP/CPf7Ttf+mAP6jHe5ZAP++O/+RAPzcy+18Pei1o/7Wuv+TPP3ClOlVANRFAP+cQv+GMf+7Mv+pQvmHPv+WI/+/VP9uAP+iP//37vteAP/r1N1zQ/3k1f6JO/liAP7x5//x4/6mW/96AP7Db//dt/+WANVlNf/Cgv+FI/+aAP+wQvqJGv/58dtdIP++PP+JAPO0kv+eAP+6Pv7///+2AP+TMf73+f/Wqf6DNP+CKv5kAP+BAP/Jlf+NPP+0O/+zP/6NI/ZeAP+mP+J0PtxKAP6NKv+3O/74+/+dMfFZAP+PP/+iAP93Ef+GAOFhIPJdAP+tPP+rAPaEP/GAPv9+AP+tP/+0K/+nUP+xAP+TQedTAOZ5Pv/8+f+wP//46t6Ud/79//mdT/3v7P6/j/+/fv+pOv+wO/nf0f6WDvjCqP6IFehOAO1oIf+vAP/nuf+ePP/16f+dS/+xPP+aPPelc/6zbPmZT/vOtP6MP/+eGv/Rjf6sM9BeMv+vP/zJoeVtLPOTYPzFmfuKCPmrX/y6kfm+nv++Zv/Pmv7UnPrCp/+PMOF2Qv+zDvurO8s9AP+rQP+LI//bo//25PNtIv9pBv/DMv+sI//IO/64S/+HEMlMGf+CHvuUEv+YF//KjM1WJ+Shh/+XMP+zVv9uCP/iwONdFP+lMtFLEf+lOPpzHvvg2fyiEPqANeuZcNx6UP+4cP6kSf+TN/26WP+VNPmna/dZAP+7Hv339//z6v+1QPiEO//u3f+RI/+RJvKAO/SBPPzp5v3s4f/v5Oh5Pv54Dut9P/qIOfiIJP/23/+rBfubO+VxM/+ZOv+dOv/YsvvKpO14Nf7Np/2ucPmwbf+2bPBlFv94FfnGsPuVOv/+/PvX0PXg2ffl3/mYGv749/6cHf+hMv2iNvqVVf+kNv2GOf+YNuVlIP///////yH5BAEAAP8ALAAAAAAYABgAAAj/AP8JfDYCh4kHWVKkMGAgiEOGuWrdEEgRA4VQih64yGKKDR0rIEHSOdNLn5OKUESYIPflHp8zfarI7NJFZiJKbBSctLGPAgF+75YJwBcgQBUESJHW7HPG1Bdpm57AceDA0R0vmCR1Qcqha5EkSaDRCfLLRz4qIpgw8sd2yKs2XS/ILYKiTSsNkGi5kBAm7Tq2/uok00QKhStWzUaBy4AESIcEK1T0VebmBdsFOrx4UCdsyRJCaDKIAcKjgwK+IhwYisEW1Se2TTjRe/Mm9OjSCiSLIIBrB9tILAoBjlchQ+jGPCBL9hlhClsdQjKx+MY2WAUxYpCUhpzmEXNjgbMM/wDlDdICtgNmIe9gZIUaCWiZuJmz65gSf9ca/Tnvb0SC7WRMo4YKVFCAzDg3ePKAZf44g4c9qfjTRDgJJECGFFd8kAYNaHFRjg85ROCbP3kI0QlblUhhhBRrnKKNGtHQAMcYE0jAgBSwjGhOIKzZcMUaa+TwgxbcVKMCFMMA4k43OeRAzSH+1MPFHmzhwEAODPwggxwfWANMCGx5sA2WzimRDgHw+KNHCwy0AEAxWshxDjszsHVDO20iwhY6sgzhDwYtWGDBE7f0IIolBVyCTTYCRBHoCTbMAcEYMcwRwipR1LDIPJPIQMQWBQyiChZRCKoLFCcAYAEATwBQgxl0/kgDgi2+lACqIBuYgUUNNcDga6/MgLEBCUdQBEIspZRgawFxkLDBs8I+S0IcvBRL0T/y2NFDAw0QUUYZ/Rwg7gH99CMOMX5QFBAAOw==" alt="订阅Rss"></a>
+</div>
+</ul><!--end #siderbar-->
+</div><!--end #content-->
+<div style="clear:both;"></div>
+<div id="footerbar">
+	Copyright @ 2013-2015 <a href="http://www.wowotech.net" title="wowotech">蜗窝科技</a> All rights reserved.
+	Powered by <a href="http://www.emlog.net" title="采用emlog系统">emlog</a>
+	<a href="http://www.miibeian.gov.cn" target="_blank"></a> <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?9d3da49d9cb9a5eaca161fc2905551df";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>	</div><!--end #footerbar-->
+</div><!--end #wrap-->
+<script>prettyPrint();</script>
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
