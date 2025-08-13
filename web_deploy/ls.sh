@@ -21,13 +21,14 @@ html_head="<!DOCTYPE html>
         function setHeightToContent() {
           var iframe = document.getElementById('content-frame');
           iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
-          iframe.onload = function() {
-            var github_proxy_input = document.getElementById('github-proxy');
-            var github_proxy = github_proxy_input.value;
-            iframe.contentWindow.postMessage({ github_proxy }, \"*\");
-          };
         };
         window.onload = setHeightToContent;
+        function setGithubProxy() {
+          var github_proxy_input = document.getElementById('github-proxy');
+          var github_proxy = github_proxy_input.value;
+          iframe.contentWindow.postMessage({ github_proxy }, \"*\");
+          console.log(github_proxy);
+        };
       </script>
     </head>
     <body>
@@ -45,7 +46,11 @@ html_head="<!DOCTYPE html>
               
     html_mid="</td></tr>
               <tr>
-                 <td><a href=\"https://github.akams.cn/\">Github Proxy:</a><input id='github-proxy' value=\"https://gh.llkk.cc/\"></input></td>
+                 <td>
+                   <a href=\"https://github.akams.cn/\">Github Proxy:</a><br>
+                   <input id='github-proxy' value=\"https://gh.llkk.cc/\"></input><br>
+                   <button onclick='setGithubProxy()'>Set</button>
+                 </td>
               </tr>
             </tbody>
           </table>
@@ -129,17 +134,16 @@ echo "<!DOCTYPE html>
   <html>
     <head>
       <script>
+        var github_proxy;
         function clickBackup(obj) {
           var href = obj.getAttribute(\"href\");
-          var github_proxy_input = document.getElementById('github-proxy');
-          var github_proxy = github_proxy_input.value;
           var new_href = href + \"&github_proxy=\" + github_proxy;
           console.log(new_href);
           obj.setAttribute(\"href\", new_href);
           return true;
         }
         window.addEventListener(\"message\", function(event) {
-          var github_proxy = event.data.github_proxy;
+          github_proxy = event.data.github_proxy;
           console.log(github_proxy);
         });
       </script>
