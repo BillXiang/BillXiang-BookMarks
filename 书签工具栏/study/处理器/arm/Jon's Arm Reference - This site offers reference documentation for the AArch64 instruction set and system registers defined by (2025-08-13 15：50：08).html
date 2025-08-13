@@ -1,0 +1,452 @@
+<!-- Filename: 书签工具栏/study/处理器/arm/Jon's Arm Reference - This site offers reference documentation for the AArch64 instruction set and system registers defined by (2025-08-13 15：50：08).html
+ Page saved with X-Webpage-Conserve 
+ url: https://arm.jonpalmisc.com/
+ Summary: 
+-->
+<html><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="This site offers reference documentation for the AArch64 instruction set and system registers defined by the Armv8-A and Armv9-A architectures.">
+
+    <link rel="stylesheet" href="/static/normalize.css">
+    <link rel="stylesheet" href="/static/main.css">
+
+    <title>Jon's Arm Reference</title>
+  <style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>html { line-height: 1.15; }body { margin: 0px; }main { display: block; }h1 { font-size: 2em; margin: 0.67em 0px; }hr { box-sizing: content-box; height: 0px; overflow: visible; }pre { font-family: monospace, monospace; font-size: 1em; }a { background-color: transparent; }abbr[title] { border-bottom: medium; text-decoration: underline dotted; }b, strong { font-weight: bolder; }code, kbd, samp { font-family: monospace, monospace; font-size: 1em; }small { font-size: 80%; }sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }sub { bottom: -0.25em; }sup { top: -0.5em; }img { border-style: none; }button, input, optgroup, select, textarea { font-family: inherit; font-size: 100%; line-height: 1.15; margin: 0px; }button, input { overflow: visible; }button, select { text-transform: none; }button, [type="button"], [type="reset"], [type="submit"] { appearance: button; }button:focus-visible, [type="button"]:focus-visible, [type="reset"]:focus-visible, [type="submit"]:focus-visible { outline: buttontext dotted 1px; }fieldset { padding: 0.35em 0.75em 0.625em; }legend { box-sizing: border-box; color: inherit; display: table; max-width: 100%; padding: 0px; white-space: normal; }progress { vertical-align: baseline; }textarea { overflow: auto; }[type="checkbox"], [type="radio"] { box-sizing: border-box; padding: 0px; }[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button { height: auto; }[type="search"] { appearance: textfield; outline-offset: -2px; }[type="search"]::-webkit-search-decoration { appearance: none; }::-webkit-file-upload-button { appearance: button; font: inherit; }details { display: block; }summary { display: list-item; }template { display: none; }[hidden] { display: none; }</style><style>@font-face { font-family: "BerkeleyMonoWeb"; src: url("/static/BerkeleyMono-Regular.woff2") format("woff2"); font-weight: 400; }@font-face { font-family: "BerkeleyMonoWeb"; src: url("/static/BerkeleyMono-Bold.woff2") format("woff2"); font-weight: 700; }:root { --font-main: "BerkeleyMonoWeb", "SF Mono", ui-monospace, monospace; --font-largest: 1.73rem; --font-large: 1.44rem; --font-larger: 1.22rem; --pad: 1.2rem; --color-fg-primary: #000000; --color-fg-alt: #7f10d0; --color-bg-primary: #ffffff; --color-bg-secondary: #f2f2f2; --color-bg-alt: #f0f1ff; --color-bg-hint: #f8f0d0; --color-bg-detail: #e0f6e0; --color-accent: #0031a9; --color-selection: #efdfff; --color-highlight: var(--color-bg-hint); --border: 1px solid var(--color-fg-primary); --margin-block: var(--pad) 0; --padding-listing-v: calc(var(--pad) / 2); --padding-listing-h: var(--pad); --padding-listing: var(--padding-listing-v) var(--padding-listing-h); }@media (prefers-color-scheme: dark) {
+  :root { --color-fg-primary: #ffffff; --color-fg-alt: #9f80ff; --color-bg-primary: #000000; --color-bg-secondary: #100f10; --color-bg-alt: #0e183a; --color-bg-hint: #381d0f; --color-bg-detail: #092f1f; --color-accent: #2fafff; --color-selection: #4f3d88; --color-highlight: #7a6100; }
+}* { box-sizing: border-box; margin: 0px; }::selection { background: var(--color-selection); }html { font-size: 12px; padding: var(--indent); background: var(--color-bg-primary); color: var(--color-fg-primary); }body { font-family: var(--font-main); line-height: 1.4; max-width: 54rem; margin: 0px auto; padding: var(--pad); }h1, h2, h3 { margin-top: 1.75em; margin-bottom: 0.75em; }h1 { font-size: var(--font-largest); }h2 { font-size: var(--font-large); text-transform: uppercase; }h3 { font-size: var(--font-larger); }h3.classheading { text-transform: none; display: flex; }h3.classheading br { display: none; }h3.classheading span { font-size: inherit !important; margin-left: 0.6em; }hr { border-right: medium; border-bottom: medium; border-left: medium; border-image: none; border-top: 1px dashed var(--color-fg-primary); margin: var(--margin-block); }p { margin: var(--margin-block); }ul { list-style: none; padding-left: var(--pad); }:not(li) > ul > li { padding-left: var(--pad); }ul li::before { content: "*"; margin: 0 calc(var(--pad) / 2) 0 calc(var(--pad) * -1); }li { margin: calc(var(--pad) / 2) 0; }a[href] { color: var(--color-accent); }mark { background: var(--color-highlight); color: var(--color-fg); }table { border-collapse: collapse; }table td { vertical-align: baseline; }.regdiagram { width: 100%; font-size: 0.8rem; margin: var(--margin-block); }.regdiagram td { vertical-align: middle; width: 3%; padding: 1px; }.regdiagram thead td { font-size: 0.7rem; }.regdiagram tbody td.r { border-right: var(--border); }.regdiagram tbody td.l { border-left: var(--border); }.regdiagram tbody td.lr { border-left: var(--border); border-right: var(--border); }.regdiagram tr.firstrow td { border-top: var(--border); border-bottom: var(--border); }li .asm-code, .armarm-xref { color: var(--color-fg-alt); }.encoding .asm-code { padding: var(--padding-listing); background: var(--color-bg-secondary); }h4.encoding .asm-code { font-weight: normal; }p.pseudocode { background: var(--color-bg-alt); padding: var(--padding-listing); white-space: pre; overflow-x: scroll; }span.pseudocode { white-space: nowrap; }.field { margin-left: var(--pad); }.note { background: var(--color-bg-hint); padding: var(--padding-listing); margin: var(--margin-block) 0; }span.note-header { display: none; }col.asyn-l { width: 7.2rem; }col.enctype-l { width: 99%; }table.valuetable, table.access_instructions { margin: var(--margin-block); }table.valuetable { margin-left: var(--pad); }table.valuetable th, table.valuetable td, table.aliastable th, table.aliastable td, table.access_instructions th, table.access_instructions td { padding-right: var(--pad); text-align: left; }table.access_instructions { background: var(--color-bg-detail); border-collapse: separate; width: 100%; }table.access_instructions th:first-child, table.access_instructions td:first-child { padding-left: var(--padding-listing-h); }table.access_instructions tr:first-child > * { padding-top: var(--padding-listing-v); }table.access_instructions tr:last-child > * { padding-bottom: var(--padding-listing-v); }.topbar { margin: 1rem 0.5rem 0rem; }p.versions { display: none; }.pagefind-ui { margin-top: var(--pad); }.pagefind-ui__form { display: flex; flex-direction: column; }.pagefind-ui__search-input { flex: 1 1 0%; scroll-margin-top: 2rem; background: var(--color-bg-secondary); color: var(--color-fg-primary); border: var(--border); appearance: none; padding: calc(var(--pad) / 2); }.pagefind-ui__search-input:focus { border-color: var(--color-accent); outline: none; }.pagefind-ui__search-clear { display: none; }</style></head>
+
+  <body>
+    <h1>Jon's Arm Reference</h1>
+
+    <p>
+      This site offers reference documentation for the AArch64 instruction set
+      and system registers defined by the Armv8-A and Armv9-A architectures.
+    </p>
+
+    <p>
+      You can use the search field below (and at the top of every page) to
+      search for an instruction or system register. Alternatively, you can browse
+      the full listings manually:
+    </p>
+
+    <ul>
+      <li>All Instructions:
+        <a href="/latest_aarch64/index.html">Base</a> |
+        <a href="/latest_aarch64/fpsimdindex.html">SIMD</a> |
+        <a href="/latest_aarch64/sveindex.html">SVE</a> |
+        <a href="/latest_aarch64/mortlachindex.html">SME</a>
+      </li>
+      <li>All Registers: <a href="/latest_sysreg/AArch64-regindex.html">AArch64</a> | <a href="/latest_sysreg/AArch32-regindex.html">AArch32</a></li>
+    </ul>
+
+    <p>
+      If you find this site useful or have any suggestions, don't hesitate to
+      <a href="https://jonpalmisc.com/contact">let me know</a>.
+      <br>
+      <br>
+    </p>
+
+    <div id="search"><div class="pagefind-ui svelte-e9gkc3"><form class="pagefind-ui__form svelte-e9gkc3" role="search" aria-label="Search this site" action="javascript:void(0);"><input class="pagefind-ui__search-input svelte-e9gkc3" type="text" placeholder="Search... (CTRL/CMD+K)" autocapitalize="none" enterkeyhint="search" spellcheck="false"> <button class="pagefind-ui__search-clear svelte-e9gkc3 pagefind-ui__suppressed">Clear</button> <div class="pagefind-ui__drawer svelte-e9gkc3 pagefind-ui__hidden"> </div></form></div></div>
+
+    <p class="note">
+      If the search field above isn't working, your browser either does not
+      support <a href="https://webassembly.org">WebAssembly</a> or it has been
+      disabled, e.g. in Apple's
+      <a href="https://support.apple.com/en-us/105120">Lockdown Mode</a>.
+    </p>
+
+    <script src="/pagefind/pagefind-ui.js"></script>
+    <script src="/static/pagefind.js"></script>
+  <!-- Cloudflare Pages Analytics --><script defer="" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="{&quot;token&quot;: &quot;de55e78a4e194365a81a0724c5c0ee91&quot;}"></script><!-- Cloudflare Pages Analytics -->
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
