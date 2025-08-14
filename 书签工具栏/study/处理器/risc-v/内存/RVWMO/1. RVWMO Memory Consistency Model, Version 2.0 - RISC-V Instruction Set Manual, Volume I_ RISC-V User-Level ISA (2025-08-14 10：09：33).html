@@ -1,0 +1,2427 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/内存/RVWMO/1. RVWMO Memory Consistency Model, Version 2.0 - RISC-V Instruction Set Manual, Volume I_ RISC-V User-Level ISA (2025-08-14 10：09：33).html
+ Page saved with X-Webpage-Conserve 
+ url: https://five-embeddev.github.io/riscv-docs-html/riscv-user-isa-manual/latest-adoc/rvwmo.html
+ Summary: 
+-->
+<html><head>
+<link rel="stylesheet" href="../../assets/docs.css">
+<title>RISC-V Instruction Set Manual, Volume I: RISC-V User-Level ISA</title>
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>.citation { font-style: italic; position: relative; top: -0.5em; font-size: 80%; }div.manual_header_bar { font-family: "Open Sans", sans-serif; font-style: italic; left: -1em; width: 100%; text-align: right; top: 0px; background-color: rgb(241, 241, 241); position: fixed; padding: 0.25em 1em 0.5em 0.25em; font-size: small; height: 1.5em; }div.manual_footer_bar { font-family: "Open Sans", sans-serif; font-style: italic; left: 0px; width: 100%; text-align: right; background-color: rgb(241, 241, 241); bottom: 0px; position: fixed; padding: 0.25em; font-size: small; }div.commentary { font-size: 90%; font-style: italic; border: 2px solid rgb(252, 252, 252); border-radius: 10px; padding: 5px 20px 5px 40px; background-color: rgb(244, 244, 244); }div.references { font-size: 80%; }.references p, .references .settings-panel-example { margin-left: 40px; }blockquote { font-style: italic; }hr { margin-block: 1px; }img { display: block; margin-left: auto; margin-right: auto; max-width: 100%; min-width: 25%; }figcaption { text-align: center; font-size: 90%; font-style: italic; }dt { font-weight: bold; }caption { font-size: 90%; font-style: italic; text-align: center; padding: 0.5em; caption-side: bottom; }.content p, .content .settings-panel-example { text-align: justify; }div#manual_content { margin-top: 2em; height: 100%; position: fixed; overflow: scroll auto; margin-left: 0px; padding-bottom: 1.5em; }.manual { position: relative; background-color: rgb(255, 255, 255); color: rgb(34, 34, 34); text-align: justify; }.manual { max-width: 1000px; padding: 0px 15px 10px; margin: 10px 40px; }.left_sidenav { width: 25px; }.nested_sidenav { font-family: "Open Sans", sans-serif; height: 100%; margin-left: 25px; width: 30px; position: fixed; top: 0px; left: 0px; background-color: rgb(241, 241, 241); overflow: hidden auto; padding-top: 20px; z-index: 1; }.nested_sidenav ul { list-style-type: none; }span.section { float: left; padding-top: 5px; font-size: 1.4rem; }span.section_nested { float: left; margin-left: -0.5em; padding-top: 5px; font-size: 1.4rem; }html { font-family: sans-serif; }body { margin: 0px; }article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary { display: block; }audio, canvas, progress, video { display: inline-block; vertical-align: baseline; }audio:not([controls]) { display: none; height: 0px; }[hidden], template { display: none; }a { background-color: transparent; }a:active, a:hover { outline: 0px; }abbr[title] { border-bottom: 1px dotted; }b, strong { font-weight: bold; }dfn { font-style: italic; }h1 { font-size: 2em; margin: 0.67em 0px; }mark { background: rgb(255, 255, 0); color: rgb(0, 0, 0); }small { font-size: 80%; }sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }sup { top: -0.5em; }sub { bottom: -0.25em; }img { border: 0px; }svg:not(:root) { overflow: hidden; }figure { margin: 1em 40px; }hr { box-sizing: content-box; height: 0px; }pre { overflow: auto; }code, kbd, pre, samp { font-family: monospace, monospace; font-size: 1em; }button, input, optgroup, select, textarea { color: inherit; font: inherit; margin: 0px; }button { overflow: visible; }button, select { text-transform: none; }button, html input[type="button"], input[type="reset"], input[type="submit"] { appearance: button; cursor: pointer; }button[disabled], html input[disabled] { cursor: default; }input { line-height: normal; }input[type="checkbox"], input[type="radio"] { box-sizing: border-box; padding: 0px; }input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { height: auto; }input[type="search"] { appearance: textfield; box-sizing: content-box; }input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { appearance: none; }fieldset { border: 1px solid rgb(192, 192, 192); margin: 0px 2px; padding: 0.35em 0.625em 0.75em; }legend { border: 0px; padding: 0px; }textarea { overflow: auto; }optgroup { font-weight: bold; }table { border-collapse: collapse; border-spacing: 0px; }td, th { padding: 0px; }.highlight { }.highlight .hll { background-color: rgb(255, 255, 204); }.highlight .c { color: rgb(135, 206, 235); }.highlight .err { color: rgb(255, 255, 255); }.highlight .g { color: rgb(255, 255, 255); }.highlight .k { color: rgb(240, 230, 140); }.highlight .l { color: rgb(255, 255, 255); }.highlight .n { color: rgb(255, 255, 255); }.highlight .o { color: rgb(255, 255, 255); }.highlight .x { color: rgb(255, 255, 255); }.highlight .p { color: rgb(255, 255, 255); }.highlight .cm { color: rgb(135, 206, 235); }.highlight .cp { color: rgb(205, 92, 92); }.highlight .c1 { color: rgb(135, 206, 235); }.highlight .cs { color: rgb(135, 206, 235); }.highlight .gd { color: rgb(0, 0, 192); font-weight: bold; background-color: rgb(0, 128, 128); }.highlight .ge { color: rgb(192, 0, 192); text-decoration: underline; }.highlight .gr { color: rgb(192, 192, 192); font-weight: bold; background-color: rgb(192, 0, 0); }.highlight .gh { color: rgb(205, 92, 92); }.highlight .gi { color: rgb(255, 255, 255); background-color: rgb(0, 0, 192); }.highlight span.go { color: rgb(173, 216, 230); font-weight: bold; background-color: rgb(77, 77, 77); }.highlight .gp { color: rgb(255, 255, 255); }.highlight .gs { color: rgb(255, 255, 255); }.highlight .gu { color: rgb(205, 92, 92); }.highlight .gt { color: rgb(192, 192, 192); font-weight: bold; background-color: rgb(192, 0, 0); }.highlight .kc { color: rgb(240, 230, 140); }.highlight .kd { color: rgb(240, 230, 140); }.highlight .kn { color: rgb(240, 230, 140); }.highlight .kp { color: rgb(240, 230, 140); }.highlight .kr { color: rgb(240, 230, 140); }.highlight .kt { color: rgb(189, 183, 107); }.highlight .ld { color: rgb(255, 255, 255); }.highlight .m { color: rgb(234, 178, 137); }.highlight .s { color: rgb(234, 178, 137); }.highlight .na { color: rgb(140, 240, 232); }.highlight .nb { color: rgb(255, 255, 255); }.highlight .nc { color: rgb(255, 255, 255); }.highlight .no { color: rgb(255, 160, 160); }.highlight .nd { color: rgb(255, 255, 255); }.highlight .ni { color: rgb(255, 222, 173); }.highlight .ne { color: rgb(255, 255, 255); }.highlight .nf { color: rgb(255, 255, 255); }.highlight .nl { color: rgb(255, 255, 255); }.highlight .nn { color: rgb(255, 255, 255); }.highlight .nx { color: rgb(255, 255, 255); }.highlight .py { color: rgb(255, 255, 255); }.highlight .nt { color: rgb(240, 230, 140); }.highlight .nv { color: rgb(152, 251, 152); }.highlight .ow { color: rgb(255, 255, 255); }.highlight .w { color: rgb(255, 255, 255); }.highlight .mf { color: rgb(255, 255, 255); }.highlight .mh { color: rgb(255, 255, 255); }.highlight .mi { color: rgb(255, 255, 255); }.highlight .mo { color: rgb(255, 255, 255); }.highlight .sb { color: rgb(255, 255, 255); }.highlight .sc { color: rgb(255, 255, 255); }.highlight .sd { color: rgb(255, 255, 255); }.highlight .s2 { color: rgb(255, 255, 255); }.highlight .se { color: rgb(255, 255, 255); }.highlight .sh { color: rgb(255, 255, 255); }.highlight .si { color: rgb(255, 255, 255); }.highlight .sx { color: rgb(255, 255, 255); }.highlight .sr { color: rgb(255, 255, 255); }.highlight .s1 { color: rgb(255, 255, 255); }.highlight .ss { color: rgb(255, 255, 255); }.highlight .bp { color: rgb(255, 255, 255); }.highlight .vc { color: rgb(152, 251, 152); }.highlight .vg { color: rgb(152, 251, 152); }.highlight .vi { color: rgb(152, 251, 152); }.highlight .il { color: rgb(255, 255, 255); }.highlight .bash .nv { user-select: none; }.language-bash .highlight .nb { color: rgb(153, 212, 255); }html { height: 100%; max-height: 100%; font-size: 10px; }body { height: 100%; max-height: 100%; font-family: "Open Sans", sans-serif; letter-spacing: 0.01rem; font-size: 1.5em; line-height: 1.4em; color: rgb(58, 65, 69); font-weight: 400; font-feature-settings: "kern"; text-rendering: geometricprecision; }h1, h2, h3, h4, h5, h6, input, label, select, textarea, table { font-feature-settings: "dlig", "liga", "lnum", "kern"; font-family: "Open Sans", sans-serif; text-rendering: geometricprecision; }h1, h2, h3, h4, h5, h6 { color: rgb(46, 46, 46); line-height: 1.15em; margin: 0.4em 0px; font-weight: 600; }h1 { font-size: 4rem; letter-spacing: -2px; text-indent: -3px; }h2 { font-size: 3.2rem; letter-spacing: -1px; }h3 { font-size: 2.5rem; }h4 { font-size: 1.8rem; }h5 { font-size: 1.6rem; }h6 { font-size: 1.6rem; }a { color: rgb(74, 74, 74); transition: color 0.2s; }a:hover { color: rgb(17, 17, 17); }p, .settings-panel-example, ul, ol, dl, figure { font-feature-settings: "liga", "onum", "kern"; margin: 0px 0px 1.75em; text-rendering: geometricprecision; }ol, ul { padding-left: 3rem; }ol ol, ul ul, ul ol, ol ul { margin: 0px 0px 0.4em; padding-left: 2em; }dl dt { float: left; width: 180px; overflow: hidden; clear: left; text-align: right; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; margin-bottom: 1em; }dl dd { margin-left: 200px; margin-bottom: 1em; }li { margin: 0.4em 0px; }li li { margin: 0px; }hr { display: block; height: 1px; border-width: 1px 0px 0px; border-style: solid none none; border-color: rgb(238, 238, 238) currentcolor currentcolor; border-image: none; margin: 3.2em 0px; padding: 0px; }mark { background-color: rgb(253, 255, 182); }kbd { display: inline-block; margin-bottom: 0.4em; padding: 1px 8px; border: 1px solid rgb(204, 204, 204); color: rgb(102, 102, 102); text-shadow: rgb(255, 255, 255) 0px 1px 0px; font-size: 0.9em; font-weight: 700; background: rgb(244, 244, 244); border-radius: 4px; box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 1px 0px 0px inset; }@media only screen and (max-width: 900px) {
+  blockquote { margin-left: 0px; }
+  hr { margin: 2.4em 0px; }
+  ol, ul { padding-left: 2em; }
+  h1 { font-size: 3.6rem; text-indent: -2px; }
+  h2 { font-size: 2.9rem; }
+  h3 { font-size: 2.5rem; }
+  h4 { font-size: 2rem; }
+  h5 { font-size: 1.8rem; }
+  h6 { font-size: 1.5rem; }
+}@media only screen and (max-width: 500px) {
+  hr { margin: 1.75em 0px; }
+  p, .settings-panel-example, ul, ol, dl { font-size: 0.95em; margin: 0px 0px 2.5rem; }
+  h1, h2, h3, h4, h5, h6 { margin: 0px 0px 0.3em; }
+  h1 { font-size: 2.3rem; letter-spacing: -1px; }
+  h2 { font-size: 2rem; letter-spacing: 0px; }
+  h3 { font-size: 1.7rem; }
+  h4 { font-size: 1.6rem; }
+  h5 { font-size: 1.5rem; }
+  h6 { font-size: 1.5rem; }
+}pre, code, tt { font-family: Inconsolata, Consolas, Courier, "Courier New", "Liberation Mono", monospace; font-size: 1.05em; white-space: pre-wrap; line-height: 1.4; font-weight: 400; border-radius: 2px; color: rgb(81, 117, 141); }pre { box-sizing: border-box; margin: 0px 0px 1.75em; width: 100%; padding: 10px; font-size: 0.9em; white-space: pre; overflow: auto; border-radius: 3px; }pre code, pre tt { font-size: inherit; white-space: pre-wrap; background: transparent; border: medium; padding: 0px; }blockquote > code, li > code, p > code, .settings-panel-example > code { padding: 4px 6px; white-space: nowrap; }span.opcode { font-family: Inconsolata, Consolas, Courier, "Courier New", "Liberation Mono", monospace; padding: 4px 6px; white-space: nowrap; }table { width: 100%; margin-bottom: 1.75em; }tr { border-width: 1px; border-style: solid; border-color: rgb(238, 238, 238) rgb(204, 204, 204); }tr:nth-child(2n) { background-color: rgb(252, 252, 252); }td, th { padding: 8px; text-align: left; border-right: 1px solid rgb(204, 204, 204); border-left: 1px solid rgb(204, 204, 204); }th { border-width: 2px 1px; border-style: solid; border-color: rgb(238, 238, 238) rgb(204, 204, 204); padding-bottom: 4px; }#header_img { width: 100%; height: 85px; }body { height: auto; overflow-x: hidden; background-color: rgb(43, 46, 49); }body.nav-open { overflow: hidden; }body.nav-open nav, body.nav-open header > form { display: block; }body.nav-open header { bottom: 0px; }body::before { content: ""; background-color: rgb(255, 255, 255); position: fixed; inset: 0px; z-index: -1; }@media (min-width: 700px) {
+  body { padding: 0px 0px 0px 55px; }
+  body.nav-open { overflow: auto; }
+  body::after, body::before { content: ""; position: fixed; top: 0px; bottom: 0px; z-index: -1; }
+  body::after { left: 0px; width: 25px; background-color: rgb(245, 245, 245); }
+  body #search-input, body::after { box-shadow: rgba(0, 0, 0, 0.1) -10px 0px 10px -10px inset; }
+  body::before { left: 55px; right: 0px; background-color: rgb(255, 255, 255); }
+}.main { margin-top: 10px; }header { position: fixed; top: 0px; left: 0px; right: 0px; overflow-x: hidden; z-index: 1; background-color: rgb(245, 245, 245); }header ul { padding: 0px; margin: 0px; }header h1 { padding: 12.5px 10px; height: 60px; box-sizing: border-box; background-color: rgb(8, 31, 63); color: rgb(255, 255, 255); margin: 0px; font-size: 1.7rem; line-height: 0.8; letter-spacing: 0px; font-weight: 600; text-indent: 0px; display: flex; flex-direction: row; align-items: center; border-bottom: 1px solid rgba(0, 0, 0, 0.075); }header h1 img { height: 35px; width: 35px; margin-right: 5px; }header .subtitle { font-size: 1.3rem; box-sizing: border-box; background-color: rgb(8, 31, 63); font-family: "Open Sans", sans-serif; color: white; padding-left: 10px; padding-bottom: 5px; }header .open-nav { background-image: url("/images/menu.svg"); background-color: transparent; background-repeat: no-repeat; background-size: 100%; width: 35px; height: 35px; border: 0px; position: absolute; top: 12.5px; right: 10px; border-radius: 2px; }header .open-nav:focus { outline: none; background-color: rgba(0, 0, 0, 0.05); }header .open-nav:hover { background-color: rgba(0, 0, 0, 0.1); }@media (min-width: 700px) {
+  header { background-color: transparent; width: 25px; right: auto; bottom: auto; }
+  header .open-nav { display: none; }
+  header h1 { box-shadow: rgba(0, 0, 0, 0.1) -10px 0px 10px -10px inset; }
+}.content { position: relative; background-color: rgb(255, 255, 255); color: rgb(34, 34, 34); text-align: justify; }.content, .page-header { max-width: 1000px; padding: 0px 15px 10px; margin: 10px auto 0px; }.share { font-weight: bold; margin: 0px 0px 1em; }.share a { width: 1em; padding: 0px 0.25em; text-decoration: none; }.disqus { background-color: rgb(255, 255, 255); color: rgb(34, 34, 34); max-width: 1000px; font-size: small; font-family: "Open Sans", sans-serif; text-align: left; margin: 0px auto 10px; }.page-footer { max-width: 1000px; font-size: small; font-family: "Open Sans", sans-serif; font-style: italic; text-align: right; margin: 0px auto 10px; }.page-header h2, .page-header h3 { margin: 0px; line-height: 1.2; letter-spacing: -1px; }.page-header h2 { font-size: 2rem; margin-left: -1px; color: rgb(136, 136, 136); letter-spacing: 0px; }.page-header h3 { font-size: 4rem; margin-left: -4px; }@media (min-width: 700px) {
+  .page-header h2 { font-size: 2.65rem; }
+  .page-header h3 { font-size: 5.4rem; }
+}@media (min-width: 1290px) {
+  .page-header { margin-top: 55px; }
+}header { overflow: hidden auto; position: fixed; height: 100%; }nav, header > form { display: none; }@media (min-width: 700px) {
+  nav, header > form { display: block; }
+}nav > ul { padding: 5px 0px; }nav > ul + ul { border-top: 1px solid rgba(0, 0, 0, 0.075); }.nav-item { display: block; font-family: "Open Sans", sans-serif; line-height: 1; margin: 0px; }nav:not(.full-navigation) .nav-item > ul { display: none; }nav:not(.full-navigation) .nav-item.current > ul { display: block; }.nav-item > a { color: rgb(102, 102, 102); text-decoration: none; font-size: 1.4rem; padding: 5px 0px 5px 40px; display: block; }.nav-item.current > a, .nav-item > a:active, .nav-item > a:hover { color: rgb(17, 17, 17); }.nav-item.top-level > a { line-height: 1.5; font-weight: 600; padding-left: 10px; }.settings-panel-example { display: flex; flex-direction: column; }.settings-panel-example .example { max-width: 30px; background-color: rgb(250, 250, 250); margin: 0px; padding: 0px; font-size: 0px; line-height: 1; border-radius: 2px; overflow: hidden; }@media (min-width: 960px) {
+  .settings-panel-example { flex-direction: row; }
+  .settings-panel-example .details { flex: 1 1 0%; margin-right: 20px; }
+  .settings-panel-example p + .highlight > pre, .settings-panel-example .settings-panel-example + .highlight > pre { margin-bottom: 0px; }
+  .settings-panel-example .example { flex: 0 0 30px; max-width: 100%; }
+}.highlight { margin-left: 0px; margin-right: 0px; }h3 + .warning { margin-top: 1.75em; }h4 code { background: transparent; color: rgb(34, 34, 34); font-weight: 700; padding: 0px; font-size: 1.1em; line-height: 1; }h4 svg { vertical-align: middle; margin-right: 6px; position: relative; top: -2px; fill: rgb(46, 46, 46); height: 23px; }.required { position: relative; }.required::after { content: "REQUIRED"; font-size: 12px; position: absolute; top: 5px; line-height: 1; color: rgb(8, 31, 63); padding-left: 5px; }#search-results { margin: 0px; padding: 0px; }#search-results li { list-style: none; margin: 0px; padding: 0px; }#search-results li h4 { font-size: 2rem; }#search-results li p, #search-results li .settings-panel-example { line-height: 1.5; }#search-input { appearance: none; display: block; margin: 0px; padding: 10px 20px 10px 15px; width: 100%; box-sizing: border-box; border-width: 0px 0px 1px 5px; border-style: none none solid solid; border-color: currentcolor currentcolor rgba(0, 0, 0, 0.075) transparent; border-image: none; font-size: 1.5rem; font-weight: 600; line-height: 1.8; }#search-input:focus { outline: none; border-left-color: rgb(8, 31, 63); }.blog, .blog > div { margin: 0px; padding: 0px; list-style: none; }.blog .date { color: rgb(136, 136, 136); font-style: italic; }.badge { font-family: "Open Sans", sans-serif; padding: 2px 5px; text-transform: uppercase; font-size: 0.8rem; border-radius: 2px; background: rgb(238, 238, 238); font-weight: bold; }.badge.major { background: rgb(8, 31, 63); color: rgb(255, 255, 255); }blockquote { border-left: 5px solid rgb(8, 31, 63); padding: 10px 15px; margin-left: -15px; margin-right: -10px; background-color: rgb(230, 233, 236); border-color: rgb(8, 31, 63); }blockquote p:last-child, blockquote .settings-panel-example:last-child { margin-bottom: 0px; }@media (max-width: 1290px) {
+  blockquote { margin-left: 0px; margin-right: 0px; }
+}img { max-width: 100%; height: auto; }.editor-link { display: none; margin-top: 0px; }.editor-link .btn { border: 0px; border-radius: 2px; width: 100%; max-width: 500px; box-sizing: border-box; text-decoration: none; padding: 10px 15px; margin: 0px; font-size: 18px; cursor: pointer; background-color: rgb(247, 224, 100); color: rgb(51, 51, 51); box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 5px 0px; }.editor-link .btn:hover { background-color: rgb(244, 213, 37); color: rgb(51, 51, 51); }.cms-editor-active .editor-link { display: block; }.site-footer { padding: 1em 1em 2em; background-color: rgb(81, 117, 141); color: rgb(255, 255, 255); }.site-footer a { color: rgb(255, 255, 255); }.site-footer a:active, .site-footer a:focus, .site-footer a:hover { color: rgb(230, 230, 230); }.site-footer a:active, .site-footer a:focus { outline: none; }.site-footer .row { display: table; width: 100%; }.site-footer .site-navigation { display: table-cell; width: 33.33%; font-size: 0.9em; }.site-footer .site-contact { margin-top: 1em; width: 33.33%; display: table-cell; font-size: 0.9em; }.site-footer .site-contact i { width: 1.25em; text-align: center; }.site-footer .site-signature { margin-top: 1em; width: 33.33%; display: table-cell; font-size: 0.9em; }.site-footer .site-signature a { text-decoration: underline; }hr { border: medium; height: 2px; background-color: rgb(8, 31, 63); }</style></head>
+<body>
+
+<table>
+<tbody><tr><th colspan="2">Metadata Table</th></tr>
+<tr><th>Manual Type</th><td> user</td></tr>
+<tr><th>Spec Revision</th><td> </td></tr>
+<tr><th>Spec Release Date</th><td> </td></tr>
+<tr><th>Git Revision</th><td> riscv-isa-release-1239329-2023-05-23-96-g1ee25e1</td></tr>
+<tr><th>Git URL</th><td><a href="https://github.com/riscv/riscv-isa-manual.git">https://github.com/riscv/riscv-isa-manual.git</a></td></tr>
+<tr><th>Source</th><td>src/rvwmo.adoc</td></tr>
+<tr><th>Conversion Date</th><td>2023/11/12</td></tr>
+<tr><th>License</th><td><a href="https://creativecommons.org/licenses/by/4.0/">CC-by-4.0</a></td></tr>
+</tbody></table>
+
+<div class="sect1">
+<h2 id="memorymodel">1. RVWMO Memory Consistency Model, Version 2.0</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter defines the RISC-V memory consistency model. A memory
+consistency model is a set of rules specifying the values that can be
+returned by loads of memory. RISC-V uses a memory model called "RVWMO"
+(RISC-V Weak Memory Ordering) which is designed to provide flexibility
+for architects to build high-performance scalable designs while
+simultaneously supporting a tractable programming model.
+
+</p>
+</div>
+<div class="paragraph">
+<p>Under RVWMO, code running on a single hart appears to execute in order
+from the perspective of other memory instructions in the same hart, but
+memory instructions from another hart may observe the memory
+instructions from the first hart being executed in a different order.
+Therefore, multithreaded code may require explicit synchronization to
+guarantee ordering between memory instructions from different harts. The
+base RISC-V ISA provides a FENCE instruction for this purpose, described
+in <a href="#fence">[fence]</a>, while the atomics extension "A" additionally defines load-reserved/store-conditional and atomic read-modify-write instructions.
+</p>
+</div>
+<div class="paragraph">
+<p>The standard ISA extension for misaligned atomics "Zam"
+(<a href="#zam">[zam]</a>) and the standard ISA extension for total
+store ordering "Ztso" (<a href="#ztso">[ztso]</a>) augment RVWMO
+with additional rules specific to those extensions.</p>
+</div>
+<div class="paragraph">
+<p>The appendices to this specification provide both axiomatic and
+operational formalizations of the memory consistency model as well as
+additional explanatory material.
+
+</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This chapter defines the memory model for regular main memory
+operations. The interaction of the memory model with I/O memory,
+instruction fetches, FENCE.I, page table walks, and SFENCE.VMA is not
+(yet) formalized. Some or all of the above may be formalized in a future
+revision of this specification. The RV128 base ISA and future ISA
+extensions such as the V vector and J JIT extensions will need
+to be incorporated into a future revision as well.</p>
+</div>
+<div class="paragraph">
+<p>Memory consistency models supporting overlapping memory accesses of
+different widths simultaneously remain an active area of academic
+research and are not yet fully understood. The specifics of how memory
+accesses of different sizes interact under RVWMO are specified to the
+best of our current abilities, but they are subject to revision should
+new issues be uncovered.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect2">
+<h3 id="rvwmo">1.1. Definition of the RVWMO Memory Model</h3>
+<div class="paragraph">
+<p>The RVWMO memory model is defined in terms of the <em>global memory order</em>,
+a total ordering of the memory operations produced by all harts. In
+general, a multithreaded program has many different possible executions,
+with each execution having its own corresponding global memory order.
+</p>
+</div>
+<div class="paragraph">
+<p>The global memory order is defined over the primitive load and store
+operations generated by memory instructions. It is then subject to the
+constraints defined in the rest of this chapter. Any execution
+satisfying all of the memory model constraints is a legal execution (as
+far as the memory model is concerned).</p>
+</div>
+<div class="sect3">
+<h4 id="rvwmo-primitives">1.1.1. Memory Model Primitives</h4>
+<div class="paragraph">
+<p>The <em>program order</em> over memory operations reflects the order in which
+the instructions that generate each load and store are logically laid
+out in that hart’s dynamic instruction stream; i.e., the order in which
+a simple in-order processor would execute the instructions of that hart.</p>
+</div>
+<div class="paragraph">
+<p>Memory-accessing instructions give rise to <em>memory operations</em>. A memory
+operation can be either a <em>load operation</em>, a <em>store operation</em>, or both
+simultaneously. All memory operations are single-copy atomic: they can
+never be observed in a partially complete state.
+</p>
+</div>
+<div class="paragraph">
+<p>Among instructions in RV32GC and RV64GC, each aligned memory instruction
+gives rise to exactly one memory operation, with two exceptions. First,
+an unsuccessful SC instruction does not give rise to any memory
+operations. Second, FLD and FSD instructions may each give rise to
+multiple memory operations if XLEN&lt;64, as stated in
+<a href="#fld_fsd">[fld_fsd]</a> and clarified below. An aligned AMO
+gives rise to a single memory operation that is both a load operation
+and a store operation simultaneously.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Instructions in the RV128 base instruction set and in future ISA
+extensions such as <strong>V</strong> (vector) and <strong>P</strong> (SIMD) may give rise to multiple
+memory operations. However, the memory model for these extensions has
+not yet been formalized.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>A misaligned load or store instruction may be decomposed into a set of
+component memory operations of any granularity. An FLD or FSD
+instruction for which XLEN&lt;64 may also be decomposed into
+a set of component memory operations of any granularity. The memory
+operations generated by such instructions are not ordered with respect
+to each other in program order, but they are ordered normally with
+respect to the memory operations generated by preceding and subsequent
+instructions in program order. The atomics extension "A" does not
+require execution environments to support misaligned atomic instructions
+at all; however, if misaligned atomics are supported via the "Zam"
+extension, LRs, SCs, and AMOs may be decomposed subject to the
+constraints of the atomicity axiom for misaligned atomics, which is
+defined in <a href="#zam">[zam]</a>.
+</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The decomposition of misaligned memory operations down to byte
+granularity facilitates emulation on implementations that do not
+natively support misaligned accesses. Such implementations might, for
+example, simply iterate over the bytes of a misaligned access one by
+one.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>An LR instruction and an SC instruction are said to be <em>paired</em> if the
+LR precedes the SC in program order and if there are no other LR or SC
+instructions in between; the corresponding memory operations are said to
+be paired as well (except in case of a failed SC, where no store
+operation is generated). The complete list of conditions determining
+whether an SC must succeed, may succeed, or must fail is defined in
+<a href="#sec:lrsc">[sec:lrsc]</a>.</p>
+</div>
+<div class="paragraph">
+<p>Load and store operations may also carry one or more ordering
+annotations from the following set: "acquire-RCpc", "acquire-RCsc",
+"release-RCpc", and "release-RCsc". An AMO or LR instruction with
+<em>aq</em> set has an "acquire-RCsc" annotation. An AMO or SC instruction
+with <em>rl</em> set has a "release-RCsc" annotation. An AMO, LR, or SC
+instruction with both <em>aq</em> and <em>rl</em> set has both "acquire-RCsc" and
+"release-RCsc" annotations.</p>
+</div>
+<div class="paragraph">
+<p>For convenience, we use the term "acquire annotation" to refer to an
+acquire-RCpc annotation or an acquire-RCsc annotation. Likewise, a
+"release annotation" refers to a release-RCpc annotation or a
+release-RCsc annotation. An "RCpc annotation" refers to an
+acquire-RCpc annotation or a release-RCpc annotation. An <em>RCsc
+annotation</em> refers to an acquire-RCsc annotation or a release-RCsc
+annotation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In the memory model literature, the term "RCpc" stands for release
+consistency with processor-consistent synchronization operations, and
+the term "RCsc" stands for release consistency with sequentially
+consistent synchronization operations.</p>
+</div>
+<div class="paragraph">
+<p>While there are many different definitions for acquire and release
+annotations in the literature, in the context of RVWMO these terms are
+concisely and completely defined by <a href="#ppo">Preserved Program Order</a> rules 5-7.</p>
+</div>
+<div class="paragraph">
+<p>"RCpc" annotations are currently only used when implicitly assigned to
+every memory access per the standard extension "Ztso"
+(<a href="#ztso">[ztso]</a>). Furthermore, although the ISA does not
+currently contain native load-acquire or store-release instructions, nor
+RCpc variants thereof, the RVWMO model itself is designed to be
+forwards-compatible with the potential addition of any or all of the
+above into the ISA in a future extension.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="mem-dependencies">1.1.2. Syntactic Dependencies</h4>
+<div class="paragraph">
+<p>The definition of the RVWMO memory model depends in part on the notion
+of a syntactic dependency, defined as follows.</p>
+</div>
+<div class="paragraph">
+<p>In the context of defining dependencies, a <em>register</em> refers either to
+an entire general-purpose register, some portion of a CSR, or an entire
+CSR. The granularity at which dependencies are tracked through CSRs is
+specific to each CSR and is defined in
+<a href="#csr-granularity">Section 1.2</a>.</p>
+</div>
+<div class="paragraph">
+<p>Syntactic dependencies are defined in terms of instructions' <em>source
+registers</em>, instructions' <em>destination registers</em>, and the way
+instructions <em>carry a dependency</em> from their source registers to their
+destination registers. This section provides a general definition of all
+of these terms; however, <a href="#source-dest-regs">Section 1.3</a> provides a
+complete listing of the specifics for each instruction.</p>
+</div>
+<div class="paragraph">
+<p>In general, a register <em>r</em> other than <code>x0</code> is a <em>source
+register</em> for an instruction <em>i</em> if any of the following
+hold:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In the opcode of <em>i</em>, <em>rs1</em>, <em>rs2</em>, or <em>rs3</em> is set to
+<em>r</em></p>
+</li>
+<li>
+<p><em>i</em> is a CSR instruction, and in the opcode of
+<em>i</em>, <em>csr</em> is set to <em>r</em>, unless <em>i</em>
+is CSRRW or CSRRWI and <em>rd</em> is set to <code>x0</code></p>
+</li>
+<li>
+<p><em>r</em> is a CSR and an implicit source register for
+<em>i</em>, as defined in <a href="#source-dest-regs">Section 1.3</a></p>
+</li>
+<li>
+<p><em>r</em> is a CSR that aliases with another source register for
+<em>i</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Memory instructions also further specify which source registers are
+<em>address source registers</em> and which are <em>data source registers</em>.</p>
+</div>
+<div class="paragraph">
+<p>In general, a register <em>r</em> other than <code>x0</code> is a <em>destination
+register</em> for an instruction <em>i</em> if any of the following
+hold:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In the opcode of <em>i</em>, <em>rd</em> is set to <em>r</em></p>
+</li>
+<li>
+<p><em>i</em> is a CSR instruction, and in the opcode of
+<em>i</em>, <em>csr</em> is set to <em>r</em>, unless <em>i</em>
+is CSRRS or CSRRC and <em>rs1</em> is set to <code>x0</code> or <em>i</em> is CSRRSI
+or CSRRCI and uimm[4:0] is set to zero.</p>
+</li>
+<li>
+<p><em>r</em> is a CSR and an implicit destination register for
+<em>i</em>, as defined in <a href="#source-dest-regs">Section 1.3</a></p>
+</li>
+<li>
+<p><em>r</em> is a CSR that aliases with another destination
+register for <em>i</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Most non-memory instructions <em>carry a dependency</em> from each of their
+source registers to each of their destination registers. However, there
+are exceptions to this rule; see <a href="#source-dest-regs">Section 1.3</a>.</p>
+</div>
+<div class="paragraph">
+<p>Instruction <em>j</em> has a <em>syntactic dependency</em> on instruction
+<em>i</em> via destination register <em>s</em> of
+<em>i</em> and source register <em>r</em> of <em>j</em>
+if either of the following hold:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>s</em> is the same as <em>r</em>, and no instruction
+program-ordered between <em>i</em> and <em>j</em> has
+<em>r</em> as a destination register</p>
+</li>
+<li>
+<p>There is an instruction <em>m</em> program-ordered between
+<em>i</em> and <em>j</em> such that all of the following hold:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><em>j</em> has a syntactic dependency on <em>m</em> via
+destination register <em>q</em> and source register <em>r</em></p>
+</li>
+<li>
+<p><em>m</em> has a syntactic dependency on <em>i</em> via
+destination register <em>s</em> and source register <em>p</em></p>
+</li>
+<li>
+<p><em>m</em> carries a dependency from <em>p</em> to
+<em>q</em></p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Finally, in the definitions that follow, let <em>a</em> and
+<em>b</em> be two memory operations, and let <em>i</em> and
+<em>j</em> be the instructions that generate <em>a</em> and
+<em>b</em>, respectively.</p>
+</div>
+<div class="paragraph">
+<p><em>b</em> has a <em>syntactic address dependency</em> on <em>a</em>
+if <em>r</em> is an address source register for <em>j</em> and
+<em>j</em> has a syntactic dependency on <em>i</em> via source
+register <em>r</em></p>
+</div>
+<div class="paragraph">
+<p><em>b</em> has a <em>syntactic data dependency</em> on <em>a</em> if
+<em>b</em> is a store operation, <em>r</em> is a data source
+register for <em>j</em>, and <em>j</em> has a syntactic
+dependency on <em>i</em> via source register <em>r</em></p>
+</div>
+<div class="paragraph">
+<p><em>b</em> has a <em>syntactic control dependency</em> on <em>a</em>
+if there is an instruction <em>m</em> program-ordered between
+<em>i</em> and <em>j</em> such that <em>m</em> is a
+branch or indirect jump and <em>m</em> has a syntactic dependency
+on <em>i</em>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Generally speaking, non-AMO load instructions do not have data source
+registers, and unconditional non-AMO store instructions do not have
+destination registers. However, a successful SC instruction is
+considered to have the register specified in <em>rd</em> as a destination
+register, and hence it is possible for an instruction to have a
+syntactic dependency on a successful SC instruction that precedes it in
+program order.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_preserved_program_order">1.1.3. Preserved Program Order</h4>
+<div id="ppo" class="paragraph">
+<p>The global memory order for any given execution of a program respects
+some but not all of each hart’s program order. The subset of program
+order that must be respected by the global memory order is known as
+<em>preserved program order</em>.</p>
+</div>
+<div class="paragraph">
+<p>The complete definition of preserved program order is as follows (and
+note that AMOs are simultaneously both loads and stores): memory
+operation <em>a</em> precedes memory operation <em>b</em> in
+preserved program order (and hence also in the global memory order) if
+<em>a</em> precedes <em>b</em> in program order,
+<em>a</em> and <em>b</em> both access regular main memory
+(rather than I/O regions), and any of the following hold:</p>
+</div>
+<div id="overlapping-ordering" class="ulist">
+<ul>
+<li>
+<p>Overlapping-Address Orderings:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><em>b</em> is a store, and
+<em>a</em> and <em>b</em> access overlapping memory addresses</p>
+</li>
+<li>
+<p><em>a</em> and <em>b</em> are loads,
+<em>x</em> is a byte read by both <em>a</em> and
+<em>b</em>, there is no store to <em>x</em> between
+<em>a</em> and <em>b</em> in program order, and
+<em>a</em> and <em>b</em> return values for <em>x</em>
+written by different memory operations</p>
+</li>
+<li>
+<p><em>a</em> is
+generated by an AMO or SC instruction, <em>b</em> is a load, and
+<em>b</em> returns a value written by <em>a</em></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Explicit Synchronization</p>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>There is a FENCE instruction that
+orders <em>a</em> before <em>b</em></p>
+</li>
+<li>
+<p><em>a</em> has an acquire
+annotation</p>
+</li>
+<li>
+<p><em>b</em> has a release annotation</p>
+</li>
+<li>
+<p><em>a</em> and <em>b</em> both have
+RCsc annotations</p>
+</li>
+<li>
+<p><em>a</em> is paired with
+<em>b</em></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Syntactic Dependencies</p>
+<div class="olist arabic">
+<ol class="arabic" start="9">
+<li>
+<p><em>b</em> has a syntactic address
+dependency on <em>a</em></p>
+</li>
+<li>
+<p><em>b</em> has a syntactic data
+dependency on <em>a</em></p>
+</li>
+<li>
+<p><em>b</em> is a store, and
+<em>b</em> has a syntactic control dependency on <em>a</em></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Pipeline Dependencies</p>
+<div class="olist arabic">
+<ol class="arabic" start="12">
+<li>
+<p><em>b</em> is a
+load, and there exists some store <em>m</em> between
+<em>a</em> and <em>b</em> in program order such that
+<em>m</em> has an address or data dependency on <em>a</em>,
+and <em>b</em> returns a value written by <em>m</em></p>
+</li>
+<li>
+<p><em>b</em> is a store, and
+there exists some instruction <em>m</em> between <em>a</em>
+and <em>b</em> in program order such that <em>m</em> has an
+address dependency on <em>a</em></p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_memory_model_axioms">1.1.4. Memory Model Axioms</h4>
+<div class="paragraph">
+<p>An execution of a RISC-V program obeys the RVWMO memory consistency
+model only if there exists a global memory order conforming to preserved
+program order and satisfying the <em>load value axiom</em>, the <em>atomicity
+axiom</em>, and the <em>progress axiom</em>.</p>
+</div>
+<div class="sect4">
+<h5 id="ax-load">Load Value Axiom</h5>
+<div class="paragraph">
+<p>Each byte of each load <em>i</em> returns the value written to that
+byte by the store that is the latest in global memory order among the
+following stores:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Stores that write that byte and that precede <em>i</em> in the
+global memory order</p>
+</li>
+<li>
+<p>Stores that write that byte and that precede <em>i</em> in
+program order</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="ax-atom">Atomicity Axiom</h5>
+<div class="paragraph">
+<p>If <em>r</em> and <em>w</em> are paired load and store
+operations generated by aligned LR and SC instructions in a hart
+<em>h</em>, <em>s</em> is a store to byte <em>x</em>, and
+<em>r</em> returns a value written by <em>s</em>, then
+<em>s</em> must precede <em>w</em> in the global memory order,
+and there can be no store from a hart other than <em>h</em> to byte
+<em>x</em> following <em>s</em> and preceding <em>w</em>
+in the global memory order.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <a href="#ax-atom">Atomicity Axiom</a> theoretically supports LR/SC pairs of different widths and to
+mismatched addresses, since implementations are permitted to allow SC
+operations to succeed in such cases. However, in practice, we expect
+such patterns to be rare, and their use is discouraged.</p>
+</div>
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="ax-prog">Progress Axiom</h5>
+<div class="paragraph">
+<p>No memory operation may be preceded in the global memory order by an
+infinite sequence of other memory operations.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="csr-granularity">1.2. CSR Dependency Tracking Granularity</h3>
+<table class="tableblock frame-all grid-all stretch center">
+<caption class="title">Table 1. Granularities at which syntactic dependencies are tracked through CSRs</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Portions Tracked as Independent Units</th>
+<th class="tableblock halign-left valign-top">Aliases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>fflags</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bits 4, 3, 2, 1, 0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>fcsr</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>frm</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">entire CSR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>fcsr</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>fcsr</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bits 7-5, 4, 3, 2, 1, 0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>fflags</em>, <em>frm</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Note: read-only CSRs are not listed, as they do not participate in the
+definition of syntactic dependencies.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="source-dest-regs">1.3. Source and Destination Register Listings</h3>
+<div class="paragraph">
+<p>This section provides a concrete listing of the source and destination
+registers for each instruction. These listings are used in the
+definition of syntactic dependencies in
+<a href="#mem-dependencies">Section 1.1.2</a>.</p>
+</div>
+<div class="paragraph">
+<p>The term "accumulating CSR" is used to describe a CSR that is both a
+source and a destination register, but which carries a dependency only
+from itself to itself.</p>
+</div>
+<div class="paragraph">
+<p>Instructions carry a dependency from each source register in the
+"Source Registers" column to each destination register in the
+"Destination Registers" column, from each source register in the
+"Source Registers" column to each CSR in the "Accumulating CSRs"
+column, and from each CSR in the "Accumulating CSRs" column to itself,
+except where annotated otherwise.</p>
+</div>
+<div class="paragraph">
+<p>Key:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><sup>A</sup>Address source register</p>
+</li>
+<li>
+<p><sup>D</sup>Data source register</p>
+</li>
+<li>
+<p>† The instruction does not carry a dependency from
+any source register to any destination register</p>
+</li>
+<li>
+<p>‡ The instruction carries dependencies from source
+register(s) to destination register(s) as specified</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all fit-content center">
+<caption class="title">Table 2. RV32I Base Integer Instruction Set</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination  Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LUI</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AUIPC</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JAL</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JALR†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BEQ</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BNE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BLT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BGE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BLTU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BGEU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LB †</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LH †</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LW †</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LBU †</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LHU †</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ADDI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLTI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLTIU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XORI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ORI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ANDI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLLI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRLI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRAI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ADD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLTU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XOR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FENCE</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FENCE.I</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ECALL</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EBREAK</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSRRW‡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>csr</em><sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em>, <em>csr</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>unless <em>rd</em>=<code>x0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSRRS‡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>csr</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em> <sup>*</sup>, <em>csr</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>unless <em>rs1</em>=<code>x0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSRRC‡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>csr</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em> <sup>*</sup>, <em>csr</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>unless <em>rs1</em>=<code>x0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" colspan="5"><p class="tableblock">‡ carries a dependency from <em>rs1</em> to <em>csr</em> and from <em>csr</em> to <em>rd</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSRRWI ‡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>csr</em> <sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em>, <em>csr</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>unless <em>rd</em>=<em>x0</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSRRSI ‡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>csr</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em>, <em>csr</em><sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>unless uimm[4:0]=0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSRRCI ‡</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>csr</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em>, <em>csr</em><sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>unless uimm[4:0]=0</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 3. RV64I Base Integer Instruction Set</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>LWU</em> †</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>LD</em> †</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLLI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRLI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRAI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ADDIW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLLIW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRLIW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRAIW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ADDW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SUBW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLLW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRLW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SRAW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 4. RV32M Standard Extension</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Regisers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MUL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MULH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MULHSU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MULHU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DIV</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DIVU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REMU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 5. RV64M Standard Extension</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MULW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DIVW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DIVUW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REMW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">REMUW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 6. RV32A Standard Extension</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LR.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SC.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em> <sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup> if successful</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOSWAP.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOADD.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOXOR.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOAND.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOOR.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOMIN.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOMAX.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOMINU.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOMAXU.W†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 7. RV64A Standard Extension</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LR.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SC.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em> <sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if successful</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOSWAP.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOADD.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOXOR.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em> <sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOAND.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>  <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOOR.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOMIN.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOMAX.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOMINU.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AMOMAXU.D†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 8. RV32F Standard Extension</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLW†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMADD.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, <em>rs3</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMSUB.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, <em>rs3</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FNMSUB.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, <em>rs3</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FNMADD.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, <em>rs3</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FADD.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSUB.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMUL.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FDIV.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, DZ, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSQRT.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSGNJ.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSGNJN.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSGNJX.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMIN.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMAX.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.W.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.WU.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMV.X.W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FEQ.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLT.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLE.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCLASS.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.S.W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.S.WU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMV.W.X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 9. RV64F Standard Extension</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.L.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.LU.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.S.L</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.S.LU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 10. RV32D Standard Extension</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLD†</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em> <sup>A</sup>, <em>rs2</em><sup>D</sup></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMADD.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, <em>rs3</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMSUB.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, <em>rs3</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FNMSUB.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, <em>rs3</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FNMADD.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, <em>rs3</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FADD.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSUB.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMUL.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FDIV.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, DZ, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSQRT.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSGNJ.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSGNJN.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FSGNJX.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMIN.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMAX.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.S.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, OF, UF, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.D.S</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FEQ.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLT.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FLE.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, <em>rs2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCLASS.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.W.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>,<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.WU.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.D.W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.D.WU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content center stretch">
+<caption class="title">Table 11. RV64D Standard Extension</caption>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Source Registers</th>
+<th class="tableblock halign-left valign-top">Destination Registers</th>
+<th class="tableblock halign-left valign-top">Accumulating CSRs</th>
+<th class="tableblock halign-left valign-top"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.L.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.LU.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NV, NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMV.X.D</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.D.L</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FCVT.D.LU</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em>, frm<sup>*</sup></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><sup>*</sup>if rm=111</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FMV.D.X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rs1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>rd</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
