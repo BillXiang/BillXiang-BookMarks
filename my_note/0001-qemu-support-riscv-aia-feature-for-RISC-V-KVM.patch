@@ -1,7 +1,7 @@
-From 156bf7c80879cb5eef30b14c08e7041db22ef289 Mon Sep 17 00:00:00 2001
-From: xiangwencheng <xiangwencheng@lanxincomputing.com>
-Date: Fri, 15 Aug 2025 16:26:40 +0800
-Subject: [PATCH] qemu: support riscv-aia feature for kvm
+From f21b23e064b953c4d2c1181c134a5c7720df2797 Mon Sep 17 00:00:00 2001
+From: BillXiang <xiangwencheng@lanxincomputing.com>
+Date: Fri, 15 Aug 2025 19:42:04 +0800
+Subject: [PATCH] qemu: support riscv-aia feature for RISC-V KVM
 
 riscv-aia feature was introduced in qemu-8.2 to specify the
 KVM AIA mode. The "riscv-aia" parameter is passed along with
@@ -13,8 +13,9 @@ otherwise we fallback to software emulation.
 
 This patch add the corresponding feature named 'riscv-aia'.
 
-Signed-off-by: xiangwencheng <xiangwencheng@lanxincomputing.com>
+Signed-off-by: BillXiang <xiangwencheng@lanxincomputing.com>
 ---
+ NEWS.rst                                   | 10 ++++++++
  docs/formatdomain.rst                      |  2 ++
  src/conf/domain_conf.c                     | 29 ++++++++++++++++++++++
  src/conf/domain_conf.h                     |  2 ++
@@ -22,13 +23,34 @@ Signed-off-by: xiangwencheng <xiangwencheng@lanxincomputing.com>
  src/qemu/qemu_command.c                    | 13 +++++++---
  tests/qemuxmlconfdata/kvm-features-off.xml |  1 +
  tests/qemuxmlconfdata/kvm-features.xml     |  1 +
- 7 files changed, 57 insertions(+), 3 deletions(-)
+ 8 files changed, 67 insertions(+), 3 deletions(-)
 
+diff --git a/NEWS.rst b/NEWS.rst
+index 435760e797..7e91f81d64 100644
+--- a/NEWS.rst
++++ b/NEWS.rst
+@@ -17,6 +17,16 @@ v11.7.0 (unreleased)
+ 
+ * **New features**
+ 
++  * Support riscv-aia feature for RISC-V KVM
++
++    riscv-aia feature was introduced in qemu-8.2 to specify the
++    KVM AIA mode. The "riscv-aia" parameter is passed along with
++    --accel in QEMU command-line.
++    1) "riscv-aia=emul": IMSIC is emulated by hypervisor
++    2) "riscv-aia=hwaccel": use hardware guest IMSIC
++    3) "riscv-aia=auto": use the hardware guest IMSICs whenever available
++    otherwise we fallback to software emulation.
++
+ * **Improvements**
+ 
+ * **Bug fixes**
 diff --git a/docs/formatdomain.rst b/docs/formatdomain.rst
-index 976746e292..4b940144dd 100644
+index 9f7311b6d5..2ccbb1bfb9 100644
 --- a/docs/formatdomain.rst
 +++ b/docs/formatdomain.rst
-@@ -2078,6 +2078,7 @@ Hypervisors may allow certain CPU / machine features to be toggled on/off.
+@@ -2085,6 +2085,7 @@ Hypervisors may allow certain CPU / machine features to be toggled on/off.
         <poll-control state='on'/>
         <pv-ipi state='off'/>
         <dirty-ring state='on' size='4096'/>
@@ -36,7 +58,7 @@ index 976746e292..4b940144dd 100644
       </kvm>
       <xen>
         <e820_host state='on'/>
-@@ -2199,6 +2200,7 @@ are:
+@@ -2206,6 +2207,7 @@ are:
     poll-control   Decrease IO completion latency by introducing a grace period of busy waiting on, off                                                :since:`6.10.0 (QEMU 4.2)`
     pv-ipi         Paravirtualized send IPIs                                                    on, off                                                :since:`7.10.0 (QEMU 3.1)`
     dirty-ring     Enable dirty ring feature                                                    on, off; size - must be power of 2, range [1024,65536] :since:`8.0.0 (QEMU 6.1)`
@@ -45,7 +67,7 @@ index 976746e292..4b940144dd 100644
  
  ``xen``
 diff --git a/src/conf/domain_conf.c b/src/conf/domain_conf.c
-index 59958c2f08..aaa48d8e55 100644
+index 7766e302ec..8ed65d1794 100644
 --- a/src/conf/domain_conf.c
 +++ b/src/conf/domain_conf.c
 @@ -224,6 +224,7 @@ VIR_ENUM_IMPL(virDomainKVM,
@@ -56,7 +78,7 @@ index 59958c2f08..aaa48d8e55 100644
  );
  
  VIR_ENUM_IMPL(virDomainXen,
-@@ -17168,6 +17169,20 @@ virDomainFeaturesKVMDefParse(virDomainDef *def,
+@@ -17183,6 +17184,20 @@ virDomainFeaturesKVMDefParse(virDomainDef *def,
                  return -1;
              }
          }
@@ -77,7 +99,7 @@ index 59958c2f08..aaa48d8e55 100644
      }
  
      def->features[VIR_DOMAIN_FEATURE_KVM] = VIR_TRISTATE_SWITCH_ON;
-@@ -21658,6 +21673,7 @@ virDomainDefFeaturesCheckABIStability(virDomainDef *src,
+@@ -21697,6 +21712,7 @@ virDomainDefFeaturesCheckABIStability(virDomainDef *src,
              case VIR_DOMAIN_KVM_POLLCONTROL:
              case VIR_DOMAIN_KVM_PVIPI:
              case VIR_DOMAIN_KVM_DIRTY_RING:
@@ -85,7 +107,7 @@ index 59958c2f08..aaa48d8e55 100644
                  if (src->kvm_features->features[i] != dst->kvm_features->features[i]) {
                      virReportError(VIR_ERR_CONFIG_UNSUPPORTED,
                                     _("State of KVM feature '%1$s' differs: source: '%2$s', destination: '%3$s'"),
-@@ -28711,6 +28727,19 @@ virDomainDefFormatFeatures(virBuffer *buf,
+@@ -28752,6 +28768,19 @@ virDomainDefFormatFeatures(virBuffer *buf,
                          }
                      }
                      break;
@@ -106,10 +128,10 @@ index 59958c2f08..aaa48d8e55 100644
                  case VIR_DOMAIN_KVM_LAST:
                      break;
 diff --git a/src/conf/domain_conf.h b/src/conf/domain_conf.h
-index 596d138973..cd23bf8461 100644
+index eca820892e..0d749c0f3c 100644
 --- a/src/conf/domain_conf.h
 +++ b/src/conf/domain_conf.h
-@@ -2269,6 +2269,7 @@ typedef enum {
+@@ -2270,6 +2270,7 @@ typedef enum {
      VIR_DOMAIN_KVM_POLLCONTROL,
      VIR_DOMAIN_KVM_PVIPI,
      VIR_DOMAIN_KVM_DIRTY_RING,
@@ -117,7 +139,7 @@ index 596d138973..cd23bf8461 100644
  
      VIR_DOMAIN_KVM_LAST
  } virDomainKVM;
-@@ -2475,6 +2476,7 @@ struct _virDomainFeatureKVM {
+@@ -2476,6 +2477,7 @@ struct _virDomainFeatureKVM {
      int features[VIR_DOMAIN_KVM_LAST];
  
      unsigned int dirty_ring_size; /* size of dirty ring for each vCPU, no units */
@@ -126,10 +148,10 @@ index 596d138973..cd23bf8461 100644
  
  typedef struct _virDomainFeatureTCG virDomainFeatureTCG;
 diff --git a/src/conf/schemas/domaincommon.rng b/src/conf/schemas/domaincommon.rng
-index a714c3fcc5..0c07e887be 100644
+index e369fb6e81..3de5807b1e 100644
 --- a/src/conf/schemas/domaincommon.rng
 +++ b/src/conf/schemas/domaincommon.rng
-@@ -8182,6 +8182,18 @@
+@@ -8192,6 +8192,18 @@
              </optional>
            </element>
          </optional>
@@ -149,10 +171,10 @@ index a714c3fcc5..0c07e887be 100644
      </element>
    </define>
 diff --git a/src/qemu/qemu_command.c b/src/qemu/qemu_command.c
-index 457dee7029..340f102e91 100644
+index e8de386f30..6db283ef29 100644
 --- a/src/qemu/qemu_command.c
 +++ b/src/qemu/qemu_command.c
-@@ -6676,6 +6676,9 @@ qemuBuildCpuCommandLine(virCommand *cmd,
+@@ -6679,6 +6679,9 @@ qemuBuildCpuCommandLine(virCommand *cmd,
  
              case VIR_DOMAIN_KVM_DIRTY_RING:
                  break;
@@ -162,7 +184,7 @@ index 457dee7029..340f102e91 100644
  
              case VIR_DOMAIN_KVM_LAST:
                  break;
-@@ -7311,9 +7314,13 @@ qemuBuildAccelCommandLine(virCommand *cmd,
+@@ -7314,9 +7317,13 @@ qemuBuildAccelCommandLine(virCommand *cmd,
           * not that either kvm or tcg can be specified by libvirt
           * so do not worry about the conflict of specifying both
           * */
@@ -204,5 +226,5 @@ index 78091064b1..c06b0aa58b 100644
    </features>
    <cpu mode='host-passthrough' check='none' migratable='off'/>
 -- 
-2.34.1
+2.46.2.windows.1
 
