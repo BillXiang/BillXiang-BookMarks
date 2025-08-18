@@ -53,6 +53,11 @@ html_head="<!DOCTYPE html>
                    <button onclick='setGithubProxy()'>Set</button>
                  </td>
               </tr>
+              <tr>
+                <td>
+                  <iframe src="https://webchat.oftc.net/?channels=virt&uio=MT11bmRlZmluZWQb1" width="100%" height="400"></iframe>
+                </td>
+              </tr>
             </tbody>
           </table>
         </td>
