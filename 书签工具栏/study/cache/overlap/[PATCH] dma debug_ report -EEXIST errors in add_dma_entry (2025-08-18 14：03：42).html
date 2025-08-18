@@ -1,0 +1,3042 @@
+<!-- Filename: 书签工具栏/study/cache/overlap/[PATCH] dma debug_ report -EEXIST errors in add_dma_entry (2025-08-18 14：03：42).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/all/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/T/
+ Summary: 
+-->
+<html><head><title>[PATCH] dma debug: report -EEXIST errors in add_dma_entry</title><link rel="alternate" title="Atom feed" href="../../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../../216light.css?67c636a2" media="screen,print"><link type="text/css" rel="stylesheet" href="../../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../../"><pre><a href="../../?t=20211011114718"><b>All of lore.kernel.org</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../../_/text/help/">help</a> / <a href="../../_/text/color/">color</a> / <a id="mirror" href="../../_/text/mirror/">mirror</a> / <a href="../../new.atom">Atom feed</a></pre></form><pre><a href="#ec44ecf84a87f0c016681217ac0465d00f85def7a" id="mc44ecf84a87f0c016681217ac0465d00f85def7a">*</a> <b>[PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-05-18 12:54 ` Hamza Mahfooz</b>
+  <a href="#rc44ecf84a87f0c016681217ac0465d00f85def7a">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Hamza Mahfooz @ 2021-05-18 12:54 UTC (<a href="../../20210518125443.34148-1-someguy@effective-light.com/">permalink</a> / <a href="../../20210518125443.34148-1-someguy@effective-light.com/raw">raw</a>)
+  To: <a href="../../../lkml/?t=20210518125543">linux-kernel</a>
+  Cc: Christoph Hellwig, Marek Szyprowski, Robin Murphy, <a href="../../../linux-iommu/?t=20210518125543">iommu</a>,
+	Hamza Mahfooz, Dan Williams
+
+Since, overlapping mappings are not supported by the DMA API we should
+report an error if active_cacheline_insert returns -EEXIST.
+
+Suggested-by: Dan Williams &lt;dan.j.williams@intel.com&gt;
+Signed-off-by: Hamza Mahfooz &lt;someguy@effective-light.com&gt;
+---
+ <a id="iZ2e.:..:20210518125443.34148-1-someguy::40effective-light.com:1kernel:dma:debug.c" href="#Z2e.:..:20210518125443.34148-1-someguy::40effective-light.com:1kernel:dma:debug.c">kernel/dma/debug.c</a> | 6 ++----
+ 1 file <a href="#ec44ecf84a87f0c016681217ac0465d00f85def7a">changed</a>, 2 insertions(+), 4 deletions(-)
+
+<span class="head"><a href="#iZ2e.:..:20210518125443.34148-1-someguy::40effective-light.com:1kernel:dma:debug.c" id="Z2e.:..:20210518125443.34148-1-someguy::40effective-light.com:1kernel:dma:debug.c">diff</a> --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 14de1271463f..dadae6255d05 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+</span><span class="hunk">@@ -566,11 +566,9 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+</span> 	if (rc == -ENOMEM) {
+ 		pr_err("cacheline tracking ENOMEM, dma-debug disabled
+");
+ 		global_disable = true;
+<span class="add">+	} else if (rc == -EEXIST) {
++		pr_err("cacheline tracking EEXIST, overlapping mappings aren't supported
+");
+</span> 	}
+<span class="del">-
+-	/* TODO: report -EEXIST errors here as overlapping mappings are
+-	 * not supported by the DMA API
+-	 */
+</span> }
+ 
+ static int dma_debug_create_entries(gfp_t gfp)
+-- 
+2.31.1
+
+
+<a href="#mc44ecf84a87f0c016681217ac0465d00f85def7a" id="ec44ecf84a87f0c016681217ac0465d00f85def7a">^</a> <a href="../../20210518125443.34148-1-someguy@effective-light.com/">permalink</a> <a href="../../20210518125443.34148-1-someguy@effective-light.com/raw">raw</a> <a href="../../20210518125443.34148-1-someguy@effective-light.com/#R">reply</a> <a href="../../20210518125443.34148-1-someguy@effective-light.com/#related">related</a>	[<a href="../../20210518125443.34148-1-someguy@effective-light.com/T/#u"><b>flat</b></a>|<a href="../../20210518125443.34148-1-someguy@effective-light.com/t/#u">nested</a>] <a href="#rc44ecf84a87f0c016681217ac0465d00f85def7a">34+ messages in thread</a></pre><hr><pre><a href="#ec44ecf84a87f0c016681217ac0465d00f85def7a" id="mc44ecf84a87f0c016681217ac0465d00f85def7a">*</a> <b>[PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-05-18 12:54 ` Hamza Mahfooz</b>
+  <a href="#rc44ecf84a87f0c016681217ac0465d00f85def7a">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Hamza Mahfooz @ 2021-05-18 12:54 UTC (<a href="../../20210518125443.34148-1-someguy@effective-light.com/">permalink</a> / <a href="../../20210518125443.34148-1-someguy@effective-light.com/raw">raw</a>)
+  To: <a href="../../../lkml/?t=20210518130744">linux-kernel</a>
+  Cc: Hamza Mahfooz, <a href="../../../linux-iommu/?t=20210518130744">iommu</a>, Dan Williams, Robin Murphy,
+	Christoph Hellwig
+
+Since, overlapping mappings are not supported by the DMA API we should
+report an error if active_cacheline_insert returns -EEXIST.
+
+Suggested-by: Dan Williams &lt;dan.j.williams@intel.com&gt;
+Signed-off-by: Hamza Mahfooz &lt;someguy@effective-light.com&gt;
+---
+ <a id="iZ2e.:..:20210518125443.34148-1-someguy::40effective-light.com:1kernel:dma:debug.c" href="#Z2e.:..:20210518125443.34148-1-someguy::40effective-light.com:1kernel:dma:debug.c">kernel/dma/debug.c</a> | 6 ++----
+ 1 file <a href="#ec44ecf84a87f0c016681217ac0465d00f85def7a">changed</a>, 2 insertions(+), 4 deletions(-)
+
+<span class="head"><a href="#iZ2e.:..:20210518125443.34148-1-someguy::40effective-light.com:1kernel:dma:debug.c" id="Z2e.:..:20210518125443.34148-1-someguy::40effective-light.com:1kernel:dma:debug.c">diff</a> --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 14de1271463f..dadae6255d05 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+</span><span class="hunk">@@ -566,11 +566,9 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+</span> 	if (rc == -ENOMEM) {
+ 		pr_err("cacheline tracking ENOMEM, dma-debug disabled
+");
+ 		global_disable = true;
+<span class="add">+	} else if (rc == -EEXIST) {
++		pr_err("cacheline tracking EEXIST, overlapping mappings aren't supported
+");
+</span> 	}
+<span class="del">-
+-	/* TODO: report -EEXIST errors here as overlapping mappings are
+-	 * not supported by the DMA API
+-	 */
+</span> }
+ 
+ static int dma_debug_create_entries(gfp_t gfp)
+-- 
+2.31.1
+
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#mc44ecf84a87f0c016681217ac0465d00f85def7a" id="ec44ecf84a87f0c016681217ac0465d00f85def7a">^</a> <a href="../../20210518125443.34148-1-someguy@effective-light.com/">permalink</a> <a href="../../20210518125443.34148-1-someguy@effective-light.com/raw">raw</a> <a href="../../20210518125443.34148-1-someguy@effective-light.com/#R">reply</a> <a href="../../20210518125443.34148-1-someguy@effective-light.com/#related">related</a>	[<a href="../../20210518125443.34148-1-someguy@effective-light.com/T/#u"><b>flat</b></a>|<a href="../../20210518125443.34148-1-someguy@effective-light.com/t/#u">nested</a>] <a href="#rc44ecf84a87f0c016681217ac0465d00f85def7a">34+ messages in thread</a></pre><hr><pre><a href="#e618ca7dd5360ff9e40c9f3cc88ca146fc898a220" id="m618ca7dd5360ff9e40c9f3cc88ca146fc898a220">*</a> <b>Re: [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-05-18 12:54 ` <a href="#mc44ecf84a87f0c016681217ac0465d00f85def7a">Hamza Mahfooz</a>
+<b>@ 2021-06-22  7:41   ` Christoph Hellwig</b>
+  <a href="#r618ca7dd5360ff9e40c9f3cc88ca146fc898a220">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Christoph Hellwig @ 2021-06-22  7:41 UTC (<a href="../../20210622074148.GA601@lst.de/">permalink</a> / <a href="../../20210622074148.GA601@lst.de/raw">raw</a>)
+  To: Hamza Mahfooz
+  Cc: <a href="../../../lkml/?t=20210622074153">linux-kernel</a>, Christoph Hellwig, Marek Szyprowski, Robin Murphy,
+	<a href="../../../linux-iommu/?t=20210622074153">iommu</a>, Dan Williams
+
+Thanks,
+
+applied to the dma-mapping tree.
+
+<a href="#m618ca7dd5360ff9e40c9f3cc88ca146fc898a220" id="e618ca7dd5360ff9e40c9f3cc88ca146fc898a220">^</a> <a href="../../20210622074148.GA601@lst.de/">permalink</a> <a href="../../20210622074148.GA601@lst.de/raw">raw</a> <a href="../../20210622074148.GA601@lst.de/#R">reply</a>	[<a href="../../20210622074148.GA601@lst.de/T/#u"><b>flat</b></a>|<a href="../../20210622074148.GA601@lst.de/t/#u">nested</a>] <a href="#r618ca7dd5360ff9e40c9f3cc88ca146fc898a220">34+ messages in thread</a></pre><hr><pre><a href="#e618ca7dd5360ff9e40c9f3cc88ca146fc898a220" id="m618ca7dd5360ff9e40c9f3cc88ca146fc898a220">*</a> <b>Re: [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-06-22  7:41   ` Christoph Hellwig</b>
+  <a href="#r618ca7dd5360ff9e40c9f3cc88ca146fc898a220">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Christoph Hellwig @ 2021-06-22  7:41 UTC (<a href="../../20210622074148.GA601@lst.de/">permalink</a> / <a href="../../20210622074148.GA601@lst.de/raw">raw</a>)
+  To: Hamza Mahfooz
+  Cc: <a href="../../../lkml/?t=20210622074157">linux-kernel</a>, <a href="../../../linux-iommu/?t=20210622074157">iommu</a>, Dan Williams, Robin Murphy,
+	Christoph Hellwig
+
+Thanks,
+
+applied to the dma-mapping tree.
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m618ca7dd5360ff9e40c9f3cc88ca146fc898a220" id="e618ca7dd5360ff9e40c9f3cc88ca146fc898a220">^</a> <a href="../../20210622074148.GA601@lst.de/">permalink</a> <a href="../../20210622074148.GA601@lst.de/raw">raw</a> <a href="../../20210622074148.GA601@lst.de/#R">reply</a>	[<a href="../../20210622074148.GA601@lst.de/T/#u"><b>flat</b></a>|<a href="../../20210622074148.GA601@lst.de/t/#u">nested</a>] <a href="#r618ca7dd5360ff9e40c9f3cc88ca146fc898a220">34+ messages in thread</a></pre><hr><pre><a href="#e81e0a84d6aa12b83910a522383beb98921d00ee4" id="m81e0a84d6aa12b83910a522383beb98921d00ee4">*</a> <u id="u"><b>DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b></u>
+  2021-05-18 12:54 ` <a href="#mc44ecf84a87f0c016681217ac0465d00f85def7a">Hamza Mahfooz</a>
+<b>@ 2021-09-09  3:33   ` Jeremy Linton</b>
+  <a href="#r81e0a84d6aa12b83910a522383beb98921d00ee4">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Jeremy Linton @ 2021-09-09  3:33 UTC (<a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/">permalink</a> / <a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/raw">raw</a>)
+  To: Hamza Mahfooz, <a href="../../../lkml/?t=20210909033446">linux-kernel</a>
+  Cc: Christoph Hellwig, Marek Szyprowski, Robin Murphy, <a href="../../../linux-iommu/?t=20210909033446">iommu</a>,
+	Dan Williams, Ioana Ciornei, <a href="../../../netdev/?t=20210909033446">netdev@vger.kernel.org</a>
+
++DPAA2, netdev maintainers
+Hi,
+
+On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+<span class="q">&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; report an error if active_cacheline_insert returns -EEXIST.
+</span>
+It seems this patch found a victim. I was trying to run iperf3 on a 
+honeycomb (5.14.0, fedora 35) and the console is blasting this error 
+message at 100% cpu. So, I changed it to a WARN_ONCE() to get the call 
+trace, which is attached below.
+
+
+[  151.839693] cacheline tracking EEXIST, overlapping mappings aren't
+supported
+...
+[  151.924397] Hardware name: SolidRun Ltd. SolidRun CEX7 Platform, BIOS
+EDK II Aug  9 2021
+[  151.932481] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+[  151.938483] pc : add_dma_entry+0x218/0x240
+[  151.942575] lr : add_dma_entry+0x218/0x240
+[  151.946666] sp : ffff8000101e2f20
+[  151.949975] x29: ffff8000101e2f20 x28: ffffaf317ac85000 x27:
+ffff3d0366ecb3a0
+[  151.957116] x26: 0000040000000000 x25: 0000000000000001 x24:
+ffffaf317bbe8908
+[  151.964257] x23: 0000000000000001 x22: ffffaf317bbe8810 x21:
+0000000000000000
+[  151.971397] x20: 0000000082e48000 x19: ffffaf317be6e000 x18:
+ffffffffffffffff
+[  151.978537] x17: 646574726f707075 x16: 732074276e657261 x15:
+ffff8000901e2c2f
+[  151.985676] x14: 0000000000000000 x13: 0000000000000000 x12:
+0000000000000000
+[  151.992816] x11: ffffaf317bb4c4c0 x10: 00000000ffffe000 x9 :
+ffffaf3179708060
+[  151.999956] x8 : 00000000ffffdfff x7 : ffffaf317bb4c4c0 x6 :
+0000000000000001
+[  152.007096] x5 : ffff3d0a9af66e30 x4 : 0000000000000000 x3 :
+0000000000000027
+[  152.014236] x2 : 0000000000000023 x1 : ffff3d0360aac000 x0 :
+0000000000000040
+[  152.021376] Call trace:
+[  152.023816]  add_dma_entry+0x218/0x240
+[  152.027561]  debug_dma_map_sg+0x118/0x17c
+[  152.031566]  dma_map_sg_attrs+0x70/0xb0
+[  152.035397]  dpaa2_eth_build_sg_fd+0xac/0x2f0 [fsl_dpaa2_eth]
+[  152.041150]  __dpaa2_eth_tx+0x3ec/0x570 [fsl_dpaa2_eth]
+[  152.046377]  dpaa2_eth_tx+0x74/0x110 [fsl_dpaa2_eth]
+[  152.051342]  dev_hard_start_xmit+0xe8/0x1a4
+[  152.055523]  sch_direct_xmit+0x8c/0x1e0
+[  152.059355]  __dev_xmit_skb+0x484/0x6a0
+[  152.063186]  __dev_queue_xmit+0x380/0x744
+[  152.067190]  dev_queue_xmit+0x20/0x2c
+[  152.070848]  neigh_hh_output+0xb4/0x130
+[  152.074679]  ip_finish_output2+0x494/0x8f0
+[  152.078770]  __ip_finish_output+0x12c/0x230
+[  152.082948]  ip_finish_output+0x40/0xe0
+[  152.086778]  ip_output+0xe4/0x2d4
+[  152.090088]  __ip_queue_xmit+0x1b4/0x5c0
+[  152.094006]  ip_queue_xmit+0x20/0x30
+[  152.097576]  __tcp_transmit_skb+0x3b8/0x7b4
+[  152.101755]  tcp_write_xmit+0x350/0x8e0
+[  152.105586]  __tcp_push_pending_frames+0x48/0x110
+[  152.110286]  tcp_rcv_established+0x338/0x690
+[  152.114550]  tcp_v4_do_rcv+0x1c0/0x29c
+[  152.118294]  tcp_v4_rcv+0xd14/0xe3c
+[  152.121777]  ip_protocol_deliver_rcu+0x88/0x340
+[  152.126302]  ip_local_deliver_finish+0xc0/0x184
+[  152.130827]  ip_local_deliver+0x7c/0x23c
+[  152.134744]  ip_rcv_finish+0xb4/0x100
+[  152.138400]  ip_rcv+0x54/0x210
+[  152.141449]  deliver_skb+0x74/0xdc
+[  152.144846]  __netif_receive_skb_core.constprop.0+0x250/0x81c
+[  152.150588]  __netif_receive_skb_list_core+0x94/0x264
+[  152.155635]  netif_receive_skb_list_internal+0x1d0/0x3bc
+[  152.160942]  netif_receive_skb_list+0x38/0x70
+[  152.165295]  dpaa2_eth_poll+0x168/0x350 [fsl_dpaa2_eth]
+[  152.170521]  __napi_poll.constprop.0+0x40/0x19c
+[  152.175047]  net_rx_action+0x2c4/0x360
+[  152.178792]  __do_softirq+0x1b0/0x394
+[  152.182450]  run_ksoftirqd+0x68/0xa0
+[  152.186023]  smpboot_thread_fn+0x13c/0x270
+[  152.190115]  kthread+0x138/0x140
+
+PS, it might not hurt to rate limit/_once this somehow to avoid a 
+runtime problem if it starts to trigger.
+
+Thanks,
+
+
+<span class="q">&gt; 
+&gt; Suggested-by: Dan Williams &lt;dan.j.williams@intel.com&gt;
+&gt; Signed-off-by: Hamza Mahfooz &lt;someguy@effective-light.com&gt;
+&gt; ---
+&gt;   kernel/dma/debug.c | 6 ++----
+&gt;   1 file changed, 2 insertions(+), 4 deletions(-)
+&gt; 
+&gt; diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+&gt; index 14de1271463f..dadae6255d05 100644
+&gt; --- a/kernel/dma/debug.c
+&gt; +++ b/kernel/dma/debug.c
+&gt; @@ -566,11 +566,9 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+&gt;   	if (rc == -ENOMEM) {
+&gt;   		pr_err("cacheline tracking ENOMEM, dma-debug disabled
+");
+&gt;   		global_disable = true;
+&gt; +	} else if (rc == -EEXIST) {
+&gt; +		pr_err("cacheline tracking EEXIST, overlapping mappings aren't supported
+");
+&gt;   	}
+&gt; -
+&gt; -	/* TODO: report -EEXIST errors here as overlapping mappings are
+&gt; -	 * not supported by the DMA API
+&gt; -	 */
+&gt;   }
+&gt;   
+&gt;   static int dma_debug_create_entries(gfp_t gfp)
+&gt; 
+</span>
+
+<a href="#m81e0a84d6aa12b83910a522383beb98921d00ee4" id="e81e0a84d6aa12b83910a522383beb98921d00ee4">^</a> <a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/">permalink</a> <a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/raw">raw</a> <a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/#R">reply</a>	[<a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/T/#u"><b>flat</b></a>|<a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/t/#u">nested</a>] <a href="#r81e0a84d6aa12b83910a522383beb98921d00ee4">34+ messages in thread</a></pre><hr><pre><a href="#e81e0a84d6aa12b83910a522383beb98921d00ee4" id="m81e0a84d6aa12b83910a522383beb98921d00ee4">*</a> <u id="u"><b>DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b></u>
+<b>@ 2021-09-09  3:33   ` Jeremy Linton</b>
+  <a href="#r81e0a84d6aa12b83910a522383beb98921d00ee4">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Jeremy Linton @ 2021-09-09  3:33 UTC (<a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/">permalink</a> / <a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/raw">raw</a>)
+  To: Hamza Mahfooz, <a href="../../../lkml/?t=20210909033413">linux-kernel</a>
+  Cc: <a href="../../../netdev/?t=20210909033413">netdev@vger.kernel.org</a>, <a href="../../../linux-iommu/?t=20210909033413">iommu</a>, Ioana Ciornei, Dan Williams,
+	Robin Murphy, Christoph Hellwig
+
++DPAA2, netdev maintainers
+Hi,
+
+On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+<span class="q">&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; report an error if active_cacheline_insert returns -EEXIST.
+</span>
+It seems this patch found a victim. I was trying to run iperf3 on a 
+honeycomb (5.14.0, fedora 35) and the console is blasting this error 
+message at 100% cpu. So, I changed it to a WARN_ONCE() to get the call 
+trace, which is attached below.
+
+
+[  151.839693] cacheline tracking EEXIST, overlapping mappings aren't
+supported
+...
+[  151.924397] Hardware name: SolidRun Ltd. SolidRun CEX7 Platform, BIOS
+EDK II Aug  9 2021
+[  151.932481] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+[  151.938483] pc : add_dma_entry+0x218/0x240
+[  151.942575] lr : add_dma_entry+0x218/0x240
+[  151.946666] sp : ffff8000101e2f20
+[  151.949975] x29: ffff8000101e2f20 x28: ffffaf317ac85000 x27:
+ffff3d0366ecb3a0
+[  151.957116] x26: 0000040000000000 x25: 0000000000000001 x24:
+ffffaf317bbe8908
+[  151.964257] x23: 0000000000000001 x22: ffffaf317bbe8810 x21:
+0000000000000000
+[  151.971397] x20: 0000000082e48000 x19: ffffaf317be6e000 x18:
+ffffffffffffffff
+[  151.978537] x17: 646574726f707075 x16: 732074276e657261 x15:
+ffff8000901e2c2f
+[  151.985676] x14: 0000000000000000 x13: 0000000000000000 x12:
+0000000000000000
+[  151.992816] x11: ffffaf317bb4c4c0 x10: 00000000ffffe000 x9 :
+ffffaf3179708060
+[  151.999956] x8 : 00000000ffffdfff x7 : ffffaf317bb4c4c0 x6 :
+0000000000000001
+[  152.007096] x5 : ffff3d0a9af66e30 x4 : 0000000000000000 x3 :
+0000000000000027
+[  152.014236] x2 : 0000000000000023 x1 : ffff3d0360aac000 x0 :
+0000000000000040
+[  152.021376] Call trace:
+[  152.023816]  add_dma_entry+0x218/0x240
+[  152.027561]  debug_dma_map_sg+0x118/0x17c
+[  152.031566]  dma_map_sg_attrs+0x70/0xb0
+[  152.035397]  dpaa2_eth_build_sg_fd+0xac/0x2f0 [fsl_dpaa2_eth]
+[  152.041150]  __dpaa2_eth_tx+0x3ec/0x570 [fsl_dpaa2_eth]
+[  152.046377]  dpaa2_eth_tx+0x74/0x110 [fsl_dpaa2_eth]
+[  152.051342]  dev_hard_start_xmit+0xe8/0x1a4
+[  152.055523]  sch_direct_xmit+0x8c/0x1e0
+[  152.059355]  __dev_xmit_skb+0x484/0x6a0
+[  152.063186]  __dev_queue_xmit+0x380/0x744
+[  152.067190]  dev_queue_xmit+0x20/0x2c
+[  152.070848]  neigh_hh_output+0xb4/0x130
+[  152.074679]  ip_finish_output2+0x494/0x8f0
+[  152.078770]  __ip_finish_output+0x12c/0x230
+[  152.082948]  ip_finish_output+0x40/0xe0
+[  152.086778]  ip_output+0xe4/0x2d4
+[  152.090088]  __ip_queue_xmit+0x1b4/0x5c0
+[  152.094006]  ip_queue_xmit+0x20/0x30
+[  152.097576]  __tcp_transmit_skb+0x3b8/0x7b4
+[  152.101755]  tcp_write_xmit+0x350/0x8e0
+[  152.105586]  __tcp_push_pending_frames+0x48/0x110
+[  152.110286]  tcp_rcv_established+0x338/0x690
+[  152.114550]  tcp_v4_do_rcv+0x1c0/0x29c
+[  152.118294]  tcp_v4_rcv+0xd14/0xe3c
+[  152.121777]  ip_protocol_deliver_rcu+0x88/0x340
+[  152.126302]  ip_local_deliver_finish+0xc0/0x184
+[  152.130827]  ip_local_deliver+0x7c/0x23c
+[  152.134744]  ip_rcv_finish+0xb4/0x100
+[  152.138400]  ip_rcv+0x54/0x210
+[  152.141449]  deliver_skb+0x74/0xdc
+[  152.144846]  __netif_receive_skb_core.constprop.0+0x250/0x81c
+[  152.150588]  __netif_receive_skb_list_core+0x94/0x264
+[  152.155635]  netif_receive_skb_list_internal+0x1d0/0x3bc
+[  152.160942]  netif_receive_skb_list+0x38/0x70
+[  152.165295]  dpaa2_eth_poll+0x168/0x350 [fsl_dpaa2_eth]
+[  152.170521]  __napi_poll.constprop.0+0x40/0x19c
+[  152.175047]  net_rx_action+0x2c4/0x360
+[  152.178792]  __do_softirq+0x1b0/0x394
+[  152.182450]  run_ksoftirqd+0x68/0xa0
+[  152.186023]  smpboot_thread_fn+0x13c/0x270
+[  152.190115]  kthread+0x138/0x140
+
+PS, it might not hurt to rate limit/_once this somehow to avoid a 
+runtime problem if it starts to trigger.
+
+Thanks,
+
+
+<span class="q">&gt; 
+&gt; Suggested-by: Dan Williams &lt;dan.j.williams@intel.com&gt;
+&gt; Signed-off-by: Hamza Mahfooz &lt;someguy@effective-light.com&gt;
+&gt; ---
+&gt;   kernel/dma/debug.c | 6 ++----
+&gt;   1 file changed, 2 insertions(+), 4 deletions(-)
+&gt; 
+&gt; diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+&gt; index 14de1271463f..dadae6255d05 100644
+&gt; --- a/kernel/dma/debug.c
+&gt; +++ b/kernel/dma/debug.c
+&gt; @@ -566,11 +566,9 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+&gt;   	if (rc == -ENOMEM) {
+&gt;   		pr_err("cacheline tracking ENOMEM, dma-debug disabled
+");
+&gt;   		global_disable = true;
+&gt; +	} else if (rc == -EEXIST) {
+&gt; +		pr_err("cacheline tracking EEXIST, overlapping mappings aren't supported
+");
+&gt;   	}
+&gt; -
+&gt; -	/* TODO: report -EEXIST errors here as overlapping mappings are
+&gt; -	 * not supported by the DMA API
+&gt; -	 */
+&gt;   }
+&gt;   
+&gt;   static int dma_debug_create_entries(gfp_t gfp)
+&gt; 
+</span>
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m81e0a84d6aa12b83910a522383beb98921d00ee4" id="e81e0a84d6aa12b83910a522383beb98921d00ee4">^</a> <a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/">permalink</a> <a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/raw">raw</a> <a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/#R">reply</a>	[<a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/T/#u"><b>flat</b></a>|<a href="../../fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com/t/#u">nested</a>] <a href="#r81e0a84d6aa12b83910a522383beb98921d00ee4">34+ messages in thread</a></pre><hr><pre><a href="#e8ad19d2b14e794be89691c34d35f891668b02021" id="m8ad19d2b14e794be89691c34d35f891668b02021">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-09-09  3:33   ` <a href="#m81e0a84d6aa12b83910a522383beb98921d00ee4">Jeremy Linton</a>
+<b>@ 2021-09-09 21:16     ` Ioana Ciornei</b>
+  <a href="#r8ad19d2b14e794be89691c34d35f891668b02021">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Ioana Ciornei @ 2021-09-09 21:16 UTC (<a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/">permalink</a> / <a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/raw">raw</a>)
+  To: Jeremy Linton
+  Cc: Hamza Mahfooz, <a href="../../../lkml/?t=20210909211636">linux-kernel@vger.kernel.org</a>, Christoph Hellwig,
+	Marek Szyprowski, Robin Murphy, <a href="../../../linux-iommu/?t=20210909211636">iommu@lists.linux-foundation.org</a>,
+	Dan Williams, <a href="../../../netdev/?t=20210909211636">netdev@vger.kernel.org</a>
+
+On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+<span class="q">&gt; +DPAA2, netdev maintainers
+&gt; Hi,
+&gt; 
+&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; 
+&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; is attached below.
+&gt; 
+</span>
+Thanks for the report.
+
+I don't have access to hardware at the moment to actually see what's
+happening since I'm on vacation.  I'll work on it in a few days.
+
+Ioana
+
+<a href="#m8ad19d2b14e794be89691c34d35f891668b02021" id="e8ad19d2b14e794be89691c34d35f891668b02021">^</a> <a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/">permalink</a> <a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/raw">raw</a> <a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/#R">reply</a>	[<a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/T/#u"><b>flat</b></a>|<a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/t/#u">nested</a>] <a href="#r8ad19d2b14e794be89691c34d35f891668b02021">34+ messages in thread</a></pre><hr><pre><a href="#e8ad19d2b14e794be89691c34d35f891668b02021" id="m8ad19d2b14e794be89691c34d35f891668b02021">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-09-09 21:16     ` Ioana Ciornei</b>
+  <a href="#r8ad19d2b14e794be89691c34d35f891668b02021">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Ioana Ciornei @ 2021-09-09 21:16 UTC (<a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/">permalink</a> / <a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/raw">raw</a>)
+  To: Jeremy Linton
+  Cc: Hamza Mahfooz, <a href="../../../netdev/?t=20210910081659">netdev@vger.kernel.org</a>,
+	<a href="../../../lkml/?t=20210910081659">linux-kernel@vger.kernel.org</a>, <a href="../../../linux-iommu/?t=20210910081659">iommu@lists.linux-foundation.org</a>,
+	Dan Williams, Robin Murphy, Christoph Hellwig
+
+On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+<span class="q">&gt; +DPAA2, netdev maintainers
+&gt; Hi,
+&gt; 
+&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; 
+&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; is attached below.
+&gt; 
+</span>
+Thanks for the report.
+
+I don't have access to hardware at the moment to actually see what's
+happening since I'm on vacation.  I'll work on it in a few days.
+
+Ioana
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m8ad19d2b14e794be89691c34d35f891668b02021" id="e8ad19d2b14e794be89691c34d35f891668b02021">^</a> <a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/">permalink</a> <a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/raw">raw</a> <a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/#R">reply</a>	[<a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/T/#u"><b>flat</b></a>|<a href="../../20210909211625.zwnbmwzqa5qqulrq@skbuf/t/#u">nested</a>] <a href="#r8ad19d2b14e794be89691c34d35f891668b02021">34+ messages in thread</a></pre><hr><pre><a href="#e9cf561ca9c12ad290c0b7b36e4991bc153a8a567" id="m9cf561ca9c12ad290c0b7b36e4991bc153a8a567">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-09-09  3:33   ` <a href="#m81e0a84d6aa12b83910a522383beb98921d00ee4">Jeremy Linton</a>
+<b>@ 2021-09-10 10:23     ` Christoph Hellwig</b>
+  <a href="#r9cf561ca9c12ad290c0b7b36e4991bc153a8a567">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Christoph Hellwig @ 2021-09-10 10:23 UTC (<a href="../../20210910102306.GA13863@lst.de/">permalink</a> / <a href="../../20210910102306.GA13863@lst.de/raw">raw</a>)
+  To: Jeremy Linton
+  Cc: Hamza Mahfooz, <a href="../../../lkml/?t=20210910102328">linux-kernel</a>, Christoph Hellwig, Marek Szyprowski,
+	Robin Murphy, <a href="../../../linux-iommu/?t=20210910102328">iommu</a>, Dan Williams, Ioana Ciornei,
+	<a href="../../../netdev/?t=20210910102328">netdev@vger.kernel.org</a>
+
+On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+<span class="q">&gt; PS, it might not hurt to rate limit/_once this somehow to avoid a runtime 
+&gt; problem if it starts to trigger.
+</span>
+Yes, that might be a good idea.  Care to prepare a patch?
+
+<a href="#m9cf561ca9c12ad290c0b7b36e4991bc153a8a567" id="e9cf561ca9c12ad290c0b7b36e4991bc153a8a567">^</a> <a href="../../20210910102306.GA13863@lst.de/">permalink</a> <a href="../../20210910102306.GA13863@lst.de/raw">raw</a> <a href="../../20210910102306.GA13863@lst.de/#R">reply</a>	[<a href="../../20210910102306.GA13863@lst.de/T/#u"><b>flat</b></a>|<a href="../../20210910102306.GA13863@lst.de/t/#u">nested</a>] <a href="#r9cf561ca9c12ad290c0b7b36e4991bc153a8a567">34+ messages in thread</a></pre><hr><pre><a href="#e9cf561ca9c12ad290c0b7b36e4991bc153a8a567" id="m9cf561ca9c12ad290c0b7b36e4991bc153a8a567">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-09-10 10:23     ` Christoph Hellwig</b>
+  <a href="#r9cf561ca9c12ad290c0b7b36e4991bc153a8a567">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Christoph Hellwig @ 2021-09-10 10:23 UTC (<a href="../../20210910102306.GA13863@lst.de/">permalink</a> / <a href="../../20210910102306.GA13863@lst.de/raw">raw</a>)
+  To: Jeremy Linton
+  Cc: Hamza Mahfooz, <a href="../../../netdev/?t=20210910102314">netdev@vger.kernel.org</a>, <a href="../../../lkml/?t=20210910102314">linux-kernel</a>, <a href="../../../linux-iommu/?t=20210910102314">iommu</a>,
+	Ioana Ciornei, Dan Williams, Robin Murphy, Christoph Hellwig
+
+On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+<span class="q">&gt; PS, it might not hurt to rate limit/_once this somehow to avoid a runtime 
+&gt; problem if it starts to trigger.
+</span>
+Yes, that might be a good idea.  Care to prepare a patch?
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m9cf561ca9c12ad290c0b7b36e4991bc153a8a567" id="e9cf561ca9c12ad290c0b7b36e4991bc153a8a567">^</a> <a href="../../20210910102306.GA13863@lst.de/">permalink</a> <a href="../../20210910102306.GA13863@lst.de/raw">raw</a> <a href="../../20210910102306.GA13863@lst.de/#R">reply</a>	[<a href="../../20210910102306.GA13863@lst.de/T/#u"><b>flat</b></a>|<a href="../../20210910102306.GA13863@lst.de/t/#u">nested</a>] <a href="#r9cf561ca9c12ad290c0b7b36e4991bc153a8a567">34+ messages in thread</a></pre><hr><pre><a href="#e27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc" id="m27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-09-09  3:33   ` <a href="#m81e0a84d6aa12b83910a522383beb98921d00ee4">Jeremy Linton</a>
+<b>@ 2021-09-14 15:45     ` Ioana Ciornei</b>
+  <a href="#r27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Ioana Ciornei @ 2021-09-14 15:45 UTC (<a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/">permalink</a> / <a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/raw">raw</a>)
+  To: Jeremy Linton
+  Cc: Hamza Mahfooz, <a href="../../../lkml/?t=20210914154513">linux-kernel@vger.kernel.org</a>, Christoph Hellwig,
+	Marek Szyprowski, Robin Murphy, <a href="../../../linux-iommu/?t=20210914154513">iommu@lists.linux-foundation.org</a>,
+	Dan Williams, <a href="../../../netdev/?t=20210914154513">netdev@vger.kernel.org</a>
+
+On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+<span class="q">&gt; +DPAA2, netdev maintainers
+&gt; Hi,
+&gt; 
+&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; 
+&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; is attached below.
+&gt; 
+&gt; 
+&gt; [  151.839693] cacheline tracking EEXIST, overlapping mappings aren't
+&gt; supported
+&gt; ...
+&gt; [  151.924397] Hardware name: SolidRun Ltd. SolidRun CEX7 Platform, BIOS
+&gt; EDK II Aug  9 2021
+&gt; [  151.932481] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+&gt; [  151.938483] pc : add_dma_entry+0x218/0x240
+&gt; [  151.942575] lr : add_dma_entry+0x218/0x240
+&gt; [  151.946666] sp : ffff8000101e2f20
+&gt; [  151.949975] x29: ffff8000101e2f20 x28: ffffaf317ac85000 x27:
+&gt; ffff3d0366ecb3a0
+&gt; [  151.957116] x26: 0000040000000000 x25: 0000000000000001 x24:
+&gt; ffffaf317bbe8908
+&gt; [  151.964257] x23: 0000000000000001 x22: ffffaf317bbe8810 x21:
+&gt; 0000000000000000
+&gt; [  151.971397] x20: 0000000082e48000 x19: ffffaf317be6e000 x18:
+&gt; ffffffffffffffff
+&gt; [  151.978537] x17: 646574726f707075 x16: 732074276e657261 x15:
+&gt; ffff8000901e2c2f
+&gt; [  151.985676] x14: 0000000000000000 x13: 0000000000000000 x12:
+&gt; 0000000000000000
+&gt; [  151.992816] x11: ffffaf317bb4c4c0 x10: 00000000ffffe000 x9 :
+&gt; ffffaf3179708060
+&gt; [  151.999956] x8 : 00000000ffffdfff x7 : ffffaf317bb4c4c0 x6 :
+&gt; 0000000000000001
+&gt; [  152.007096] x5 : ffff3d0a9af66e30 x4 : 0000000000000000 x3 :
+&gt; 0000000000000027
+&gt; [  152.014236] x2 : 0000000000000023 x1 : ffff3d0360aac000 x0 :
+&gt; 0000000000000040
+&gt; [  152.021376] Call trace:
+&gt; [  152.023816]  add_dma_entry+0x218/0x240
+&gt; [  152.027561]  debug_dma_map_sg+0x118/0x17c
+&gt; [  152.031566]  dma_map_sg_attrs+0x70/0xb0
+&gt; [  152.035397]  dpaa2_eth_build_sg_fd+0xac/0x2f0 [fsl_dpaa2_eth]
+&gt; [  152.041150]  __dpaa2_eth_tx+0x3ec/0x570 [fsl_dpaa2_eth]
+&gt; [  152.046377]  dpaa2_eth_tx+0x74/0x110 [fsl_dpaa2_eth]
+&gt; [  152.051342]  dev_hard_start_xmit+0xe8/0x1a4
+&gt; [  152.055523]  sch_direct_xmit+0x8c/0x1e0
+&gt; [  152.059355]  __dev_xmit_skb+0x484/0x6a0
+&gt; [  152.063186]  __dev_queue_xmit+0x380/0x744
+&gt; [  152.067190]  dev_queue_xmit+0x20/0x2c
+&gt; [  152.070848]  neigh_hh_output+0xb4/0x130
+&gt; [  152.074679]  ip_finish_output2+0x494/0x8f0
+&gt; [  152.078770]  __ip_finish_output+0x12c/0x230
+&gt; [  152.082948]  ip_finish_output+0x40/0xe0
+&gt; [  152.086778]  ip_output+0xe4/0x2d4
+&gt; [  152.090088]  __ip_queue_xmit+0x1b4/0x5c0
+&gt; [  152.094006]  ip_queue_xmit+0x20/0x30
+&gt; [  152.097576]  __tcp_transmit_skb+0x3b8/0x7b4
+&gt; [  152.101755]  tcp_write_xmit+0x350/0x8e0
+&gt; [  152.105586]  __tcp_push_pending_frames+0x48/0x110
+&gt; [  152.110286]  tcp_rcv_established+0x338/0x690
+&gt; [  152.114550]  tcp_v4_do_rcv+0x1c0/0x29c
+&gt; [  152.118294]  tcp_v4_rcv+0xd14/0xe3c
+&gt; [  152.121777]  ip_protocol_deliver_rcu+0x88/0x340
+&gt; [  152.126302]  ip_local_deliver_finish+0xc0/0x184
+&gt; [  152.130827]  ip_local_deliver+0x7c/0x23c
+&gt; [  152.134744]  ip_rcv_finish+0xb4/0x100
+&gt; [  152.138400]  ip_rcv+0x54/0x210
+&gt; [  152.141449]  deliver_skb+0x74/0xdc
+&gt; [  152.144846]  __netif_receive_skb_core.constprop.0+0x250/0x81c
+&gt; [  152.150588]  __netif_receive_skb_list_core+0x94/0x264
+&gt; [  152.155635]  netif_receive_skb_list_internal+0x1d0/0x3bc
+&gt; [  152.160942]  netif_receive_skb_list+0x38/0x70
+&gt; [  152.165295]  dpaa2_eth_poll+0x168/0x350 [fsl_dpaa2_eth]
+&gt; [  152.170521]  __napi_poll.constprop.0+0x40/0x19c
+&gt; [  152.175047]  net_rx_action+0x2c4/0x360
+&gt; [  152.178792]  __do_softirq+0x1b0/0x394
+&gt; [  152.182450]  run_ksoftirqd+0x68/0xa0
+&gt; [  152.186023]  smpboot_thread_fn+0x13c/0x270
+&gt; [  152.190115]  kthread+0x138/0x140
+&gt;
+</span>
+I got some time to look at this and I am not sure if it's an actual
+problem or not.
+
+First of all, I added some more debug prints when any overlapping
+happens so that I can actually see the entries.
+
+[  245.927020] fsl_dpaa2_eth dpni.3: scather-gather idx 0 P=20a7320000 N=20a7320 D=20a7320000 L=30 DMA_BIDIRECTIONAL dma map error check not applicable·
+[  245.927048] fsl_dpaa2_eth dpni.3: scather-gather idx 1 P=20a7320030 N=20a7320 D=20a7320030 L=5a8 DMA_BIDIRECTIONAL dma map error check not applicable
+[  245.927062] DMA-API: cacheline tracking EEXIST, overlapping mappings aren't supported
+
+The first line is the dump of the dma_debug_entry which is already present
+in the radix tree and the second one is the entry which just triggered
+the EEXIST.
+
+As we can see, they are not actually overlapping, at least from my
+understanding. The first one starts at 0x20a7320000 with a size 0x30
+and the second one at 0x20a7320030.
+
+I wanted to see where these mappings are originating so I added some
+traces around the dma_[un]map_single, dma_[un]map_sg operations in
+dpaa2-eth.
+
+I can see the following:
+ - There are two S/G skbs being sent one after another (no cleanup of
+   the Tx confirmation is done between, so not kfree or dma_unmap is
+   happening).
+ - Skb#1 has 3 frags and skb#2 just 2 frags.
+ - The skb#1 3rd frag will get into the same cacheline as the skb#2 2nd frag.
+
+skb#1:
+
+  245.926981:       dpaa2_eth:dpaa2_dma_map_sg: [eth4] scl=0x0xffff4cf3ac188200 num_sg=3
+  245.926984: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x42 dma_addr=0x20b66e58fe
+  245.926987: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x578 dma_addr=0x20ab9c7a88
+  245.926989: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x30 dma_addr=0x20a7320000
+                                                                                ^
+                                                                                |
+                                                                                |
+      This skb frag will land in the same cacheline number with the 2nd frag from skb#2.
+
+
+skb#2:
+
+  245.934933:       dpaa2_eth:dpaa2_dma_map_sg: [eth4] scl=0x0xffff4cf3ac188300 num_sg=2
+  245.934936: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x42 dma_addr=0x20b66e60fe
+  245.934939: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x5a8 dma_addr=0x20a7320030
+                                                                                ^
+                                                                                |
+
+These frags are allocated by the stack, transformed into a scatterlist
+by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+dpaa2-eth's decision to use two fragments from the same page (that will
+also end un in the same cacheline) in two different in-flight skbs.
+
+Is this behavior normal?
+
+Ioana
+
+<a href="#m27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc" id="e27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">^</a> <a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/">permalink</a> <a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/raw">raw</a> <a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/#R">reply</a>	[<a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/T/#u"><b>flat</b></a>|<a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/t/#u">nested</a>] <a href="#r27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">34+ messages in thread</a></pre><hr><pre><a href="#e27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc" id="m27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-09-14 15:45     ` Ioana Ciornei</b>
+  <a href="#r27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Ioana Ciornei @ 2021-09-14 15:45 UTC (<a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/">permalink</a> / <a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/raw">raw</a>)
+  To: Jeremy Linton
+  Cc: Hamza Mahfooz, <a href="../../../netdev/?t=20210914154517">netdev@vger.kernel.org</a>,
+	<a href="../../../lkml/?t=20210914154517">linux-kernel@vger.kernel.org</a>, <a href="../../../linux-iommu/?t=20210914154517">iommu@lists.linux-foundation.org</a>,
+	Dan Williams, Robin Murphy, Christoph Hellwig
+
+On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+<span class="q">&gt; +DPAA2, netdev maintainers
+&gt; Hi,
+&gt; 
+&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; 
+&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; is attached below.
+&gt; 
+&gt; 
+&gt; [  151.839693] cacheline tracking EEXIST, overlapping mappings aren't
+&gt; supported
+&gt; ...
+&gt; [  151.924397] Hardware name: SolidRun Ltd. SolidRun CEX7 Platform, BIOS
+&gt; EDK II Aug  9 2021
+&gt; [  151.932481] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+&gt; [  151.938483] pc : add_dma_entry+0x218/0x240
+&gt; [  151.942575] lr : add_dma_entry+0x218/0x240
+&gt; [  151.946666] sp : ffff8000101e2f20
+&gt; [  151.949975] x29: ffff8000101e2f20 x28: ffffaf317ac85000 x27:
+&gt; ffff3d0366ecb3a0
+&gt; [  151.957116] x26: 0000040000000000 x25: 0000000000000001 x24:
+&gt; ffffaf317bbe8908
+&gt; [  151.964257] x23: 0000000000000001 x22: ffffaf317bbe8810 x21:
+&gt; 0000000000000000
+&gt; [  151.971397] x20: 0000000082e48000 x19: ffffaf317be6e000 x18:
+&gt; ffffffffffffffff
+&gt; [  151.978537] x17: 646574726f707075 x16: 732074276e657261 x15:
+&gt; ffff8000901e2c2f
+&gt; [  151.985676] x14: 0000000000000000 x13: 0000000000000000 x12:
+&gt; 0000000000000000
+&gt; [  151.992816] x11: ffffaf317bb4c4c0 x10: 00000000ffffe000 x9 :
+&gt; ffffaf3179708060
+&gt; [  151.999956] x8 : 00000000ffffdfff x7 : ffffaf317bb4c4c0 x6 :
+&gt; 0000000000000001
+&gt; [  152.007096] x5 : ffff3d0a9af66e30 x4 : 0000000000000000 x3 :
+&gt; 0000000000000027
+&gt; [  152.014236] x2 : 0000000000000023 x1 : ffff3d0360aac000 x0 :
+&gt; 0000000000000040
+&gt; [  152.021376] Call trace:
+&gt; [  152.023816]  add_dma_entry+0x218/0x240
+&gt; [  152.027561]  debug_dma_map_sg+0x118/0x17c
+&gt; [  152.031566]  dma_map_sg_attrs+0x70/0xb0
+&gt; [  152.035397]  dpaa2_eth_build_sg_fd+0xac/0x2f0 [fsl_dpaa2_eth]
+&gt; [  152.041150]  __dpaa2_eth_tx+0x3ec/0x570 [fsl_dpaa2_eth]
+&gt; [  152.046377]  dpaa2_eth_tx+0x74/0x110 [fsl_dpaa2_eth]
+&gt; [  152.051342]  dev_hard_start_xmit+0xe8/0x1a4
+&gt; [  152.055523]  sch_direct_xmit+0x8c/0x1e0
+&gt; [  152.059355]  __dev_xmit_skb+0x484/0x6a0
+&gt; [  152.063186]  __dev_queue_xmit+0x380/0x744
+&gt; [  152.067190]  dev_queue_xmit+0x20/0x2c
+&gt; [  152.070848]  neigh_hh_output+0xb4/0x130
+&gt; [  152.074679]  ip_finish_output2+0x494/0x8f0
+&gt; [  152.078770]  __ip_finish_output+0x12c/0x230
+&gt; [  152.082948]  ip_finish_output+0x40/0xe0
+&gt; [  152.086778]  ip_output+0xe4/0x2d4
+&gt; [  152.090088]  __ip_queue_xmit+0x1b4/0x5c0
+&gt; [  152.094006]  ip_queue_xmit+0x20/0x30
+&gt; [  152.097576]  __tcp_transmit_skb+0x3b8/0x7b4
+&gt; [  152.101755]  tcp_write_xmit+0x350/0x8e0
+&gt; [  152.105586]  __tcp_push_pending_frames+0x48/0x110
+&gt; [  152.110286]  tcp_rcv_established+0x338/0x690
+&gt; [  152.114550]  tcp_v4_do_rcv+0x1c0/0x29c
+&gt; [  152.118294]  tcp_v4_rcv+0xd14/0xe3c
+&gt; [  152.121777]  ip_protocol_deliver_rcu+0x88/0x340
+&gt; [  152.126302]  ip_local_deliver_finish+0xc0/0x184
+&gt; [  152.130827]  ip_local_deliver+0x7c/0x23c
+&gt; [  152.134744]  ip_rcv_finish+0xb4/0x100
+&gt; [  152.138400]  ip_rcv+0x54/0x210
+&gt; [  152.141449]  deliver_skb+0x74/0xdc
+&gt; [  152.144846]  __netif_receive_skb_core.constprop.0+0x250/0x81c
+&gt; [  152.150588]  __netif_receive_skb_list_core+0x94/0x264
+&gt; [  152.155635]  netif_receive_skb_list_internal+0x1d0/0x3bc
+&gt; [  152.160942]  netif_receive_skb_list+0x38/0x70
+&gt; [  152.165295]  dpaa2_eth_poll+0x168/0x350 [fsl_dpaa2_eth]
+&gt; [  152.170521]  __napi_poll.constprop.0+0x40/0x19c
+&gt; [  152.175047]  net_rx_action+0x2c4/0x360
+&gt; [  152.178792]  __do_softirq+0x1b0/0x394
+&gt; [  152.182450]  run_ksoftirqd+0x68/0xa0
+&gt; [  152.186023]  smpboot_thread_fn+0x13c/0x270
+&gt; [  152.190115]  kthread+0x138/0x140
+&gt;
+</span>
+I got some time to look at this and I am not sure if it's an actual
+problem or not.
+
+First of all, I added some more debug prints when any overlapping
+happens so that I can actually see the entries.
+
+[  245.927020] fsl_dpaa2_eth dpni.3: scather-gather idx 0 P=20a7320000 N=20a7320 D=20a7320000 L=30 DMA_BIDIRECTIONAL dma map error check not applicable·
+[  245.927048] fsl_dpaa2_eth dpni.3: scather-gather idx 1 P=20a7320030 N=20a7320 D=20a7320030 L=5a8 DMA_BIDIRECTIONAL dma map error check not applicable
+[  245.927062] DMA-API: cacheline tracking EEXIST, overlapping mappings aren't supported
+
+The first line is the dump of the dma_debug_entry which is already present
+in the radix tree and the second one is the entry which just triggered
+the EEXIST.
+
+As we can see, they are not actually overlapping, at least from my
+understanding. The first one starts at 0x20a7320000 with a size 0x30
+and the second one at 0x20a7320030.
+
+I wanted to see where these mappings are originating so I added some
+traces around the dma_[un]map_single, dma_[un]map_sg operations in
+dpaa2-eth.
+
+I can see the following:
+ - There are two S/G skbs being sent one after another (no cleanup of
+   the Tx confirmation is done between, so not kfree or dma_unmap is
+   happening).
+ - Skb#1 has 3 frags and skb#2 just 2 frags.
+ - The skb#1 3rd frag will get into the same cacheline as the skb#2 2nd frag.
+
+skb#1:
+
+  245.926981:       dpaa2_eth:dpaa2_dma_map_sg: [eth4] scl=0x0xffff4cf3ac188200 num_sg=3
+  245.926984: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x42 dma_addr=0x20b66e58fe
+  245.926987: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x578 dma_addr=0x20ab9c7a88
+  245.926989: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x30 dma_addr=0x20a7320000
+                                                                                ^
+                                                                                |
+                                                                                |
+      This skb frag will land in the same cacheline number with the 2nd frag from skb#2.
+
+
+skb#2:
+
+  245.934933:       dpaa2_eth:dpaa2_dma_map_sg: [eth4] scl=0x0xffff4cf3ac188300 num_sg=2
+  245.934936: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x42 dma_addr=0x20b66e60fe
+  245.934939: dpaa2_eth:dpaa2_dma_map_sg_entry: [eth4] size=0x5a8 dma_addr=0x20a7320030
+                                                                                ^
+                                                                                |
+
+These frags are allocated by the stack, transformed into a scatterlist
+by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+dpaa2-eth's decision to use two fragments from the same page (that will
+also end un in the same cacheline) in two different in-flight skbs.
+
+Is this behavior normal?
+
+Ioana
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc" id="e27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">^</a> <a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/">permalink</a> <a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/raw">raw</a> <a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/#R">reply</a>	[<a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/T/#u"><b>flat</b></a>|<a href="../../20210914154504.z6vqxuh3byqwgfzx@skbuf/t/#u">nested</a>] <a href="#r27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">34+ messages in thread</a></pre><hr><pre><a href="#ef873388aa21f8b3d9099521b319ba0fd3fee3c1e" id="mf873388aa21f8b3d9099521b319ba0fd3fee3c1e">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-09-14 15:45     ` <a href="#m27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">Ioana Ciornei</a>
+<b>@ 2021-09-30 13:37       ` Karsten Graul</b>
+  <a href="#rf873388aa21f8b3d9099521b319ba0fd3fee3c1e">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Karsten Graul @ 2021-09-30 13:37 UTC (<a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/">permalink</a> / <a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/raw">raw</a>)
+  To: Ioana Ciornei, Jeremy Linton
+  Cc: Hamza Mahfooz, <a href="../../../lkml/?t=20210930134828">linux-kernel@vger.kernel.org</a>, Christoph Hellwig,
+	Marek Szyprowski, Robin Murphy, <a href="../../../linux-iommu/?t=20210930134828">iommu@lists.linux-foundation.org</a>,
+	Dan Williams, <a href="../../../netdev/?t=20210930134828">netdev@vger.kernel.org</a>, Gerald Schaefer, <a href="../../../linux-s390/?t=20210930134828">linux-s390</a>
+
+On 14/09/2021 17:45, Ioana Ciornei wrote:
+<span class="q">&gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt;&gt; +DPAA2, netdev maintainers
+&gt;&gt; Hi,
+&gt;&gt;
+&gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt;&gt;
+&gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt;&gt; is attached below.
+&gt;&gt;
+&gt; 
+&gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; 
+&gt; Is this behavior normal?
+&gt; 
+</span>
+We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+The CI has panic_on_warn enabled so we see the panic every day now.
+
+Its always the same pattern: module SMC calls dma_map_sg_attrs() which ends
+up in the EEXIST warning sooner or later.
+
+It would be better to revert this patch now and start to better understand the 
+checking logic for overlapping areas.
+
+Thank you.
+
+
+The call trace for reference:
+
+[  864.189864] DMA-API: mlx5_core 0662:00:00.0: cacheline tracking EEXIST, overlapping mappings aren't supported
+[  864.189883] WARNING: CPU: 0 PID: 33720 at kernel/dma/debug.c:570 add_dma_entry+0x208/0x2c8
+...
+[  864.190747] CPU: 0 PID: 33720 Comm: smcapp Not tainted 5.15.0-20210928.rc3.git0.a59bf04db7bb.300.fc34.s390x+debug #1
+[  864.190758] Hardware name: IBM 8561 T01 701 (z/VM 7.2.0)
+[  864.190766] Krnl PSW : 0704d00180000000 00000000fa6239fc (add_dma_entry+0x20c/0x2c8)
+[  864.190783]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:1 PM:0 RI:0 EA:3
+[  864.190795] Krnl GPRS: c0000000ffffbfff 0000000080000000 0000000000000061 0000000000000000
+[  864.190804]            0000000000000001 0000000000000001 0000000000000001 0000000000000001
+[  864.190813]            0700000000000001 000000000020ff00 00000000ffffffff 000000008137b300
+[  864.190822]            0000000020020100 0000000000000001 00000000fa6239f8 00000380074536f8
+[  864.190837] Krnl Code: 00000000fa6239ec: c020007a4964	larl	%r2,00000000fb56ccb4
+                          00000000fa6239f2: c0e5005ef2ff	brasl	%r14,00000000fb201ff0
+                         #00000000fa6239f8: af000000		mc	0,0
+                         &gt;00000000fa6239fc: ecb60057007c	cgij	%r11,0,6,00000000fa623aaa
+                          00000000fa623a02: c01000866149	larl	%r1,00000000fb6efc94
+                          00000000fa623a08: e31010000012	lt	%r1,0(%r1)
+                          00000000fa623a0e: a774ff73		brc	7,00000000fa6238f4
+                          00000000fa623a12: c010008a9227	larl	%r1,00000000fb775e60
+[  864.202949] Call Trace:
+[  864.202959]  [&lt;00000000fa6239fc&gt;] add_dma_entry+0x20c/0x2c8 
+[  864.202971] ([&lt;00000000fa6239f8&gt;] add_dma_entry+0x208/0x2c8)
+[  864.202981]  [&lt;00000000fa624988&gt;] debug_dma_map_sg+0x140/0x160 
+[  864.202992]  [&lt;00000000fa61eadc&gt;] __dma_map_sg_attrs+0x9c/0xd8 
+[  864.203002]  [&lt;00000000fa61eb3a&gt;] dma_map_sg_attrs+0x22/0x40 
+[  864.203012]  [&lt;000003ff80483bde&gt;] smc_ib_buf_map_sg+0x5e/0x90 [smc] 
+[  864.203036]  [&lt;000003ff80486b44&gt;] smcr_buf_map_link.part.0+0x12c/0x1e8 [smc] 
+[  864.203053]  [&lt;000003ff80486cb6&gt;] _smcr_buf_map_lgr+0xb6/0xf8 [smc] 
+[  864.203071]  [&lt;000003ff8048b91c&gt;] smcr_buf_map_lgr+0x4c/0x90 [smc] 
+[  864.211496]  [&lt;000003ff80490ac2&gt;] smc_llc_cli_add_link+0x152/0x420 [smc] 
+[  864.211522]  [&lt;000003ff8047acbc&gt;] smcr_clnt_conf_first_link+0x124/0x1e0 [smc] 
+[  864.211537]  [&lt;000003ff8047bfb2&gt;] smc_connect_rdma+0x25a/0x2e8 [smc] 
+[  864.211551]  [&lt;000003ff8047da4a&gt;] __smc_connect+0x38a/0x650 [smc] 
+[  864.211566]  [&lt;000003ff8047de70&gt;] smc_connect+0x160/0x190 [smc] 
+[  864.211580]  [&lt;00000000faf10c70&gt;] __sys_connect+0x98/0xd0 
+[  864.211592]  [&lt;00000000faf12e9a&gt;] __do_sys_socketcall+0x16a/0x350 
+[  864.211603]  [&lt;00000000fb216752&gt;] __do_syscall+0x1c2/0x1f0 
+[  864.211616]  [&lt;00000000fb229148&gt;] system_call+0x78/0xa0 
+
+-- 
+Karsten
+
+<a href="#mf873388aa21f8b3d9099521b319ba0fd3fee3c1e" id="ef873388aa21f8b3d9099521b319ba0fd3fee3c1e">^</a> <a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/">permalink</a> <a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/raw">raw</a> <a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/#R">reply</a>	[<a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/T/#u"><b>flat</b></a>|<a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/t/#u">nested</a>] <a href="#rf873388aa21f8b3d9099521b319ba0fd3fee3c1e">34+ messages in thread</a></pre><hr><pre><a href="#ef873388aa21f8b3d9099521b319ba0fd3fee3c1e" id="mf873388aa21f8b3d9099521b319ba0fd3fee3c1e">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-09-30 13:37       ` Karsten Graul</b>
+  <a href="#rf873388aa21f8b3d9099521b319ba0fd3fee3c1e">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Karsten Graul @ 2021-09-30 13:37 UTC (<a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/">permalink</a> / <a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/raw">raw</a>)
+  To: Ioana Ciornei, Jeremy Linton
+  Cc: <a href="../../../linux-s390/?t=20210930134851">linux-s390</a>, Hamza Mahfooz, <a href="../../../netdev/?t=20210930134851">netdev@vger.kernel.org</a>,
+	<a href="../../../lkml/?t=20210930134851">linux-kernel@vger.kernel.org</a>, <a href="../../../linux-iommu/?t=20210930134851">iommu@lists.linux-foundation.org</a>,
+	Dan Williams, Gerald Schaefer, Robin Murphy, Christoph Hellwig
+
+On 14/09/2021 17:45, Ioana Ciornei wrote:
+<span class="q">&gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt;&gt; +DPAA2, netdev maintainers
+&gt;&gt; Hi,
+&gt;&gt;
+&gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt;&gt;
+&gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt;&gt; is attached below.
+&gt;&gt;
+&gt; 
+&gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; 
+&gt; Is this behavior normal?
+&gt; 
+</span>
+We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+The CI has panic_on_warn enabled so we see the panic every day now.
+
+Its always the same pattern: module SMC calls dma_map_sg_attrs() which ends
+up in the EEXIST warning sooner or later.
+
+It would be better to revert this patch now and start to better understand the 
+checking logic for overlapping areas.
+
+Thank you.
+
+
+The call trace for reference:
+
+[  864.189864] DMA-API: mlx5_core 0662:00:00.0: cacheline tracking EEXIST, overlapping mappings aren't supported
+[  864.189883] WARNING: CPU: 0 PID: 33720 at kernel/dma/debug.c:570 add_dma_entry+0x208/0x2c8
+...
+[  864.190747] CPU: 0 PID: 33720 Comm: smcapp Not tainted 5.15.0-20210928.rc3.git0.a59bf04db7bb.300.fc34.s390x+debug #1
+[  864.190758] Hardware name: IBM 8561 T01 701 (z/VM 7.2.0)
+[  864.190766] Krnl PSW : 0704d00180000000 00000000fa6239fc (add_dma_entry+0x20c/0x2c8)
+[  864.190783]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:1 PM:0 RI:0 EA:3
+[  864.190795] Krnl GPRS: c0000000ffffbfff 0000000080000000 0000000000000061 0000000000000000
+[  864.190804]            0000000000000001 0000000000000001 0000000000000001 0000000000000001
+[  864.190813]            0700000000000001 000000000020ff00 00000000ffffffff 000000008137b300
+[  864.190822]            0000000020020100 0000000000000001 00000000fa6239f8 00000380074536f8
+[  864.190837] Krnl Code: 00000000fa6239ec: c020007a4964	larl	%r2,00000000fb56ccb4
+                          00000000fa6239f2: c0e5005ef2ff	brasl	%r14,00000000fb201ff0
+                         #00000000fa6239f8: af000000		mc	0,0
+                         &gt;00000000fa6239fc: ecb60057007c	cgij	%r11,0,6,00000000fa623aaa
+                          00000000fa623a02: c01000866149	larl	%r1,00000000fb6efc94
+                          00000000fa623a08: e31010000012	lt	%r1,0(%r1)
+                          00000000fa623a0e: a774ff73		brc	7,00000000fa6238f4
+                          00000000fa623a12: c010008a9227	larl	%r1,00000000fb775e60
+[  864.202949] Call Trace:
+[  864.202959]  [&lt;00000000fa6239fc&gt;] add_dma_entry+0x20c/0x2c8 
+[  864.202971] ([&lt;00000000fa6239f8&gt;] add_dma_entry+0x208/0x2c8)
+[  864.202981]  [&lt;00000000fa624988&gt;] debug_dma_map_sg+0x140/0x160 
+[  864.202992]  [&lt;00000000fa61eadc&gt;] __dma_map_sg_attrs+0x9c/0xd8 
+[  864.203002]  [&lt;00000000fa61eb3a&gt;] dma_map_sg_attrs+0x22/0x40 
+[  864.203012]  [&lt;000003ff80483bde&gt;] smc_ib_buf_map_sg+0x5e/0x90 [smc] 
+[  864.203036]  [&lt;000003ff80486b44&gt;] smcr_buf_map_link.part.0+0x12c/0x1e8 [smc] 
+[  864.203053]  [&lt;000003ff80486cb6&gt;] _smcr_buf_map_lgr+0xb6/0xf8 [smc] 
+[  864.203071]  [&lt;000003ff8048b91c&gt;] smcr_buf_map_lgr+0x4c/0x90 [smc] 
+[  864.211496]  [&lt;000003ff80490ac2&gt;] smc_llc_cli_add_link+0x152/0x420 [smc] 
+[  864.211522]  [&lt;000003ff8047acbc&gt;] smcr_clnt_conf_first_link+0x124/0x1e0 [smc] 
+[  864.211537]  [&lt;000003ff8047bfb2&gt;] smc_connect_rdma+0x25a/0x2e8 [smc] 
+[  864.211551]  [&lt;000003ff8047da4a&gt;] __smc_connect+0x38a/0x650 [smc] 
+[  864.211566]  [&lt;000003ff8047de70&gt;] smc_connect+0x160/0x190 [smc] 
+[  864.211580]  [&lt;00000000faf10c70&gt;] __sys_connect+0x98/0xd0 
+[  864.211592]  [&lt;00000000faf12e9a&gt;] __do_sys_socketcall+0x16a/0x350 
+[  864.211603]  [&lt;00000000fb216752&gt;] __do_syscall+0x1c2/0x1f0 
+[  864.211616]  [&lt;00000000fb229148&gt;] system_call+0x78/0xa0 
+
+-- 
+Karsten
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#mf873388aa21f8b3d9099521b319ba0fd3fee3c1e" id="ef873388aa21f8b3d9099521b319ba0fd3fee3c1e">^</a> <a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/">permalink</a> <a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/raw">raw</a> <a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/#R">reply</a>	[<a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/T/#u"><b>flat</b></a>|<a href="../../185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com/t/#u">nested</a>] <a href="#rf873388aa21f8b3d9099521b319ba0fd3fee3c1e">34+ messages in thread</a></pre><hr><pre><a href="#ee417cceb6a9d09a7470caed9859d3fb3878e7564" id="me417cceb6a9d09a7470caed9859d3fb3878e7564">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-09-14 15:45     ` <a href="#m27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">Ioana Ciornei</a>
+<b>@ 2021-10-01  4:19       ` Christoph Hellwig</b>
+  <a href="#re417cceb6a9d09a7470caed9859d3fb3878e7564">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Christoph Hellwig @ 2021-10-01  4:19 UTC (<a href="../../20211001041959.GA17448@lst.de/">permalink</a> / <a href="../../20211001041959.GA17448@lst.de/raw">raw</a>)
+  To: Ioana Ciornei
+  Cc: Jeremy Linton, Hamza Mahfooz, <a href="../../../lkml/?t=20211001042007">linux-kernel@vger.kernel.org</a>,
+	Christoph Hellwig, Marek Szyprowski, Robin Murphy,
+	<a href="../../../linux-iommu/?t=20211001042007">iommu@lists.linux-foundation.org</a>, Dan Williams,
+	<a href="../../../netdev/?t=20211001042007">netdev@vger.kernel.org</a>
+
+On Tue, Sep 14, 2021 at 03:45:06PM +0000, Ioana Ciornei wrote:
+<span class="q">&gt; [  245.927020] fsl_dpaa2_eth dpni.3: scather-gather idx 0 P=20a7320000 N=20a7320 D=20a7320000 L=30 DMA_BIDIRECTIONAL dma map error check not applicable·
+&gt; [  245.927048] fsl_dpaa2_eth dpni.3: scather-gather idx 1 P=20a7320030 N=20a7320 D=20a7320030 L=5a8 DMA_BIDIRECTIONAL dma map error check not applicable
+&gt; [  245.927062] DMA-API: cacheline tracking EEXIST, overlapping mappings aren't supported
+&gt; 
+&gt; The first line is the dump of the dma_debug_entry which is already present
+&gt; in the radix tree and the second one is the entry which just triggered
+&gt; the EEXIST.
+&gt; 
+&gt; As we can see, they are not actually overlapping, at least from my
+&gt; understanding. The first one starts at 0x20a7320000 with a size 0x30
+&gt; and the second one at 0x20a7320030.
+</span>
+They overlap the cache lines.  Which means if you use this driver
+on a system that is not dma coherent you will corrupt data.
+
+<a href="#me417cceb6a9d09a7470caed9859d3fb3878e7564" id="ee417cceb6a9d09a7470caed9859d3fb3878e7564">^</a> <a href="../../20211001041959.GA17448@lst.de/">permalink</a> <a href="../../20211001041959.GA17448@lst.de/raw">raw</a> <a href="../../20211001041959.GA17448@lst.de/#R">reply</a>	[<a href="../../20211001041959.GA17448@lst.de/T/#u"><b>flat</b></a>|<a href="../../20211001041959.GA17448@lst.de/t/#u">nested</a>] <a href="#re417cceb6a9d09a7470caed9859d3fb3878e7564">34+ messages in thread</a></pre><hr><pre><a href="#ee417cceb6a9d09a7470caed9859d3fb3878e7564" id="me417cceb6a9d09a7470caed9859d3fb3878e7564">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-01  4:19       ` Christoph Hellwig</b>
+  <a href="#re417cceb6a9d09a7470caed9859d3fb3878e7564">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Christoph Hellwig @ 2021-10-01  4:19 UTC (<a href="../../20211001041959.GA17448@lst.de/">permalink</a> / <a href="../../20211001041959.GA17448@lst.de/raw">raw</a>)
+  To: Ioana Ciornei
+  Cc: Hamza Mahfooz, <a href="../../../netdev/?t=20211001042007">netdev@vger.kernel.org</a>,
+	<a href="../../../lkml/?t=20211001042007">linux-kernel@vger.kernel.org</a>, Jeremy Linton,
+	<a href="../../../linux-iommu/?t=20211001042007">iommu@lists.linux-foundation.org</a>, Dan Williams, Robin Murphy,
+	Christoph Hellwig
+
+On Tue, Sep 14, 2021 at 03:45:06PM +0000, Ioana Ciornei wrote:
+<span class="q">&gt; [  245.927020] fsl_dpaa2_eth dpni.3: scather-gather idx 0 P=20a7320000 N=20a7320 D=20a7320000 L=30 DMA_BIDIRECTIONAL dma map error check not applicable·
+&gt; [  245.927048] fsl_dpaa2_eth dpni.3: scather-gather idx 1 P=20a7320030 N=20a7320 D=20a7320030 L=5a8 DMA_BIDIRECTIONAL dma map error check not applicable
+&gt; [  245.927062] DMA-API: cacheline tracking EEXIST, overlapping mappings aren't supported
+&gt; 
+&gt; The first line is the dump of the dma_debug_entry which is already present
+&gt; in the radix tree and the second one is the entry which just triggered
+&gt; the EEXIST.
+&gt; 
+&gt; As we can see, they are not actually overlapping, at least from my
+&gt; understanding. The first one starts at 0x20a7320000 with a size 0x30
+&gt; and the second one at 0x20a7320030.
+</span>
+They overlap the cache lines.  Which means if you use this driver
+on a system that is not dma coherent you will corrupt data.
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#me417cceb6a9d09a7470caed9859d3fb3878e7564" id="ee417cceb6a9d09a7470caed9859d3fb3878e7564">^</a> <a href="../../20211001041959.GA17448@lst.de/">permalink</a> <a href="../../20211001041959.GA17448@lst.de/raw">raw</a> <a href="../../20211001041959.GA17448@lst.de/#R">reply</a>	[<a href="../../20211001041959.GA17448@lst.de/T/#u"><b>flat</b></a>|<a href="../../20211001041959.GA17448@lst.de/t/#u">nested</a>] <a href="#re417cceb6a9d09a7470caed9859d3fb3878e7564">34+ messages in thread</a></pre><hr><pre><a href="#e911ebd25ab3c4014d1a41971f571ff39a7c40fe9" id="m911ebd25ab3c4014d1a41971f571ff39a7c40fe9">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-10-01  4:19       ` <a href="#me417cceb6a9d09a7470caed9859d3fb3878e7564">Christoph Hellwig</a>
+<b>@ 2021-10-01  9:21         ` Ioana Ciornei</b>
+  <a href="#r911ebd25ab3c4014d1a41971f571ff39a7c40fe9">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Ioana Ciornei @ 2021-10-01  9:21 UTC (<a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/">permalink</a> / <a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/raw">raw</a>)
+  To: Christoph Hellwig
+  Cc: Jeremy Linton, Hamza Mahfooz, <a href="../../../lkml/?t=20211001092121">linux-kernel@vger.kernel.org</a>,
+	Marek Szyprowski, Robin Murphy, <a href="../../../linux-iommu/?t=20211001092121">iommu@lists.linux-foundation.org</a>,
+	Dan Williams, <a href="../../../netdev/?t=20211001092121">netdev@vger.kernel.org</a>
+
+On Fri, Oct 01, 2021 at 06:19:59AM +0200, Christoph Hellwig wrote:
+<span class="q">&gt; On Tue, Sep 14, 2021 at 03:45:06PM +0000, Ioana Ciornei wrote:
+&gt; &gt; [  245.927020] fsl_dpaa2_eth dpni.3: scather-gather idx 0 P=20a7320000 N=20a7320 D=20a7320000 L=30 DMA_BIDIRECTIONAL dma map error check not applicable·
+&gt; &gt; [  245.927048] fsl_dpaa2_eth dpni.3: scather-gather idx 1 P=20a7320030 N=20a7320 D=20a7320030 L=5a8 DMA_BIDIRECTIONAL dma map error check not applicable
+&gt; &gt; [  245.927062] DMA-API: cacheline tracking EEXIST, overlapping mappings aren't supported
+&gt; &gt; 
+&gt; &gt; The first line is the dump of the dma_debug_entry which is already present
+&gt; &gt; in the radix tree and the second one is the entry which just triggered
+&gt; &gt; the EEXIST.
+&gt; &gt; 
+&gt; &gt; As we can see, they are not actually overlapping, at least from my
+&gt; &gt; understanding. The first one starts at 0x20a7320000 with a size 0x30
+&gt; &gt; and the second one at 0x20a7320030.
+&gt; 
+&gt; They overlap the cache lines.  Which means if you use this driver
+&gt; on a system that is not dma coherent you will corrupt data.
+</span>
+This is a driver of an integrated ethernet controller which is DMA
+coherent.
+
+I added a print just to make sure of this:
+
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -567,6 +567,7 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+                pr_err("cacheline tracking ENOMEM, dma-debug disabled
+");
+                global_disable = true;
+        } else if (rc == -EEXIST) {
++               pr_err("dev_is_dma_coherent(%s) = %d
+", dev_name(entry-&gt;dev), dev_is_dma_coherent(entry-&gt;dev));
+                err_printk(entry-&gt;dev, entry,
+                        "cacheline tracking EEXIST, overlapping mappings aren't supported
+");
+        }
+
+
+[   85.852218] DMA-API: dev_is_dma_coherent(dpni.3) = 1
+[   85.858891] ------------[ cut here ]------------
+[   85.858893] DMA-API: fsl_dpaa2_eth dpni.3: cacheline tracking EEXIST, overlapping mappings aren't supported
+[   85.858901] WARNING: CPU: 13 PID: 1046 at kernel/dma/debug.c:571 add_dma_entry+0x330/0x390
+[   85.858911] Modules linked in:
+[   85.858915] CPU: 13 PID: 1046 Comm: iperf3 Not tainted 5.15.0-rc2-00478-g34286ba6a164-dirty #1275
+[   85.858919] Hardware name: NXP Layerscape LX2160ARDB (DT)
+
+
+Shouldn't this case not generate this kind of warning?
+
+Ioana
+
+<a href="#m911ebd25ab3c4014d1a41971f571ff39a7c40fe9" id="e911ebd25ab3c4014d1a41971f571ff39a7c40fe9">^</a> <a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/">permalink</a> <a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/raw">raw</a> <a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/#R">reply</a>	[<a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/T/#u"><b>flat</b></a>|<a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/t/#u">nested</a>] <a href="#r911ebd25ab3c4014d1a41971f571ff39a7c40fe9">34+ messages in thread</a></pre><hr><pre><a href="#e911ebd25ab3c4014d1a41971f571ff39a7c40fe9" id="m911ebd25ab3c4014d1a41971f571ff39a7c40fe9">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-01  9:21         ` Ioana Ciornei</b>
+  <a href="#r911ebd25ab3c4014d1a41971f571ff39a7c40fe9">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Ioana Ciornei @ 2021-10-01  9:21 UTC (<a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/">permalink</a> / <a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/raw">raw</a>)
+  To: Christoph Hellwig
+  Cc: Hamza Mahfooz, <a href="../../../netdev/?t=20211001092121">netdev@vger.kernel.org</a>,
+	<a href="../../../lkml/?t=20211001092121">linux-kernel@vger.kernel.org</a>, Jeremy Linton,
+	<a href="../../../linux-iommu/?t=20211001092121">iommu@lists.linux-foundation.org</a>, Dan Williams, Robin Murphy
+
+On Fri, Oct 01, 2021 at 06:19:59AM +0200, Christoph Hellwig wrote:
+<span class="q">&gt; On Tue, Sep 14, 2021 at 03:45:06PM +0000, Ioana Ciornei wrote:
+&gt; &gt; [  245.927020] fsl_dpaa2_eth dpni.3: scather-gather idx 0 P=20a7320000 N=20a7320 D=20a7320000 L=30 DMA_BIDIRECTIONAL dma map error check not applicable·
+&gt; &gt; [  245.927048] fsl_dpaa2_eth dpni.3: scather-gather idx 1 P=20a7320030 N=20a7320 D=20a7320030 L=5a8 DMA_BIDIRECTIONAL dma map error check not applicable
+&gt; &gt; [  245.927062] DMA-API: cacheline tracking EEXIST, overlapping mappings aren't supported
+&gt; &gt; 
+&gt; &gt; The first line is the dump of the dma_debug_entry which is already present
+&gt; &gt; in the radix tree and the second one is the entry which just triggered
+&gt; &gt; the EEXIST.
+&gt; &gt; 
+&gt; &gt; As we can see, they are not actually overlapping, at least from my
+&gt; &gt; understanding. The first one starts at 0x20a7320000 with a size 0x30
+&gt; &gt; and the second one at 0x20a7320030.
+&gt; 
+&gt; They overlap the cache lines.  Which means if you use this driver
+&gt; on a system that is not dma coherent you will corrupt data.
+</span>
+This is a driver of an integrated ethernet controller which is DMA
+coherent.
+
+I added a print just to make sure of this:
+
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -567,6 +567,7 @@ static void add_dma_entry(struct dma_debug_entry *entry)
+                pr_err("cacheline tracking ENOMEM, dma-debug disabled
+");
+                global_disable = true;
+        } else if (rc == -EEXIST) {
++               pr_err("dev_is_dma_coherent(%s) = %d
+", dev_name(entry-&gt;dev), dev_is_dma_coherent(entry-&gt;dev));
+                err_printk(entry-&gt;dev, entry,
+                        "cacheline tracking EEXIST, overlapping mappings aren't supported
+");
+        }
+
+
+[   85.852218] DMA-API: dev_is_dma_coherent(dpni.3) = 1
+[   85.858891] ------------[ cut here ]------------
+[   85.858893] DMA-API: fsl_dpaa2_eth dpni.3: cacheline tracking EEXIST, overlapping mappings aren't supported
+[   85.858901] WARNING: CPU: 13 PID: 1046 at kernel/dma/debug.c:571 add_dma_entry+0x330/0x390
+[   85.858911] Modules linked in:
+[   85.858915] CPU: 13 PID: 1046 Comm: iperf3 Not tainted 5.15.0-rc2-00478-g34286ba6a164-dirty #1275
+[   85.858919] Hardware name: NXP Layerscape LX2160ARDB (DT)
+
+
+Shouldn't this case not generate this kind of warning?
+
+Ioana
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m911ebd25ab3c4014d1a41971f571ff39a7c40fe9" id="e911ebd25ab3c4014d1a41971f571ff39a7c40fe9">^</a> <a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/">permalink</a> <a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/raw">raw</a> <a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/#R">reply</a>	[<a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/T/#u"><b>flat</b></a>|<a href="../../20211001092112.ndi43juysd2vg6zm@skbuf/t/#u">nested</a>] <a href="#r911ebd25ab3c4014d1a41971f571ff39a7c40fe9">34+ messages in thread</a></pre><hr><pre><a href="#e75eff136cdc72227167d07b58961887ddb2bcbec" id="m75eff136cdc72227167d07b58961887ddb2bcbec">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-09-30 13:37       ` <a href="#mf873388aa21f8b3d9099521b319ba0fd3fee3c1e">Karsten Graul</a>
+<b>@ 2021-10-01 12:52         ` Gerald Schaefer</b>
+  <a href="#r75eff136cdc72227167d07b58961887ddb2bcbec">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-01 12:52 UTC (<a href="../../20211001145256.0323957a@thinkpad/">permalink</a> / <a href="../../20211001145256.0323957a@thinkpad/raw">raw</a>)
+  To: Karsten Graul
+  Cc: Ioana Ciornei, Jeremy Linton, Hamza Mahfooz,
+	<a href="../../../lkml/?t=20211001125329">linux-kernel@vger.kernel.org</a>, Christoph Hellwig, Marek Szyprowski,
+	Robin Murphy, <a href="../../../linux-iommu/?t=20211001125329">iommu@lists.linux-foundation.org</a>, Dan Williams,
+	<a href="../../../netdev/?t=20211001125329">netdev@vger.kernel.org</a>, <a href="../../../linux-s390/?t=20211001125329">linux-s390</a>, Gerald Schaefer
+
+On Thu, 30 Sep 2021 15:37:33 +0200
+Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+
+<span class="q">&gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt; &gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt; &gt;&gt; +DPAA2, netdev maintainers
+&gt; &gt;&gt; Hi,
+&gt; &gt;&gt;
+&gt; &gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; &gt;&gt;
+&gt; &gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; &gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; &gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; &gt;&gt; is attached below.
+&gt; &gt;&gt;
+&gt; &gt; 
+&gt; &gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; &gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; &gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; &gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; &gt; 
+&gt; &gt; Is this behavior normal?
+&gt; &gt; 
+&gt; 
+&gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt; The CI has panic_on_warn enabled so we see the panic every day now.
+</span>
+Adding a WARN for a case that be detected false-positive seems not
+acceptable, exactly for this reason (kernel panic on unaffected
+systems).
+
+So I guess it boils down to the question if the behavior that Ioana
+described is legit behavior, on a system that is dma coherent. We
+are apparently hitting the same scenario, although it could not yet be
+reproduced with debug printks for some reason.
+
+If the answer is yes, than please remove at lease the WARN, so that
+it will not make systems crash that behave valid, and have
+panic_on_warn set. Even a normal printk feels wrong to me in that
+case, it really sounds rather like you want to fix / better refine
+the overlap check, if you want to report anything here.
+
+BTW, there is already a WARN in the add_dma_entry() path, related
+to cachlline overlap and -EEXIST:
+
+add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+active_cacheline_inc_overlap()
+
+That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+Not familiar with that code, but it seems that there are now two
+warnings for more or less the same, and the new warning is much more
+prone to false-positives.
+
+How do these 2 warnings relate, are they both really necessary?
+I think the new warning was only introduced because of some old
+TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+("dma-debug: report -EEXIST errors in add_dma_entry").
+
+That comment was initially added by Dan long time ago, and he
+added several fix-ups for overlap detection after that, including
+the "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP" stuff in
+active_cacheline_inc_overlap(). So could it be that the TODO
+comment was simply not valid any more, and better be removed
+instead of adding new / double warnings, that also generate
+false-positives and kernel crashes?
+
+<a href="#m75eff136cdc72227167d07b58961887ddb2bcbec" id="e75eff136cdc72227167d07b58961887ddb2bcbec">^</a> <a href="../../20211001145256.0323957a@thinkpad/">permalink</a> <a href="../../20211001145256.0323957a@thinkpad/raw">raw</a> <a href="../../20211001145256.0323957a@thinkpad/#R">reply</a>	[<a href="../../20211001145256.0323957a@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211001145256.0323957a@thinkpad/t/#u">nested</a>] <a href="#r75eff136cdc72227167d07b58961887ddb2bcbec">34+ messages in thread</a></pre><hr><pre><a href="#e75eff136cdc72227167d07b58961887ddb2bcbec" id="m75eff136cdc72227167d07b58961887ddb2bcbec">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-01 12:52         ` Gerald Schaefer</b>
+  <a href="#r75eff136cdc72227167d07b58961887ddb2bcbec">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-01 12:52 UTC (<a href="../../20211001145256.0323957a@thinkpad/">permalink</a> / <a href="../../20211001145256.0323957a@thinkpad/raw">raw</a>)
+  To: Karsten Graul
+  Cc: <a href="../../../linux-s390/?t=20211001125320">linux-s390</a>, Hamza Mahfooz, <a href="../../../netdev/?t=20211001125320">netdev@vger.kernel.org</a>,
+	<a href="../../../lkml/?t=20211001125320">linux-kernel@vger.kernel.org</a>, Jeremy Linton,
+	<a href="../../../linux-iommu/?t=20211001125320">iommu@lists.linux-foundation.org</a>, Ioana Ciornei, Dan Williams,
+	Gerald Schaefer, Robin Murphy, Christoph Hellwig
+
+On Thu, 30 Sep 2021 15:37:33 +0200
+Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+
+<span class="q">&gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt; &gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt; &gt;&gt; +DPAA2, netdev maintainers
+&gt; &gt;&gt; Hi,
+&gt; &gt;&gt;
+&gt; &gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; &gt;&gt;
+&gt; &gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; &gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; &gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; &gt;&gt; is attached below.
+&gt; &gt;&gt;
+&gt; &gt; 
+&gt; &gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; &gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; &gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; &gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; &gt; 
+&gt; &gt; Is this behavior normal?
+&gt; &gt; 
+&gt; 
+&gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt; The CI has panic_on_warn enabled so we see the panic every day now.
+</span>
+Adding a WARN for a case that be detected false-positive seems not
+acceptable, exactly for this reason (kernel panic on unaffected
+systems).
+
+So I guess it boils down to the question if the behavior that Ioana
+described is legit behavior, on a system that is dma coherent. We
+are apparently hitting the same scenario, although it could not yet be
+reproduced with debug printks for some reason.
+
+If the answer is yes, than please remove at lease the WARN, so that
+it will not make systems crash that behave valid, and have
+panic_on_warn set. Even a normal printk feels wrong to me in that
+case, it really sounds rather like you want to fix / better refine
+the overlap check, if you want to report anything here.
+
+BTW, there is already a WARN in the add_dma_entry() path, related
+to cachlline overlap and -EEXIST:
+
+add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+active_cacheline_inc_overlap()
+
+That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+Not familiar with that code, but it seems that there are now two
+warnings for more or less the same, and the new warning is much more
+prone to false-positives.
+
+How do these 2 warnings relate, are they both really necessary?
+I think the new warning was only introduced because of some old
+TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+("dma-debug: report -EEXIST errors in add_dma_entry").
+
+That comment was initially added by Dan long time ago, and he
+added several fix-ups for overlap detection after that, including
+the "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP" stuff in
+active_cacheline_inc_overlap(). So could it be that the TODO
+comment was simply not valid any more, and better be removed
+instead of adding new / double warnings, that also generate
+false-positives and kernel crashes?
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m75eff136cdc72227167d07b58961887ddb2bcbec" id="e75eff136cdc72227167d07b58961887ddb2bcbec">^</a> <a href="../../20211001145256.0323957a@thinkpad/">permalink</a> <a href="../../20211001145256.0323957a@thinkpad/raw">raw</a> <a href="../../20211001145256.0323957a@thinkpad/#R">reply</a>	[<a href="../../20211001145256.0323957a@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211001145256.0323957a@thinkpad/t/#u">nested</a>] <a href="#r75eff136cdc72227167d07b58961887ddb2bcbec">34+ messages in thread</a></pre><hr><pre><a href="#efaf360b9216c7dd9b3bb65cbbae4a82634706735" id="mfaf360b9216c7dd9b3bb65cbbae4a82634706735">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-10-01 12:52         ` <a href="#m75eff136cdc72227167d07b58961887ddb2bcbec">Gerald Schaefer</a>
+<b>@ 2021-10-06 13:10           ` Gerald Schaefer</b>
+  <a href="#rfaf360b9216c7dd9b3bb65cbbae4a82634706735">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-06 13:10 UTC (<a href="../../20211006151043.61fe9613@thinkpad/">permalink</a> / <a href="../../20211006151043.61fe9613@thinkpad/raw">raw</a>)
+  To: Hamza Mahfooz, Christoph Hellwig, Dan Williams
+  Cc: Karsten Graul, Ioana Ciornei, Jeremy Linton,
+	<a href="../../../lkml/?t=20211006131228">linux-kernel@vger.kernel.org</a>, Marek Szyprowski, Robin Murphy,
+	<a href="../../../linux-iommu/?t=20211006131228">iommu@lists.linux-foundation.org</a>, <a href="../../../netdev/?t=20211006131228">netdev@vger.kernel.org</a>,
+	<a href="../../../linux-s390/?t=20211006131228">linux-s390</a>
+
+On Fri, 1 Oct 2021 14:52:56 +0200
+Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+
+<span class="q">&gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt; 
+&gt; &gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt; &gt; &gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt; &gt; &gt;&gt; +DPAA2, netdev maintainers
+&gt; &gt; &gt;&gt; Hi,
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt; &gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt; &gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; &gt; &gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; &gt; &gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; &gt; &gt;&gt; is attached below.
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt; 
+&gt; &gt; &gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; &gt; &gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; &gt; &gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; &gt; &gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; &gt; &gt; 
+&gt; &gt; &gt; Is this behavior normal?
+&gt; &gt; &gt; 
+&gt; &gt; 
+&gt; &gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt; &gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt; 
+&gt; Adding a WARN for a case that be detected false-positive seems not
+&gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt; systems).
+&gt; 
+&gt; So I guess it boils down to the question if the behavior that Ioana
+&gt; described is legit behavior, on a system that is dma coherent. We
+&gt; are apparently hitting the same scenario, although it could not yet be
+&gt; reproduced with debug printks for some reason.
+&gt; 
+&gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt; it will not make systems crash that behave valid, and have
+&gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt; case, it really sounds rather like you want to fix / better refine
+&gt; the overlap check, if you want to report anything here.
+</span>
+Dan, Christoph, any opinion?
+
+So far it all looks a lot like a false positive, so could you please
+see that those patches get reverted? I do wonder a bit why this is
+not an issue for others, we surely cannot be the only ones running
+CI with panic_on_warn.
+
+We would need to disable DEBUG_DMA if this WARN stays in, which
+would be a shame. Of course, in theory, this might also indicate
+some real bug, but there really is no sign of that so far.
+
+Having multiple sg elements in the same page (or cacheline) is
+valid, correct? And this is also not a decision of the driver
+IIUC, so if it was bug, it should be addressed in common code,
+correct?
+
+<span class="q">&gt; 
+&gt; BTW, there is already a WARN in the add_dma_entry() path, related
+&gt; to cachlline overlap and -EEXIST:
+&gt; 
+&gt; add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+&gt; active_cacheline_inc_overlap()
+&gt; 
+&gt; That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+&gt; Not familiar with that code, but it seems that there are now two
+&gt; warnings for more or less the same, and the new warning is much more
+&gt; prone to false-positives.
+&gt; 
+&gt; How do these 2 warnings relate, are they both really necessary?
+&gt; I think the new warning was only introduced because of some old
+&gt; TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+&gt; ("dma-debug: report -EEXIST errors in add_dma_entry").
+&gt; 
+&gt; That comment was initially added by Dan long time ago, and he
+&gt; added several fix-ups for overlap detection after that, including
+&gt; the "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP" stuff in
+&gt; active_cacheline_inc_overlap(). So could it be that the TODO
+&gt; comment was simply not valid any more, and better be removed
+&gt; instead of adding new / double warnings, that also generate
+&gt; false-positives and kernel crashes?
+</span>
+
+<a href="#mfaf360b9216c7dd9b3bb65cbbae4a82634706735" id="efaf360b9216c7dd9b3bb65cbbae4a82634706735">^</a> <a href="../../20211006151043.61fe9613@thinkpad/">permalink</a> <a href="../../20211006151043.61fe9613@thinkpad/raw">raw</a> <a href="../../20211006151043.61fe9613@thinkpad/#R">reply</a>	[<a href="../../20211006151043.61fe9613@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211006151043.61fe9613@thinkpad/t/#u">nested</a>] <a href="#rfaf360b9216c7dd9b3bb65cbbae4a82634706735">34+ messages in thread</a></pre><hr><pre><a href="#efaf360b9216c7dd9b3bb65cbbae4a82634706735" id="mfaf360b9216c7dd9b3bb65cbbae4a82634706735">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-06 13:10           ` Gerald Schaefer</b>
+  <a href="#rfaf360b9216c7dd9b3bb65cbbae4a82634706735">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-06 13:10 UTC (<a href="../../20211006151043.61fe9613@thinkpad/">permalink</a> / <a href="../../20211006151043.61fe9613@thinkpad/raw">raw</a>)
+  To: Hamza Mahfooz, Christoph Hellwig, Dan Williams
+  Cc: <a href="../../../linux-s390/?t=20211006131221">linux-s390</a>, <a href="../../../netdev/?t=20211006131221">netdev@vger.kernel.org</a>, <a href="../../../lkml/?t=20211006131221">linux-kernel@vger.kernel.org</a>,
+	Jeremy Linton, <a href="../../../linux-iommu/?t=20211006131221">iommu@lists.linux-foundation.org</a>, Ioana Ciornei,
+	Robin Murphy, Karsten Graul
+
+On Fri, 1 Oct 2021 14:52:56 +0200
+Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+
+<span class="q">&gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt; 
+&gt; &gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt; &gt; &gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt; &gt; &gt;&gt; +DPAA2, netdev maintainers
+&gt; &gt; &gt;&gt; Hi,
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt; &gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt; &gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; &gt; &gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; &gt; &gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; &gt; &gt;&gt; is attached below.
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt; 
+&gt; &gt; &gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; &gt; &gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; &gt; &gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; &gt; &gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; &gt; &gt; 
+&gt; &gt; &gt; Is this behavior normal?
+&gt; &gt; &gt; 
+&gt; &gt; 
+&gt; &gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt; &gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt; 
+&gt; Adding a WARN for a case that be detected false-positive seems not
+&gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt; systems).
+&gt; 
+&gt; So I guess it boils down to the question if the behavior that Ioana
+&gt; described is legit behavior, on a system that is dma coherent. We
+&gt; are apparently hitting the same scenario, although it could not yet be
+&gt; reproduced with debug printks for some reason.
+&gt; 
+&gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt; it will not make systems crash that behave valid, and have
+&gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt; case, it really sounds rather like you want to fix / better refine
+&gt; the overlap check, if you want to report anything here.
+</span>
+Dan, Christoph, any opinion?
+
+So far it all looks a lot like a false positive, so could you please
+see that those patches get reverted? I do wonder a bit why this is
+not an issue for others, we surely cannot be the only ones running
+CI with panic_on_warn.
+
+We would need to disable DEBUG_DMA if this WARN stays in, which
+would be a shame. Of course, in theory, this might also indicate
+some real bug, but there really is no sign of that so far.
+
+Having multiple sg elements in the same page (or cacheline) is
+valid, correct? And this is also not a decision of the driver
+IIUC, so if it was bug, it should be addressed in common code,
+correct?
+
+<span class="q">&gt; 
+&gt; BTW, there is already a WARN in the add_dma_entry() path, related
+&gt; to cachlline overlap and -EEXIST:
+&gt; 
+&gt; add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+&gt; active_cacheline_inc_overlap()
+&gt; 
+&gt; That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+&gt; Not familiar with that code, but it seems that there are now two
+&gt; warnings for more or less the same, and the new warning is much more
+&gt; prone to false-positives.
+&gt; 
+&gt; How do these 2 warnings relate, are they both really necessary?
+&gt; I think the new warning was only introduced because of some old
+&gt; TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+&gt; ("dma-debug: report -EEXIST errors in add_dma_entry").
+&gt; 
+&gt; That comment was initially added by Dan long time ago, and he
+&gt; added several fix-ups for overlap detection after that, including
+&gt; the "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP" stuff in
+&gt; active_cacheline_inc_overlap(). So could it be that the TODO
+&gt; comment was simply not valid any more, and better be removed
+&gt; instead of adding new / double warnings, that also generate
+&gt; false-positives and kernel crashes?
+</span>
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#mfaf360b9216c7dd9b3bb65cbbae4a82634706735" id="efaf360b9216c7dd9b3bb65cbbae4a82634706735">^</a> <a href="../../20211006151043.61fe9613@thinkpad/">permalink</a> <a href="../../20211006151043.61fe9613@thinkpad/raw">raw</a> <a href="../../20211006151043.61fe9613@thinkpad/#R">reply</a>	[<a href="../../20211006151043.61fe9613@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211006151043.61fe9613@thinkpad/t/#u">nested</a>] <a href="#rfaf360b9216c7dd9b3bb65cbbae4a82634706735">34+ messages in thread</a></pre><hr><pre><a href="#eb30e916978fac5f07b7e68aaa78a8c0df9dd9f17" id="mb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-10-06 13:10           ` <a href="#mfaf360b9216c7dd9b3bb65cbbae4a82634706735">Gerald Schaefer</a>
+<b>@ 2021-10-06 13:21             ` Gerald Schaefer</b>
+  <a href="#rb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-06 13:21 UTC (<a href="../../20211006152138.160d64e5@thinkpad/">permalink</a> / <a href="../../20211006152138.160d64e5@thinkpad/raw">raw</a>)
+  To: Hamza Mahfooz, Christoph Hellwig, Dan Williams
+  Cc: Karsten Graul, Ioana Ciornei, Jeremy Linton,
+	<a href="../../../lkml/?t=20211006132227">linux-kernel@vger.kernel.org</a>, Marek Szyprowski, Robin Murphy,
+	<a href="../../../linux-iommu/?t=20211006132227">iommu@lists.linux-foundation.org</a>, <a href="../../../netdev/?t=20211006132227">netdev@vger.kernel.org</a>,
+	<a href="../../../linux-s390/?t=20211006132227">linux-s390</a>
+
+On Wed, 6 Oct 2021 15:10:43 +0200
+Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+
+<span class="q">&gt; On Fri, 1 Oct 2021 14:52:56 +0200
+&gt; Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+&gt; 
+&gt; &gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt; &gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt; &gt; 
+&gt; &gt; &gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt; &gt; &gt; &gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt; &gt; &gt; &gt;&gt; +DPAA2, netdev maintainers
+&gt; &gt; &gt; &gt;&gt; Hi,
+&gt; &gt; &gt; &gt;&gt;
+&gt; &gt; &gt; &gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt; &gt; &gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt; &gt; &gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; &gt; &gt; &gt;&gt;
+&gt; &gt; &gt; &gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; &gt; &gt; &gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; &gt; &gt; &gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; &gt; &gt; &gt;&gt; is attached below.
+&gt; &gt; &gt; &gt;&gt;
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; &gt; &gt; &gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; &gt; &gt; &gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; &gt; &gt; &gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; Is this behavior normal?
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; 
+&gt; &gt; &gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt; &gt; &gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt; &gt; 
+&gt; &gt; Adding a WARN for a case that be detected false-positive seems not
+&gt; &gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt; &gt; systems).
+&gt; &gt; 
+&gt; &gt; So I guess it boils down to the question if the behavior that Ioana
+&gt; &gt; described is legit behavior, on a system that is dma coherent. We
+&gt; &gt; are apparently hitting the same scenario, although it could not yet be
+&gt; &gt; reproduced with debug printks for some reason.
+&gt; &gt; 
+&gt; &gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt; &gt; it will not make systems crash that behave valid, and have
+&gt; &gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt; &gt; case, it really sounds rather like you want to fix / better refine
+&gt; &gt; the overlap check, if you want to report anything here.
+&gt; 
+&gt; Dan, Christoph, any opinion?
+&gt; 
+&gt; So far it all looks a lot like a false positive, so could you please
+&gt; see that those patches get reverted? I do wonder a bit why this is
+&gt; not an issue for others, we surely cannot be the only ones running
+&gt; CI with panic_on_warn.
+</span>
+For reference, we are talking about these commits:
+
+2b4bbc6231d7 ("dma-debug: report -EEXIST errors in add_dma_entry")
+510e1a724ab1 ("dma-debug: prevent an error message from causing runtime problems")
+
+The latter introduced the WARN (through err_printk usage), and should
+be reverted if it can be false-positive, but both seem wrong in that
+case.
+
+<a href="#mb30e916978fac5f07b7e68aaa78a8c0df9dd9f17" id="eb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">^</a> <a href="../../20211006152138.160d64e5@thinkpad/">permalink</a> <a href="../../20211006152138.160d64e5@thinkpad/raw">raw</a> <a href="../../20211006152138.160d64e5@thinkpad/#R">reply</a>	[<a href="../../20211006152138.160d64e5@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211006152138.160d64e5@thinkpad/t/#u">nested</a>] <a href="#rb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">34+ messages in thread</a></pre><hr><pre><a href="#eb30e916978fac5f07b7e68aaa78a8c0df9dd9f17" id="mb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-06 13:21             ` Gerald Schaefer</b>
+  <a href="#rb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-06 13:21 UTC (<a href="../../20211006152138.160d64e5@thinkpad/">permalink</a> / <a href="../../20211006152138.160d64e5@thinkpad/raw">raw</a>)
+  To: Hamza Mahfooz, Christoph Hellwig, Dan Williams
+  Cc: <a href="../../../linux-s390/?t=20211006132220">linux-s390</a>, <a href="../../../netdev/?t=20211006132220">netdev@vger.kernel.org</a>, <a href="../../../lkml/?t=20211006132220">linux-kernel@vger.kernel.org</a>,
+	Jeremy Linton, <a href="../../../linux-iommu/?t=20211006132220">iommu@lists.linux-foundation.org</a>, Ioana Ciornei,
+	Robin Murphy, Karsten Graul
+
+On Wed, 6 Oct 2021 15:10:43 +0200
+Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+
+<span class="q">&gt; On Fri, 1 Oct 2021 14:52:56 +0200
+&gt; Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+&gt; 
+&gt; &gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt; &gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt; &gt; 
+&gt; &gt; &gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt; &gt; &gt; &gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt; &gt; &gt; &gt;&gt; +DPAA2, netdev maintainers
+&gt; &gt; &gt; &gt;&gt; Hi,
+&gt; &gt; &gt; &gt;&gt;
+&gt; &gt; &gt; &gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt; &gt; &gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt; &gt; &gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; &gt; &gt; &gt;&gt;
+&gt; &gt; &gt; &gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; &gt; &gt; &gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; &gt; &gt; &gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; &gt; &gt; &gt;&gt; is attached below.
+&gt; &gt; &gt; &gt;&gt;
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; &gt; &gt; &gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; &gt; &gt; &gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; &gt; &gt; &gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; &gt; Is this behavior normal?
+&gt; &gt; &gt; &gt; 
+&gt; &gt; &gt; 
+&gt; &gt; &gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt; &gt; &gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt; &gt; 
+&gt; &gt; Adding a WARN for a case that be detected false-positive seems not
+&gt; &gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt; &gt; systems).
+&gt; &gt; 
+&gt; &gt; So I guess it boils down to the question if the behavior that Ioana
+&gt; &gt; described is legit behavior, on a system that is dma coherent. We
+&gt; &gt; are apparently hitting the same scenario, although it could not yet be
+&gt; &gt; reproduced with debug printks for some reason.
+&gt; &gt; 
+&gt; &gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt; &gt; it will not make systems crash that behave valid, and have
+&gt; &gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt; &gt; case, it really sounds rather like you want to fix / better refine
+&gt; &gt; the overlap check, if you want to report anything here.
+&gt; 
+&gt; Dan, Christoph, any opinion?
+&gt; 
+&gt; So far it all looks a lot like a false positive, so could you please
+&gt; see that those patches get reverted? I do wonder a bit why this is
+&gt; not an issue for others, we surely cannot be the only ones running
+&gt; CI with panic_on_warn.
+</span>
+For reference, we are talking about these commits:
+
+2b4bbc6231d7 ("dma-debug: report -EEXIST errors in add_dma_entry")
+510e1a724ab1 ("dma-debug: prevent an error message from causing runtime problems")
+
+The latter introduced the WARN (through err_printk usage), and should
+be reverted if it can be false-positive, but both seem wrong in that
+case.
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#mb30e916978fac5f07b7e68aaa78a8c0df9dd9f17" id="eb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">^</a> <a href="../../20211006152138.160d64e5@thinkpad/">permalink</a> <a href="../../20211006152138.160d64e5@thinkpad/raw">raw</a> <a href="../../20211006152138.160d64e5@thinkpad/#R">reply</a>	[<a href="../../20211006152138.160d64e5@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211006152138.160d64e5@thinkpad/t/#u">nested</a>] <a href="#rb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">34+ messages in thread</a></pre><hr><pre><a href="#ed5565e1e581dd149ee018e6e111462f8cc54bea5" id="md5565e1e581dd149ee018e6e111462f8cc54bea5">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-10-06 13:10           ` <a href="#mfaf360b9216c7dd9b3bb65cbbae4a82634706735">Gerald Schaefer</a>
+<b>@ 2021-10-06 14:23             ` Robin Murphy</b>
+  <a href="#rd5565e1e581dd149ee018e6e111462f8cc54bea5">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Robin Murphy @ 2021-10-06 14:23 UTC (<a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/">permalink</a> / <a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/raw">raw</a>)
+  To: Gerald Schaefer, Hamza Mahfooz, Christoph Hellwig, Dan Williams
+  Cc: Karsten Graul, Ioana Ciornei, Jeremy Linton,
+	<a href="../../../lkml/?t=20211006142348">linux-kernel@vger.kernel.org</a>, Marek Szyprowski,
+	<a href="../../../linux-iommu/?t=20211006142348">iommu@lists.linux-foundation.org</a>, <a href="../../../netdev/?t=20211006142348">netdev@vger.kernel.org</a>,
+	<a href="../../../linux-s390/?t=20211006142348">linux-s390</a>
+
+On 2021-10-06 14:10, Gerald Schaefer wrote:
+<span class="q">&gt; On Fri, 1 Oct 2021 14:52:56 +0200
+&gt; Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+&gt; 
+&gt;&gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt;&gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt;&gt;
+&gt;&gt;&gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt;&gt;&gt;&gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt;&gt;&gt;&gt;&gt; +DPAA2, netdev maintainers
+&gt;&gt;&gt;&gt;&gt; Hi,
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt;&gt;&gt;&gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt;&gt;&gt;&gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt;&gt;&gt;&gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt;&gt;&gt;&gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt;&gt;&gt;&gt;&gt; is attached below.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt;&gt;&gt;&gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt;&gt;&gt;&gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt;&gt;&gt;&gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; Is this behavior normal?
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;
+&gt;&gt;&gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt;&gt;&gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt;&gt;
+&gt;&gt; Adding a WARN for a case that be detected false-positive seems not
+&gt;&gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt;&gt; systems).
+&gt;&gt;
+&gt;&gt; So I guess it boils down to the question if the behavior that Ioana
+&gt;&gt; described is legit behavior, on a system that is dma coherent. We
+&gt;&gt; are apparently hitting the same scenario, although it could not yet be
+&gt;&gt; reproduced with debug printks for some reason.
+&gt;&gt;
+&gt;&gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt;&gt; it will not make systems crash that behave valid, and have
+&gt;&gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt;&gt; case, it really sounds rather like you want to fix / better refine
+&gt;&gt; the overlap check, if you want to report anything here.
+&gt; 
+&gt; Dan, Christoph, any opinion?
+&gt; 
+&gt; So far it all looks a lot like a false positive, so could you please
+&gt; see that those patches get reverted? I do wonder a bit why this is
+&gt; not an issue for others, we surely cannot be the only ones running
+&gt; CI with panic_on_warn.
+</span>
+What convinces you it's a false-positive? I'm hardly familiar with most 
+of that callstack, but it appears to be related to mlx5, and I know that 
+exists on expansion cards which could be plugged into a system with 
+non-coherent PCIe where partial cacheline overlap *would* be a real 
+issue. Of course it's dubious that there are many real use-cases for 
+plugging a NIC with a 4-figure price tag into a little i.MX8 or 
+whatever, but the point is that it *should* still work correctly.
+
+<span class="q">&gt; We would need to disable DEBUG_DMA if this WARN stays in, which
+&gt; would be a shame. Of course, in theory, this might also indicate
+&gt; some real bug, but there really is no sign of that so far.
+</span>
+The whole point of DMA debug is to flag up things that you *do* get away 
+with on the vast majority of systems, precisely because most testing 
+happens on those systems rather than more esoteric embedded setups. Say 
+your system only uses dma-direct and a driver starts triggering the 
+warning for not calling dma_mapping_error(), would you argue for 
+removing that warning as well since dma_map_single() can't fail on your 
+machine so it's "not a bug"?
+
+<span class="q">&gt; Having multiple sg elements in the same page (or cacheline) is
+&gt; valid, correct? And this is also not a decision of the driver
+&gt; IIUC, so if it was bug, it should be addressed in common code,
+&gt; correct?
+</span>
+According to the streaming DMA API documentation, it is *not* valid:
+
+".. warning::
+
+   Memory coherency operates at a granularity called the cache
+   line width.  In order for memory mapped by this API to operate
+   correctly, the mapped region must begin exactly on a cache line
+   boundary and end exactly on one (to prevent two separately mapped
+   regions from sharing a single cache line).  Since the cache line size
+   may not be known at compile time, the API will not enforce this
+   requirement.  Therefore, it is recommended that driver writers who
+   don't take special care to determine the cache line size at run time
+   only map virtual regions that begin and end on page boundaries (which
+   are guaranteed also to be cache line boundaries)."
+
+<span class="q">&gt;&gt; BTW, there is already a WARN in the add_dma_entry() path, related
+&gt;&gt; to cachlline overlap and -EEXIST:
+&gt;&gt;
+&gt;&gt; add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+&gt;&gt; active_cacheline_inc_overlap()
+&gt;&gt;
+&gt;&gt; That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+&gt;&gt; Not familiar with that code, but it seems that there are now two
+&gt;&gt; warnings for more or less the same, and the new warning is much more
+&gt;&gt; prone to false-positives.
+&gt;&gt;
+&gt;&gt; How do these 2 warnings relate, are they both really necessary?
+&gt;&gt; I think the new warning was only introduced because of some old
+&gt;&gt; TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+&gt;&gt; ("dma-debug: report -EEXIST errors in add_dma_entry").
+</span>
+AFAICS they are different things. I believe the new warning is supposed 
+to be for the fundementally incorrect API usage (as above) of mapping 
+different regions overlapping within the same cacheline. The existing 
+one is about dma-debug losing internal consistency when tracking the 
+*same* region being mapped multiple times, which is a legal thing to do 
+- e.g. buffer sharing between devices - but if anyone's doing it to 
+excess that's almost certainly a bug (i.e. they probably intended to 
+unmap it in between but missed that out).
+
+Robin.
+
+<span class="q">&gt;&gt; That comment was initially added by Dan long time ago, and he
+&gt;&gt; added several fix-ups for overlap detection after that, including
+&gt;&gt; the "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP" stuff in
+&gt;&gt; active_cacheline_inc_overlap(). So could it be that the TODO
+&gt;&gt; comment was simply not valid any more, and better be removed
+&gt;&gt; instead of adding new / double warnings, that also generate
+&gt;&gt; false-positives and kernel crashes?
+&gt; 
+</span>
+<a href="#md5565e1e581dd149ee018e6e111462f8cc54bea5" id="ed5565e1e581dd149ee018e6e111462f8cc54bea5">^</a> <a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/">permalink</a> <a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/raw">raw</a> <a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/#R">reply</a>	[<a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/T/#u"><b>flat</b></a>|<a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/t/#u">nested</a>] <a href="#rd5565e1e581dd149ee018e6e111462f8cc54bea5">34+ messages in thread</a></pre><hr><pre><a href="#ed5565e1e581dd149ee018e6e111462f8cc54bea5" id="md5565e1e581dd149ee018e6e111462f8cc54bea5">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-06 14:23             ` Robin Murphy</b>
+  <a href="#rd5565e1e581dd149ee018e6e111462f8cc54bea5">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Robin Murphy @ 2021-10-06 14:23 UTC (<a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/">permalink</a> / <a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/raw">raw</a>)
+  To: Gerald Schaefer, Hamza Mahfooz, Christoph Hellwig, Dan Williams
+  Cc: <a href="../../../linux-s390/?t=20211006142350">linux-s390</a>, <a href="../../../netdev/?t=20211006142350">netdev@vger.kernel.org</a>, <a href="../../../lkml/?t=20211006142350">linux-kernel@vger.kernel.org</a>,
+	Jeremy Linton, <a href="../../../linux-iommu/?t=20211006142350">iommu@lists.linux-foundation.org</a>, Ioana Ciornei,
+	Karsten Graul
+
+On 2021-10-06 14:10, Gerald Schaefer wrote:
+<span class="q">&gt; On Fri, 1 Oct 2021 14:52:56 +0200
+&gt; Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+&gt; 
+&gt;&gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt;&gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt;&gt;
+&gt;&gt;&gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt;&gt;&gt;&gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt;&gt;&gt;&gt;&gt; +DPAA2, netdev maintainers
+&gt;&gt;&gt;&gt;&gt; Hi,
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt;&gt;&gt;&gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt;&gt;&gt;&gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt;&gt;&gt;&gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt;&gt;&gt;&gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt;&gt;&gt;&gt;&gt; is attached below.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt;&gt;&gt;&gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt;&gt;&gt;&gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt;&gt;&gt;&gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; Is this behavior normal?
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;
+&gt;&gt;&gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt;&gt;&gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt;&gt;
+&gt;&gt; Adding a WARN for a case that be detected false-positive seems not
+&gt;&gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt;&gt; systems).
+&gt;&gt;
+&gt;&gt; So I guess it boils down to the question if the behavior that Ioana
+&gt;&gt; described is legit behavior, on a system that is dma coherent. We
+&gt;&gt; are apparently hitting the same scenario, although it could not yet be
+&gt;&gt; reproduced with debug printks for some reason.
+&gt;&gt;
+&gt;&gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt;&gt; it will not make systems crash that behave valid, and have
+&gt;&gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt;&gt; case, it really sounds rather like you want to fix / better refine
+&gt;&gt; the overlap check, if you want to report anything here.
+&gt; 
+&gt; Dan, Christoph, any opinion?
+&gt; 
+&gt; So far it all looks a lot like a false positive, so could you please
+&gt; see that those patches get reverted? I do wonder a bit why this is
+&gt; not an issue for others, we surely cannot be the only ones running
+&gt; CI with panic_on_warn.
+</span>
+What convinces you it's a false-positive? I'm hardly familiar with most 
+of that callstack, but it appears to be related to mlx5, and I know that 
+exists on expansion cards which could be plugged into a system with 
+non-coherent PCIe where partial cacheline overlap *would* be a real 
+issue. Of course it's dubious that there are many real use-cases for 
+plugging a NIC with a 4-figure price tag into a little i.MX8 or 
+whatever, but the point is that it *should* still work correctly.
+
+<span class="q">&gt; We would need to disable DEBUG_DMA if this WARN stays in, which
+&gt; would be a shame. Of course, in theory, this might also indicate
+&gt; some real bug, but there really is no sign of that so far.
+</span>
+The whole point of DMA debug is to flag up things that you *do* get away 
+with on the vast majority of systems, precisely because most testing 
+happens on those systems rather than more esoteric embedded setups. Say 
+your system only uses dma-direct and a driver starts triggering the 
+warning for not calling dma_mapping_error(), would you argue for 
+removing that warning as well since dma_map_single() can't fail on your 
+machine so it's "not a bug"?
+
+<span class="q">&gt; Having multiple sg elements in the same page (or cacheline) is
+&gt; valid, correct? And this is also not a decision of the driver
+&gt; IIUC, so if it was bug, it should be addressed in common code,
+&gt; correct?
+</span>
+According to the streaming DMA API documentation, it is *not* valid:
+
+".. warning::
+
+   Memory coherency operates at a granularity called the cache
+   line width.  In order for memory mapped by this API to operate
+   correctly, the mapped region must begin exactly on a cache line
+   boundary and end exactly on one (to prevent two separately mapped
+   regions from sharing a single cache line).  Since the cache line size
+   may not be known at compile time, the API will not enforce this
+   requirement.  Therefore, it is recommended that driver writers who
+   don't take special care to determine the cache line size at run time
+   only map virtual regions that begin and end on page boundaries (which
+   are guaranteed also to be cache line boundaries)."
+
+<span class="q">&gt;&gt; BTW, there is already a WARN in the add_dma_entry() path, related
+&gt;&gt; to cachlline overlap and -EEXIST:
+&gt;&gt;
+&gt;&gt; add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+&gt;&gt; active_cacheline_inc_overlap()
+&gt;&gt;
+&gt;&gt; That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+&gt;&gt; Not familiar with that code, but it seems that there are now two
+&gt;&gt; warnings for more or less the same, and the new warning is much more
+&gt;&gt; prone to false-positives.
+&gt;&gt;
+&gt;&gt; How do these 2 warnings relate, are they both really necessary?
+&gt;&gt; I think the new warning was only introduced because of some old
+&gt;&gt; TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+&gt;&gt; ("dma-debug: report -EEXIST errors in add_dma_entry").
+</span>
+AFAICS they are different things. I believe the new warning is supposed 
+to be for the fundementally incorrect API usage (as above) of mapping 
+different regions overlapping within the same cacheline. The existing 
+one is about dma-debug losing internal consistency when tracking the 
+*same* region being mapped multiple times, which is a legal thing to do 
+- e.g. buffer sharing between devices - but if anyone's doing it to 
+excess that's almost certainly a bug (i.e. they probably intended to 
+unmap it in between but missed that out).
+
+Robin.
+
+<span class="q">&gt;&gt; That comment was initially added by Dan long time ago, and he
+&gt;&gt; added several fix-ups for overlap detection after that, including
+&gt;&gt; the "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP" stuff in
+&gt;&gt; active_cacheline_inc_overlap(). So could it be that the TODO
+&gt;&gt; comment was simply not valid any more, and better be removed
+&gt;&gt; instead of adding new / double warnings, that also generate
+&gt;&gt; false-positives and kernel crashes?
+&gt; 
+</span>_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#md5565e1e581dd149ee018e6e111462f8cc54bea5" id="ed5565e1e581dd149ee018e6e111462f8cc54bea5">^</a> <a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/">permalink</a> <a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/raw">raw</a> <a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/#R">reply</a>	[<a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/T/#u"><b>flat</b></a>|<a href="../../4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com/t/#u">nested</a>] <a href="#rd5565e1e581dd149ee018e6e111462f8cc54bea5">34+ messages in thread</a></pre><hr><pre><a href="#eec13eacb7d679071511df061d72803c6aca80fad" id="mec13eacb7d679071511df061d72803c6aca80fad">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-10-06 14:23             ` <a href="#md5565e1e581dd149ee018e6e111462f8cc54bea5">Robin Murphy</a>
+<b>@ 2021-10-06 15:06               ` Gerald Schaefer</b>
+  <a href="#rec13eacb7d679071511df061d72803c6aca80fad">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-06 15:06 UTC (<a href="../../20211006170613.455e66c2@thinkpad/">permalink</a> / <a href="../../20211006170613.455e66c2@thinkpad/raw">raw</a>)
+  To: Robin Murphy
+  Cc: Hamza Mahfooz, Christoph Hellwig, Dan Williams, Karsten Graul,
+	Ioana Ciornei, Jeremy Linton, <a href="../../../lkml/?t=20211006150657">linux-kernel@vger.kernel.org</a>,
+	Marek Szyprowski, <a href="../../../linux-iommu/?t=20211006150657">iommu@lists.linux-foundation.org</a>,
+	<a href="../../../netdev/?t=20211006150657">netdev@vger.kernel.org</a>, <a href="../../../linux-s390/?t=20211006150657">linux-s390</a>, <a href="../../../linux-rdma/?t=20211006150657">linux-rdma</a>
+
+On Wed, 6 Oct 2021 15:23:36 +0100
+Robin Murphy &lt;robin.murphy@arm.com&gt; wrote:
+
+<span class="q">&gt; On 2021-10-06 14:10, Gerald Schaefer wrote:
+&gt; &gt; On Fri, 1 Oct 2021 14:52:56 +0200
+&gt; &gt; Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+&gt; &gt; 
+&gt; &gt;&gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt; &gt;&gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt; &gt;&gt;
+&gt; &gt;&gt;&gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt; &gt;&gt;&gt;&gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt; &gt;&gt;&gt;&gt;&gt; +DPAA2, netdev maintainers
+&gt; &gt;&gt;&gt;&gt;&gt; Hi,
+&gt; &gt;&gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt;&gt;&gt;&gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt;&gt;&gt;&gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; &gt;&gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; &gt;&gt;&gt;&gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; &gt;&gt;&gt;&gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; &gt;&gt;&gt;&gt;&gt; is attached below.
+&gt; &gt;&gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; &gt;&gt;&gt;&gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; &gt;&gt;&gt;&gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; &gt;&gt;&gt;&gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; &gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt; Is this behavior normal?
+&gt; &gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;
+&gt; &gt;&gt;&gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt; &gt;&gt;&gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt; &gt;&gt;
+&gt; &gt;&gt; Adding a WARN for a case that be detected false-positive seems not
+&gt; &gt;&gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt; &gt;&gt; systems).
+&gt; &gt;&gt;
+&gt; &gt;&gt; So I guess it boils down to the question if the behavior that Ioana
+&gt; &gt;&gt; described is legit behavior, on a system that is dma coherent. We
+&gt; &gt;&gt; are apparently hitting the same scenario, although it could not yet be
+&gt; &gt;&gt; reproduced with debug printks for some reason.
+&gt; &gt;&gt;
+&gt; &gt;&gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt; &gt;&gt; it will not make systems crash that behave valid, and have
+&gt; &gt;&gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt; &gt;&gt; case, it really sounds rather like you want to fix / better refine
+&gt; &gt;&gt; the overlap check, if you want to report anything here.
+&gt; &gt; 
+&gt; &gt; Dan, Christoph, any opinion?
+&gt; &gt; 
+&gt; &gt; So far it all looks a lot like a false positive, so could you please
+&gt; &gt; see that those patches get reverted? I do wonder a bit why this is
+&gt; &gt; not an issue for others, we surely cannot be the only ones running
+&gt; &gt; CI with panic_on_warn.
+&gt; 
+&gt; What convinces you it's a false-positive? I'm hardly familiar with most 
+&gt; of that callstack, but it appears to be related to mlx5, and I know that 
+&gt; exists on expansion cards which could be plugged into a system with 
+&gt; non-coherent PCIe where partial cacheline overlap *would* be a real 
+&gt; issue. Of course it's dubious that there are many real use-cases for 
+&gt; plugging a NIC with a 4-figure price tag into a little i.MX8 or 
+&gt; whatever, but the point is that it *should* still work correctly.
+</span>
+I would assume that a *proper* warning would check if we see the
+"non-coherent" case, e.g. by using dev_is_dma_coherent() and only
+report with potentially fatal WARN on systems where it is appropriate.
+
+However, I am certainly even less familiar with all that, and might
+just have gotten the wrong impression here.
+
+Also not sure about mlx5 relation here, it does not really show
+in the call trace, only in the err_printk() output, probably
+from dev_driver_string(dev) or dev_name(dev). But I do not see
+where mlx5 code would be involved here.
+
+[...]
+<span class="q">&gt; According to the streaming DMA API documentation, it is *not* valid:
+&gt; 
+&gt; ".. warning::
+&gt; 
+&gt;    Memory coherency operates at a granularity called the cache
+&gt;    line width.  In order for memory mapped by this API to operate
+&gt;    correctly, the mapped region must begin exactly on a cache line
+&gt;    boundary and end exactly on one (to prevent two separately mapped
+&gt;    regions from sharing a single cache line).  Since the cache line size
+&gt;    may not be known at compile time, the API will not enforce this
+&gt;    requirement.  Therefore, it is recommended that driver writers who
+&gt;    don't take special care to determine the cache line size at run time
+&gt;    only map virtual regions that begin and end on page boundaries (which
+&gt;    are guaranteed also to be cache line boundaries)."
+</span>
+Thanks, but I cannot really make a lot of sense out if this. Which
+driver exactly would be the one that needs to take care of the
+cache line alignment for sg elements? If this WARN is really reporting
+a bug, could you please help pointing to where it would need to be
+addressed?
+
+And does this really say that it is illegal to have multiple sg elements
+within the same cache line, regardless of cache coherence?
+
+Adding linux-rdma@vger.kernel.org, sorry for the noise, but maybe somebody
+on that list can make more sense of this.
+
+For reference, the link to the start of this thread:
+<a href="https://lkml.kernel.org/r/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com">https://lkml.kernel.org/r/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com</a>
+
+<a href="#mec13eacb7d679071511df061d72803c6aca80fad" id="eec13eacb7d679071511df061d72803c6aca80fad">^</a> <a href="../../20211006170613.455e66c2@thinkpad/">permalink</a> <a href="../../20211006170613.455e66c2@thinkpad/raw">raw</a> <a href="../../20211006170613.455e66c2@thinkpad/#R">reply</a>	[<a href="../../20211006170613.455e66c2@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211006170613.455e66c2@thinkpad/t/#u">nested</a>] <a href="#rec13eacb7d679071511df061d72803c6aca80fad">34+ messages in thread</a></pre><hr><pre><a href="#eec13eacb7d679071511df061d72803c6aca80fad" id="mec13eacb7d679071511df061d72803c6aca80fad">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-06 15:06               ` Gerald Schaefer</b>
+  <a href="#rec13eacb7d679071511df061d72803c6aca80fad">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-06 15:06 UTC (<a href="../../20211006170613.455e66c2@thinkpad/">permalink</a> / <a href="../../20211006170613.455e66c2@thinkpad/raw">raw</a>)
+  To: Robin Murphy
+  Cc: <a href="../../../linux-s390/?t=20211006150648">linux-s390</a>, Hamza Mahfooz, <a href="../../../linux-rdma/?t=20211006150648">linux-rdma</a>, <a href="../../../netdev/?t=20211006150648">netdev@vger.kernel.org</a>,
+	<a href="../../../lkml/?t=20211006150648">linux-kernel@vger.kernel.org</a>, Jeremy Linton, Christoph Hellwig,
+	<a href="../../../linux-iommu/?t=20211006150648">iommu@lists.linux-foundation.org</a>, Ioana Ciornei, Dan Williams,
+	Karsten Graul
+
+On Wed, 6 Oct 2021 15:23:36 +0100
+Robin Murphy &lt;robin.murphy@arm.com&gt; wrote:
+
+<span class="q">&gt; On 2021-10-06 14:10, Gerald Schaefer wrote:
+&gt; &gt; On Fri, 1 Oct 2021 14:52:56 +0200
+&gt; &gt; Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+&gt; &gt; 
+&gt; &gt;&gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt; &gt;&gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt; &gt;&gt;
+&gt; &gt;&gt;&gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt; &gt;&gt;&gt;&gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt; &gt;&gt;&gt;&gt;&gt; +DPAA2, netdev maintainers
+&gt; &gt;&gt;&gt;&gt;&gt; Hi,
+&gt; &gt;&gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt; &gt;&gt;&gt;&gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt; &gt;&gt;&gt;&gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt; &gt;&gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt; &gt;&gt;&gt;&gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt; &gt;&gt;&gt;&gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt; &gt;&gt;&gt;&gt;&gt; is attached below.
+&gt; &gt;&gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt; &gt;&gt;&gt;&gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt; &gt;&gt;&gt;&gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt; &gt;&gt;&gt;&gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt; &gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;&gt; Is this behavior normal?
+&gt; &gt;&gt;&gt;&gt;
+&gt; &gt;&gt;&gt;
+&gt; &gt;&gt;&gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt; &gt;&gt;&gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt; &gt;&gt;
+&gt; &gt;&gt; Adding a WARN for a case that be detected false-positive seems not
+&gt; &gt;&gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt; &gt;&gt; systems).
+&gt; &gt;&gt;
+&gt; &gt;&gt; So I guess it boils down to the question if the behavior that Ioana
+&gt; &gt;&gt; described is legit behavior, on a system that is dma coherent. We
+&gt; &gt;&gt; are apparently hitting the same scenario, although it could not yet be
+&gt; &gt;&gt; reproduced with debug printks for some reason.
+&gt; &gt;&gt;
+&gt; &gt;&gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt; &gt;&gt; it will not make systems crash that behave valid, and have
+&gt; &gt;&gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt; &gt;&gt; case, it really sounds rather like you want to fix / better refine
+&gt; &gt;&gt; the overlap check, if you want to report anything here.
+&gt; &gt; 
+&gt; &gt; Dan, Christoph, any opinion?
+&gt; &gt; 
+&gt; &gt; So far it all looks a lot like a false positive, so could you please
+&gt; &gt; see that those patches get reverted? I do wonder a bit why this is
+&gt; &gt; not an issue for others, we surely cannot be the only ones running
+&gt; &gt; CI with panic_on_warn.
+&gt; 
+&gt; What convinces you it's a false-positive? I'm hardly familiar with most 
+&gt; of that callstack, but it appears to be related to mlx5, and I know that 
+&gt; exists on expansion cards which could be plugged into a system with 
+&gt; non-coherent PCIe where partial cacheline overlap *would* be a real 
+&gt; issue. Of course it's dubious that there are many real use-cases for 
+&gt; plugging a NIC with a 4-figure price tag into a little i.MX8 or 
+&gt; whatever, but the point is that it *should* still work correctly.
+</span>
+I would assume that a *proper* warning would check if we see the
+"non-coherent" case, e.g. by using dev_is_dma_coherent() and only
+report with potentially fatal WARN on systems where it is appropriate.
+
+However, I am certainly even less familiar with all that, and might
+just have gotten the wrong impression here.
+
+Also not sure about mlx5 relation here, it does not really show
+in the call trace, only in the err_printk() output, probably
+from dev_driver_string(dev) or dev_name(dev). But I do not see
+where mlx5 code would be involved here.
+
+[...]
+<span class="q">&gt; According to the streaming DMA API documentation, it is *not* valid:
+&gt; 
+&gt; ".. warning::
+&gt; 
+&gt;    Memory coherency operates at a granularity called the cache
+&gt;    line width.  In order for memory mapped by this API to operate
+&gt;    correctly, the mapped region must begin exactly on a cache line
+&gt;    boundary and end exactly on one (to prevent two separately mapped
+&gt;    regions from sharing a single cache line).  Since the cache line size
+&gt;    may not be known at compile time, the API will not enforce this
+&gt;    requirement.  Therefore, it is recommended that driver writers who
+&gt;    don't take special care to determine the cache line size at run time
+&gt;    only map virtual regions that begin and end on page boundaries (which
+&gt;    are guaranteed also to be cache line boundaries)."
+</span>
+Thanks, but I cannot really make a lot of sense out if this. Which
+driver exactly would be the one that needs to take care of the
+cache line alignment for sg elements? If this WARN is really reporting
+a bug, could you please help pointing to where it would need to be
+addressed?
+
+And does this really say that it is illegal to have multiple sg elements
+within the same cache line, regardless of cache coherence?
+
+Adding linux-rdma@vger.kernel.org, sorry for the noise, but maybe somebody
+on that list can make more sense of this.
+
+For reference, the link to the start of this thread:
+<a href="https://lkml.kernel.org/r/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com">https://lkml.kernel.org/r/fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com</a>
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#mec13eacb7d679071511df061d72803c6aca80fad" id="eec13eacb7d679071511df061d72803c6aca80fad">^</a> <a href="../../20211006170613.455e66c2@thinkpad/">permalink</a> <a href="../../20211006170613.455e66c2@thinkpad/raw">raw</a> <a href="../../20211006170613.455e66c2@thinkpad/#R">reply</a>	[<a href="../../20211006170613.455e66c2@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211006170613.455e66c2@thinkpad/t/#u">nested</a>] <a href="#rec13eacb7d679071511df061d72803c6aca80fad">34+ messages in thread</a></pre><hr><pre><a href="#e2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0" id="m2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-10-06 14:23             ` <a href="#md5565e1e581dd149ee018e6e111462f8cc54bea5">Robin Murphy</a>
+<b>@ 2021-10-07 10:59               ` Karsten Graul</b>
+  <a href="#r2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Karsten Graul @ 2021-10-07 10:59 UTC (<a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/">permalink</a> / <a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/raw">raw</a>)
+  To: Robin Murphy, Gerald Schaefer, Hamza Mahfooz, Christoph Hellwig,
+	Dan Williams
+  Cc: Ioana Ciornei, Jeremy Linton, <a href="../../../lkml/?t=20211007110037">linux-kernel@vger.kernel.org</a>,
+	Marek Szyprowski, <a href="../../../linux-iommu/?t=20211007110037">iommu@lists.linux-foundation.org</a>,
+	<a href="../../../netdev/?t=20211007110037">netdev@vger.kernel.org</a>, <a href="../../../linux-s390/?t=20211007110037">linux-s390</a>
+
+On 06/10/2021 16:23, Robin Murphy wrote:
+<span class="q">&gt; On 2021-10-06 14:10, Gerald Schaefer wrote:
+&gt;&gt; On Fri, 1 Oct 2021 14:52:56 +0200
+&gt;&gt; Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+&gt;&gt;
+&gt;&gt;&gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt;&gt;&gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt;&gt;&gt;&gt;&gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt;&gt;&gt;&gt;&gt;&gt; +DPAA2, netdev maintainers
+&gt;&gt;&gt;&gt;&gt;&gt; Hi,
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt;&gt;&gt;&gt;&gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt;&gt;&gt;&gt;&gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt;&gt;&gt;&gt;&gt;&gt; is attached below.
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt;&gt;&gt;&gt;&gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt;&gt;&gt;&gt;&gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt;&gt;&gt;&gt;&gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; Is this behavior normal?
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt;&gt;&gt;&gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt;&gt;&gt;
+&gt;&gt;&gt; Adding a WARN for a case that be detected false-positive seems not
+&gt;&gt;&gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt;&gt;&gt; systems).
+&gt;&gt;&gt;
+&gt;&gt;&gt; So I guess it boils down to the question if the behavior that Ioana
+&gt;&gt;&gt; described is legit behavior, on a system that is dma coherent. We
+&gt;&gt;&gt; are apparently hitting the same scenario, although it could not yet be
+&gt;&gt;&gt; reproduced with debug printks for some reason.
+&gt;&gt;&gt;
+&gt;&gt;&gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt;&gt;&gt; it will not make systems crash that behave valid, and have
+&gt;&gt;&gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt;&gt;&gt; case, it really sounds rather like you want to fix / better refine
+&gt;&gt;&gt; the overlap check, if you want to report anything here.
+&gt;&gt;
+&gt;&gt; Dan, Christoph, any opinion?
+&gt;&gt;
+&gt;&gt; So far it all looks a lot like a false positive, so could you please
+&gt;&gt; see that those patches get reverted? I do wonder a bit why this is
+&gt;&gt; not an issue for others, we surely cannot be the only ones running
+&gt;&gt; CI with panic_on_warn.
+&gt; 
+&gt; What convinces you it's a false-positive? I'm hardly familiar with most of that callstack, but it appears to be related to mlx5, and I know that exists on expansion cards which could be plugged into a system with non-coherent PCIe where partial cacheline overlap *would* be a real issue. Of course it's dubious that there are many real use-cases for plugging a NIC with a 4-figure price tag into a little i.MX8 or whatever, but the point is that it *should* still work correctly.
+&gt; 
+&gt;&gt; We would need to disable DEBUG_DMA if this WARN stays in, which
+&gt;&gt; would be a shame. Of course, in theory, this might also indicate
+&gt;&gt; some real bug, but there really is no sign of that so far.
+&gt; 
+&gt; The whole point of DMA debug is to flag up things that you *do* get away with on the vast majority of systems, precisely because most testing happens on those systems rather than more esoteric embedded setups. Say your system only uses dma-direct and a driver starts triggering the warning for not calling dma_mapping_error(), would you argue for removing that warning as well since dma_map_single() can't fail on your machine so it's "not a bug"?
+&gt; 
+&gt;&gt; Having multiple sg elements in the same page (or cacheline) is
+&gt;&gt; valid, correct? And this is also not a decision of the driver
+&gt;&gt; IIUC, so if it was bug, it should be addressed in common code,
+&gt;&gt; correct?
+&gt; 
+&gt; According to the streaming DMA API documentation, it is *not* valid:
+&gt; 
+&gt; ".. warning::
+&gt; 
+&gt; &nbsp; Memory coherency operates at a granularity called the cache
+&gt; &nbsp; line width.&nbsp; In order for memory mapped by this API to operate
+&gt; &nbsp; correctly, the mapped region must begin exactly on a cache line
+&gt; &nbsp; boundary and end exactly on one (to prevent two separately mapped
+&gt; &nbsp; regions from sharing a single cache line).&nbsp; Since the cache line size
+&gt; &nbsp; may not be known at compile time, the API will not enforce this
+&gt; &nbsp; requirement.&nbsp; Therefore, it is recommended that driver writers who
+&gt; &nbsp; don't take special care to determine the cache line size at run time
+&gt; &nbsp; only map virtual regions that begin and end on page boundaries (which
+&gt; &nbsp; are guaranteed also to be cache line boundaries)."
+&gt; 
+&gt;&gt;&gt; BTW, there is already a WARN in the add_dma_entry() path, related
+&gt;&gt;&gt; to cachlline overlap and -EEXIST:
+&gt;&gt;&gt;
+&gt;&gt;&gt; add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+&gt;&gt;&gt; active_cacheline_inc_overlap()
+&gt;&gt;&gt;
+&gt;&gt;&gt; That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+&gt;&gt;&gt; Not familiar with that code, but it seems that there are now two
+&gt;&gt;&gt; warnings for more or less the same, and the new warning is much more
+&gt;&gt;&gt; prone to false-positives.
+&gt;&gt;&gt;
+&gt;&gt;&gt; How do these 2 warnings relate, are they both really necessary?
+&gt;&gt;&gt; I think the new warning was only introduced because of some old
+&gt;&gt;&gt; TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+&gt;&gt;&gt; ("dma-debug: report -EEXIST errors in add_dma_entry").
+&gt; 
+&gt; AFAICS they are different things. I believe the new warning is supposed to be for the fundementally incorrect API usage (as above) of mapping different regions overlapping within the same cacheline. The existing one is about dma-debug losing internal consistency when tracking the *same* region being mapped multiple times, which is a legal thing to do - e.g. buffer sharing between devices - but if anyone's doing it to excess that's almost certainly a bug (i.e. they probably intended to unmap it in between but missed that out).
+</span>
+Thanks for the explanation Robin. 
+
+In our case its really that a buffer is mapped twice for 2 different devices which we use in SMC to provide failover capabilities. We see that -EEXIST is returned when a buffer is mapped for the second device. Since there is a maximum of 2 parallel mappings we never see the warning shown by active_cacheline_inc_overlap() because we don't exceed ACTIVE_CACHELINE_MAX_OVERLAP.
+
+So how to deal with this kind of "legal thing", looks like there is no way to suppress the newly introduced EEXIST warning for that case?
+
+
+Karsten
+
+<a href="#m2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0" id="e2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">^</a> <a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/">permalink</a> <a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/raw">raw</a> <a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/#R">reply</a>	[<a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/T/#u"><b>flat</b></a>|<a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/t/#u">nested</a>] <a href="#r2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">34+ messages in thread</a></pre><hr><pre><a href="#e2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0" id="m2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-07 10:59               ` Karsten Graul</b>
+  <a href="#r2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Karsten Graul @ 2021-10-07 10:59 UTC (<a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/">permalink</a> / <a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/raw">raw</a>)
+  To: Robin Murphy, Gerald Schaefer, Hamza Mahfooz, Christoph Hellwig,
+	Dan Williams
+  Cc: <a href="../../../linux-s390/?t=20211007110028">linux-s390</a>, <a href="../../../netdev/?t=20211007110028">netdev@vger.kernel.org</a>, <a href="../../../lkml/?t=20211007110028">linux-kernel@vger.kernel.org</a>,
+	Jeremy Linton, <a href="../../../linux-iommu/?t=20211007110028">iommu@lists.linux-foundation.org</a>, Ioana Ciornei
+
+On 06/10/2021 16:23, Robin Murphy wrote:
+<span class="q">&gt; On 2021-10-06 14:10, Gerald Schaefer wrote:
+&gt;&gt; On Fri, 1 Oct 2021 14:52:56 +0200
+&gt;&gt; Gerald Schaefer &lt;gerald.schaefer@linux.ibm.com&gt; wrote:
+&gt;&gt;
+&gt;&gt;&gt; On Thu, 30 Sep 2021 15:37:33 +0200
+&gt;&gt;&gt; Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; On 14/09/2021 17:45, Ioana Ciornei wrote:
+&gt;&gt;&gt;&gt;&gt; On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
+&gt;&gt;&gt;&gt;&gt;&gt; +DPAA2, netdev maintainers
+&gt;&gt;&gt;&gt;&gt;&gt; Hi,
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; Since, overlapping mappings are not supported by the DMA API we should
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; report an error if active_cacheline_insert returns -EEXIST.
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;&gt; It seems this patch found a victim. I was trying to run iperf3 on a
+&gt;&gt;&gt;&gt;&gt;&gt; honeycomb (5.14.0, fedora 35) and the console is blasting this error message
+&gt;&gt;&gt;&gt;&gt;&gt; at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
+&gt;&gt;&gt;&gt;&gt;&gt; is attached below.
+&gt;&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; These frags are allocated by the stack, transformed into a scatterlist
+&gt;&gt;&gt;&gt;&gt; by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
+&gt;&gt;&gt;&gt;&gt; dpaa2-eth's decision to use two fragments from the same page (that will
+&gt;&gt;&gt;&gt;&gt; also end un in the same cacheline) in two different in-flight skbs.
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; Is this behavior normal?
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
+&gt;&gt;&gt;&gt; The CI has panic_on_warn enabled so we see the panic every day now.
+&gt;&gt;&gt;
+&gt;&gt;&gt; Adding a WARN for a case that be detected false-positive seems not
+&gt;&gt;&gt; acceptable, exactly for this reason (kernel panic on unaffected
+&gt;&gt;&gt; systems).
+&gt;&gt;&gt;
+&gt;&gt;&gt; So I guess it boils down to the question if the behavior that Ioana
+&gt;&gt;&gt; described is legit behavior, on a system that is dma coherent. We
+&gt;&gt;&gt; are apparently hitting the same scenario, although it could not yet be
+&gt;&gt;&gt; reproduced with debug printks for some reason.
+&gt;&gt;&gt;
+&gt;&gt;&gt; If the answer is yes, than please remove at lease the WARN, so that
+&gt;&gt;&gt; it will not make systems crash that behave valid, and have
+&gt;&gt;&gt; panic_on_warn set. Even a normal printk feels wrong to me in that
+&gt;&gt;&gt; case, it really sounds rather like you want to fix / better refine
+&gt;&gt;&gt; the overlap check, if you want to report anything here.
+&gt;&gt;
+&gt;&gt; Dan, Christoph, any opinion?
+&gt;&gt;
+&gt;&gt; So far it all looks a lot like a false positive, so could you please
+&gt;&gt; see that those patches get reverted? I do wonder a bit why this is
+&gt;&gt; not an issue for others, we surely cannot be the only ones running
+&gt;&gt; CI with panic_on_warn.
+&gt; 
+&gt; What convinces you it's a false-positive? I'm hardly familiar with most of that callstack, but it appears to be related to mlx5, and I know that exists on expansion cards which could be plugged into a system with non-coherent PCIe where partial cacheline overlap *would* be a real issue. Of course it's dubious that there are many real use-cases for plugging a NIC with a 4-figure price tag into a little i.MX8 or whatever, but the point is that it *should* still work correctly.
+&gt; 
+&gt;&gt; We would need to disable DEBUG_DMA if this WARN stays in, which
+&gt;&gt; would be a shame. Of course, in theory, this might also indicate
+&gt;&gt; some real bug, but there really is no sign of that so far.
+&gt; 
+&gt; The whole point of DMA debug is to flag up things that you *do* get away with on the vast majority of systems, precisely because most testing happens on those systems rather than more esoteric embedded setups. Say your system only uses dma-direct and a driver starts triggering the warning for not calling dma_mapping_error(), would you argue for removing that warning as well since dma_map_single() can't fail on your machine so it's "not a bug"?
+&gt; 
+&gt;&gt; Having multiple sg elements in the same page (or cacheline) is
+&gt;&gt; valid, correct? And this is also not a decision of the driver
+&gt;&gt; IIUC, so if it was bug, it should be addressed in common code,
+&gt;&gt; correct?
+&gt; 
+&gt; According to the streaming DMA API documentation, it is *not* valid:
+&gt; 
+&gt; ".. warning::
+&gt; 
+&gt; &nbsp; Memory coherency operates at a granularity called the cache
+&gt; &nbsp; line width.&nbsp; In order for memory mapped by this API to operate
+&gt; &nbsp; correctly, the mapped region must begin exactly on a cache line
+&gt; &nbsp; boundary and end exactly on one (to prevent two separately mapped
+&gt; &nbsp; regions from sharing a single cache line).&nbsp; Since the cache line size
+&gt; &nbsp; may not be known at compile time, the API will not enforce this
+&gt; &nbsp; requirement.&nbsp; Therefore, it is recommended that driver writers who
+&gt; &nbsp; don't take special care to determine the cache line size at run time
+&gt; &nbsp; only map virtual regions that begin and end on page boundaries (which
+&gt; &nbsp; are guaranteed also to be cache line boundaries)."
+&gt; 
+&gt;&gt;&gt; BTW, there is already a WARN in the add_dma_entry() path, related
+&gt;&gt;&gt; to cachlline overlap and -EEXIST:
+&gt;&gt;&gt;
+&gt;&gt;&gt; add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+&gt;&gt;&gt; active_cacheline_inc_overlap()
+&gt;&gt;&gt;
+&gt;&gt;&gt; That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+&gt;&gt;&gt; Not familiar with that code, but it seems that there are now two
+&gt;&gt;&gt; warnings for more or less the same, and the new warning is much more
+&gt;&gt;&gt; prone to false-positives.
+&gt;&gt;&gt;
+&gt;&gt;&gt; How do these 2 warnings relate, are they both really necessary?
+&gt;&gt;&gt; I think the new warning was only introduced because of some old
+&gt;&gt;&gt; TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+&gt;&gt;&gt; ("dma-debug: report -EEXIST errors in add_dma_entry").
+&gt; 
+&gt; AFAICS they are different things. I believe the new warning is supposed to be for the fundementally incorrect API usage (as above) of mapping different regions overlapping within the same cacheline. The existing one is about dma-debug losing internal consistency when tracking the *same* region being mapped multiple times, which is a legal thing to do - e.g. buffer sharing between devices - but if anyone's doing it to excess that's almost certainly a bug (i.e. they probably intended to unmap it in between but missed that out).
+</span>
+Thanks for the explanation Robin. 
+
+In our case its really that a buffer is mapped twice for 2 different devices which we use in SMC to provide failover capabilities. We see that -EEXIST is returned when a buffer is mapped for the second device. Since there is a maximum of 2 parallel mappings we never see the warning shown by active_cacheline_inc_overlap() because we don't exceed ACTIVE_CACHELINE_MAX_OVERLAP.
+
+So how to deal with this kind of "legal thing", looks like there is no way to suppress the newly introduced EEXIST warning for that case?
+
+
+Karsten
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0" id="e2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">^</a> <a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/">permalink</a> <a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/raw">raw</a> <a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/#R">reply</a>	[<a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/T/#u"><b>flat</b></a>|<a href="../../fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com/t/#u">nested</a>] <a href="#r2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">34+ messages in thread</a></pre><hr><pre><a href="#ec55f56703f805c86152f3aa5ccb868fda8802941" id="mc55f56703f805c86152f3aa5ccb868fda8802941">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-10-07 10:59               ` <a href="#m2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">Karsten Graul</a>
+<b>@ 2021-10-07 16:40                 ` Gerald Schaefer</b>
+  <a href="#rc55f56703f805c86152f3aa5ccb868fda8802941">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-07 16:40 UTC (<a href="../../20211007184043.6fdfc57e@thinkpad/">permalink</a> / <a href="../../20211007184043.6fdfc57e@thinkpad/raw">raw</a>)
+  To: Karsten Graul
+  Cc: Robin Murphy, Hamza Mahfooz, Christoph Hellwig, Dan Williams,
+	Ioana Ciornei, Jeremy Linton, <a href="../../../lkml/?t=20211007164147">linux-kernel@vger.kernel.org</a>,
+	Marek Szyprowski, <a href="../../../linux-iommu/?t=20211007164147">iommu@lists.linux-foundation.org</a>,
+	<a href="../../../netdev/?t=20211007164147">netdev@vger.kernel.org</a>, <a href="../../../linux-s390/?t=20211007164147">linux-s390</a>
+
+On Thu, 7 Oct 2021 12:59:32 +0200
+Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+
+[...]
+<span class="q">&gt; &gt; 
+&gt; &gt;&gt;&gt; BTW, there is already a WARN in the add_dma_entry() path, related
+&gt; &gt;&gt;&gt; to cachlline overlap and -EEXIST:
+&gt; &gt;&gt;&gt;
+&gt; &gt;&gt;&gt; add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+&gt; &gt;&gt;&gt; active_cacheline_inc_overlap()
+&gt; &gt;&gt;&gt;
+&gt; &gt;&gt;&gt; That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+&gt; &gt;&gt;&gt; Not familiar with that code, but it seems that there are now two
+&gt; &gt;&gt;&gt; warnings for more or less the same, and the new warning is much more
+&gt; &gt;&gt;&gt; prone to false-positives.
+&gt; &gt;&gt;&gt;
+&gt; &gt;&gt;&gt; How do these 2 warnings relate, are they both really necessary?
+&gt; &gt;&gt;&gt; I think the new warning was only introduced because of some old
+&gt; &gt;&gt;&gt; TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+&gt; &gt;&gt;&gt; ("dma-debug: report -EEXIST errors in add_dma_entry").
+&gt; &gt; 
+&gt; &gt; AFAICS they are different things. I believe the new warning is supposed to be for the fundementally incorrect API usage (as above) of mapping different regions overlapping within the same cacheline. The existing one is about dma-debug losing internal consistency when tracking the *same* region being mapped multiple times, which is a legal thing to do - e.g. buffer sharing between devices - but if anyone's doing it to excess that's almost certainly a bug (i.e. they probably intended to unmap it in between but missed that out).
+&gt; 
+&gt; Thanks for the explanation Robin. 
+&gt; 
+&gt; In our case its really that a buffer is mapped twice for 2 different devices which we use in SMC to provide failover capabilities. We see that -EEXIST is returned when a buffer is mapped for the second device. Since there is a maximum of 2 parallel mappings we never see the warning shown by active_cacheline_inc_overlap() because we don't exceed ACTIVE_CACHELINE_MAX_OVERLAP.
+&gt; 
+&gt; So how to deal with this kind of "legal thing", looks like there is no way to suppress the newly introduced EEXIST warning for that case?
+</span>
+Thanks Karsten, very interesting. We assumed so far that we hit the
+same case as Ioana, i.e. having multiple sg elements in one cacheline.
+With debug output it now seems that we hit a completely different
+case, not at all related to any cacheline or coherency issues.
+
+So it really seems that the new warning is basically the same
+as the already present one, with the difference that it already
+triggers on the first occurrence. Looking at the code again, it
+also seems rather obvious now...
+
+IIUC, from what Robin described, this means that the "legal thing
+to do - e.g. buffer sharing between devices" will now immediately
+trigger the new warning? Not sure if I missed something (again),
+because then I would expect much more reports on this, and of
+course it would then obviously be false-positive.
+
+<a href="#mc55f56703f805c86152f3aa5ccb868fda8802941" id="ec55f56703f805c86152f3aa5ccb868fda8802941">^</a> <a href="../../20211007184043.6fdfc57e@thinkpad/">permalink</a> <a href="../../20211007184043.6fdfc57e@thinkpad/raw">raw</a> <a href="../../20211007184043.6fdfc57e@thinkpad/#R">reply</a>	[<a href="../../20211007184043.6fdfc57e@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211007184043.6fdfc57e@thinkpad/t/#u">nested</a>] <a href="#rc55f56703f805c86152f3aa5ccb868fda8802941">34+ messages in thread</a></pre><hr><pre><a href="#ec55f56703f805c86152f3aa5ccb868fda8802941" id="mc55f56703f805c86152f3aa5ccb868fda8802941">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-07 16:40                 ` Gerald Schaefer</b>
+  <a href="#rc55f56703f805c86152f3aa5ccb868fda8802941">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Gerald Schaefer @ 2021-10-07 16:40 UTC (<a href="../../20211007184043.6fdfc57e@thinkpad/">permalink</a> / <a href="../../20211007184043.6fdfc57e@thinkpad/raw">raw</a>)
+  To: Karsten Graul
+  Cc: <a href="../../../linux-s390/?t=20211007164141">linux-s390</a>, Hamza Mahfooz, <a href="../../../netdev/?t=20211007164141">netdev@vger.kernel.org</a>,
+	<a href="../../../lkml/?t=20211007164141">linux-kernel@vger.kernel.org</a>, Jeremy Linton,
+	<a href="../../../linux-iommu/?t=20211007164141">iommu@lists.linux-foundation.org</a>, Ioana Ciornei, Dan Williams,
+	Robin Murphy, Christoph Hellwig
+
+On Thu, 7 Oct 2021 12:59:32 +0200
+Karsten Graul &lt;kgraul@linux.ibm.com&gt; wrote:
+
+[...]
+<span class="q">&gt; &gt; 
+&gt; &gt;&gt;&gt; BTW, there is already a WARN in the add_dma_entry() path, related
+&gt; &gt;&gt;&gt; to cachlline overlap and -EEXIST:
+&gt; &gt;&gt;&gt;
+&gt; &gt;&gt;&gt; add_dma_entry() -&gt; active_cacheline_insert() -&gt; -EEXIST -&gt;
+&gt; &gt;&gt;&gt; active_cacheline_inc_overlap()
+&gt; &gt;&gt;&gt;
+&gt; &gt;&gt;&gt; That will only trigger when "overlap &gt; ACTIVE_CACHELINE_MAX_OVERLAP".
+&gt; &gt;&gt;&gt; Not familiar with that code, but it seems that there are now two
+&gt; &gt;&gt;&gt; warnings for more or less the same, and the new warning is much more
+&gt; &gt;&gt;&gt; prone to false-positives.
+&gt; &gt;&gt;&gt;
+&gt; &gt;&gt;&gt; How do these 2 warnings relate, are they both really necessary?
+&gt; &gt;&gt;&gt; I think the new warning was only introduced because of some old
+&gt; &gt;&gt;&gt; TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
+&gt; &gt;&gt;&gt; ("dma-debug: report -EEXIST errors in add_dma_entry").
+&gt; &gt; 
+&gt; &gt; AFAICS they are different things. I believe the new warning is supposed to be for the fundementally incorrect API usage (as above) of mapping different regions overlapping within the same cacheline. The existing one is about dma-debug losing internal consistency when tracking the *same* region being mapped multiple times, which is a legal thing to do - e.g. buffer sharing between devices - but if anyone's doing it to excess that's almost certainly a bug (i.e. they probably intended to unmap it in between but missed that out).
+&gt; 
+&gt; Thanks for the explanation Robin. 
+&gt; 
+&gt; In our case its really that a buffer is mapped twice for 2 different devices which we use in SMC to provide failover capabilities. We see that -EEXIST is returned when a buffer is mapped for the second device. Since there is a maximum of 2 parallel mappings we never see the warning shown by active_cacheline_inc_overlap() because we don't exceed ACTIVE_CACHELINE_MAX_OVERLAP.
+&gt; 
+&gt; So how to deal with this kind of "legal thing", looks like there is no way to suppress the newly introduced EEXIST warning for that case?
+</span>
+Thanks Karsten, very interesting. We assumed so far that we hit the
+same case as Ioana, i.e. having multiple sg elements in one cacheline.
+With debug output it now seems that we hit a completely different
+case, not at all related to any cacheline or coherency issues.
+
+So it really seems that the new warning is basically the same
+as the already present one, with the difference that it already
+triggers on the first occurrence. Looking at the code again, it
+also seems rather obvious now...
+
+IIUC, from what Robin described, this means that the "legal thing
+to do - e.g. buffer sharing between devices" will now immediately
+trigger the new warning? Not sure if I missed something (again),
+because then I would expect much more reports on this, and of
+course it would then obviously be false-positive.
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#mc55f56703f805c86152f3aa5ccb868fda8802941" id="ec55f56703f805c86152f3aa5ccb868fda8802941">^</a> <a href="../../20211007184043.6fdfc57e@thinkpad/">permalink</a> <a href="../../20211007184043.6fdfc57e@thinkpad/raw">raw</a> <a href="../../20211007184043.6fdfc57e@thinkpad/#R">reply</a>	[<a href="../../20211007184043.6fdfc57e@thinkpad/T/#u"><b>flat</b></a>|<a href="../../20211007184043.6fdfc57e@thinkpad/t/#u">nested</a>] <a href="#rc55f56703f805c86152f3aa5ccb868fda8802941">34+ messages in thread</a></pre><hr><pre><a href="#e5b9d0ecf96ff194ef73b1c12a5add3ed83288570" id="m5b9d0ecf96ff194ef73b1c12a5add3ed83288570">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+  2021-10-07 10:59               ` <a href="#m2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">Karsten Graul</a>
+<b>@ 2021-10-11 11:47                 ` Christoph Hellwig</b>
+  <a href="#r5b9d0ecf96ff194ef73b1c12a5add3ed83288570">-1 siblings, 0 replies; 34+ messages in thread</a>
+From: Christoph Hellwig @ 2021-10-11 11:47 UTC (<a href="../../20211011114706.GA16350@lst.de/">permalink</a> / <a href="../../20211011114706.GA16350@lst.de/raw">raw</a>)
+  To: Karsten Graul
+  Cc: Robin Murphy, Gerald Schaefer, Hamza Mahfooz, Christoph Hellwig,
+	Dan Williams, Ioana Ciornei, Jeremy Linton,
+	<a href="../../../lkml/?t=20211011114718">linux-kernel@vger.kernel.org</a>, Marek Szyprowski,
+	<a href="../../../linux-iommu/?t=20211011114718">iommu@lists.linux-foundation.org</a>, <a href="../../../netdev/?t=20211011114718">netdev@vger.kernel.org</a>,
+	<a href="../../../linux-s390/?t=20211011114718">linux-s390</a>
+
+On Thu, Oct 07, 2021 at 12:59:32PM +0200, Karsten Graul wrote:
+<span class="q">&gt; In our case its really that a buffer is mapped twice for 2 different devices which we use in SMC to provide failover capabilities. We see that -EEXIST is returned when a buffer is mapped for the second device. Since there is a maximum of 2 parallel mappings we never see the warning shown by active_cacheline_inc_overlap() because we don't exceed ACTIVE_CACHELINE_MAX_OVERLAP.
+</span>
+Mapping something twice is possible, but needs special care.
+Basically one device always needs to do the first mapping and the other
+one needs to use DMA_ATTR_SKIP_CPU_SYNC to opt out of the coherency
+protocol.  So we have two TODO items here: 1) the driver needs to use the
+above scheme and 2) this dma-debug check needs to understand
+DMA_ATTR_SKIP_CPU_SYNC.  Can I trick you into doing both?
+
+<a href="#m5b9d0ecf96ff194ef73b1c12a5add3ed83288570" id="e5b9d0ecf96ff194ef73b1c12a5add3ed83288570">^</a> <a href="../../20211011114706.GA16350@lst.de/">permalink</a> <a href="../../20211011114706.GA16350@lst.de/raw">raw</a> <a href="../../20211011114706.GA16350@lst.de/#R">reply</a>	[<a href="../../20211011114706.GA16350@lst.de/T/#u"><b>flat</b></a>|<a href="../../20211011114706.GA16350@lst.de/t/#u">nested</a>] <a href="#r5b9d0ecf96ff194ef73b1c12a5add3ed83288570">34+ messages in thread</a></pre><hr><pre><a href="#e5b9d0ecf96ff194ef73b1c12a5add3ed83288570" id="m5b9d0ecf96ff194ef73b1c12a5add3ed83288570">*</a> <b>Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in add_dma_entry</b>
+<b>@ 2021-10-11 11:47                 ` Christoph Hellwig</b>
+  <a href="#r5b9d0ecf96ff194ef73b1c12a5add3ed83288570">0 siblings, 0 replies; 34+ messages in thread</a>
+From: Christoph Hellwig @ 2021-10-11 11:47 UTC (<a href="../../20211011114706.GA16350@lst.de/">permalink</a> / <a href="../../20211011114706.GA16350@lst.de/raw">raw</a>)
+  To: Karsten Graul
+  Cc: <a href="../../../linux-s390/?t=20211011114715">linux-s390</a>, Hamza Mahfooz, <a href="../../../netdev/?t=20211011114715">netdev@vger.kernel.org</a>, Dan Williams,
+	<a href="../../../lkml/?t=20211011114715">linux-kernel@vger.kernel.org</a>, Jeremy Linton,
+	<a href="../../../linux-iommu/?t=20211011114715">iommu@lists.linux-foundation.org</a>, Ioana Ciornei, Gerald Schaefer,
+	Robin Murphy, Christoph Hellwig
+
+On Thu, Oct 07, 2021 at 12:59:32PM +0200, Karsten Graul wrote:
+<span class="q">&gt; In our case its really that a buffer is mapped twice for 2 different devices which we use in SMC to provide failover capabilities. We see that -EEXIST is returned when a buffer is mapped for the second device. Since there is a maximum of 2 parallel mappings we never see the warning shown by active_cacheline_inc_overlap() because we don't exceed ACTIVE_CACHELINE_MAX_OVERLAP.
+</span>
+Mapping something twice is possible, but needs special care.
+Basically one device always needs to do the first mapping and the other
+one needs to use DMA_ATTR_SKIP_CPU_SYNC to opt out of the coherency
+protocol.  So we have two TODO items here: 1) the driver needs to use the
+above scheme and 2) this dma-debug check needs to understand
+DMA_ATTR_SKIP_CPU_SYNC.  Can I trick you into doing both?
+_______________________________________________
+iommu mailing list
+iommu@lists.linux-foundation.org
+<a href="https://lists.linuxfoundation.org/mailman/listinfo/iommu">https://lists.linuxfoundation.org/mailman/listinfo/iommu</a>
+
+<a href="#m5b9d0ecf96ff194ef73b1c12a5add3ed83288570" id="e5b9d0ecf96ff194ef73b1c12a5add3ed83288570">^</a> <a href="../../20211011114706.GA16350@lst.de/">permalink</a> <a href="../../20211011114706.GA16350@lst.de/raw">raw</a> <a href="../../20211011114706.GA16350@lst.de/#R">reply</a>	[<a href="../../20211011114706.GA16350@lst.de/T/#u"><b>flat</b></a>|<a href="../../20211011114706.GA16350@lst.de/t/#u">nested</a>] <a href="#r5b9d0ecf96ff194ef73b1c12a5add3ed83288570">34+ messages in thread</a></pre><hr><pre>end of thread, other threads:[<a href="../../?t=20211011114718">~2021-10-11 11:47 UTC</a> | <a href="../../">newest</a>]
+
+<b id="t">Thread overview:</b> 34+ messages (download: <a href="../t.mbox.gz">mbox.gz</a> follow: <a href="../t.atom">Atom feed</a>
+-- links below jump to the message on this page --
+2021-05-18 12:54 <a href="#mc44ecf84a87f0c016681217ac0465d00f85def7a" id="rc44ecf84a87f0c016681217ac0465d00f85def7a">[PATCH] dma debug: report -EEXIST errors in add_dma_entry</a> Hamza Mahfooz
+2021-05-18 12:54 ` <a href="#mc44ecf84a87f0c016681217ac0465d00f85def7a" id="rc44ecf84a87f0c016681217ac0465d00f85def7a">Hamza Mahfooz</a>
+2021-06-22  7:41 ` <a href="#m618ca7dd5360ff9e40c9f3cc88ca146fc898a220" id="r618ca7dd5360ff9e40c9f3cc88ca146fc898a220">Christoph Hellwig</a>
+2021-06-22  7:41   ` <a href="#m618ca7dd5360ff9e40c9f3cc88ca146fc898a220" id="r618ca7dd5360ff9e40c9f3cc88ca146fc898a220">Christoph Hellwig</a>
+2021-09-09  3:33 ` <a href="#m81e0a84d6aa12b83910a522383beb98921d00ee4" id="r81e0a84d6aa12b83910a522383beb98921d00ee4">DPAA2 triggers,</a> " Jeremy Linton
+2021-09-09  3:33   ` <a href="#m81e0a84d6aa12b83910a522383beb98921d00ee4" id="r81e0a84d6aa12b83910a522383beb98921d00ee4">Jeremy Linton</a>
+2021-09-09 21:16   ` <a href="#m8ad19d2b14e794be89691c34d35f891668b02021" id="r8ad19d2b14e794be89691c34d35f891668b02021">Ioana Ciornei</a>
+2021-09-09 21:16     ` <a href="#m8ad19d2b14e794be89691c34d35f891668b02021" id="r8ad19d2b14e794be89691c34d35f891668b02021">Ioana Ciornei</a>
+2021-09-10 10:23   ` <a href="#m9cf561ca9c12ad290c0b7b36e4991bc153a8a567" id="r9cf561ca9c12ad290c0b7b36e4991bc153a8a567">Christoph Hellwig</a>
+2021-09-10 10:23     ` <a href="#m9cf561ca9c12ad290c0b7b36e4991bc153a8a567" id="r9cf561ca9c12ad290c0b7b36e4991bc153a8a567">Christoph Hellwig</a>
+2021-09-14 15:45   ` <a href="#m27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc" id="r27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">Ioana Ciornei</a>
+2021-09-14 15:45     ` <a href="#m27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc" id="r27fd8a5ea4e0745b272725a16b3ca1bb51ddd5fc">Ioana Ciornei</a>
+2021-09-30 13:37     ` <a href="#mf873388aa21f8b3d9099521b319ba0fd3fee3c1e" id="rf873388aa21f8b3d9099521b319ba0fd3fee3c1e">Karsten Graul</a>
+2021-09-30 13:37       ` <a href="#mf873388aa21f8b3d9099521b319ba0fd3fee3c1e" id="rf873388aa21f8b3d9099521b319ba0fd3fee3c1e">Karsten Graul</a>
+2021-10-01 12:52       ` <a href="#m75eff136cdc72227167d07b58961887ddb2bcbec" id="r75eff136cdc72227167d07b58961887ddb2bcbec">Gerald Schaefer</a>
+2021-10-01 12:52         ` <a href="#m75eff136cdc72227167d07b58961887ddb2bcbec" id="r75eff136cdc72227167d07b58961887ddb2bcbec">Gerald Schaefer</a>
+2021-10-06 13:10         ` <a href="#mfaf360b9216c7dd9b3bb65cbbae4a82634706735" id="rfaf360b9216c7dd9b3bb65cbbae4a82634706735">Gerald Schaefer</a>
+2021-10-06 13:10           ` <a href="#mfaf360b9216c7dd9b3bb65cbbae4a82634706735" id="rfaf360b9216c7dd9b3bb65cbbae4a82634706735">Gerald Schaefer</a>
+2021-10-06 13:21           ` <a href="#mb30e916978fac5f07b7e68aaa78a8c0df9dd9f17" id="rb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">Gerald Schaefer</a>
+2021-10-06 13:21             ` <a href="#mb30e916978fac5f07b7e68aaa78a8c0df9dd9f17" id="rb30e916978fac5f07b7e68aaa78a8c0df9dd9f17">Gerald Schaefer</a>
+2021-10-06 14:23           ` <a href="#md5565e1e581dd149ee018e6e111462f8cc54bea5" id="rd5565e1e581dd149ee018e6e111462f8cc54bea5">Robin Murphy</a>
+2021-10-06 14:23             ` <a href="#md5565e1e581dd149ee018e6e111462f8cc54bea5" id="rd5565e1e581dd149ee018e6e111462f8cc54bea5">Robin Murphy</a>
+2021-10-06 15:06             ` <a href="#mec13eacb7d679071511df061d72803c6aca80fad" id="rec13eacb7d679071511df061d72803c6aca80fad">Gerald Schaefer</a>
+2021-10-06 15:06               ` <a href="#mec13eacb7d679071511df061d72803c6aca80fad" id="rec13eacb7d679071511df061d72803c6aca80fad">Gerald Schaefer</a>
+2021-10-07 10:59             ` <a href="#m2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0" id="r2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">Karsten Graul</a>
+2021-10-07 10:59               ` <a href="#m2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0" id="r2406e9a6e37e3b8dc1c7a5fb308c0e7648d7f7b0">Karsten Graul</a>
+2021-10-07 16:40               ` <a href="#mc55f56703f805c86152f3aa5ccb868fda8802941" id="rc55f56703f805c86152f3aa5ccb868fda8802941">Gerald Schaefer</a>
+2021-10-07 16:40                 ` <a href="#mc55f56703f805c86152f3aa5ccb868fda8802941" id="rc55f56703f805c86152f3aa5ccb868fda8802941">Gerald Schaefer</a>
+2021-10-11 11:47               ` <a href="#m5b9d0ecf96ff194ef73b1c12a5add3ed83288570" id="r5b9d0ecf96ff194ef73b1c12a5add3ed83288570">Christoph Hellwig</a>
+2021-10-11 11:47                 ` <a href="#m5b9d0ecf96ff194ef73b1c12a5add3ed83288570" id="r5b9d0ecf96ff194ef73b1c12a5add3ed83288570">Christoph Hellwig</a>
+2021-10-01  4:19     ` <a href="#me417cceb6a9d09a7470caed9859d3fb3878e7564" id="re417cceb6a9d09a7470caed9859d3fb3878e7564">Christoph Hellwig</a>
+2021-10-01  4:19       ` <a href="#me417cceb6a9d09a7470caed9859d3fb3878e7564" id="re417cceb6a9d09a7470caed9859d3fb3878e7564">Christoph Hellwig</a>
+2021-10-01  9:21       ` <a href="#m911ebd25ab3c4014d1a41971f571ff39a7c40fe9" id="r911ebd25ab3c4014d1a41971f571ff39a7c40fe9">Ioana Ciornei</a>
+2021-10-01  9:21         ` <a href="#m911ebd25ab3c4014d1a41971f571ff39a7c40fe9" id="r911ebd25ab3c4014d1a41971f571ff39a7c40fe9">Ioana Ciornei</a>
+</pre><hr><pre>This is an external index of several public inboxes,
+see <a href="../../_/text/mirror/">mirroring instructions</a> on how to clone and mirror
+all data and code used by this external index.</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
