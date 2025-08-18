@@ -1,0 +1,1036 @@
+<!-- Filename: 书签工具栏/study/Open Source/How to get your code into an open source project (2025-08-18 10：07：50).html
+ Page saved with X-Webpage-Conserve 
+ url: https://people.redhat.com/rjones/how-to-supply-code-to-open-source-projects/
+ Summary: 
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+<title>How to get your code into an open source project</title>
+<meta name="description" content="Describes how to supply code and patches to an open source project, at Richard Jones's home page, Emerging Technologies, Red Hat">
+<meta name="keywords" content="open source, free software, code, patch, upstream, hacking, rjones, richard jones, red hat, redhat">
+<link rel="stylesheet" href="../css/standard.css" type="text/css" title="Standard">
+<link rel="stylesheet" href="../css/numbering.css" type="text/css" title="Standard">
+<link rel="alternate stylesheet" href="../css/easytoread.css" type="text/css" title="High contrast, big fonts">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>body { margin-left: 1em; }body p, body ul, ol, body dl { margin-left: 2em; width: 35em; }li { padding-bottom: 0.5em; }h1 { font-size: 140%; border-bottom: 1px solid rgb(0, 0, 0); }h2 { border-bottom: 1px solid rgb(238, 238, 238); }h1, h2, h3, h4 { color: rgb(51, 51, 51); }code { font-size: 120%; }pre { background-color: rgb(252, 252, 252); border-left: 6px solid rgb(240, 240, 240); padding: 5px; margin-left: 1em; font-size: 120%; }p.note { margin-left: 2em; margin-right: 1em; padding-left: 36px; background: url("../images/note.png") no-repeat; }p.warning { margin-left: 2em; margin-right: 1em; border: 1px dotted rgb(136, 0, 0); padding-left: 36px; background: rgb(255, 238, 238) url("../images/warning.png") no-repeat; }span.highlight { color: red; }img.frame_img { border: 1px solid rgb(136, 136, 136); padding: 6px; }img.leftpara { float: left; clear: left; margin-right: 1em; margin-bottom: 1em; }img.rightpara { float: right; clear: right; margin-left: 1em; margin-bottom: 1em; }table.top_table { border-collapse: collapse; }table.top_table th { vertical-align: top; padding: 3px; border-bottom: 1px solid rgb(221, 221, 221); }table.top_table td { vertical-align: top; padding: 3px; }table.top_table td.number { text-align: right; }table.top_table th.divider { text-align: center; padding: 6px; border-top: 1px solid rgb(221, 221, 221); border-bottom: 1px solid rgb(221, 221, 221); }table.left_table { border-collapse: collapse; }table.left_table th { text-align: right; vertical-align: top; padding: 3px 1em 3px 3px; }table.left_table td { vertical-align: top; padding: 3px; }table.left_table td.number { text-align: right; }table.left_table th.divider { text-align: center; padding: 6px; border-top: 1px solid rgb(238, 238, 238); border-bottom: 1px solid rgb(238, 238, 238); }ul.menu { width: 60em; padding: 0px; margin-left: 1em; list-style: none; }ul.menu li { display: inline; border-left: 1px solid rgb(102, 102, 102); padding-left: 5px; }ul.menu li.first { border-left: medium; padding-left: 0px; }.jsgo { border: 1px solid rgb(255, 255, 255); cursor: pointer; }.jsgo:hover { border: 1px solid rgb(204, 204, 204); background: rgb(238, 238, 255); }</style><style>body { counter-reset: chapter 0; }h2 { counter-increment: chapter 1; counter-reset: section 0; }h2::before { font-size: 80%; content: counter(chapter) ". "; }h3 { counter-increment: section 1; }h3::before { font-size: 80%; content: counter(chapter) "." counter(section) ". "; }</style><style>body { font-size: 200%; }</style></head>
+<body>
+<h1><span>How to get your code into an open source project</span></h1>
+
+<p>
+One of the things I've observed since I started working at Red Hat is
+that even seasoned programmers who are not used to the "open source
+thing" can become very confused about why their contributions to open
+source projects are often ignored, rejected or even publicly attacked.
+</p>
+
+<p>
+In this tutorial I'll tell you what you can do to help get your
+contributions into an open source project, and how to avoid the most
+common mistakes.
+</p>
+
+<table class="top_table" style="float: right;">
+<tbody><tr><th> Table of contents </th></tr>
+<tr><td> <a href="#early_often">1. Discuss your changes early</a> </td></tr>
+<tr><td> <a href="#patches">2. Submit patches, not lumps of code</a> </td></tr>
+<tr><td> <a href="#split_patches">3. Split your patches up</a> </td></tr>
+<tr><td> <a href="#cvs">4. Patch against the latest development version</a> </td></tr>
+<tr><td> <a href="#tests">5. Run any tests</a> </td></tr>
+<tr><td> <a href="#update_docs">6. Update documentation and tests</a> </td></tr>
+<tr><td> <a href="#legal">7. Legal issues</a> </td></tr>
+<tr><td> <a href="#lost_patches">8. Lost patches</a> </td></tr>
+<tr><td> <a href="#rejection">9. Accept rejection</a> </td></tr>
+<tr><td> <a href="#nutsandbolts">10. Nuts and bolts, and external resources</a> </td></tr>
+</tbody></table>
+<!-- show us the code? -->
+
+<p>
+Some terms you will need to know:
+</p>
+
+<dl>
+<dt> <strong>upstream</strong> </dt>
+<dd>
+This is the catch-all term for the ultimate source of the project.
+It's the core group of contributors, their mailing lists, website and
+so on.  For example, while many companies distribute the Apache
+webserver, there is only one
+upstream, <a href="http://httpd.apache.org/">here at apache.org</a>.
+</dd>
+<dt> <strong>contributor</strong> </dt>
+<dd>
+That's you, and anyone else contributing changes, bug fixes, clean ups
+and enhancements to upstream.
+</dd>
+</dl>
+
+<a name="early_often"><h2>Discuss your changes early</h2></a>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA3hJREFUWIXtl19oW2UYxn9N21iXxqQzdhNsm7F1UFeXXQmi0NjhHIW5DrToVdIrQRCZgwmiF3P2QtCtvVK8yRH8hxfqlDFF1OxmILohuDtl7VzLZpKu+deTNDnf93pxkrTFJCeVSb3oC4fznfO+vM9zvvc5D+fAJoaI4NpMAsAWgS0Cm0+go8W6ASBcWceB63eotqWI9AUC8sqxcTl59CkZCASWgEij2gf8fjkxGpYT4RHp9/ub1SIitDmAjwz398UvnjoFxQJtN2+RSS9x5NPPuJpIRIEP1oJPHDhgTB87ipRWILVIJpvl0LmvmTfNIHV2QkQcRxB+fnQUyefo/P4HXOk0AeDC3kHGzGXjt/wyFRKRidB+4+yRMbS5TNvlK0g2h0c0T/t9TJvmODBTD8BRhPe43bh+/wNXOl2752tv53woxLDHYwCxZx4aNs6MHUabJvLzL1iZDGVlUVYKpXXT/k4Efv3k0iWkWADsLdNao7RmWxt8se9BXg7tj545fAhtmujLVyrgirJSWErxUy4PthjrhpMGAGLPBYPR9/r7UBUCWgQlGq0F3e5C7x1EX5tF5fO1vBbNqzcW+HIpPQ0cr9e4FRHWSDzb2xud2bN7HYDS9llXzyKoSv61+QXOpTMGMNmo6UYIAMQmAoHoO7uC9tOL1AXWonl94SZfOYD/GwIAP7400B9+cXuPPY7a06+u302meD+1GAced2q20e+ByND2nvDko4+gd+7AqoisepSVwtKKCZ+XQbc7TBMDWhutEogM9fiNj58YpVtZlJLJitI1ZV1VvKasFF3AzP072OPuNFoh0coIIkN+n/HRwTBeoDA7h1Uo/EMDa69FhKxSHP8rybWyFWW9Y9aiJSse8vniH4YfwwuY1//EKhbXAZ/P5njSs61GQmRVEzmleSGRIqF0kAZW7DSCcGR3kG5lkZ+do2QW7Jlre8tP30owlUjNTSVSWFqjdDVn57tEOHh3F8B4IwBHDXiB4uJtSoVCDdhSijcTSS7klw1g17fLpvFW6nYlZzul0hqr8mo2C0cr/vzGPGplZVXxWjGVSPGNDV59zye/MwvG20uZGnCVxNVSGZpYcSsRG/F2y/TOXjl9370SusstQKxR7cPuTnnD1y0nvR7Z19EhwNlGjTdiRBEgWFnHgYt3olYcxvOfx9af0RaB/wWBvwE6SlaiRvidkgAAAABJRU5ErkJggg==" width="32" height="32" alt="Don't" align="left">
+<strong>Don't write lots of code, dump it on the project
+right at the end and walk away.</strong>
+</p>
+
+<p>
+Upstream hates this.  They are often volunteers with very limited
+time, and code is hard to understand, particularly when it comes in
+large quantities.  If you walk away having <q>done</q> your
+contribution, it's even harder for upstream because there is nowhere
+they can ask for help and explanations.
+</p>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Do discuss your changes early on the upstream mailing
+lists,</strong> <em>before</em> you start writing too much code.
+Listen to feedback and change your plans if you need to.
+</p>
+
+<p>
+You'll often see this principle referred to as
+<q>Release early, release often</q> and it comes from
+<a href="http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/ar01s04.html">a
+chapter in Eric Raymond's essay <q>The Cathedral and the
+Bazaar</q></a>.  There, Raymond was talking about something slightly
+different: early and frequent releases of the Linux kernel.  Your
+contribution probably isn't quite so grand, but it's still code and it
+still benefits from early discussion, frequent, early releases of
+code, feedback from upstream, and testing from users.
+</p>
+
+<a name="patches"><h2>Submit patches, not lumps of code</h2></a>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA3hJREFUWIXtl19oW2UYxn9N21iXxqQzdhNsm7F1UFeXXQmi0NjhHIW5DrToVdIrQRCZgwmiF3P2QtCtvVK8yRH8hxfqlDFF1OxmILohuDtl7VzLZpKu+deTNDnf93pxkrTFJCeVSb3oC4fznfO+vM9zvvc5D+fAJoaI4NpMAsAWgS0Cm0+go8W6ASBcWceB63eotqWI9AUC8sqxcTl59CkZCASWgEij2gf8fjkxGpYT4RHp9/ub1SIitDmAjwz398UvnjoFxQJtN2+RSS9x5NPPuJpIRIEP1oJPHDhgTB87ipRWILVIJpvl0LmvmTfNIHV2QkQcRxB+fnQUyefo/P4HXOk0AeDC3kHGzGXjt/wyFRKRidB+4+yRMbS5TNvlK0g2h0c0T/t9TJvmODBTD8BRhPe43bh+/wNXOl2752tv53woxLDHYwCxZx4aNs6MHUabJvLzL1iZDGVlUVYKpXXT/k4Efv3k0iWkWADsLdNao7RmWxt8se9BXg7tj545fAhtmujLVyrgirJSWErxUy4PthjrhpMGAGLPBYPR9/r7UBUCWgQlGq0F3e5C7x1EX5tF5fO1vBbNqzcW+HIpPQ0cr9e4FRHWSDzb2xud2bN7HYDS9llXzyKoSv61+QXOpTMGMNmo6UYIAMQmAoHoO7uC9tOL1AXWonl94SZfOYD/GwIAP7400B9+cXuPPY7a06+u302meD+1GAced2q20e+ByND2nvDko4+gd+7AqoisepSVwtKKCZ+XQbc7TBMDWhutEogM9fiNj58YpVtZlJLJitI1ZV1VvKasFF3AzP072OPuNFoh0coIIkN+n/HRwTBeoDA7h1Uo/EMDa69FhKxSHP8rybWyFWW9Y9aiJSse8vniH4YfwwuY1//EKhbXAZ/P5njSs61GQmRVEzmleSGRIqF0kAZW7DSCcGR3kG5lkZ+do2QW7Jlre8tP30owlUjNTSVSWFqjdDVn57tEOHh3F8B4IwBHDXiB4uJtSoVCDdhSijcTSS7klw1g17fLpvFW6nYlZzul0hqr8mo2C0cr/vzGPGplZVXxWjGVSPGNDV59zye/MwvG20uZGnCVxNVSGZpYcSsRG/F2y/TOXjl9370SusstQKxR7cPuTnnD1y0nvR7Z19EhwNlGjTdiRBEgWFnHgYt3olYcxvOfx9af0RaB/wWBvwE6SlaiRvidkgAAAABJRU5ErkJggg==" width="32" height="32" alt="Don't" align="left">
+<strong>Don't submit lumps of code</strong> such as
+an alternate definition of a function, or an alternate
+source file, or (worst of all) a whole replacement tar.gz/zip file of
+the project.
+</p>
+
+<p>
+Upstream developers, remember, don't have much time.  They want to
+know just what has changed.  There is a special format used by
+developers to show what has changed, called
+a <a href="http://en.wikipedia.org/wiki/Patch_%28computing%29">patch</a>.
+</p>
+
+<p style="float: right; width: 12em; margin-right: 2em;">
+<em>Learn how to make patches in the <a href="#nutsandbolts">Nuts and bolts</a>
+section of this tutorial below.</em>
+</p>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Do create and submit patches.</strong>
+</p>
+
+<p>
+Patches help upstream developers by just showing what you have
+changed.  Existing tools are also designed to use patches, making them
+especially easy to use.
+</p>
+
+<p>
+If you submit a lump of code, then you are forcing the upstream
+developers to make a patch themselves so they can see what has
+changed.  This is unfair on them, and in fact many won't even bother
+or indeed have the time to look.
+</p>
+
+<p>
+<a href="https://www.redhat.com/archives/libvir-list/2008-July/msg00396.html">Here's
+a nice example of a simple patch</a> submitted to an open source
+project.  Notice that there is a clear subject line and explanation of
+what the patch is doing, and then the patch itself shows just what was
+changed.
+</p>
+
+<a name="split_patches"><h2>Split your patches up</h2></a>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA3hJREFUWIXtl19oW2UYxn9N21iXxqQzdhNsm7F1UFeXXQmi0NjhHIW5DrToVdIrQRCZgwmiF3P2QtCtvVK8yRH8hxfqlDFF1OxmILohuDtl7VzLZpKu+deTNDnf93pxkrTFJCeVSb3oC4fznfO+vM9zvvc5D+fAJoaI4NpMAsAWgS0Cm0+go8W6ASBcWceB63eotqWI9AUC8sqxcTl59CkZCASWgEij2gf8fjkxGpYT4RHp9/ub1SIitDmAjwz398UvnjoFxQJtN2+RSS9x5NPPuJpIRIEP1oJPHDhgTB87ipRWILVIJpvl0LmvmTfNIHV2QkQcRxB+fnQUyefo/P4HXOk0AeDC3kHGzGXjt/wyFRKRidB+4+yRMbS5TNvlK0g2h0c0T/t9TJvmODBTD8BRhPe43bh+/wNXOl2752tv53woxLDHYwCxZx4aNs6MHUabJvLzL1iZDGVlUVYKpXXT/k4Efv3k0iWkWADsLdNao7RmWxt8se9BXg7tj545fAhtmujLVyrgirJSWErxUy4PthjrhpMGAGLPBYPR9/r7UBUCWgQlGq0F3e5C7x1EX5tF5fO1vBbNqzcW+HIpPQ0cr9e4FRHWSDzb2xud2bN7HYDS9llXzyKoSv61+QXOpTMGMNmo6UYIAMQmAoHoO7uC9tOL1AXWonl94SZfOYD/GwIAP7400B9+cXuPPY7a06+u302meD+1GAced2q20e+ByND2nvDko4+gd+7AqoisepSVwtKKCZ+XQbc7TBMDWhutEogM9fiNj58YpVtZlJLJitI1ZV1VvKasFF3AzP072OPuNFoh0coIIkN+n/HRwTBeoDA7h1Uo/EMDa69FhKxSHP8rybWyFWW9Y9aiJSse8vniH4YfwwuY1//EKhbXAZ/P5njSs61GQmRVEzmleSGRIqF0kAZW7DSCcGR3kG5lkZ+do2QW7Jlre8tP30owlUjNTSVSWFqjdDVn57tEOHh3F8B4IwBHDXiB4uJtSoVCDdhSijcTSS7klw1g17fLpvFW6nYlZzul0hqr8mo2C0cr/vzGPGplZVXxWjGVSPGNDV59zye/MwvG20uZGnCVxNVSGZpYcSsRG/F2y/TOXjl9370SusstQKxR7cPuTnnD1y0nvR7Z19EhwNlGjTdiRBEgWFnHgYt3olYcxvOfx9af0RaB/wWBvwE6SlaiRvidkgAAAABJRU5ErkJggg==" width="32" height="32" alt="Don't" align="left">
+<strong>Don't submit huge patches or patches which make several unrelated changes</strong>.
+</p>
+
+<p>
+In the first place, huge patches are almost as bad as huge lumps of
+code: hard for overworked, underpaid upstream developers to keep in
+their heads and understand all at once.  Secondly, making unrelated
+changes in a single patch is bad because perhaps only some of the
+changes can be accepted and other changes need more work.
+</p>
+
+<p style="float: right; width: 12em; margin-right: 2em;">
+<em>There are several tools to help you maintain sets of patches.
+Find out more about them in the <a href="#nutsandbolts">Nuts and
+bolts</a> section of this tutorial below.</em>
+</p>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Do split up your patches into a series of small, easy to
+understand changes</strong>, and if your patches are unrelated to each
+other then put them in totally separate email threads.
+</p>
+
+<p>
+Unlike my other advice, there is something of an art to splitting up
+patches.  Perhaps the best way to understand it is to look at some
+beautiful examples of the art, and there is nowhere better to look
+than on the Linux kernel mailing list where the brightest and best
+programmers split conceptually complicated changes into simple series
+of patches.  Here are some examples:
+</p>
+
+<ul>
+<li> <a href="http://thread.gmane.org/gmane.linux.kernel/459789">Linux
+KVM (native virtualization feature) 13 part patchset by Avi Kivity et al.</a>
+</li>
+</ul>
+
+<!-- http://lwn.net/Kernel/Index/ -->
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Do make sure the code will compile and run after each patch
+is applied.</strong>
+</p>
+
+<p>
+This is important for a couple of reasons: Firstly programmers use a
+technique
+called <a href="http://www.kernel.org/pub/software/scm/git/docs/git-bisect.html">bisection</a>
+to find which patch in a series causes some bug to happen.  If
+individual patches in the series break things, then this breaks
+bisection too.  Secondly it makes it easier for upstream to apply some
+but not all of your patches, which is generally better than having
+them reject the whole lot.
+</p>
+
+<a name="cvs"><h2>Patch against the latest development version</h2></a>
+
+<p style="float: right; width: 12em; margin-right: 2em;">
+<em>Find links to documentation on the common
+version control systems in the <a href="#nutsandbolts">Nuts and
+bolts</a> section of this tutorial.</em>
+</p>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Work with the most recent development version</strong>
+and if the upstream has a public version control system (CVS, Subversion,
+Git or whatever) always use that and supply patches which cleanly
+apply against that.
+</p>
+
+<p>
+Upstream developers use the development version, and they will
+certainly need to apply your patch against the development version or
+to their version control system.  If it doesn't apply cleanly, then
+that is a lot more work for them, and remember they are probably
+volunteers and definitely short of time.
+</p>
+
+<p>
+Development versions can sometimes be quite different from the latest
+stable release, especially on projects which do rapid development.  So
+make sure you are always following the latest version and releasing
+your patches against it.
+</p>
+
+<p>
+Another thing to add here is that sometimes you will find yourself
+with patches which haven't been accepted by upstream yet.  Perhaps they
+just need more work or testing.  It's important to keep those
+up to date with the development version, and if necessary you
+should periodically release a new version of the patch and post
+that to the upstream mailing lists.  (This process is known as
+<a href="http://www.kernel.org/pub/software/scm/git/docs/git-rebase.html">rebasing
+the patch</a>).
+</p>
+
+<a name="tests"><h2>Run any tests</h2></a>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Run any tests that come with the project</strong> to
+make sure your patch doesn't break them.
+<strong>Test your patch thoroughly</strong> to make sure it
+really works.
+</p>
+
+<p>
+Again, testing is important <i>and</i> hard to do well.  It's not nice
+to push this task on to the upstream developers.  You should make sure
+that your patch works as advertized, and doesn't break any existing
+code.
+</p>
+
+<p>
+Many projects include automated tests.  You would typically do
+something like <code>make check</code> or <code>make test</code> to
+run them.
+</p>
+
+<a name="update_docs"><h2>Update documentation and tests</h2></a>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA3hJREFUWIXtl19oW2UYxn9N21iXxqQzdhNsm7F1UFeXXQmi0NjhHIW5DrToVdIrQRCZgwmiF3P2QtCtvVK8yRH8hxfqlDFF1OxmILohuDtl7VzLZpKu+deTNDnf93pxkrTFJCeVSb3oC4fznfO+vM9zvvc5D+fAJoaI4NpMAsAWgS0Cm0+go8W6ASBcWceB63eotqWI9AUC8sqxcTl59CkZCASWgEij2gf8fjkxGpYT4RHp9/ub1SIitDmAjwz398UvnjoFxQJtN2+RSS9x5NPPuJpIRIEP1oJPHDhgTB87ipRWILVIJpvl0LmvmTfNIHV2QkQcRxB+fnQUyefo/P4HXOk0AeDC3kHGzGXjt/wyFRKRidB+4+yRMbS5TNvlK0g2h0c0T/t9TJvmODBTD8BRhPe43bh+/wNXOl2752tv53woxLDHYwCxZx4aNs6MHUabJvLzL1iZDGVlUVYKpXXT/k4Efv3k0iWkWADsLdNao7RmWxt8se9BXg7tj545fAhtmujLVyrgirJSWErxUy4PthjrhpMGAGLPBYPR9/r7UBUCWgQlGq0F3e5C7x1EX5tF5fO1vBbNqzcW+HIpPQ0cr9e4FRHWSDzb2xud2bN7HYDS9llXzyKoSv61+QXOpTMGMNmo6UYIAMQmAoHoO7uC9tOL1AXWonl94SZfOYD/GwIAP7400B9+cXuPPY7a06+u302meD+1GAced2q20e+ByND2nvDko4+gd+7AqoisepSVwtKKCZ+XQbc7TBMDWhutEogM9fiNj58YpVtZlJLJitI1ZV1VvKasFF3AzP072OPuNFoh0coIIkN+n/HRwTBeoDA7h1Uo/EMDa69FhKxSHP8rybWyFWW9Y9aiJSse8vniH4YfwwuY1//EKhbXAZ/P5njSs61GQmRVEzmleSGRIqF0kAZW7DSCcGR3kG5lkZ+do2QW7Jlre8tP30owlUjNTSVSWFqjdDVn57tEOHh3F8B4IwBHDXiB4uJtSoVCDdhSijcTSS7klw1g17fLpvFW6nYlZzul0hqr8mo2C0cr/vzGPGplZVXxWjGVSPGNDV59zye/MwvG20uZGnCVxNVSGZpYcSsRG/F2y/TOXjl9370SusstQKxR7cPuTnnD1y0nvR7Z19EhwNlGjTdiRBEgWFnHgYt3olYcxvOfx9af0RaB/wWBvwE6SlaiRvidkgAAAABJRU5ErkJggg==" width="32" height="32" alt="Don't" align="left">
+<strong>Don't just add your feature to the code.</strong>
+</p>
+
+<p>
+If you just add the feature to the code, you're effectively
+asking upstream to update all the documentation, manual pages,
+web pages and so on, with documentation for your feature.
+Upstream may even need to add more automated tests to test
+your feature continues to work in future.
+</p>
+
+<p>
+Remember that upstream developers are often volunteers, and
+writing documentation in any case is <i>hard work</i>.
+</p>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Do update the documentation and add tests.</strong>
+</p>
+
+<p>
+Help the upstream developers by making a complete feature.  A complete
+feature includes all the necessary documentation so users will know
+about it.  It will include any automated tests so that we can be sure
+that future changes won't break the feature.
+</p>
+
+<a name="legal"><h2>Legal issues</h2></a>
+
+<p style="float: right; width: 12em; margin-right: 2em;">
+<em>Find out about the common free software licenses in
+the <a href="#nutsandbolts">Nuts and bolts</a> section of this
+tutorial.</em>
+</p>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Do understand the license and if necessary get permission
+from your employer.</strong>
+</p>
+
+<p>
+If you contribute during work time (or in some jurisdictions, if you
+are employed at all) then you may need to ask for permission from your
+employer before contributing significant changes to open source
+projects.
+</p>
+
+<p>
+Some projects need a <code>Signed-Off-By</code> added to the patch, or
+some other way to attribute the source of a patch back to a particular
+person.  Take a look to see if the upstream web pages or sources
+contain files describing how to contribute patches, and follow their
+advice.
+</p>
+
+<a name="lost_patches"><h2>Lost patches</h2></a>
+
+<p>
+If no one commented on your patch at all, or it was accepted but not
+actually added upstream, then after a suitable amount of time has
+passed you should bring up the subject again.
+</p>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA3hJREFUWIXtl19oW2UYxn9N21iXxqQzdhNsm7F1UFeXXQmi0NjhHIW5DrToVdIrQRCZgwmiF3P2QtCtvVK8yRH8hxfqlDFF1OxmILohuDtl7VzLZpKu+deTNDnf93pxkrTFJCeVSb3oC4fznfO+vM9zvvc5D+fAJoaI4NpMAsAWgS0Cm0+go8W6ASBcWceB63eotqWI9AUC8sqxcTl59CkZCASWgEij2gf8fjkxGpYT4RHp9/ub1SIitDmAjwz398UvnjoFxQJtN2+RSS9x5NPPuJpIRIEP1oJPHDhgTB87ipRWILVIJpvl0LmvmTfNIHV2QkQcRxB+fnQUyefo/P4HXOk0AeDC3kHGzGXjt/wyFRKRidB+4+yRMbS5TNvlK0g2h0c0T/t9TJvmODBTD8BRhPe43bh+/wNXOl2752tv53woxLDHYwCxZx4aNs6MHUabJvLzL1iZDGVlUVYKpXXT/k4Efv3k0iWkWADsLdNao7RmWxt8se9BXg7tj545fAhtmujLVyrgirJSWErxUy4PthjrhpMGAGLPBYPR9/r7UBUCWgQlGq0F3e5C7x1EX5tF5fO1vBbNqzcW+HIpPQ0cr9e4FRHWSDzb2xud2bN7HYDS9llXzyKoSv61+QXOpTMGMNmo6UYIAMQmAoHoO7uC9tOL1AXWonl94SZfOYD/GwIAP7400B9+cXuPPY7a06+u302meD+1GAced2q20e+ByND2nvDko4+gd+7AqoisepSVwtKKCZ+XQbc7TBMDWhutEogM9fiNj58YpVtZlJLJitI1ZV1VvKasFF3AzP072OPuNFoh0coIIkN+n/HRwTBeoDA7h1Uo/EMDa69FhKxSHP8rybWyFWW9Y9aiJSse8vniH4YfwwuY1//EKhbXAZ/P5njSs61GQmRVEzmleSGRIqF0kAZW7DSCcGR3kG5lkZ+do2QW7Jlre8tP30owlUjNTSVSWFqjdDVn57tEOHh3F8B4IwBHDXiB4uJtSoVCDdhSijcTSS7klw1g17fLpvFW6nYlZzul0hqr8mo2C0cr/vzGPGplZVXxWjGVSPGNDV59zye/MwvG20uZGnCVxNVSGZpYcSsRG/F2y/TOXjl9370SusstQKxR7cPuTnnD1y0nvR7Z19EhwNlGjTdiRBEgWFnHgYt3olYcxvOfx9af0RaB/wWBvwE6SlaiRvidkgAAAABJRU5ErkJggg==" width="32" height="32" alt="Don't" align="left">
+<strong>Don't just post exactly the same message.</strong>
+</p>
+
+<p>
+If no one commented on your patch the first time, then you need to
+rephrase your explanation of the patch, and make sure you didn't break
+one of the rules above.
+</p>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Do gently and infrequently remind upstream about your lost patch.</strong>
+</p>
+
+<a name="rejection"><h2>Accept rejection</h2></a>
+
+<p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAA1xJREFUWIXtlk9IHGcYh5/5ZrRLdmd3NqmyBlZNMDEBYQOxULDdKl5MPGhPUkqqJTkUqbWWQk9p01sPbVhaCZQ2bNpDaQP1T1OhoQna4FLGEt0iaYKGpBJvWdlo6vpnZ/ftwWgv2Y1pFr34g7nMzDfPMy/v+83ATnZS+HQDw0BoO+ChsooyOR09LcDEdggMnxs+J7bY0tjdKMBHWwlvD7eExRZbvr7/lQT6SsSoNAR4ZSvgPtNvJvvv9osttrxwrVZKBvfInrN+Ae4CvlwLVYEEzrS902btrdxL38yP3F6cJqtnUFUanpPuSiBSIM5jEzoQOiC22HI1fVUCv5WK91ePWL94ZfeQJc9f2i1FNYaQYyqMAghEeiI9AHxx53PmZQGlKwQQTZCMIFruxc8q0N7c3lx/tP4o4wvj/Dw3hDLUI6hARpH6dAln0okAf/5fSK4u9pl+M3kleUVssaX6r2pRY5oYv+tSHCsS17XnxOgwBIjme/iTmjBaVlE2AvQ/5tqZUx+eskzLZDAxyOzKLJquyBhZMnqW9GUH54ITB9584ivmiM/0m0lbbAm3hIW1LXY9G4037AxLza0aCUwGxBf3SfF4sWhfaus7Yc7xW0++CrQef+O4lZUsrb2teIPeCP91cqTzbCeLmUUu3r+IQuHRPXh0D67bLuR9eQB0APPPIvBu89vNzDvzrLpXafu2DZflGgC6G0401JfXlXMzdZOp1BQe3YOpm+xK7SL1XuoBD6lnk02n5zhfcfjlw580djaykFnAwcEsNXGVuKyZ2ExTV18XTpHDxD8TpEmjUGQfZpk6McXqndW3gMubgUPuMezY/9J+5pw5vLoXj+5BR6fu9TpKK0pZdi+TWEkgCKZuoqMT/yDO0q2lDuCbzcLzVSA+PTrd5A/6A7W1tShNoTSFhoZVbrGYXSQjGTRNQ2mKWE+Me5fuXQA+fhp4PoEV4PvJocmm4L5g4OCRg2sSKDRNw9AMFGtSN364wdhnYwPAa08LzyewIRH7KdYU3BcMVB+p3oCuH9e/u85A10AcaH10f0EFNiRGB0cPJWYShxpebdiowuzkLOdPnv87vZx+kU2MWyESPdZ+TEacEen9o1fcljvJNvz3RcMtYakKVeX8vG5FWrYTvpOdFDz/AqucSLeWBLo9AAAAAElFTkSuQmCC" width="32" height="32" alt="Do" align="left">
+<strong>Do accept that some changes will be rejected.</strong>
+Sometimes they just aren't right for the project, or
+the upstream developers don't want to maintain them.
+</p>
+
+<p>
+It's true that some changes won't be accepted by upstream.  There can
+be many reasons for this, but in well run projects it's usually
+because they don't fit in well with the overall goals of the project.
+Maybe editing graphics isn't the right feature for that small, fast
+word processor project.  Sometimes it happens for less noble reasons,
+but for whatever reason, you can't force upstream developers to take
+your patch.
+</p>
+
+<p>
+Nevertheless, open source software gives you a great deal
+more freedom, and if you really think that your patch is good
+enough for the project, you generally have two options:
+</p>
+
+<ol>
+<li> Maintain what are known as <q>out of tree</q> patches.
+</li><li> Fork the project.
+</li></ol>
+
+<h3>Out of tree patches</h3>
+
+<p>
+An out of tree patch is a patch that you host and continue to
+update, but which isn't an official part of the upstream project.
+</p>
+
+<p>
+Out of tree patches are very common in certain projects
+(notably the Linux kernel where there are probably thousands
+of them).
+</p>
+
+<p>
+However you must realise that there is a lot of work involved.
+Potentially any time upstream release a new version, it may break your
+patch, requiring you to rebase the patch (which can be a lot of work).
+In addition you may need to supply your users with multiple versions
+of the patch, one for each different upstream release.  This is why
+it's a good idea to work with upstream to get your patch in there if
+at all possible.  Even splitting your patch and getting parts of it
+upstream is usually a worthwhile goal.
+</p>
+
+<h3>Forking the project</h3>
+
+<p>
+The nuclear option when it comes to open source is to announce
+that you're going to fork the project.
+</p>
+
+<p>
+Forking the project means that you'll set up your own project and
+you'll be your own upstream.  You can then, of course, add any patches
+you like to your version.
+</p>
+
+<p>
+Forking the project can be a good idea, particularly where the
+current upstream is dead, unresponsive, or
+<a href="http://en.wikipedia.org/wiki/XFree86#Forks_of_XFree86">have
+by their own actions made themselves very unpopular with the other
+contributors</a>.  But check first to see if anyone else is interested
+in starting a new project.  It's better to band together instead of
+dividing developer attention between several similar projects.
+</p>
+
+<p>
+If you fork a project, then be prepared.  In particular,
+<strong>don't use the same or a similar name</strong> which
+could create confusion or even legal problems.
+<strong>Do be prepared to invest a large amount of work</strong>, at least as much effort
+as the original upstream (remember this rule if the project you are
+forking has hundreds of contributors).  <strong>Do have clear goals</strong>
+which are different from the original upstream.  And if possible
+<strong>fork amicably</strong>&nbsp;—&nbsp;it's possible that upstream
+will be happy for you to take the project in a different direction.
+</p>
+
+<p>
+Eric Raymond explains forking projects in terms of
+developer mindshare, which he calls the noosphere,
+<a href="http://www.catb.org/~esr/writings/cathedral-bazaar/homesteading/">in
+this essay</a>.
+</p>
+
+<a name="nutsandbolts"><h2>Nuts and bolts, and external resources</h2></a>
+
+<h3>Creating patches</h3>
+
+<p class="note">
+Note that if you are using a version control system, there are
+usually special commands provided to make patches.  See the
+next section below.
+</p>
+
+<p>
+To create a patch for a single file, <i>before</i> you start
+making any changes back up the original file:
+</p>
+
+<pre>cp file.c file.c.orig
+</pre>
+
+<p>
+Then you can edit the file, test your changes and so on.  When you
+are happy with the changes, make a patch like this:
+</p>
+
+<pre><strong>diff -u</strong> file.c.orig file.c &gt; my-excellent-feature.patch
+</pre>
+
+<p>
+Notes:
+</p>
+
+<ul>
+<li> Always use the unified diff format, <code>diff -u</code>.  Don't
+forget the <strong>-u</strong> option.
+</li><li> Always do <code>diff -u oldfile newfile</code> otherwise
+you'll end up with what is known as a <q>reversed patch</q>.
+</li></ul>
+
+<p>
+To create a patch across multiple files (eg. against some
+release of the software), unpack the software twice:
+</p>
+
+<pre>tar zxf foozball-1.0.tar.gz
+mv foozball-1.0 foozball-1.0.orig
+tar zxf foozball-1.0.tar.gz
+</pre>
+
+<p>
+This should create two directories like this:
+</p>
+
+<pre>$ ls
+foozball-1.0.orig/
+foozball-1.0/
+</pre>
+
+<p>
+Make your changes in the second directory (the one which isn't <q>.orig</q>).
+Then to create a patch, come back to the top and do:
+</p>
+
+<pre><strong>diff -ur</strong> foozball-1.0.orig foozball-1.0 &gt; four-players.patch
+</pre>
+
+<p>
+Read the manual page for the diff command for more options.
+</p>
+
+<h3>Version control systems</h3>
+
+<p>
+Most of the time you'll actually be using a version control system
+such as CVS, Subversion, git, Mercurial, etc.  These days there are
+many of them.  Mostly these have commands for generating patches
+automatically&nbsp;—&nbsp;you just check out the code, make any
+changes you want, and run a command and the software makes the patch
+for you.  The table below gives some common commands and links to
+further documentation.
+</p>
+
+<table class="left_table">
+<tbody><tr>
+<th> CVS </th>
+<td> <code>cvs diff -u</code> </td>
+<td> <a href="http://ximbiot.com/cvs/manual/">Manual</a> </td>
+</tr>
+<tr>
+<th> Subversion </th>
+<td> <code>svn diff</code> </td>
+<td> <a href="http://subversion.tigris.org/">Home page</a> </td>
+</tr>
+<tr>
+<th> Git </th>
+<td> <code>git format-patch</code> </td>
+<td> <a href="http://www.kernel.org/pub/software/scm/git/docs/git-format-patch.html">Manual page</a> </td>
+</tr>
+<tr>
+<th> Mercurial </th>
+<td> <code>hg diff</code> </td>
+<td> <a href="http://www.selenic.com/mercurial/">Home page</a> </td>
+</tr>
+<tr>
+<th> Bazaar (bzr) </th>
+<td> <code>bzr send</code> </td>
+<td> <a href="http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html#sending-changes">Manual page</a>, <a href="http://bazaar-vcs.org/">Home page</a> </td>
+</tr>
+</tbody></table>
+
+<h3>Tools for managing sets of patches</h3>
+
+<p>
+The main tool for managing sets of patches is called
+<a href="http://savannah.nongnu.org/projects/quilt">quilt</a>.
+There is
+<a href="http://www.coffeebreaks.org/blogs/wp-content/archives/talks/2005/quilt/quiltintro-s5.html">a good talk about quilt here</a>.
+</p>
+
+<p>
+Git has lightweight branches (a branch is a sequence of patches),
+<code><a href="http://www.kernel.org/pub/software/scm/git/docs/git-rebase.html">git&nbsp;rebase</a>&nbsp;--interactive&nbsp;...</code> to reorder/edit/merge/split change sets,
+<code><a href="http://www.kernel.org/pub/software/scm/git/docs/git-stash.html">git&nbsp;stash</a></code>, and much more.
+</p>
+
+<p>
+Mercurial has a
+<a href="http://hgbook.red-bean.com/hgbookch12.html"><q>queues</q></a>
+extension.
+</p>
+
+<h3>Software licenses</h3>
+
+<p>
+The most common licenses you will encounter are:
+</p>
+
+<ul>
+<li>
+the GNU General Public License (GPL)
+<a href="http://www.gnu.org/licenses/gpl-2.0.html">version 2</a>
+or
+<a href="http://www.gnu.org/licenses/gpl.html">version 3</a>,
+</li>
+<li>
+the GNU Lesser General Public License (LGPL)
+<a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">version 2</a>
+or
+<a href="http://www.gnu.org/licenses/lgpl.html">version 3</a>,
+</li>
+<li>
+and the <a href="http://en.wikipedia.org/wiki/BSD_Licenses">various BSD-style
+licenses</a>.
+</li>
+</ul>
+
+<p>
+For a fuller list see the Wikipedia page
+<a href="http://en.wikipedia.org/wiki/Comparison_of_free_software_licences">comparison of free software licenses</a>.
+</p>
+
+<h3>Other guidelines on submitting patches</h3>
+
+<p>
+The <a href="http://lwn.net/Articles/139918/">Linux kernel
+guidelines</a> are similar to what is in this tutorial, and are a
+must-read if you want to submit code back to the kernel.
+</p>
+
+<p>
+The <a href="http://git.savannah.gnu.org/gitweb/?p=coreutils.git;a=blob;f=HACKING;hb=HEAD">coreutils
+HACKING file</a> describes how to format and submit patches for the
+GNU coreutils project.  This goes into a lot of detail about using
+git for submitting patches.  (Thanks Jim Meyering).
+</p>
+
+<h2>Authors</h2>
+
+<p>
+Original written by <a href="http://people.redhat.com/~rjones/">Richard Jones</a>.
+With feedback from
+<a href="http://people.redhat.com/berrange/">Daniel Berrange</a>,
+<a href="http://veillard.com/">Daniel Veillard</a>,
+<a href="http://meyering.net/">Jim Meyering</a>, and
+Christophe Troestler.
+</p>
+
+<hr>
+
+<address><a href="http://people.redhat.com/~rjones/">rjones AT redhat DOT com</a></address>
+
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
