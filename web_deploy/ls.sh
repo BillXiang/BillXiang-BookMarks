@@ -55,7 +55,7 @@ html_head="<!DOCTYPE html>
               </tr>
               <tr>
                 <td>
-                  <iframe src="https://webchat.oftc.net/?channels=virt&uio=MT11bmRlZmluZWQb1" width="100%" height="400"></iframe>
+                  <iframe src=\"https://webchat.oftc.net/?channels=virt&uio=MT11bmRlZmluZWQb1\" width=\"100%\" height=\"400\"></iframe>
                 </td>
               </tr>
             </tbody>
