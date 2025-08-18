@@ -1,0 +1,1246 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/libvirt/contribute/devel@lists.libvirt.org (2025-08-18 17：31：20).html
+ Page saved with X-Webpage-Conserve 
+ url: https://www.mail-archive.com/devel@lists.libvirt.org/maillist.html
+ Summary: 
+-->
+<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>devel</title>
+	<link rel="stylesheet" href="main.css" media="screen">
+	<link rel="alternate" title="devel RSS" href="/devel@lists.libvirt.org/maillist.xml" type="application/rss+xml">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>body { margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); color: rgb(0, 0, 0); font-family: verdana, arial, sans-serif; }#logo { float: left; left: 184px; top: 0px; margin: 0px; padding: 0px; }#logo2 { position: absolute; left: 184px; top: 0px; }#logo-explain { position: absolute; left: 405px; top: 30px; font-size: 80%; }.fineprint { font-size: 70%; }#mainimage { float: left; left: 0px; top: 0px; width: 184px; height: 322px; background-repeat: no-repeat; z-index: 10; }#welcomepage #mainimage, #notfound #mainimage { background-image: url("../images/image-welcome.jpg"); }#container { background-repeat: repeat-x; margin-bottom: 2em; }#welcomepage #container, #notfound #container { background-image: url("../images/base-welcome.png"); }#container2 { background-repeat: no-repeat; background-position: 100% 0px; }#welcomepage #container2 { background-image: url("../images/right-welcome.jpg"); }#notfound #container2 { background-image: url("../images/right-404.jpg"); }#container2 h1 { position: absolute; left: 0px; top: 0px; color: rgb(0, 0, 0); margin: 0px; padding: 0px; width: 184px; z-index: 1; font-family: verdana, arial, sans-serif; }#msgcontainer { background-repeat: repeat-x; background-position: 100% 0px; min-width: 68em; font-family: monospace; }#msg #msgcontainer { background-image: url("../images/msg-no-logo.png"); background-color: rgb(232, 226, 219); }#thread #msgcontainer { background-image: url("../images/thread-no-logo.png"); background-color: rgb(224, 224, 227); }#cron #msgcontainer, #infopg #msgcontainer { background-image: url("../images/cron-no-logo.png"); background-color: rgb(214, 234, 230); }#msgcontainer h1 { color: rgb(180, 42, 0); font-weight: normal; margin: 0px; padding: 15px 0px 0px 20px; }.msgHead { color: rgb(0, 103, 146); }.msgBody { float: left; width: 75%; }#topLinks, #botLinks { margin: 0px; padding: 25px 0px 5px 20px; list-style-type: none; }#topLinks li, #botLinks li { display: inline; margin-right: 50px; font-family: verdana, arial, sans-serif; }#msgcontainer2 { background-repeat: repeat-x; background-color: rgb(255, 255, 255); margin-bottom: 2em; }#msg #msgcontainer2 { background-image: url("../images/msg-top2.png"); height: 5px; min-width: 68em; font-family: monospace; }#thread #msgcontainer2 { background-image: url("../images/thread-top2.png"); font-size: 80%; }#cron #msgcontainer2, #infopg #msgcontainer2 { background-image: url("../images/cron-top2.png"); font-size: 80%; }#corner2 { float: left; width: 48px; height: 232px; }#msg #corner2 { background-image: url("../images/msg-left.jpg"); }#thread #corner2 { background-image: url("../images/thread-left.jpg"); }#cron #corner2, #infopg #corner2 { background-image: url("../images/cron-left.jpg"); }#msgcontent, #indexcontent { margin: 0px 16px 0px 48px; }#msgcontent h1, #msgcontent h2 { margin: 0px; padding: 1em 0px 0px; font-size: 140%; }#indexcontent h2 { margin: 0px; padding: 1em 0px 0px; }#indexcontent li { list-style: none; }#indexcontent a:visited { color: rgb(0, 0, 0); }.tSliceList { clear: left; margin: 2em 0px; padding: 1em; background-color: rgb(233, 225, 212); font-size: 90%; font-family: verdana, arial, sans-serif; }.tSliceList ul { margin-left: 0px; padding-left: 2em; list-style-type: none; }.tSliceCur .subject { color: rgb(206, 150, 132); }.sliceCur .subject { color: rgb(206, 150, 132); }#adbox { float: right; width: 160px; background-color: rgb(255, 255, 255); padding: 0px 0px 20px 20px; margin-top: 10px; }a#mail-archive-logo { float: right; display: block; width: 178px; height: 23px; margin-top: 16px; margin-right: 32px; background-image: url("../images/mail-archive.png"); background-repeat: no-repeat; }#msgcontainer > a#mail-archive-logo { margin-right: 65px; }form { margin: 0px; padding: 0px; }dt { font-weight: bold; margin: 1em 0px; }dd { margin-left: 0px; padding-left: 0px; }#content { margin: 0px 170px 0px 184px; padding-top: 155px; line-height: 140%; }h2, h3, h4, h5, h6 { color: rgb(0, 103, 146); margin-top: 0px; }h2 { font-size: 140%; }h3 { font-size: 120%; }h4, h5, h6 { font-size: 100%; }p { margin-top: 0px; }#cron #listlink, #cron #listlink a:link, #cron #listlink a:visited, #thread #listlink, #thread #listlink a:link, #thread #listlink a:visited, #msg #listlink, #msg #listlink a:link, #msg #listlink a:visited { color: rgb(180, 42, 0); text-decoration: underline; background-color: transparent; }#listlink, #listlink a:link, #listlink a:visited { color: rgb(180, 42, 0); text-decoration: none; background-color: transparent; }#msglink a:visited, #msglist a:visited { color: rgb(0, 0, 0); }a:link { color: rgb(0, 103, 146); }a:hover, a:active, a:visited { color: rgb(0, 0, 0); }hr { color: rgb(205, 150, 133); background: rgb(255, 255, 255); border: 0px; height: 2px; }.subject { font-weight: bold; padding-right: 10px; }.date { color: rgb(136, 136, 136); padding-right: 10px; }.date a:link, .date a:visited, .date a:hover, .date a:active { text-decoration: none; }.sender { font-style: italic; }.subtle { color: rgb(136, 136, 136); padding-left: 10px; font-size: 80%; }.infoheader { font-weight: bold; float: left; width: 15em; }.infobody { float: left; width: 40em; }.infoclr { clear: both; }.info { margin-bottom: 40px; }</style></head>
+<body id="cron">
+<div id="msgcontainer">
+	<a id="mail-archive-logo" href="/"></a>
+<h1>
+	<span id="listlink"><a href="info.html">devel</a></span> &nbsp;
+</h1>
+	<form action="/search" method="get">
+		<ul id="topLinks">
+			<li><span class="threadlink"><a href="index.html" title="Messages by Thread" accesskey="c">Thread</a></span></li>
+			<li><span class="chronologicallink">Date </span></li>
+			<li>
+				<label>
+<input type="text" name="q" value="" size="25">
+<input type="hidden" name="l" value="devel@lists.libvirt.org">
+<input type="submit" value="Search">
+</label>
+			</li>
+			<li><span class="nextpglink"><a href="mail2.html" accesskey="p">Earlier messages</a></span></li>
+			<li> </li>
+		</ul>
+	</form>
+</div>
+<div id="msgcontainer2">
+	<div id="corner1"></div>
+	<div id="corner2"></div>
+	<div id="indexcontent">
+		<h2>
+			Messages by Date
+		</h2>
+		<ul class="msglink">
+<li> 
+<span class="date">2025/08/18</span> 
+<span class="subject"><a name="11801" href="msg11801.html">[PATCH v4 3/3] NEWS: ch: announce log_level config option</a></span> 
+<span class="sender">Stefan Kober</span>
+</li><li> 
+<span class="date">2025/08/18</span> 
+<span class="subject"><a name="11800" href="msg11800.html">[PATCH v4 1/3] ch: Add config file support</a></span> 
+<span class="sender">Stefan Kober</span>
+</li><li> 
+<span class="date">2025/08/18</span> 
+<span class="subject"><a name="11799" href="msg11799.html">[PATCH v4 2/3] ch: add log level configuration option</a></span> 
+<span class="sender">Stefan Kober</span>
+</li><li> 
+<span class="date">2025/08/18</span> 
+<span class="subject"><a name="11798" href="msg11798.html">[PATCH v4 0/3] CH: Add support for a configuration file and log level configuration</a></span> 
+<span class="sender">Stefan Kober</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11797" href="msg11797.html">[RFC PATCH 5/5] qemu: Update Cgroup, namespace, and seclabel for qemu to access iommufd paths</a></span> 
+<span class="sender">Nathan Chen via Devel</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11796" href="msg11796.html">[RFC PATCH 4/5] qemu: open iommufd FDs from libvirt backend</a></span> 
+<span class="sender">Nathan Chen via Devel</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11795" href="msg11795.html">[RFC PATCH 2/5] conf: Support multiple smmuv3Dev IOMMU devices</a></span> 
+<span class="sender">Nathan Chen via Devel</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11794" href="msg11794.html">[RFC PATCH 3/5] qemu: Implement support for associating iommufd to hostdev</a></span> 
+<span class="sender">Nathan Chen via Devel</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11793" href="msg11793.html">[RFC PATCH 1/5] qemu: add IOMMU model smmuv3Dev</a></span> 
+<span class="sender">Nathan Chen via Devel</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11792" href="msg11792.html">[RFC PATCH 0/5] cover letter: qemu: Implement support for iommufd and multiple vSMMUs</a></span> 
+<span class="sender">Nathan Chen via Devel</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11791" href="msg11791.html">Re: [PATCH 2/5] tests: Add firmware-auto-efi-sev-snp</a></span> 
+<span class="sender">Jim Fehlig via Devel</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11790" href="msg11790.html">Re: [PATCH v3 0/2] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/14</span> 
+<span class="subject"><a name="11789" href="msg11789.html">Re: [PATCH v3 0/2] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/08/13</span> 
+<span class="subject"><a name="11788" href="msg11788.html">Re: [PATCH v2 18/24] qapi/migration: Deprecate capabilities commands</a></span> 
+<span class="sender">Peter Xu via Devel</span>
+</li><li> 
+<span class="date">2025/08/13</span> 
+<span class="subject"><a name="11787" href="msg11787.html">[PATCH 2/2] docs: add network driver documentation</a></span> 
+<span class="sender">Roman Bogorodskiy</span>
+</li><li> 
+<span class="date">2025/08/13</span> 
+<span class="subject"><a name="11786" href="msg11786.html">[PATCH 1/2] network: bridge_driver: add BSD implementation</a></span> 
+<span class="sender">Roman Bogorodskiy</span>
+</li><li> 
+<span class="date">2025/08/13</span> 
+<span class="subject"><a name="11785" href="msg11785.html">Re: [PATCH 2/5] tests: Add firmware-auto-efi-sev-snp</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/13</span> 
+<span class="subject"><a name="11784" href="msg11784.html">Re: [PATCH] qemuxmlconftest: Paper over test failure at MacOS</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/08/13</span> 
+<span class="subject"><a name="11783" href="msg11783.html">[PATCH] qemuxmlconftest: Paper over test failure at MacOS</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/08/13</span> 
+<span class="subject"><a name="11782" href="msg11782.html">Re: [PATCH] docs: storage: fix the "since" tag</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/08/13</span> 
+<span class="subject"><a name="11781" href="msg11781.html">Re: [PATCH 0/1] cpu_map: fix vmx-* features wrong bitmaps</a></span> 
+<span class="sender">hector . cao</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11780" href="msg11780.html">Re: [PATCH 2/5] tests: Add firmware-auto-efi-sev-snp</a></span> 
+<span class="sender">Jim Fehlig via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11779" href="msg11779.html">[PATCH] docs: storage: fix the "since" tag</a></span> 
+<span class="sender">Roman Bogorodskiy</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11778" href="msg11778.html">Re: [PATCH v2 0/4] bhyve: implement domain{Block,Interface,Memory}Stats</a></span> 
+<span class="sender">Roman Bogorodskiy</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11777" href="msg11777.html">Re: [PATCH] docs: kbase/tlscerts: mention dropped 'encryption_key'</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11776" href="msg11776.html">[PATCH v3 2/2] tests/qemuxmlconfdata: add tests for video model 'edid' attribute</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11775" href="msg11775.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Hector Cao</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11774" href="msg11774.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11773" href="msg11773.html">Re: [PATCHv2] passt: Define backend hostname and fqdn</a></span> 
+<span class="sender">Laine Stump via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11772" href="msg11772.html">Re: [PATCH] docs: kbase/tlscerts: mention dropped 'encryption_key'</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11771" href="msg11771.html">[PATCH 1/4] qemu: introduce mshv capabilities</a></span> 
+<span class="sender">Praveen K Paladugu</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11770" href="msg11770.html">[PATCH v3 1/2] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11769" href="msg11769.html">Re: [PATCH v2 1/2] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11768" href="msg11768.html">Re: [PATCH] docs: kbase/tlscerts: mention dropped 'encryption_key'</a></span> 
+<span class="sender">Sebastian Mitterle via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11767" href="msg11767.html">[PATCH v5 0/6] qemu: acpi-generic-initiator support</a></span> 
+<span class="sender">Andrea Righi via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11766" href="msg11766.html">Re: [PATCH v2 2/2] tests/qemuxmlconfdata: add tests for video model 'edid' attribute</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11765" href="msg11765.html">[PATCH 5/6] qemu: Support acpi-generic-initiator</a></span> 
+<span class="sender">Andrea Righi via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11764" href="msg11764.html">[PATCH v1 1/2] docs/tlscerts: document need for socket activation</a></span> 
+<span class="sender">Sebastian Mitterle via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11763" href="msg11763.html">[PATCH 4/6] qemu_validate: Validate acpi-generic-initiator</a></span> 
+<span class="sender">Andrea Righi via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11762" href="msg11762.html">Re: [PATCH] qemu: don't warn about missing SMM for CVM firmware</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11761" href="msg11761.html">[PATCH 3/6] qemu: capabilies: Introduce QEMU_CAPS_ACPI_GENERIC_INITIATOR</a></span> 
+<span class="sender">Andrea Righi via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11760" href="msg11760.html">Re: [PATCH] qemu: don't warn about missing SMM for CVM firmware</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11759" href="msg11759.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Gerd Hoffmann via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11758" href="msg11758.html">[PATCH 3/4] qemu: use mshv accel for hyperv domains</a></span> 
+<span class="sender">Praveen K Paladugu</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11757" href="msg11757.html">[PATCH 6/6] NEWS: Mention new acpi-generic-initiator device</a></span> 
+<span class="sender">Andrea Righi via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11756" href="msg11756.html">Re: [PATCH] Storage: ZFS: implement `resizeVol` method to support native resize</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11755" href="msg11755.html">Re: [PATCH 0/5] Cleanup of callers of virDomainDefGetVcpu</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11754" href="msg11754.html">Re: [PATCH v2 2/2] tests/qemuxmlconfdata: add tests for video model 'edid' attribute</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11753" href="msg11753.html">Re: [PATCH 1/5] tests: Tweak descriptor for combined firmware</a></span> 
+<span class="sender">Jim Fehlig via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11752" href="msg11752.html">[PATCH 2/4] qemu: probe mshv capabilities</a></span> 
+<span class="sender">Praveen K Paladugu</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11751" href="msg11751.html">[PATCH 1/6] conf: Introduce acpi-generic-initiator device</a></span> 
+<span class="sender">Andrea Righi via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11750" href="msg11750.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11749" href="msg11749.html">Re: [PATCH v2 1/2] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11748" href="msg11748.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Jim Fehlig via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11747" href="msg11747.html">Re: [PATCH] qemu: don't warn about missing SMM for CVM firmware</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11746" href="msg11746.html">[PATCH v1 0/2] docs/tlscerts: minor improvements for TLS setup</a></span> 
+<span class="sender">Sebastian Mitterle via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11745" href="msg11745.html">[PATCH v1 2/2] docs/tlscerts: mention dropped 'encryption_key'</a></span> 
+<span class="sender">Sebastian Mitterle via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11744" href="msg11744.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Gerd Hoffmann via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11743" href="msg11743.html">[PATCH v3 0/2] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11742" href="msg11742.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11741" href="msg11741.html">[PATCH 0/4] Enable mshv support for Qemu domains</a></span> 
+<span class="sender">Praveen K Paladugu</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11740" href="msg11740.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11739" href="msg11739.html">Re: [PATCH 0/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11738" href="msg11738.html">Re: [PATCH] qemu: don't warn about missing SMM for CVM firmware</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11737" href="msg11737.html">Re: [PATCH 3/5] qemu: domain: Remove unused qemuDomainGetVcpuHalted</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11736" href="msg11736.html">[PATCH 4/4] qemu_cgroup: add /dev/mshv to default devices</a></span> 
+<span class="sender">Praveen K Paladugu</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11735" href="msg11735.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/12</span> 
+<span class="subject"><a name="11734" href="msg11734.html">[PATCH 2/6] qemu: Allow to define NUMA nodes without memory or CPUs assigned</a></span> 
+<span class="sender">Andrea Righi via Devel</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11733" href="msg11733.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Jim Fehlig via Devel</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11732" href="msg11732.html">[PATCH] docs: kbase/tlscerts: mention dropped 'encryption_key'</a></span> 
+<span class="sender">Sebastian Mitterle via Devel</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11731" href="msg11731.html">[PATCH v2 2/2] tests/qemuxmlconfdata: add tests for video model 'edid' attribute</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11730" href="msg11730.html">[PATCH v2 1/2] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11729" href="msg11729.html">[PATCH v2 0/2] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11728" href="msg11728.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11727" href="msg11727.html">Re: [PATCH] ci: regenerate with 'lcitool manifest'</a></span> 
+<span class="sender">Pavel Hrdina via Devel</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11726" href="msg11726.html">[PATCH] ci: regenerate with 'lcitool manifest'</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11725" href="msg11725.html">Re: [PATCH v2 0/2] Introduce hardware UUID (hwuuid) element</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/04</span> 
+<span class="subject"><a name="11724" href="msg11724.html">[PATCH] bhyve: autofill NVRAM data for firmware='efi'</a></span> 
+<span class="sender">Roman Bogorodskiy</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11723" href="msg11723.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Jim Fehlig via Devel</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11722" href="msg11722.html">Re: [PATCH v2 0/2] Introduce hardware UUID (hwuuid) element</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11721" href="msg11721.html">[PATCH 2/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11720" href="msg11720.html">[PATCH 1/2] qemuxml2argvmock: Pretend FW blobs are always present</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11719" href="msg11719.html">[PATCH 0/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11718" href="msg11718.html">Re: [PATCH v2 0/2] Introduce hardware UUID (hwuuid) element</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11717" href="msg11717.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11716" href="msg11716.html">Release of libvirt-11.6.0</a></span> 
+<span class="sender">Jiri Denemark via Devel</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11715" href="msg11715.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/08/01</span> 
+<span class="subject"><a name="11714" href="msg11714.html">Re: [PATCH] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11713" href="msg11713.html">[PATCH] qemu: don't warn about missing SMM for CVM firmware</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11712" href="msg11712.html">Re: [PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Jim Fehlig via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11711" href="msg11711.html">Re: [PATCH] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11710" href="msg11710.html">Re: [PATCH] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11709" href="msg11709.html">Re: [PATCH] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11708" href="msg11708.html">Re: [PATCH] NEWS: Mention RBD namespaces, and auto-shutdown/key encipherment fixes</a></span> 
+<span class="sender">Jiri Denemark via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11707" href="msg11707.html">Re: Question about SEV* guests and automatic firmware selection</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11706" href="msg11706.html">[PATCH 5/5] news: Update for firmware selection fixes</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11705" href="msg11705.html">[PATCH 4/5] qemu: Fix matching for read/write firmware</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11704" href="msg11704.html">[PATCH 3/5] qemu: Fix matching for stateless/combined firmware</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11703" href="msg11703.html">[PATCH 2/5] tests: Add firmware-auto-efi-sev-snp</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11702" href="msg11702.html">[PATCH 1/5] tests: Tweak descriptor for combined firmware</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11701" href="msg11701.html">[PATCH 0/5] qemu: Fixes to firmware selection</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11700" href="msg11700.html">[PATCH 5/5] virCHDomainRefreshThreadInfo: Remove illusion that caller cares about return value</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11699" href="msg11699.html">[PATCH 4/5] virCHDomainRefreshThreadInfo: Don't trust vcpu ID returned by hypervisor</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11698" href="msg11698.html">[PATCH 3/5] qemu: domain: Remove unused qemuDomainGetVcpuHalted</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11697" href="msg11697.html">[PATCH 2/5] virDomainVcpuDefPostParse: Remove impossible check</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11696" href="msg11696.html">[PATCH 1/5] Unexport virCHProcessSetupVcpu</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11695" href="msg11695.html">[PATCH 0/5] Cleanup of callers of virDomainDefGetVcpu</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11694" href="msg11694.html">[PATCH] NEWS: Mention RBD namespaces, and auto-shutdown/key encipherment fixes</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11693" href="msg11693.html">Re: [PATCH] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11692" href="msg11692.html">Re: [PATCH] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11691" href="msg11691.html">Re: [PATCH v4 20/23] qemu: Bypass sending VIR_DOMAIN_EVENT_RESUMED event when TD VM reboot</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/31</span> 
+<span class="subject"><a name="11690" href="msg11690.html">[PATCH] conf: add support for 'edid' attribute to video model</a></span> 
+<span class="sender">Mark Cave-Ayland</span>
+</li><li> 
+<span class="date">2025/07/30</span> 
+<span class="subject"><a name="11689" href="msg11689.html">RE: [PATCH v4 20/23] qemu: Bypass sending VIR_DOMAIN_EVENT_RESUMED event when TD VM reboot</a></span> 
+<span class="sender">Duan, Zhenzhong</span>
+</li><li> 
+<span class="date">2025/07/30</span> 
+<span class="subject"><a name="11688" href="msg11688.html">Re: [PATCH] news: document fixed nwfilter driver base chain creation</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/07/30</span> 
+<span class="subject"><a name="11687" href="msg11687.html">Re: [PATCH] NEWS: Document features/improvements/bug fixes I've participated in</a></span> 
+<span class="sender">Jiri Denemark via Devel</span>
+</li><li> 
+<span class="date">2025/07/30</span> 
+<span class="subject"><a name="11686" href="msg11686.html">[PATCH] NEWS: Document features/improvements/bug fixes I've participated in</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/30</span> 
+<span class="subject"><a name="11685" href="msg11685.html">Re: [PATCH] NEWS: document bhyve changes for the release</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/30</span> 
+<span class="subject"><a name="11684" href="msg11684.html">Re: Question about SEV* guests and automatic firmware selection</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/30</span> 
+<span class="subject"><a name="11683" href="msg11683.html">Re: [PATCH] NEWS: document bhyve changes for the release</a></span> 
+<span class="sender">Roman Bogorodskiy</span>
+</li><li> 
+<span class="date">2025/07/30</span> 
+<span class="subject"><a name="11682" href="msg11682.html">libvirt-11.6.0 release candidate 2</a></span> 
+<span class="sender">Jiri Denemark via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11681" href="msg11681.html">Re: Question about SEV* guests and automatic firmware selection</a></span> 
+<span class="sender">Jim Fehlig via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11680" href="msg11680.html">Re: [PATCH 0/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">Michal Prívozník via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11679" href="msg11679.html">Re: [PATCH 0/2] Revert recent patches causing test dependance on host state</a></span> 
+<span class="sender">Pavel Hrdina via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11678" href="msg11678.html">Re: [PATCH 0/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11677" href="msg11677.html">[PATCH 2/2] Revert "qemu: Match firmware with fully resolved and canonicalized paths"</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11676" href="msg11676.html">[PATCH 1/2] Revert "qemuxmlconfdata: Regenerate outputs after last commit"</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11675" href="msg11675.html">[PATCH 0/2] Revert recent patches causing test dependance on host state</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11674" href="msg11674.html">Re: [PATCH 0/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11673" href="msg11673.html">[PATCH pushed] qemuxmlconfdata: Regenerate outputs after last commit</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/29</span> 
+<span class="subject"><a name="11672" href="msg11672.html">Re: [PATCH 0/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">Michal Prívozník via Devel</span>
+</li><li> 
+<span class="date">2025/07/28</span> 
+<span class="subject"><a name="11671" href="msg11671.html">Re: [PATCH] include: fix version for VIR_CONNECT_BASELINE_CPU_IGNORE_HOST</a></span> 
+<span class="sender">Jiri Denemark via Devel</span>
+</li><li> 
+<span class="date">2025/07/28</span> 
+<span class="subject"><a name="11670" href="msg11670.html">Re: [PATCH] NEWS: Mention zero discard_granularity option</a></span> 
+<span class="sender">Pavel Hrdina via Devel</span>
+</li><li> 
+<span class="date">2025/07/28</span> 
+<span class="subject"><a name="11669" href="msg11669.html">[PATCH] include: fix version for VIR_CONNECT_BASELINE_CPU_IGNORE_HOST</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/28</span> 
+<span class="subject"><a name="11668" href="msg11668.html">Re: [PATCH] include: s/RECREATION/RECREATED/ in domain event names</a></span> 
+<span class="sender">Martin Kletzander via Devel</span>
+</li><li> 
+<span class="date">2025/07/28</span> 
+<span class="subject"><a name="11667" href="msg11667.html">[PATCH] NEWS: Mention zero discard_granularity option</a></span> 
+<span class="sender">Martin Kletzander via Devel</span>
+</li><li> 
+<span class="date">2025/07/28</span> 
+<span class="subject"><a name="11666" href="msg11666.html">Re: Entering freeze for libvirt-11.6.0</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/28</span> 
+<span class="subject"><a name="11665" href="msg11665.html">[PATCH] include: s/RECREATION/RECREATED/ in domain event names</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/28</span> 
+<span class="subject"><a name="11664" href="msg11664.html">Entering freeze for libvirt-11.6.0</a></span> 
+<span class="sender">Jiri Denemark via Devel</span>
+</li><li> 
+<span class="date">2025/07/27</span> 
+<span class="subject"><a name="11663" href="msg11663.html">Re: [RFC 0/4] Implement automatic attachment of the vhostuser port</a></span> 
+<span class="sender">Yong Huang</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11662" href="msg11662.html">Re: [PATCH v6 2/3] domain_addr: Fix virtio console port autoassign on virtio-serial bus</a></span> 
+<span class="sender">Aaron Brown</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11661" href="msg11661.html">[PATCH] NEWS: document bhyve changes for the release</a></span> 
+<span class="sender">Roman Bogorodskiy</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11660" href="msg11660.html">Re: [PATCH v5 0/5] Disable Deprecated Features by Default on s390 CPU Models</a></span> 
+<span class="sender">Collin Walling</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11659" href="msg11659.html">Re: [PATCH v5 0/5] Disable Deprecated Features by Default on s390 CPU Models</a></span> 
+<span class="sender">Jiri Denemark via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11658" href="msg11658.html">Re: [PATCH] NEWS: mention disabling deprecated features by default on s390 CPU models</a></span> 
+<span class="sender">Jiri Denemark via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11657" href="msg11657.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11656" href="msg11656.html">Re: Clarification Needed: virsh snapshot-delete Behavior with External Snapshots (--disk-only)</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11655" href="msg11655.html">Re: [PATCH v6 2/3] domain_addr: Fix virtio console port autoassign on virtio-serial bus</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11654" href="msg11654.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11653" href="msg11653.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Hector Cao</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11652" href="msg11652.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11651" href="msg11651.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Andrea Bolognani via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11650" href="msg11650.html">Re: [PATCH v4 00/23] LIBVIRT: X86: TDX support</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11649" href="msg11649.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11648" href="msg11648.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Hector Cao</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11647" href="msg11647.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Daniel P . Berrangé via Devel</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11646" href="msg11646.html">[PATCH 0/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">James Le Cuirot</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11645" href="msg11645.html">[PATCH 2/2] qemu: Match firmware with fully resolved and canonicalized paths</a></span> 
+<span class="sender">James Le Cuirot</span>
+</li><li> 
+<span class="date">2025/07/25</span> 
+<span class="subject"><a name="11644" href="msg11644.html">[PATCH 1/2] util: Fully resolve paths with virFileComparePaths</a></span> 
+<span class="sender">James Le Cuirot</span>
+</li><li> 
+<span class="date">2025/07/24</span> 
+<span class="subject"><a name="11643" href="msg11643.html">شهادة الأبوة في المغرب</a></span> 
+<span class="sender">walid falcon</span>
+</li><li> 
+<span class="date">2025/07/24</span> 
+<span class="subject"><a name="11642" href="msg11642.html">Re: [PATCH v5 0/5] Disable Deprecated Features by Default on s390 CPU Models</a></span> 
+<span class="sender">Collin Walling</span>
+</li><li> 
+<span class="date">2025/07/24</span> 
+<span class="subject"><a name="11641" href="msg11641.html">[PATCH] NEWS: mention disabling deprecated features by default on s390 CPU models</a></span> 
+<span class="sender">Collin Walling</span>
+</li><li> 
+<span class="date">2025/07/24</span> 
+<span class="subject"><a name="11640" href="msg11640.html">[PATCH] Storage: ZFS: implement `resizeVol` method to support native resize</a></span> 
+<span class="sender">George Melikov</span>
+</li><li> 
+<span class="date">2025/07/24</span> 
+<span class="subject"><a name="11639" href="msg11639.html">Re: [PATCH v6 2/3] domain_addr: Fix virtio console port autoassign on virtio-serial bus</a></span> 
+<span class="sender">Aaron Brown</span>
+</li><li> 
+<span class="date">2025/07/24</span> 
+<span class="subject"><a name="11638" href="msg11638.html">Re: [PATCH v6 2/3] domain_addr: Fix virtio console port autoassign on virtio-serial bus</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/24</span> 
+<span class="subject"><a name="11637" href="msg11637.html">Re: [PATCH v6 1/3] tests: Add console-virtio-vioserial tests</a></span> 
+<span class="sender">Peter Krempa via Devel</span>
+</li><li> 
+<span class="date">2025/07/24</span> 
+<span class="subject"><a name="11636" href="msg11636.html">Re: [PATCH v5 0/5] Disable Deprecated Features by Default on s390 CPU Models</a></span> 
+<span class="sender">Thomas Huth via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11635" href="msg11635.html">Re: [PATCH v1] virBitmapNextClearBit: Correct virBitmapNextClearBit function header comment</a></span> 
+<span class="sender">Aaron Brown</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11634" href="msg11634.html">Re: [RFC] x86 Host CPU features detection by MSRs</a></span> 
+<span class="sender">Hector Cao</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11633" href="msg11633.html">Re: [PATCH 0/2] virnetdevvportprofile: Misc cleanups</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11632" href="msg11632.html">Re: [PATCH 0/5] secdriver: Misc cleanups</a></span> 
+<span class="sender">Ján Tomko via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11631" href="msg11631.html">[PATCH 1/2] virnetdevvportprofile: Drop explicit enum virNetDevVPortProfile declaration</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11630" href="msg11630.html">[PATCH 2/2] virnetdevvportprofile: Turn 'virtPortType' of virNetDevVPortProfile into proper enum type</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11629" href="msg11629.html">[PATCH 0/2] virnetdevvportprofile: Misc cleanups</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11628" href="msg11628.html">[PATCH 4/5] security_apparmor: Drop needless checks for seclabel-&gt;model == "apparmor"</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11627" href="msg11627.html">[PATCH 5/5] security_dac: Drop needles typecast in virSecurityDACGenLabel()</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11626" href="msg11626.html">[PATCH 2/5] security_selinux: Drop needless checks for seclabel-&gt;model == "selinux"</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11625" href="msg11625.html">[PATCH 1/5] security: Drop some G_GNUC_UNUSED attributes</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11624" href="msg11624.html">[PATCH 3/5] security_dac: Drop needless checks for seclabel-&gt;model == "dac"</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11623" href="msg11623.html">[PATCH 0/5] secdriver: Misc cleanups</a></span> 
+<span class="sender">Michal Privoznik via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11622" href="msg11622.html">Re: [PATCH v2 2/4] util: virSecretLookupParseSecret refactor</a></span> 
+<span class="sender">Michal Prívozník via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11621" href="msg11621.html">Re: [PATCH v2 1/4] conf: virNetDevVPortProfileParse refactor</a></span> 
+<span class="sender">Michal Prívozník via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11620" href="msg11620.html">Re: [PATCH v2 0/4] Some parsing functions refactor</a></span> 
+<span class="sender">Michal Prívozník via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11619" href="msg11619.html">Re: libvirt-gitlab-executor - maintainer?</a></span> 
+<span class="sender">Erik Skultety via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11618" href="msg11618.html">Re: [PATCH 0/4] qemu: add support for RBD namespace</a></span> 
+<span class="sender">Michal Prívozník via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11617" href="msg11617.html">[RFC PATCH 8/8] tests: Add qemuxmlconftest for ACPI EGM memory device</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11616" href="msg11616.html">[RFC PATCH 7/8] docs: Document ACPI EGM memory device</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11615" href="msg11615.html">[RFC PATCH 6/8] qemu: Add cgroup and namespace setup for ACPI EGM memory device</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11614" href="msg11614.html">[RFC PATCH 5/8] qemu: Add command line generation for ACPI EGM memory device</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11613" href="msg11613.html">[RFC PATCH 4/8] qemu: Add validation for ACPI EGM memory device configuration</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11612" href="msg11612.html">[RFC PATCH 2/8] conf: Add definitions and XML parsing for ACPI EGM memory device</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11611" href="msg11611.html">[RFC PATCH 3/8] qemu: Add capability detection for ACPI EGM memory device</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11610" href="msg11610.html">[RFC PATCH 1/8] conf: Add schema definition for ACPI EGM memory device</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11609" href="msg11609.html">[RFC PATCH 0/8] Add support for Grace ACPI Extended GPU Memory (EGM) devices</a></span> 
+<span class="sender">Ian May via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11608" href="msg11608.html">Clarification Needed: virsh snapshot-delete Behavior with External Snapshots (--disk-only)</a></span> 
+<span class="sender">P, Rajasekar via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11607" href="msg11607.html">Re: libvirt-gitlab-executor - maintainer?</a></span> 
+<span class="sender">Michal Prívozník via Devel</span>
+</li><li> 
+<span class="date">2025/07/23</span> 
+<span class="subject"><a name="11606" href="msg11606.html">Re: [PATCH v1] virBitmapNextClearBit: Correct virBitmapNextClearBit function header comment</a></span> 
+<span class="sender">Michal Prívozník via Devel</span>
+</li><li> 
+<span class="date">2025/07/22</span> 
+<span class="subject"><a name="11605" href="msg11605.html">Re: libvirt-gitlab-executor - maintainer?</a></span> 
+<span class="sender">Kristina Hanicova via Devel</span>
+</li><li> 
+<span class="date">2025/07/22</span> 
+<span class="subject"><a name="11604" href="msg11604.html">Re: [PATCH v2 1/1] docs : add doc on cpu model and features</a></span> 
+<span class="sender">hector . cao</span>
+</li><li> 
+<span class="date">2025/07/22</span> 
+<span class="subject"><a name="11603" href="msg11603.html">[PATCH v1] virBitmapNextClearBit: Correct virBitmapNextClearBit function header comment</a></span> 
+<span class="sender">Aaron M. Brown</span>
+</li><li> 
+<span class="date">2025/07/22</span> 
+<span class="subject"><a name="11602" href="msg11602.html">[PATCH v6 1/3] tests: Add console-virtio-vioserial tests</a></span> 
+<span class="sender">Aaron M. Brown</span>
+		</li></ul>
+		<ul id="botLinks">
+		<li><span class="nextpglink"><a href="mail2.html" accesskey="p">Earlier messages</a></span></li>
+		<li> </li>
+		</ul>
+	</div>
+</div>
+
+<!-- These extra divs/spans may be used as catch-alls to add extra imagery. -->
+<div id="extraDiv1"><span></span></div><div id="extraDiv2"><span></span></div><div id="extraDiv3"><span></span></div>
+<div id="extraDiv4"><span></span></div><div id="extraDiv5"><span></span></div><div id="extraDiv6"><span></span></div>
+
+
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
