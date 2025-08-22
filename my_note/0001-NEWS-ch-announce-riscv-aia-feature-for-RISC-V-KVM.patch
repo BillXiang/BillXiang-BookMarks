@@ -1,227 +1,34 @@
-From d253faa2b710ea54036eb8fb839579dbc74be4d1 Mon Sep 17 00:00:00 2001
+From 892f362a7330c5cea1b181d9ec84918712de57ad Mon Sep 17 00:00:00 2001
 From: xiangwencheng <xiangwencheng@lanxincomputing.com>
-Date: Fri, 22 Aug 2025 15:29:28 +0800
-Subject: [PATCH v2 1/2] qemu: support riscv-aia feature for RISC-V KVM
+Date: Fri, 22 Aug 2025 15:31:18 +0800
+Subject: [PATCH PATCH v2 2/2] NEWS: ch: announce riscv-aia feature for RISC-V KVM
 
-riscv-aia feature was introduced in qemu-8.2 to specify the
-KVM AIA mode. The "riscv-aia" parameter is passed along with
--accel in QEMU command-line.
-1) "riscv-aia=emul": IMSIC is emulated by hypervisor
-2) "riscv-aia=hwaccel": use hardware guest IMSIC
-3) "riscv-aia=auto": use the hardware guest IMSICs whenever available
-otherwise we fallback to software emulation.
-
-This patch add the corresponding feature named 'riscv-aia'.
-
-Signed-off-by: BillXiang <xiangwencheng@lanxincomputing.com>
+Signed-off-by: xiangwencheng <xiangwencheng@lanxincomputing.com>
 ---
-v1[1] -> v2:
- - Separate changes to NEWS.rst into a separate commit.
- - Remove changes to qemuxmlconfdata files that are used by x86.
- - Change riscv-aia mode to enum.
+ NEWS.rst | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-[1] https://lists.libvirt.org/archives/list/devel@lists.libvirt.org/thread/XBDTP6C5T2RIVHGEI3X7WTDMHSXZMGKL
----
- docs/formatdomain.rst             |  2 ++
- src/conf/domain_conf.c            | 34 ++++++++++++++++++++++++++++++-
- src/conf/domain_conf.h            | 10 +++++++++
- src/conf/schemas/domaincommon.rng | 12 +++++++++++
- src/libvirt_private.syms          |  2 ++
- src/qemu/qemu_command.c           | 13 +++++++++---
- 6 files changed, 69 insertions(+), 4 deletions(-)
-
-diff --git a/docs/formatdomain.rst b/docs/formatdomain.rst
-index 9f7311b6d5..2ccbb1bfb9 100644
---- a/docs/formatdomain.rst
-+++ b/docs/formatdomain.rst
-@@ -2085,6 +2085,7 @@ Hypervisors may allow certain CPU / machine features to be toggled on/off.
-        <poll-control state='on'/>
-        <pv-ipi state='off'/>
-        <dirty-ring state='on' size='4096'/>
-+       <riscv-aia state='on' mode='auto'/>
-      </kvm>
-      <xen>
-        <e820_host state='on'/>
-@@ -2206,6 +2207,7 @@ are:
-    poll-control   Decrease IO completion latency by introducing a grace period of busy waiting on, off                                                :since:`6.10.0 (QEMU 4.2)`
-    pv-ipi         Paravirtualized send IPIs                                                    on, off                                                :since:`7.10.0 (QEMU 3.1)`
-    dirty-ring     Enable dirty ring feature                                                    on, off; size - must be power of 2, range [1024,65536] :since:`8.0.0 (QEMU 6.1)`
-+   riscv-aia      Set riscv KVM AIA mode. Defaults to 'auto'.                                  on, off; mode - optional string emul, hwaccel or auto  :since:`11.7.0 (QEMU 8.2)`
-    ============== ============================================================================ ====================================================== ============================
+diff --git a/NEWS.rst b/NEWS.rst
+index e6a74ad699..b3f709c172 100644
+--- a/NEWS.rst
++++ b/NEWS.rst
+@@ -22,6 +22,16 @@ v11.7.0 (unreleased)
+     Users can now configure the verbosity of Cloud Hypervisor by setting
+     the "log_level" option in ch.conf
  
- ``xen``
-diff --git a/src/conf/domain_conf.c b/src/conf/domain_conf.c
-index 7766e302ec..7f4f17018a 100644
---- a/src/conf/domain_conf.c
-+++ b/src/conf/domain_conf.c
-@@ -224,6 +224,14 @@ VIR_ENUM_IMPL(virDomainKVM,
-               "poll-control",
-               "pv-ipi",
-               "dirty-ring",
-+              "riscv-aia",
-+);
++  * Support riscv-aia feature for RISC-V KVM
 +
-+VIR_ENUM_IMPL(virDomainKVMRiscvAIAMode,
-+              VIR_DOMAIN_KVM_TISCV_AIA_MODE_LAST,
-+              "emul",
-+              "hwaccel",
-+              "auto",
- );
- 
- VIR_ENUM_IMPL(virDomainXen,
-@@ -17142,6 +17150,7 @@ virDomainFeaturesKVMDefParse(virDomainDef *def,
- {
-     g_autoptr(GPtrArray) feats = virXMLNodeGetSubelementList(node, NULL);
-     size_t i;
-+    g_autofree char *ptval = NULL;
- 
-     if (!def->kvm_features)
-         def->kvm_features = g_new0(virDomainFeatureKVM, 1);
-@@ -17183,6 +17192,15 @@ virDomainFeaturesKVMDefParse(virDomainDef *def,
-                 return -1;
-             }
-         }
++    riscv-aia feature was introduced in qemu-8.2 to specify the
++    KVM AIA mode. The "riscv-aia" parameter is passed along with
++    --accel in QEMU command-line.
++    1) "riscv-aia=emul": IMSIC is emulated by hypervisor
++    2) "riscv-aia=hwaccel": use hardware guest IMSIC
++    3) "riscv-aia=auto": use the hardware guest IMSICs whenever available
++    otherwise we fallback to software emulation.
 +
-+        if (feature == VIR_DOMAIN_KVM_RISCV_AIA &&
-+            value == VIR_TRISTATE_SWITCH_ON) {
-+            if (virXMLPropEnum(feat, "mode",
-+                            virDomainKVMRiscvAIAModeTypeFromString,
-+                            VIR_XML_PROP_NONZERO,
-+                            &def->kvm_features->kvm_riscv_aia_mode) < 0)
-+                return -1;
-+        }
-     }
+ * **Improvements**
  
-     def->features[VIR_DOMAIN_FEATURE_KVM] = VIR_TRISTATE_SWITCH_ON;
-@@ -21697,6 +21715,7 @@ virDomainDefFeaturesCheckABIStability(virDomainDef *src,
-             case VIR_DOMAIN_KVM_POLLCONTROL:
-             case VIR_DOMAIN_KVM_PVIPI:
-             case VIR_DOMAIN_KVM_DIRTY_RING:
-+            case VIR_DOMAIN_KVM_RISCV_AIA:
-                 if (src->kvm_features->features[i] != dst->kvm_features->features[i]) {
-                     virReportError(VIR_ERR_CONFIG_UNSUPPORTED,
-                                    _("State of KVM feature '%1$s' differs: source: '%2$s', destination: '%3$s'"),
-@@ -28752,7 +28771,20 @@ virDomainDefFormatFeatures(virBuffer *buf,
-                         }
-                     }
-                     break;
--
-+                case VIR_DOMAIN_KVM_RISCV_AIA:
-+                    if (def->kvm_features->features[j] != VIR_TRISTATE_SWITCH_ABSENT) {
-+                        virBufferAsprintf(&childBuf, "<%s state='%s'",
-+                                          virDomainKVMTypeToString(j),
-+                                          virTristateSwitchTypeToString(def->kvm_features->features[j]));
-+                        if (def->kvm_features->kvm_riscv_aia_mode >= 0 &&
-+                            def->kvm_features->kvm_riscv_aia_mode < VIR_DOMAIN_KVM_TISCV_AIA_MODE_LAST) {
-+                            virBufferAsprintf(&childBuf, " mode='%s'/>\n",
-+                                               virDomainKVMRiscvAIAModeTypeToString(def->kvm_features->kvm_riscv_aia_mode));
-+                        } else {
-+                            virBufferAddLit(&childBuf, "/>\n");
-+                        }
-+                    }
-+                    break;
-                 case VIR_DOMAIN_KVM_LAST:
-                     break;
-                 }
-diff --git a/src/conf/domain_conf.h b/src/conf/domain_conf.h
-index eca820892e..512c6dfc06 100644
---- a/src/conf/domain_conf.h
-+++ b/src/conf/domain_conf.h
-@@ -2270,10 +2270,19 @@ typedef enum {
-     VIR_DOMAIN_KVM_POLLCONTROL,
-     VIR_DOMAIN_KVM_PVIPI,
-     VIR_DOMAIN_KVM_DIRTY_RING,
-+    VIR_DOMAIN_KVM_RISCV_AIA,
- 
-     VIR_DOMAIN_KVM_LAST
- } virDomainKVM;
- 
-+typedef enum {
-+    VIR_DOMAIN_KVM_TISCV_AIA_MODE_EMUL = 0,
-+    VIR_DOMAIN_KVM_TISCV_AIA_MODE_HWACCEL,
-+    VIR_DOMAIN_KVM_TISCV_AIA_MODE_AUTO,
-+
-+    VIR_DOMAIN_KVM_TISCV_AIA_MODE_LAST
-+} virDomainKVMRiscvAIAMode;
-+
- typedef enum {
-     VIR_DOMAIN_MSRS_UNKNOWN = 0,
- 
-@@ -2476,6 +2485,7 @@ struct _virDomainFeatureKVM {
-     int features[VIR_DOMAIN_KVM_LAST];
- 
-     unsigned int dirty_ring_size; /* size of dirty ring for each vCPU, no units */
-+    virDomainKVMRiscvAIAMode kvm_riscv_aia_mode;
- };
- 
- typedef struct _virDomainFeatureTCG virDomainFeatureTCG;
-diff --git a/src/conf/schemas/domaincommon.rng b/src/conf/schemas/domaincommon.rng
-index e369fb6e81..3de5807b1e 100644
---- a/src/conf/schemas/domaincommon.rng
-+++ b/src/conf/schemas/domaincommon.rng
-@@ -8192,6 +8192,18 @@
-             </optional>
-           </element>
-         </optional>
-+        <optional>
-+          <element name="riscv-aia">
-+            <ref name="featurestate"/>
-+            <optional>
-+              <attribute name="mode">
-+                <data type="string">
-+                  <param name="pattern">(emul|hwaccel|auto)</param>
-+                </data>
-+              </attribute>
-+            </optional>
-+          </element>
-+        </optional>
-       </interleave>
-     </element>
-   </define>
-diff --git a/src/libvirt_private.syms b/src/libvirt_private.syms
-index b846011f0f..f540bdbd5b 100644
---- a/src/libvirt_private.syms
-+++ b/src/libvirt_private.syms
-@@ -501,6 +501,8 @@ virDomainIOThreadIDDel;
- virDomainIOThreadIDFind;
- virDomainKeyWrapCipherNameTypeFromString;
- virDomainKeyWrapCipherNameTypeToString;
-+virDomainKVMRiscvAIAModeTypeFromString;
-+virDomainKVMRiscvAIAModeTypeToString;
- virDomainLaunchSecurityTypeFromString;
- virDomainLaunchSecurityTypeToString;
- virDomainLeaseDefFree;
-diff --git a/src/qemu/qemu_command.c b/src/qemu/qemu_command.c
-index e8de386f30..9f34b5a37d 100644
---- a/src/qemu/qemu_command.c
-+++ b/src/qemu/qemu_command.c
-@@ -6679,6 +6679,9 @@ qemuBuildCpuCommandLine(virCommand *cmd,
- 
-             case VIR_DOMAIN_KVM_DIRTY_RING:
-                 break;
-+            
-+            case VIR_DOMAIN_KVM_RISCV_AIA:
-+                break;
- 
-             case VIR_DOMAIN_KVM_LAST:
-                 break;
-@@ -7314,9 +7317,13 @@ qemuBuildAccelCommandLine(virCommand *cmd,
-          * not that either kvm or tcg can be specified by libvirt
-          * so do not worry about the conflict of specifying both
-          * */
--        if (def->features[VIR_DOMAIN_FEATURE_KVM] == VIR_TRISTATE_SWITCH_ON &&
--            def->kvm_features->features[VIR_DOMAIN_KVM_DIRTY_RING] == VIR_TRISTATE_SWITCH_ON) {
--            virBufferAsprintf(&buf, ",dirty-ring-size=%d", def->kvm_features->dirty_ring_size);
-+        if (def->features[VIR_DOMAIN_FEATURE_KVM] == VIR_TRISTATE_SWITCH_ON) {
-+            if (def->kvm_features->features[VIR_DOMAIN_KVM_DIRTY_RING] == VIR_TRISTATE_SWITCH_ON) {
-+                virBufferAsprintf(&buf, ",dirty-ring-size=%d", def->kvm_features->dirty_ring_size);
-+            }
-+            if (def->kvm_features->features[VIR_DOMAIN_KVM_RISCV_AIA] == VIR_TRISTATE_SWITCH_ON) {
-+                virBufferAsprintf(&buf, ",riscv-aia=%s", virDomainKVMRiscvAIAModeTypeToString(def->kvm_features->kvm_riscv_aia_mode));
-+            }
-         }
-         break;
- 
+ * **Bug fixes**
 -- 
 2.34.1
 
