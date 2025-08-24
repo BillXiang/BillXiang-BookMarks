@@ -1,0 +1,578 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/cpu/[PATCH 1_2] KVM_ Boost vCPUs that are delivering interrupts - Paolo Bonzini (2025-08-24 16：48：00).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/kvm/1563457031-21189-2-git-send-email-pbonzini@redhat.com/
+ Summary: 
+-->
+<html><head><title>[PATCH 1/2] KVM: Boost vCPUs that are delivering interrupts - Paolo Bonzini</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?67c636a2" media="screen,print"><link type="text/css" rel="stylesheet" media="screen and (prefers-color-scheme:dark)" href="../216dark.css?67c636a2"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20190718133729"><b>kvm.vger.kernel.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Paolo Bonzini &lt;pbonzini@redhat.com&gt;
+To: <a href="../../lkml/?t=20190718133729">linux-kernel@vger.kernel.org</a>, <a href="../../kvm/?t=20190718133729">kvm@vger.kernel.org</a>
+Cc: wanpengli@tencent.com, rkrcmar@redhat.com,
+	borntraeger@de.ibm.com, paulus@ozlabs.org, maz@kernel.org
+Subject: <a href="#r" id="t">[PATCH 1/2] KVM: Boost vCPUs that are delivering interrupts</a>
+Date: Thu, 18 Jul 2019 15:37:10 +0200	<a href="#r">[thread overview]</a>
+Message-ID: &lt;1563457031-21189-2-git-send-email-pbonzini@redhat.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../1563457031-21189-1-git-send-email-pbonzini@redhat.com/">1563457031-21189-1-git-send-email-pbonzini@redhat.com</a>&gt;
+
+From: Wanpeng Li &lt;wanpengli@tencent.com&gt;
+
+Inspired by commit 9cac38dd5d (KVM/s390: Set preempted flag during
+vcpu wakeup and interrupt delivery), we want to also boost not just
+lock holders but also vCPUs that are delivering interrupts. Most
+smp_call_function_many calls are synchronous, so the IPI target vCPUs
+are also good yield candidates.  This patch introduces vcpu-&gt;ready to
+boost vCPUs during wakeup and interrupt delivery time; unlike s390 we do
+not reuse vcpu-&gt;preempted so that voluntarily preempted vCPUs are taken
+into account by kvm_vcpu_on_spin, but vmx_vcpu_pi_put is not affected
+(VT-d PI handles voluntary preemption separately, in pi_pre_block).
+
+Testing on 80 HT 2 socket Xeon Skylake server, with 80 vCPUs VM 80GB RAM:
+ebizzy -M
+
+            vanilla     boosting    improved
+1VM          21443       23520         9%
+2VM           2800        8000       180%
+3VM           1800        3100        72%
+
+Testing on my Haswell desktop 8 HT, with 8 vCPUs VM 8GB RAM, two VMs,
+one running ebizzy -M, the other running 'stress --cpu 2':
+
+w/ boosting + w/o pv sched yield(vanilla)
+
+            vanilla     boosting   improved
+              1570         4000      155%
+
+w/ boosting + w/ pv sched yield(vanilla)
+
+            vanilla     boosting   improved
+              1844         5157      179%
+
+w/o boosting, perf top in VM:
+
+ 72.33%  [kernel]       [k] smp_call_function_many
+  4.22%  [kernel]       [k] call_function_i
+  3.71%  [kernel]       [k] async_page_fault
+
+w/ boosting, perf top in VM:
+
+ 38.43%  [kernel]       [k] smp_call_function_many
+  6.31%  [kernel]       [k] async_page_fault
+  6.13%  libc-2.23.so   [.] __memcpy_avx_unaligned
+  4.88%  [kernel]       [k] call_function_interrupt
+
+Cc: Paolo Bonzini &lt;pbonzini@redhat.com&gt;
+Cc: Radim Krčmář &lt;rkrcmar@redhat.com&gt;
+Cc: Christian Borntraeger &lt;borntraeger@de.ibm.com&gt;
+Cc: Paul Mackerras &lt;paulus@ozlabs.org&gt;
+Cc: Marc Zyngier &lt;maz@kernel.org&gt;
+Signed-off-by: Wanpeng Li &lt;wanpengli@tencent.com&gt;
+Signed-off-by: Paolo Bonzini &lt;pbonzini@redhat.com&gt;
+---
+	v2-&gt;v3: put it in kvm_vcpu_wake_up, use WRITE_ONCE
+
+ <a id="iZ31arch:s390:kvm:interrupt.c" href="#Z31arch:s390:kvm:interrupt.c">arch/s390/kvm/interrupt.c</a> | 2 +-
+ <a id="iZ31include:linux:kvm_host.h" href="#Z31include:linux:kvm_host.h">include/linux/kvm_host.h</a>  | 1 +
+ <a id="iZ31virt:kvm:kvm_main.c" href="#Z31virt:kvm:kvm_main.c">virt/kvm/kvm_main.c</a>       | 9 +++++++--
+ 3 files <a href="#related">changed</a>, 9 insertions(+), 3 deletions(-)
+
+<span class="head"><a href="#iZ31arch:s390:kvm:interrupt.c" id="Z31arch:s390:kvm:interrupt.c">diff</a> --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
+index 9dde4d7d8704..26f8bf4a22a7 100644
+--- a/arch/s390/kvm/interrupt.c
++++ b/arch/s390/kvm/interrupt.c
+</span><span class="hunk">@@ -1240,7 +1240,7 @@ void kvm_s390_vcpu_wakeup(struct kvm_vcpu *vcpu)
+</span> 		 * The vcpu gave up the cpu voluntarily, mark it as a good
+ 		 * yield-candidate.
+ 		 */
+<span class="del">-		vcpu-&gt;preempted = true;
+</span><span class="add">+		WRITE_ONCE(vcpu-&gt;ready, true);
+</span> 		swake_up_one(&amp;vcpu-&gt;wq);
+ 		vcpu-&gt;stat.halt_wakeup++;
+ 	}
+<span class="head"><a href="#iZ31include:linux:kvm_host.h" id="Z31include:linux:kvm_host.h">diff</a> --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index c5da875f19e3..5c5b5867024c 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+</span><span class="hunk">@@ -318,6 +318,7 @@ struct kvm_vcpu {
+</span> 	} spin_loop;
+ #endif
+ 	bool preempted;
+<span class="add">+	bool ready;
+</span> 	struct kvm_vcpu_arch arch;
+ 	struct dentry *debugfs_dentry;
+ };
+<span class="head"><a href="#iZ31virt:kvm:kvm_main.c" id="Z31virt:kvm:kvm_main.c">diff</a> --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index b4ab59dd6846..65665e13ab9a 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+</span><span class="hunk">@@ -2387,6 +2387,7 @@ bool kvm_vcpu_wake_up(struct kvm_vcpu *vcpu)
+</span> 	wqp = kvm_arch_vcpu_wq(vcpu);
+ 	if (swq_has_sleeper(wqp)) {
+ 		swake_up_one(wqp);
+<span class="add">+		WRITE_ONCE(vcpu-&gt;ready, true);
+</span> 		++vcpu-&gt;stat.halt_wakeup;
+ 		return true;
+ 	}
+<span class="hunk">@@ -2500,7 +2501,7 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
+</span> 				continue;
+ 			} else if (pass &amp;&amp; i &gt; last_boosted_vcpu)
+ 				break;
+<span class="del">-			if (!READ_ONCE(vcpu-&gt;preempted))
+</span><span class="add">+			if (!READ_ONCE(vcpu-&gt;ready))
+</span> 				continue;
+ 			if (vcpu == me)
+ 				continue;
+<span class="hunk">@@ -4205,6 +4206,8 @@ static void kvm_sched_in(struct preempt_notifier *pn, int cpu)
+</span> 
+ 	if (vcpu-&gt;preempted)
+ 		vcpu-&gt;preempted = false;
+<span class="add">+	if (vcpu-&gt;ready)
++		WRITE_ONCE(vcpu-&gt;ready, false);
+</span> 
+ 	kvm_arch_sched_in(vcpu, cpu);
+ 
+<span class="hunk">@@ -4216,8 +4219,10 @@ static void kvm_sched_out(struct preempt_notifier *pn,
+</span> {
+ 	struct kvm_vcpu *vcpu = preempt_notifier_to_vcpu(pn);
+ 
+<span class="del">-	if (current-&gt;state == TASK_RUNNING)
+</span><span class="add">+	if (current-&gt;state == TASK_RUNNING) {
+</span> 		vcpu-&gt;preempted = true;
+<span class="add">+		WRITE_ONCE(vcpu-&gt;ready, true);
++	}
+</span> 	kvm_arch_vcpu_put(vcpu);
+ }
+ 
+-- 
+1.8.3.1
+
+
+</pre><hr><pre><a href="../c28fb650-8150-4f42-4d01-8e8b2490c8b6@de.ibm.com/" rel="next">next</a> <a href="../1563457031-21189-1-git-send-email-pbonzini@redhat.com/" rel="prev">prev parent</a> <a href="#R">reply</a>	other threads:[<a href="../?t=20190718133729">~2019-07-18 13:37 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>6+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2019-07-18 13:37 <a href="../1563457031-21189-1-git-send-email-pbonzini@redhat.com/">[PATCH v3 0/2] Boost vCPUs that are ready to deliver interrupts</a> Paolo Bonzini
+<b>2019-07-18 13:37 ` <a id="r" href="#t">Paolo Bonzini [this message]</a></b>
+2019-07-18 13:45   ` <a href="../c28fb650-8150-4f42-4d01-8e8b2490c8b6@de.ibm.com/">[PATCH 1/2] KVM: Boost vCPUs that are delivering interrupts</a> Christian Borntraeger
+2019-07-18 13:50     ` <a href="../d935d853-fa09-f41a-637a-77b45fd611d3@redhat.com/">Paolo Bonzini</a>
+2019-07-18 13:37 ` <a href="../1563457031-21189-3-git-send-email-pbonzini@redhat.com/">[PATCH 2/2] KVM: s390: Use kvm_vcpu_wake_up in kvm_s390_vcpu_wakeup</a> Paolo Bonzini
+2019-07-18 13:47   ` <a href="../2af3fb79-61ae-d361-24d7-665cf9638e0b@de.ibm.com/">Christian Borntraeger</a>
+</pre><form id="related" action="../"><pre>find likely ancestor, descendant, or conflicting patches for <a href="#t">this message</a>:
+<textarea name="q" cols="72" rows="4">( dfblob:9dde4d7d870 dfblob:26f8bf4a22a dfblob:c5da875f19e
+dfblob:5c5b5867024 dfblob:b4ab59dd684 dfblob:65665e13ab9 )
+ OR (
+bs:"[PATCH 1/2] KVM: Boost vCPUs that are delivering interrupts" )</textarea>
+<input type="submit" value="search">	(<a href="../_/text/help/#search">help</a>)</pre></form>
+<hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=1563457031-21189-2-git-send-email-pbonzini@redhat.com \n    --to=pbonzini@redhat.com \n    --cc=borntraeger@de.ibm.com \n    --cc=kvm@vger.kernel.org \n    --cc=linux-kernel@vger.kernel.org \n    --cc=maz@kernel.org \n    --cc=paulus@ozlabs.org \n    --cc=rkrcmar@redhat.com \n    --cc=wanpengli@tencent.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:pbonzini@redhat.com?In-Reply-To=%3C1563457031-21189-2-git-send-email-pbonzini@redhat.com%3E&amp;Cc=borntraeger%40de.ibm.com%2Ckvm%40vger.kernel.org%2Clinux-kernel%40vger.kernel.org%2Cmaz%40kernel.org%2Cpaulus%40ozlabs.org%2Crkrcmar%40redhat.com%2Cwanpengli%40tencent.com&amp;Subject=Re%3A%20%5BPATCH%201%2F2%5D%20KVM%3A%20Boost%20vCPUs%20that%20are%20delivering%20interrupts">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
