@@ -1,0 +1,558 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/中断/Contribute/riscv_ KVM_ Remove unnecessary vcpu kick - kernel_git_riscv_linux.git - RISC-V Linux kernel tree (2025-08-25 14：14：47).html
+ Page saved with X-Webpage-Conserve 
+ url: https://web.git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/commit/?id=d252435aca44
+ Summary: 
+-->
+<html lang="en"><head>
+<title>riscv: KVM: Remove unnecessary vcpu kick - kernel/git/riscv/linux.git - RISC-V Linux kernel tree</title>
+<meta name="generator" content="cgit 1.2.3-korg">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" type="text/css" href="/cgit-data/cgit.css">
+<script type="text/javascript" src="/cgit-data/cgit.js"></script>
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="alternate" title="Atom feed" href="http://dfw.source.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/atom/?h=master" type="application/atom+xml">
+<link rel="vcs-git" href="git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git" title="kernel/git/riscv/linux.git Git repository">
+<link rel="vcs-git" href="https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git" title="kernel/git/riscv/linux.git Git repository">
+<link rel="vcs-git" href="https://kernel.googlesource.com/pub/scm/linux/kernel/git/riscv/linux.git" title="kernel/git/riscv/linux.git Git repository">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 270px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 50% auto !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  word-break: break-all;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 16px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #007bff;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>@import url("source-code-pro/source-code-pro.css");div#cgit { margin: 0em; font-family: sans-serif; font-size: 10pt; color: rgb(51, 51, 51); background: white; padding: 4px; }div#cgit a { color: blue; text-decoration: none; }div#cgit a:hover { text-decoration: underline; }div#cgit table { border-collapse: collapse; }div#cgit table#header { width: 100%; margin-bottom: 1em; }div#cgit table#header td.logo { width: 96px; vertical-align: top; }div#cgit table#header td.main { font-size: 250%; padding-left: 10px; white-space: nowrap; }div#cgit table#header td.main a { color: rgb(0, 0, 0); }div#cgit table#header td.form { text-align: right; vertical-align: bottom; padding-right: 1em; padding-bottom: 2px; white-space: nowrap; }div#cgit table#header td.form form, div#cgit table#header td.form input, div#cgit table#header td.form select { font-size: 90%; }div#cgit table#header td.sub { color: rgb(119, 119, 119); border-top: 1px solid rgb(204, 204, 204); padding-left: 10px; }div#cgit table.tabs { border-bottom: 3px solid rgb(204, 204, 204); border-collapse: collapse; margin-top: 2em; margin-bottom: 0px; width: 100%; }div#cgit table.tabs td { padding: 0px 1em; vertical-align: bottom; }div#cgit table.tabs td a { padding: 2px 0.75em; color: rgb(119, 119, 119); font-size: 110%; }div#cgit table.tabs td a.active { color: rgb(0, 0, 0); background-color: rgb(204, 204, 204); }div#cgit table.tabs a[href^="http://"]::after, div#cgit table.tabs a[href^="https://"]::after { content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgAhcJDQY+gm2TAAAAHWlUWHRDb21tZW50AAAAAABDcmVhdGVkIHdpdGggR0lNUGQuZQcAAABbSURBVAhbY2BABs4MU4CwhYHBh2Erww4wrGFQZHjI8B8IgUIscJWyDHcggltQhI4zGDCcRwhChPggHIggP1QoAVmQkSETrGoHsiAEsACtBYN0oDAMbgU6EBcAAL2eHUt4XUU4AAAAAElFTkSuQmCC"); opacity: 0.5; margin: 0px 0px 0px 5px; }div#cgit table.tabs td.form { text-align: right; }div#cgit table.tabs td.form form { padding-bottom: 2px; font-size: 90%; white-space: nowrap; }div#cgit table.tabs td.form input, div#cgit table.tabs td.form select { font-size: 90%; }div#cgit div.path { margin: 0px; padding: 5px 2em 2px; color: rgb(0, 0, 0); background-color: rgb(238, 238, 238); }div#cgit div.content { margin: 0px; padding: 2em; border-bottom: 3px solid rgb(204, 204, 204); }div#cgit table.list { width: 100%; border: medium; border-collapse: collapse; }div#cgit table.list tr { background: white; }div#cgit table.list tr.logheader { background: rgb(238, 238, 238); }div#cgit table.list tr:nth-child(2n) { background: rgb(247, 247, 247); }div#cgit table.list tr:nth-child(2n+1) { background: white; }div#cgit table.list tr:hover { background: rgb(238, 238, 238); }div#cgit table.list tr.nohover { background: white; }div#cgit table.list tr.nohover:hover { background: white; }div#cgit table.list tr.nohover-highlight:hover:nth-child(2n) { background: rgb(247, 247, 247); }div#cgit table.list tr.nohover-highlight:hover:nth-child(2n+1) { background: white; }div#cgit table.list th { font-weight: bold; padding: 0.1em 0.5em 0.05em; vertical-align: baseline; }div#cgit table.list td { border: medium; padding: 0.1em 0.5em; }div#cgit table.list td.commitgraph { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; }div#cgit pre { font-family: "Source Code Pro", "Courier New", monospace; }div#cgit table.list td.commitgraph .column1 { color: rgb(170, 0, 0); }div#cgit table.list td.commitgraph .column2 { color: rgb(0, 170, 0); }div#cgit table.list td.commitgraph .column3 { color: rgb(170, 170, 0); }div#cgit table.list td.commitgraph .column4 { color: rgb(0, 0, 170); }div#cgit table.list td.commitgraph .column5 { color: rgb(170, 0, 170); }div#cgit table.list td.commitgraph .column6 { color: rgb(0, 170, 170); }div#cgit table.list td.logsubject { font-family: "Source Code Pro", "Courier New", monospace; font-weight: bold; }div#cgit table.list td.logmsg { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; padding: 0px 0.5em; }div#cgit table.list td a { color: black; }div#cgit table.list td a.ls-dir { font-weight: bold; color: rgb(0, 0, 255); }div#cgit table.list td a:hover { color: rgb(0, 0, 255); }div#cgit img { border: medium; }div#cgit input#switch-btn { margin: 2px 0px 0px; }div#cgit td#sidebar input.txt { width: 100%; margin: 2px 0px 0px; }div#cgit table#grid { margin: 0px; }div#cgit td#content { vertical-align: top; padding: 1em 2em 1em 1em; border: medium; }div#cgit div#summary { vertical-align: top; margin-bottom: 1em; }div#cgit table#downloads { float: right; border-collapse: collapse; border: 1px solid rgb(119, 119, 119); margin-left: 0.5em; margin-bottom: 0.5em; }div#cgit table#downloads th { background-color: rgb(204, 204, 204); }div#cgit div#blob { border: 1px solid black; }div#cgit div.error { color: red; font-weight: bold; margin: 1em 2em; }div#cgit a.ls-blob, div#cgit a.ls-dir, div#cgit .ls-mod { font-family: "Source Code Pro", "Courier New", monospace; }div#cgit td.ls-size { text-align: right; font-family: "Source Code Pro", "Courier New", monospace; width: 10em; }div#cgit td.ls-mode { font-family: "Source Code Pro", "Courier New", monospace; width: 10em; }div#cgit table.blob { margin-top: 0.5em; border-top: 1px solid black; }div#cgit table.blob td.hashes, div#cgit table.blob td.lines { margin: 0px; padding: 0px 0px 0px 0.5em; vertical-align: top; color: black; }div#cgit table.blob td.linenumbers { margin: 0px; padding: 0px 0.5em; vertical-align: top; text-align: right; border-right: 1px solid gray; }div#cgit table.blob pre { padding: 0px; margin: 0px; }div#cgit table.blob td.linenumbers a, div#cgit table.ssdiff td.lineno a { color: gray; text-align: right; text-decoration: none; }div#cgit table.blob td.linenumbers a:hover, div#cgit table.ssdiff td.lineno a:hover { color: black; }div#cgit table.blame td.hashes, div#cgit table.blame td.lines, div#cgit table.blame td.linenumbers { padding: 0px; }div#cgit table.blame td.hashes div.alt, div#cgit table.blame td.lines div.alt { padding: 0px 0.5em; }div#cgit table.blame td.linenumbers div.alt { padding: 0px 0.5em 0px 0px; }div#cgit table.blame div.alt:nth-child(2n) { background: rgb(238, 238, 238); }div#cgit table.blame div.alt:nth-child(2n+1) { background: white; }div#cgit table.blame td.lines > div { position: relative; }div#cgit table.blame td.lines > div > pre { padding: 0px 0px 0px 0.5em; position: absolute; top: 0px; }div#cgit table.blame .oid { font-size: 100%; }div#cgit table.bin-blob { margin-top: 0.5em; border: 1px solid black; }div#cgit table.bin-blob th { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; border: 1px solid rgb(119, 119, 119); padding: 0.5em 1em; }div#cgit table.bin-blob td { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; border-left: 1px solid rgb(119, 119, 119); padding: 0em 1em; }div#cgit table.nowrap td { white-space: nowrap; }div#cgit table.commit-info { border-collapse: collapse; margin-top: 1.5em; }div#cgit div.cgit-panel { float: right; margin-top: 1.5em; }div#cgit div.cgit-panel table { border-collapse: collapse; border: 1px solid rgb(170, 170, 170); background-color: rgb(238, 238, 238); }div#cgit div.cgit-panel th { text-align: center; }div#cgit div.cgit-panel td { padding: 0.25em 0.5em; }div#cgit div.cgit-panel td.label { padding-right: 0.5em; }div#cgit div.cgit-panel td.ctrl { padding-left: 0.5em; }div#cgit table.commit-info th { text-align: left; font-weight: normal; padding: 0.1em 1em 0.1em 0.1em; vertical-align: top; }div#cgit table.commit-info td { font-weight: normal; padding: 0.1em 1em 0.1em 0.1em; }div#cgit div.commit-subject { font-weight: bold; font-size: 125%; margin: 1.5em 0em 0.5em; padding: 0em; }div#cgit div.commit-msg { white-space: pre; font-family: "Source Code Pro", "Courier New", monospace; }div#cgit div.notes-header { font-weight: bold; padding-top: 1.5em; }div#cgit div.notes { white-space: pre; font-family: "Source Code Pro", "Courier New", monospace; border: 1px solid rgb(238, 238, 153); background-color: rgb(255, 255, 221); padding: 0.3em 2em 0.3em 1em; float: left; }div#cgit div.notes-footer { clear: left; }div#cgit div.diffstat-header { font-weight: bold; padding-top: 1.5em; }div#cgit table.diffstat { border-collapse: collapse; border: 1px solid rgb(170, 170, 170); background-color: rgb(238, 238, 238); }div#cgit table.diffstat th { font-weight: normal; text-align: left; text-decoration: underline; padding: 0.1em 1em 0.1em 0.1em; font-size: 100%; }div#cgit table.diffstat td { padding: 0.2em 0.2em 0.1em 0.1em; font-size: 100%; border: medium; }div#cgit table.diffstat td.mode { white-space: nowrap; }div#cgit table.diffstat td span.modechange { padding-left: 1em; color: red; }div#cgit table.diffstat td.add a { color: green; }div#cgit table.diffstat td.del a { color: red; }div#cgit table.diffstat td.upd a { color: blue; }div#cgit table.diffstat td.graph { width: 500px; vertical-align: middle; }div#cgit table.diffstat td.graph table { border: medium; }div#cgit table.diffstat td.graph td { padding: 0px; border: 0px; height: 7pt; }div#cgit table.diffstat td.graph td.add { background-color: rgb(85, 204, 85); }div#cgit table.diffstat td.graph td.rem { background-color: rgb(204, 85, 85); }div#cgit div.diffstat-summary { color: rgb(136, 136, 136); padding-top: 0.5em; }div#cgit table.diff { width: 100%; }div#cgit table.diff td { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; }div#cgit table.diff td div.head { font-weight: bold; margin-top: 1em; color: black; }div#cgit table.diff td div.hunk { color: rgb(0, 0, 153); }div#cgit table.diff td div.add { color: green; }div#cgit table.diff td div.del { color: red; }div#cgit .oid { font-family: "Source Code Pro", "Courier New", monospace; font-size: 90%; }div#cgit .left { text-align: left; }div#cgit .right { text-align: right; }div#cgit table.list td.reposection { font-style: italic; color: rgb(136, 136, 136); }div#cgit a.button { font-size: 80%; padding: 0em 0.5em; }div#cgit a.primary { font-size: 100%; }div#cgit a.secondary { font-size: 90%; }div#cgit td.toplevel-repo { }div#cgit table.list td.sublevel-repo { padding-left: 1.5em; }div#cgit ul.pager { list-style-type: none; text-align: center; margin: 1em 0em 0em; padding: 0px; }div#cgit ul.pager li { display: inline-block; margin: 0.25em 0.5em; }div#cgit ul.pager a { color: rgb(119, 119, 119); }div#cgit ul.pager .current { font-weight: bold; }div#cgit span.age-mins { font-weight: bold; color: rgb(0, 136, 0); }div#cgit span.age-hours { color: rgb(0, 136, 0); }div#cgit span.age-days { color: rgb(0, 68, 0); }div#cgit span.age-weeks { color: rgb(68, 68, 68); }div#cgit span.age-months { color: rgb(136, 136, 136); }div#cgit span.age-years { color: rgb(187, 187, 187); }div#cgit span.insertions { color: rgb(0, 136, 0); }div#cgit span.deletions { color: rgb(136, 0, 0); }div#cgit div.footer { margin-top: 0.5em; text-align: center; font-size: 80%; color: rgb(204, 204, 204); }div#cgit div.footer a { color: rgb(204, 204, 204); text-decoration: none; }div#cgit div.footer a:hover { text-decoration: underline; }div#cgit a.branch-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(136, 255, 136); border: 1px solid rgb(0, 119, 0); }div#cgit a.tag-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 255, 136); border: 1px solid rgb(119, 119, 0); }div#cgit a.tag-annotated-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 204, 136); border: 1px solid rgb(119, 119, 0); }div#cgit a.remote-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(204, 204, 255); border: 1px solid rgb(0, 0, 119); }div#cgit a.deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 136, 136); border: 1px solid rgb(119, 0, 0); }div#cgit div.commit-subject a.branch-deco, div#cgit div.commit-subject a.tag-deco, div#cgit div.commit-subject a.tag-annotated-deco, div#cgit div.commit-subject a.remote-deco, div#cgit div.commit-subject a.deco { margin-left: 1em; font-size: 75%; }div#cgit table.stats { border: 1px solid black; border-collapse: collapse; }div#cgit table.stats th { text-align: left; padding: 1px 0.5em; background-color: rgb(238, 238, 238); border: 1px solid black; }div#cgit table.stats td { text-align: right; padding: 1px 0.5em; border: 1px solid black; }div#cgit table.stats td.total { font-weight: bold; text-align: left; }div#cgit table.stats td.sum { color: rgb(204, 0, 0); font-weight: bold; }div#cgit table.stats td.left { text-align: left; }div#cgit table.vgraph { border-collapse: separate; border: 1px solid black; height: 200px; }div#cgit table.vgraph th { background-color: rgb(238, 238, 238); font-weight: bold; border: 1px solid white; padding: 1px 0.5em; }div#cgit table.vgraph td { vertical-align: bottom; padding: 0px 10px; }div#cgit table.vgraph div.bar { background-color: rgb(238, 238, 238); }div#cgit table.hgraph { border: 1px solid black; width: 800px; }div#cgit table.hgraph th { background-color: rgb(238, 238, 238); font-weight: bold; border: 1px solid black; padding: 1px 0.5em; }div#cgit table.hgraph td { vertical-align: middle; padding: 2px; }div#cgit table.hgraph div.bar { background-color: rgb(238, 238, 238); height: 1em; }div#cgit table.ssdiff { width: 100%; }div#cgit table.ssdiff td { font-size: 75%; font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; padding: 1px 4px; border-left: 1px solid rgb(170, 170, 170); border-right: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.add { color: black; background: rgb(204, 255, 204); min-width: 50%; }div#cgit table.ssdiff td.add_dark { color: black; background: rgb(170, 204, 170); min-width: 50%; }div#cgit table.ssdiff span.add { background: rgb(204, 255, 204); font-weight: bold; }div#cgit table.ssdiff td.del { color: black; background: rgb(255, 204, 204); min-width: 50%; }div#cgit table.ssdiff td.del_dark { color: black; background: rgb(204, 170, 170); min-width: 50%; }div#cgit table.ssdiff span.del { background: rgb(255, 204, 204); font-weight: bold; }div#cgit table.ssdiff td.changed { color: black; background: rgb(255, 255, 204); min-width: 50%; }div#cgit table.ssdiff td.changed_dark { color: black; background: rgb(204, 204, 170); min-width: 50%; }div#cgit table.ssdiff td.lineno { color: black; background: rgb(238, 238, 238); text-align: right; width: 3em; min-width: 3em; }div#cgit table.ssdiff td.hunk { color: black; background: rgb(204, 204, 255); border-top: 1px solid rgb(170, 170, 170); border-bottom: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.head { border-top: 1px solid rgb(170, 170, 170); border-bottom: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.head div.head { font-weight: bold; color: black; }div#cgit table.ssdiff td.foot { border-width: 1px medium medium; border-style: solid none none; border-color: rgb(170, 170, 170) currentcolor currentcolor; }div#cgit table.ssdiff td.space { border: medium; }div#cgit table.ssdiff td.space div { min-height: 3em; }div#cgit span.libravatar img.onhover { display: none; border: 1px solid gray; padding: 0px; border-radius: 4px; width: 128px; height: 128px; }div#cgit span.libravatar img.inline { border-radius: 3px; width: 13px; height: 13px; margin-right: 0.2em; opacity: 0.6; }div#cgit span.libravatar:hover > img.onhover { display: block; position: absolute; margin-left: 1.5em; background-color: rgb(238, 238, 238); box-shadow: rgba(100, 100, 100, 0.75) 2px 2px 7px; }:root { color-scheme: light dark; }@media only all and (prefers-color-scheme: dark) {
+  html, div#cgit { color: rgb(238, 238, 238); background: rgb(23, 23, 23); }
+  div#cgit a { color: rgb(51, 170, 255); }
+  div#cgit .diffstat-header a { color: rgb(34, 136, 221); }
+  div#cgit table#header td.main a { color: rgb(238, 238, 238); }
+  div#cgit table#header td.sub { color: rgb(153, 153, 153); }
+  div#cgit table.tabs { border-bottom-color: rgb(68, 68, 68); }
+  div#cgit table.tabs td a { color: rgb(136, 136, 136); }
+  div#cgit table.tabs td a.active { color: rgb(255, 255, 255); background-color: rgb(68, 68, 68); }
+  div#cgit div.path { color: rgb(238, 238, 238); background-color: rgb(51, 51, 51); }
+  div#cgit div.content { border-bottom-color: rgb(187, 187, 187); }
+  div#cgit table.list tr { background: rgb(23, 23, 23); }
+  div#cgit table.list tr.logheader { background: rgb(23, 23, 23); }
+  div#cgit table.list tr:nth-child(2n) { background: rgb(23, 23, 23); }
+  div#cgit table.list tr:nth-child(2n+1) { background: rgb(31, 31, 31); }
+  div#cgit table.list tr:hover { background: rgb(51, 51, 51); }
+  div#cgit table.list tr.nohover { background: rgb(23, 23, 23); }
+  div#cgit table.list tr.nohover:hover { background: rgb(23, 23, 23); }
+  div#cgit table.list tr.nohover-highlight:hover:nth-child(2n) { background: rgb(23, 23, 23); }
+  div#cgit table.list tr.nohover-highlight:hover:nth-child(2n+1) { background: rgb(31, 31, 31); }
+  div#cgit table.list td.commitgraph .column1 { color: rgb(255, 85, 85); }
+  div#cgit table.list td.commitgraph .column2 { color: rgb(85, 255, 85); }
+  div#cgit table.list td.commitgraph .column3 { color: rgb(255, 255, 85); }
+  div#cgit table.list td.commitgraph .column4 { color: rgb(85, 85, 255); }
+  div#cgit table.list td.commitgraph .column5 { color: rgb(255, 85, 255); }
+  div#cgit table.list td.commitgraph .column6 { color: rgb(85, 255, 255); }
+  div#cgit table.list td a { color: rgb(238, 238, 238); }
+  div#cgit table.list td a.ls-dir { color: rgb(34, 136, 221); }
+  div#cgit table.list td a:hover { color: rgb(51, 170, 255); }
+  div#cgit table#downloads { border-color: rgb(136, 136, 136); }
+  div#cgit table#downloads th { background-color: rgb(51, 51, 51); }
+  div#cgit div#blob { border-color: rgb(238, 238, 238); }
+  div#cgit table.blob { border-top-color: rgb(238, 238, 238); }
+  div#cgit table.blob td.hashes, div#cgit table.blob td.lines { color: rgb(238, 238, 238); }
+  div#cgit table.blob td.linenumbers { border-right-color: gray; }
+  div#cgit table.blob td.linenumbers a, div#cgit table.ssdiff td.lineno a { color: gray; }
+  div#cgit table.blob td.linenumbers a:hover, div#cgit table.ssdiff td.lineno a:hover { color: rgb(238, 238, 238); }
+  div#cgit table.blame div.alt:nth-child(2n) { background: rgb(23, 23, 23); }
+  div#cgit table.blame div.alt:nth-child(2n+1) { background: rgb(31, 31, 31); }
+  div#cgit table.bin-blob { border-color: rgb(238, 238, 238); }
+  div#cgit table.bin-blob th { border-color: rgb(136, 136, 136); }
+  div#cgit table.bin-blob td { border-left-color: rgb(136, 136, 136); }
+  div#cgit div.cgit-panel table { border-color: rgb(85, 85, 85); background-color: rgb(40, 40, 40); }
+  div#cgit div.notes { border-color: rgb(102, 102, 17); background-color: rgb(34, 34, 0); }
+  div#cgit table.diffstat { border-color: rgb(85, 85, 85); background-color: rgb(40, 40, 40); }
+  div#cgit table.diffstat td span.modechange { color: rgb(204, 102, 102); }
+  div#cgit table.diffstat td.add a { color: rgb(102, 204, 102); }
+  div#cgit table.diffstat td.del a { color: rgb(204, 102, 102); }
+  div#cgit table.diffstat td.upd a { color: rgb(51, 170, 255); }
+  div#cgit table.diffstat td.graph td.add { background-color: rgb(51, 170, 51); }
+  div#cgit table.diffstat td.graph td.rem { background-color: rgb(170, 51, 51); }
+  div#cgit div.diffstat-summary { color: rgb(119, 119, 119); }
+  div#cgit table.diff td div.head { color: rgb(238, 238, 238); }
+  div#cgit table.diff td div.hunk { color: rgb(34, 136, 221); }
+  div#cgit table.diff td div.add { color: rgb(102, 204, 102); }
+  div#cgit table.diff td div.del { color: rgb(204, 102, 102); }
+  div#cgit table.list td.reposection { color: rgb(119, 119, 119); }
+  div#cgit ul.pager a { color: rgb(136, 136, 136); }
+  div#cgit span.age-mins { color: rgb(119, 255, 119); }
+  div#cgit span.age-hours { color: rgb(119, 255, 119); }
+  div#cgit span.age-days { color: rgb(153, 221, 153); }
+  div#cgit span.age-weeks { color: rgb(187, 187, 187); }
+  div#cgit span.age-months { color: rgb(136, 136, 136); }
+  div#cgit span.age-years { color: rgb(102, 102, 102); }
+  div#cgit span.insertions { color: rgb(119, 255, 119); }
+  div#cgit span.deletions { color: rgb(238, 51, 51); }
+  div#cgit div.footer { color: rgb(85, 85, 85); }
+  div#cgit div.footer a { color: rgb(85, 85, 85); }
+  div#cgit a.branch-deco { color: rgb(255, 255, 255); background-color: rgb(51, 102, 17); border-color: rgb(51, 187, 34); }
+  div#cgit a.tag-deco { color: rgb(255, 255, 255); background-color: rgb(102, 85, 0); border-color: rgb(187, 170, 51); }
+  div#cgit a.tag-annotated-deco { color: rgb(255, 255, 255); background-color: rgb(136, 68, 0); border-color: rgb(187, 153, 102); }
+  div#cgit a.remote-deco { color: rgb(255, 255, 255); background-color: rgb(51, 68, 136); border-color: rgb(102, 119, 204); }
+  div#cgit a.deco { color: rgb(255, 255, 255); background-color: rgb(153, 34, 34); border-color: rgb(221, 85, 85); }
+  div#cgit a.branch-deco:hover, div#cgit table.list td a.branch-deco:hover, div#cgit a.tag-deco:hover, div#cgit table.list td a.tag-deco:hover, div#cgit a.tag-annotated-deco:hover, div#cgit table.list td a.tag-annotated-deco:hover, div#cgit a.remote-deco:hover, div#cgit table.list td a.remote-deco:hover, div#cgit a.deco:hover, div#cgit table.list td a.deco:hover { color: rgb(255, 255, 255); }
+  div#cgit table.stats { border-color: rgb(85, 85, 85); }
+  div#cgit table.stats th { background-color: rgb(51, 51, 51); border-color: rgb(85, 85, 85); }
+  div#cgit table.stats td { border-color: rgb(85, 85, 85); }
+  div#cgit table.stats td.sum { color: rgb(92, 126, 155); }
+  div#cgit table.vgraph { border-color: rgb(238, 238, 238); }
+  div#cgit table.vgraph th { background-color: rgb(31, 31, 31); border-color: black; }
+  div#cgit table.vgraph div.bar { background-color: rgb(31, 31, 31); }
+  div#cgit table.hgraph { border-color: rgb(238, 238, 238); }
+  div#cgit table.hgraph th { background-color: rgb(31, 31, 31); border-color: rgb(238, 238, 238); }
+  div#cgit table.hgraph div.bar { background-color: rgb(31, 31, 31); }
+  div#cgit table.ssdiff td { border-left-color: rgb(85, 85, 85); border-right-color: rgb(85, 85, 85); }
+  div#cgit table.ssdiff td.add { color: rgb(238, 238, 238); background: rgb(51, 85, 51); }
+  div#cgit table.ssdiff td.add_dark { color: rgb(238, 238, 238); background: rgb(0, 51, 0); }
+  div#cgit table.ssdiff span.add { background: rgb(0, 51, 0); }
+  div#cgit table.ssdiff td.del { color: rgb(238, 238, 238); background: rgb(85, 51, 51); }
+  div#cgit table.ssdiff td.del_dark { color: rgb(238, 238, 238); background: rgb(68, 17, 17); }
+  div#cgit table.ssdiff span.del { background: rgb(51, 0, 0); }
+  div#cgit table.ssdiff td.changed { color: rgb(238, 238, 238); background: rgb(85, 85, 51); }
+  div#cgit table.ssdiff td.changed_dark { color: rgb(238, 238, 238); background: rgb(51, 51, 0); }
+  div#cgit table.ssdiff td.lineno { color: rgb(238, 238, 238); background: rgb(31, 31, 31); }
+  div#cgit table.ssdiff td.hunk { color: rgb(238, 238, 238); background: rgb(13, 61, 100); border-top-color: rgb(85, 85, 85); border-bottom-color: rgb(85, 85, 85); }
+  div#cgit table.ssdiff td.head { border-top-color: rgb(85, 85, 85); border-bottom-color: rgb(85, 85, 85); }
+  div#cgit table.ssdiff td.head div.head { color: rgb(238, 238, 238); }
+  div#cgit table.ssdiff td.foot { border-top-color: rgb(85, 85, 85); }
+}body.hl { background-color: rgb(224, 234, 238); }pre.hl { color: rgb(0, 0, 0); background-color: rgb(224, 234, 238); font-size: 10pt; font-family: "Courier New", monospace; }.hl.num { color: rgb(176, 126, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(191, 3, 3); }.hl.pps { color: rgb(129, 129, 0); }.hl.slc { color: rgb(131, 129, 131); font-style: italic; }.hl.com { color: rgb(131, 129, 131); font-style: italic; }.hl.ppc { color: rgb(0, 130, 0); }.hl.opt { color: rgb(0, 0, 0); }.hl.ipl { color: rgb(0, 87, 174); }.hl.lin { color: rgb(85, 85, 85); }.hl.kwa { color: rgb(0, 0, 0); font-weight: bold; }.hl.kwb { color: rgb(0, 87, 174); }.hl.kwc { color: rgb(0, 0, 0); font-weight: bold; }.hl.kwd { color: rgb(1, 1, 129); }</style></head>
+<body>
+<div id="cgit"><table id="header">
+<tbody><tr>
+<td class="logo" rowspan="2"><a href="/"><img src="data:image/png;base64,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" alt="cgit logo"></a></td>
+<td class="main"><a href="/">index</a> : <a href="/pub/scm/linux/kernel/git/riscv/linux.git/">kernel/git/riscv/linux.git</a></td><td class="form"><form method="get">
+<input type="hidden" name="id" value="d252435aca44"><select name="h" onchange="this.form.submit();">
+<option value="fixes">fixes</option>
+<option value="for-next">for-next</option>
+<option value="master" selected="selected">master</option>
+<option value="sbiv3">sbiv3</option>
+</select> <input type="submit" value="switch"></form></td></tr>
+<tr><td class="sub">RISC-V Linux kernel tree</td><td class="sub right">RISC-V Group</td></tr></tbody></table>
+<table class="tabs"><tbody><tr><td>
+<a href="/pub/scm/linux/kernel/git/riscv/linux.git/about/">about</a><a href="/pub/scm/linux/kernel/git/riscv/linux.git/">summary</a><a href="/pub/scm/linux/kernel/git/riscv/linux.git/refs/?id=d252435aca44">refs</a><a href="/pub/scm/linux/kernel/git/riscv/linux.git/log/">log</a><a href="/pub/scm/linux/kernel/git/riscv/linux.git/tree/?id=d252435aca44">tree</a><a class="active" href="/pub/scm/linux/kernel/git/riscv/linux.git/commit/?id=d252435aca44">commit</a><a href="/pub/scm/linux/kernel/git/riscv/linux.git/diff/?id=d252435aca44">diff</a><a href="/pub/scm/linux/kernel/git/riscv/linux.git/stats/">stats</a></td><td class="form"><form class="right" method="get" action="/pub/scm/linux/kernel/git/riscv/linux.git/log/">
+<input type="hidden" name="id" value="d252435aca44"><select name="qt">
+<option value="grep">log msg</option>
+<option value="author">author</option>
+<option value="committer">committer</option>
+<option value="range">range</option>
+</select>
+<input class="txt" type="search" size="10" name="q" value="">
+<input type="submit" value="search">
+</form>
+</td></tr></tbody></table>
+<div class="content"><div class="cgit-panel"><b>diff options</b><form method="get"><input type="hidden" name="id" value="d252435aca44"><table><tbody><tr><td colspan="2"></td></tr><tr><td class="label">context:</td><td class="ctrl"><select name="context" onchange="this.form.submit();"><option value="1">1</option><option value="2">2</option><option value="3" selected="selected">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="40">40</option></select></td></tr><tr><td class="label">space:</td><td class="ctrl"><select name="ignorews" onchange="this.form.submit();"><option value="0" selected="selected">include</option><option value="1">ignore</option></select></td></tr><tr><td class="label">mode:</td><td class="ctrl"><select name="dt" onchange="this.form.submit();"><option value="0" selected="selected">unified</option><option value="1">ssdiff</option><option value="2">stat only</option></select></td></tr><tr><td></td><td class="ctrl"><noscript><input type='submit' value='reload'/></noscript></td></tr></tbody></table></form></div><table summary="commit info" class="commit-info">
+<tbody><tr><th>author</th><td>BillXiang &lt;xiangwencheng@lanxincomputing.com&gt;</td><td class="right">2025-02-21 18:45:38 +0800</td></tr>
+<tr><th>committer</th><td>Anup Patel &lt;anup@brainfault.org&gt;</td><td class="right">2025-02-21 17:27:32 +0530</td></tr>
+<tr><th>commit</th><td colspan="2" class="oid"><a href="/pub/scm/linux/kernel/git/riscv/linux.git/commit/?id=d252435aca44d647d57b84de5108556f9c97614a">d252435aca44d647d57b84de5108556f9c97614a</a> (<a href="/pub/scm/linux/kernel/git/riscv/linux.git/patch/?id=d252435aca44d647d57b84de5108556f9c97614a">patch</a>)</td></tr>
+<tr><th>tree</th><td colspan="2" class="oid"><a href="/pub/scm/linux/kernel/git/riscv/linux.git/tree/?id=d252435aca44">61be36ac8e60b550acc5ce2684747bd2ec471c0e</a></td></tr>
+<tr><th>parent</th><td colspan="2" class="oid"><a href="/pub/scm/linux/kernel/git/riscv/linux.git/commit/?id=351e02b1733b057e33fe13fc03ca93ec799e4f78">351e02b1733b057e33fe13fc03ca93ec799e4f78</a> (<a href="/pub/scm/linux/kernel/git/riscv/linux.git/diff/?id=d252435aca44&amp;id2=351e02b1733b057e33fe13fc03ca93ec799e4f78">diff</a>)</td></tr><tr><th>download</th><td colspan="2" class="oid"><a href="/pub/scm/linux/kernel/git/riscv/linux.git/snapshot/linux-d252435aca44.tar.gz">linux-d252435aca44.tar.gz</a><br></td></tr></tbody></table>
+<div class="commit-subject">riscv: KVM: Remove unnecessary vcpu kick</div><div class="commit-msg">Remove the unnecessary kick to the vCPU after writing to the vs_file
+of IMSIC in kvm_riscv_vcpu_aia_imsic_inject.
+
+For vCPUs that are running, writing to the vs_file directly forwards
+the interrupt as an MSI to them and does not need an extra kick.
+
+For vCPUs that are descheduled after emulating WFI, KVM will enable
+the guest external interrupt for that vCPU in
+kvm_riscv_aia_wakeon_hgei. This means that writing to the vs_file
+will cause a guest external interrupt, which will cause KVM to wake
+up the vCPU in hgei_interrupt to handle the interrupt properly.
+
+Signed-off-by: BillXiang &lt;xiangwencheng@lanxincomputing.com&gt;
+Reviewed-by: Andrew Jones &lt;ajones@ventanamicro.com&gt;
+Reviewed-by: Radim Krčmář &lt;rkrcmar@ventanamicro.com&gt;
+Link: <a href="https://lore.kernel.org/r/20250221104538.2147-1-xiangwencheng@lanxincomputing.com">https://lore.kernel.org/r/20250221104538.2147-1-xiangwencheng@lanxincomputing.com</a>
+Signed-off-by: Anup Patel &lt;anup@brainfault.org&gt;
+</div><div class="diffstat-header"><a href="/pub/scm/linux/kernel/git/riscv/linux.git/diff/?id=d252435aca44">Diffstat</a></div><table summary="diffstat" class="diffstat"><tbody><tr><td class="mode">-rw-r--r--</td><td class="upd"><a href="/pub/scm/linux/kernel/git/riscv/linux.git/diff/arch/riscv/kvm/aia_imsic.c?id=d252435aca44">arch/riscv/kvm/aia_imsic.c</a></td><td class="right">1</td><td class="graph"><table summary="file diffstat" width="1%"><tbody><tr><td class="add" style="width: 0.0%;"></td><td class="rem" style="width: 100.0%;"></td><td class="none" style="width: 0.0%;"></td></tr></tbody></table></td></tr>
+</tbody></table><div class="diffstat-summary">1 files changed, 0 insertions, 1 deletions</div><table summary="diff" class="diff"><tbody><tr><td><div class="head">diff --git a/arch/riscv/kvm/aia_imsic.c b/arch/riscv/kvm/aia_imsic.c<br>index a8085cd8215e35..29ef9c2133a933 100644<br>--- a/<a href="/pub/scm/linux/kernel/git/riscv/linux.git/tree/arch/riscv/kvm/aia_imsic.c?id=351e02b1733b057e33fe13fc03ca93ec799e4f78">arch/riscv/kvm/aia_imsic.c</a><br>+++ b/<a href="/pub/scm/linux/kernel/git/riscv/linux.git/tree/arch/riscv/kvm/aia_imsic.c?id=d252435aca44d647d57b84de5108556f9c97614a">arch/riscv/kvm/aia_imsic.c</a></div><div class="hunk">@@ -974,7 +974,6 @@ int kvm_riscv_vcpu_aia_imsic_inject(struct kvm_vcpu *vcpu,</div><div class="ctx"> </div><div class="ctx"> 	if (imsic-&gt;vsfile_cpu &gt;= 0) {</div><div class="ctx"> 		writel(iid, imsic-&gt;vsfile_va + IMSIC_MMIO_SETIPNUM_LE);</div><div class="del">-		kvm_vcpu_kick(vcpu);</div><div class="ctx"> 	} else {</div><div class="ctx"> 		eix = &amp;imsic-&gt;swfile-&gt;eix[iid / BITS_PER_TYPE(u64)];</div><div class="ctx"> 		set_bit(iid &amp; (BITS_PER_TYPE(u64) - 1), eix-&gt;eip);</div></td></tr></tbody></table></div> <!-- class=content -->
+<div class="footer">generated by <a href="https://git.zx2c4.com/cgit/about/">cgit 1.2.3-korg</a> (<a href="https://git-scm.com/">git 2.43.0</a>) at 2025-08-25 06:12:11 +0000</div>
+</div> <!-- id=cgit -->
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
