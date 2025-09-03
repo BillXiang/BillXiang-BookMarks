@@ -1,0 +1,799 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/调度/一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器2024.pdf专利下载-原创力专利 (2025-09-03 11：11：18).html
+ Page saved with X-Webpage-Conserve 
+ url: https://zhuanli.book118.com/view/1394370237t2sg2116937494.html
+ Summary: 
+-->
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器2024.pdf专利下载-原创力专利</title>
+    <meta name="description" content="本发明公开了一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器，主体为VMSCH，其特征在于：所述VMSCH即为虚拟机vcpu调度器，所述VMSCH优先级介于RT调度策略与CFS调度策略之间，优先级为99，并将RT优先级由1‑99调整为1‑98，所述VMSCH仅管理vcpu线程的调度，不管理其它线程。本发明中vcpu独占pcpu的占空比可动态配置，也无需开机启动配置，避免了采用isolate隔离出pcpu给vcpu使用方案缺少的灵活性，避免了RT调度策略在带宽限制发生之后且idle状态导致的pcpu资源浪费，且本发明具备CPU架构无关性，实现之后，即可天然支持任何CPU体系架构，比如X86、ARM和龙芯等，具有极为广泛的适用范围。">
+    <meta name="author" content="book118.com">
+    <meta name="copyright" content="book118.com">
+    <meta name="generator" content="book118.com">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <link rel="shortcut icon" href="/static/lib/icon/favicon.ico">
+    <link rel="stylesheet" href="/static/home/common/css/common.css?v=1.0.20230201">
+    <script src="https://hm.baidu.com/hm.js?1d9ce0aa0f5bc1823940d03a850503de"></script><script type="text/javascript" src="/static/plugin/jquery/jquery.min.js"></script>
+    <script type="text/javascript">
+        document.domain = 'book118.com';
+    </script>
+    <!--[if IE]>
+    <script type="text/javascript" src="/static/plugin/jquery/jquery.ie.js"></script>
+    <![endif]-->
+
+
+<link href="/static/home/view/css/index.css?v=1.0.20221111" rel="stylesheet" type="text/css">
+
+<link rel="stylesheet" href="https://zhuanli.book118.com/static/plugin/layer/theme/default/layer.css?v=3.1.1" id="layuicss-layer"><script type="text/javascript" src="/static/home/view/js/preview.pic.js?v=1.0.020221111"></script><link rel="stylesheet" type="text/css" href="https://static.book118.com/open/static/webpreview/theme/default/webpreview.css?v=2023.07.17"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style><style>* { margin: 0px; padding: 0px; box-sizing: content-box; }body { min-width: 1200px; }body, textarea { font-family: MicrosoftYaHei, arial, helvetica, sans-serif; font-size: 14px; }body { background-color: rgb(247, 247, 247); }h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: normal; }a { color: rgb(102, 102, 102); text-decoration: none; cursor: pointer; }a:active, a:hover { outline: 0px; }b, strong { font-weight: 600; }li { list-style: none; }table { border-collapse: collapse; border-spacing: 0px; }button { overflow: visible; outline: none; }input, textarea, select { outline: none; }img { border: 0px; }.clear { zoom: 1; }.clear::after { content: ""; display: block; clear: both; height: 0px; overflow: hidden; visibility: hidden; }.container { width: 1200px; min-width: 1200px; max-width: 100%; margin: 0px auto; }.container::after, .container::before { display: table; content: " "; clear: both; overflow: hidden; visibility: hidden; }.icon { display: block; background-repeat: no-repeat; }.icon-font { display: inline-block; background-repeat: no-repeat; }.loading { background: url("../image/icon/lazy-load.png") center center no-repeat; }img.lazy-error { background: rgb(245, 245, 245) url("../image/icon/lazy-error.png") center center no-repeat; }.header { position: relative; z-index: 99; width: 100%; height: 68px; background: rgba(0, 0, 0, 0.2); }.header-common { background-color: rgb(246, 112, 31); }.header .logo { float: left; padding: 14px 0px; width: 215px; height: 40px; }.header .logo a { display: inline-block; overflow: hidden; vertical-align: middle; }.header .logo a img { float: left; width: 40px; height: 40px; }.header .logo a strong, .header .logo a span { display: block; margin-left: 46px; }.header .logo a strong { height: 24px; line-height: 24px; font-size: 18px; font-weight: 600; color: rgb(255, 255, 255); }.header .logo a span { height: 16px; line-height: 16px; font-size: 12px; color: rgb(255, 255, 255); letter-spacing: 4.5px; }.header .logo .icon-header-d { margin-left: 8px; width: 5px; height: 5px; background: rgb(255, 255, 255); border-radius: 50%; vertical-align: middle; }.header .logo .patent { display: inline-block; height: 40px; line-height: 40px; font-size: 20px; font-weight: 400; color: rgb(255, 255, 255); vertical-align: middle; }.header .nav { float: left; margin-left: 30px; }.header .nav ul.list { overflow: hidden; }.header .nav ul.list li { margin: 0px 28px; float: left; height: 68px; line-height: 68px; font-size: 16px; }.header .nav ul.list li a { display: block; color: rgb(255, 255, 255); }.header .nav ul.list li a.active { height: 66px; line-height: 66px; border-bottom: 2px solid rgb(240, 240, 240); }.header .search { float: right; margin: 14px 45px 14px 0px; background: rgb(255, 234, 222); border-radius: 5px; }.header .search input { padding: 0px 15px; width: 330px; height: 40px; line-height: 40px; border: 0px; outline: none; border-radius: 5px; vertical-align: middle; background-color: rgb(255, 234, 222); }.header .search i { display: inline-block; height: 20px; width: 1px; background-color: rgb(221, 221, 221); vertical-align: middle; }.header .search button { padding: 0px 15px; height: 40px; line-height: 40px; font-size: 14px; border: 0px; color: rgb(246, 112, 31); outline: none; cursor: pointer; background-color: rgb(255, 234, 222); border-radius: 5px; vertical-align: middle; }.header .member { float: right; height: 68px; line-height: 68px; cursor: pointer; }.header .member span { display: inline-block; margin-left: 10px; width: 78px; font-size: 16px; color: rgb(255, 255, 255); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; vertical-align: middle; }.header .member span:hover { opacity: 0.8; }span.cover { display: block; width: 88px; height: 124px; border: 1px solid rgb(247, 247, 247); overflow: hidden; }span.cover strong { transition: 0.6s; }span.cover:hover { border: 1px solid rgb(246, 112, 31); }span.cover:hover strong { transform: scale(1.3); }.front { position: relative; display: block; float: left; margin-right: 15px; width: 90px; height: 126px; background: rgb(251, 246, 243); border-radius: 4px; font-weight: normal; }.front em { position: absolute; display: block; width: 190%; font-style: normal; }.front em.title { position: absolute; top: 10px; left: -4px; width: 100%; font-size: 12px; color: rgb(68, 68, 68); transform: scale(0.7); height: 30px; overflow: hidden; display: -webkit-box; text-overflow: ellipsis; -webkit-line-clamp: 2; -moz-box-orient: vertical; }.front em.open-num, .front em.apply-num, .front em.date { left: -35px; font-size: 12px; color: rgb(68, 68, 68); transform: scale(0.5); }.front em.date { top: 45px; }.front em.open-num { top: 80px; }.front em.apply-num { top: 90px; }ul.patent-common-list > li { padding: 21px 0px; width: 100%; border-bottom: 1px solid rgb(238, 238, 238); overflow: hidden; }ul.patent-common-list > li:hover { background-color: rgb(255, 255, 255); }ul.patent-common-list > li .patent { display: block; }ul.patent-common-list > li .info { width: 87%; float: right; }ul.patent-common-list > li .info .title { height: 24px; }ul.patent-common-list > li .info .title label { float: left; margin-right: 10px; padding: 0px 4px; min-width: 72px; height: 24px; line-height: 24px; text-align: center; font-size: 14px; color: rgb(246, 112, 31); font-weight: bold; background: rgb(255, 241, 233); border-radius: 4px; }ul.patent-common-list > li .info .title strong { float: left; display: block; height: 24px; width: 530px; font-size: 16px; line-height: 24px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: rgb(0, 0, 0); }ul.patent-common-list > li .info .title strong { color: rgb(0, 0, 0); }ul.patent-common-list > li .info .title button.btn-down { float: right; width: 90px; height: 22px; line-height: 22px; font-size: 14px; text-align: center; color: rgb(246, 112, 31); background: rgb(255, 255, 255); border: 1px solid rgb(246, 112, 31); border-radius: 3px; }ul.patent-common-list > li .info .title button.btn-down:hover { background-color: rgb(246, 112, 31); color: rgb(255, 255, 255); }ul.patent-common-list > li .info ul.params { padding: 10px 0px; width: 100%; height: 18px; }ul.patent-common-list > li .info ul.params > li { float: left; margin-right: 40px; width: 151px; font-size: 12px; color: rgb(153, 153, 153); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }ul.patent-common-list > li .info ul.params > li.applicant { margin: 0px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }ul.patent-common-list > li .info .describe, ul.patent-common-list > li .info .describe a { margin-bottom: 12px; width: 100%; height: 44px; line-height: 21px; color: rgb(102, 102, 102); display: -webkit-box; -webkit-line-clamp: 2; -moz-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }ul.patent-common-list > li .info .describe img { display: none; }ul.patent-common-list > li .info dl.date { width: 100%; font-size: 12px; color: rgb(170, 170, 170); overflow: hidden; }ul.patent-common-list > li .info dl.date dd { float: left; height: 18px; line-height: 18px; }ul.patent-common-list > li .info dl.date dd.num { float: right; margin-right: 24px; }ul.patent-common-list > li .info dl.date dd.num em { position: relative; top: 1px; }ul.patent-common-list > li .info dl.date dd.num em, ul.patent-common-list > li .info dl.date dd.num i { font-style: normal; display: inline-block; vertical-align: middle; }ol.breadcrumb { height: 40px; overflow: hidden; }ol.breadcrumb li { float: left; line-height: 40px; padding: 0px 2px 0px 0px; font-size: 12px; color: rgb(153, 153, 153); }ol.breadcrumb li a { display: inline-block; padding: 0px 0px 0px 2px; color: rgb(153, 153, 153); max-width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; vertical-align: middle; }.footer { margin-top: 20px; padding: 41px 0px 20px; background-color: rgb(255, 255, 255); }.footer dl { margin: 0px auto 30px; width: 462px; overflow: hidden; }.footer dl dd { float: left; padding: 0px 45px; font-size: 16px; font-weight: bold; }.footer dl dd a { color: rgb(0, 0, 0); }.footer dl dd a:hover { color: rgb(246, 112, 31); text-decoration: underline; }.footer ul li { padding-bottom: 15px; text-align: center; font-size: 12px; color: rgb(102, 102, 102); }.footer ul li.desc { line-height: 20px; }.footer ul li a { text-decoration: underline; }.footer ul li a:hover { color: rgb(246, 112, 31); }.ie-layer { min-height: 1px; height: auto; overflow: hidden; padding: 15px 20px 0px; }.ie-layer p { text-indent: 24px; line-height: 24px; }.ie-layer dl { min-height: 1px; height: auto; overflow: hidden; padding: 10px 0px; }.ie-layer dl dt { float: left; width: 116px; line-height: 20px; }.ie-layer dl dd { float: left; width: 300px; min-height: 1px; height: auto; overflow: hidden; }.ie-layer .know { width: 100%; min-height: 1px; height: auto; overflow: hidden; text-align: center; }.ie-layer button { margin: 15px auto; width: 120px; height: 36px; line-height: 34px; border: 1px solid rgb(221, 221, 221); border-radius: 3px; background-color: rgb(245, 245, 245); font-size: 14px; color: rgb(102, 102, 102); text-align: center; cursor: pointer; }.icon-common { background-image: url("../image/icon/icon-common.png"); }.icon-common-header { width: 26px; height: 26px; vertical-align: middle; background-position: -51px -7px; }.icon-common-police { width: 20px; height: 24px; background-position: -90px -11px; vertical-align: middle; }.icon-common-site { width: 12px; height: 12px; vertical-align: middle; background-position: -117px -15px; }</style><style>.header { background-color: rgb(246, 112, 31); }.main { position: relative; float: left; width: 875px; z-index: 99; }.main .detail { padding: 20px; background: rgb(255, 255, 255); border-radius: 4px; overflow: hidden; }.main .detail .title { margin-bottom: 16px; overflow: hidden; }.main .detail .title .type { float: left; display: block; margin-right: 10px; padding: 0px 10px; height: 30px; line-height: 30px; font-weight: bold; color: rgb(246, 112, 31); background: rgb(255, 241, 233); border-radius: 6px; }.main .detail .title h1 { float: left; display: block; width: 720px; font-size: 24px; }.main .detail .date { margin-bottom: 14px; font-size: 12px; color: rgb(102, 102, 102); }.main .detail .date span { margin-right: 5px; }.main .detail .date em { font-style: normal; vertical-align: middle; }.main .detail .msg { padding: 20px; color: rgb(68, 68, 68); background-color: rgb(250, 250, 250); }.main .detail .msg ul { overflow: hidden; }.main .detail .msg ul li { float: left; padding-bottom: 20px; width: 50%; }.main .detail .msg .abstract { margin-bottom: 20px; color: rgb(102, 102, 102); line-height: 26px; }.main .detail .msg .keyword { color: rgb(102, 102, 102); }.main .detail .msg .keyword em { display: inline-block; margin-right: 8px; font-style: normal; }.preview .preview-bd { position: relative; padding: 20px; background-color: rgb(255, 255, 255); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }.preview .preview-ft { margin-top: 10px; border-radius: 4px; background-color: rgb(255, 255, 255); }.preview .preview-ft .btns { margin: 0px auto; padding: 30px 0px; width: 415px; border-bottom: 1px dashed rgb(204, 204, 204); }.preview .preview-ft .btns button { display: inline-block; height: 49px; line-height: 49px; text-align: center; border-radius: 6px; border: 1px solid rgb(246, 112, 31); cursor: pointer; }.preview .preview-ft .btns span.end-tips { display: block; margin: 0px auto; padding-bottom: 15px; color: rgb(153, 153, 153); text-align: center; }.preview .preview-ft .btns span.end-tips em { font-style: normal; color: rgb(230, 106, 31); }.preview .preview-ft .btn-continue { margin: 0px 5px 0px 35px; width: 138px; color: rgb(246, 112, 31); background: rgb(255, 255, 255); }.preview .preview-ft .btn-continue:hover { color: rgb(255, 255, 255); background: rgb(246, 112, 31); }.preview .preview-ft .btn-download { margin: 0px 35px 0px 5px; width: 188px; color: rgb(255, 255, 255); background: rgb(246, 112, 31); }.preview .preview-ft .btn-download:hover { background-color: rgb(230, 106, 31); }.preview .preview-ft .btn-free-download { position: relative; display: block !important; margin: 0px auto; }.preview .preview-ft .preview-tips { padding-top: 30px; text-align: center; color: rgb(246, 112, 31); }.preview .preview-ft .tips { padding: 12px 0px; text-align: center; font-size: 12px; color: rgb(153, 153, 153); }.preview .preview-ft .tips i, .preview .preview-ft .tips span { vertical-align: middle; }.substance, .new { margin-top: 10px; padding: 20px; background-color: rgb(255, 255, 255); border-radius: 6px; }.substance h2, .new h2 { padding-bottom: 20px; font-size: 16px; font-weight: bold; }.substance p { color: rgb(153, 153, 153); font-size: 12px; line-height: 20px; }.patent-common-list { border-top: 1px solid rgb(240, 240, 240); }.grant-list { margin-top: -12px; border-top: 1px solid rgb(240, 240, 240); }.grant-list ul.patent-view-list { overflow: hidden; }.grant-list ul.patent-view-list li.item { float: left; padding: 12px 0px; margin: 0px 8px; width: 400px; border-bottom: 1px solid rgb(240, 240, 240); }.grant-list ul.patent-view-list li .info { width: 295px; float: right; }.grant-list ul.patent-view-list li .info .title strong { display: block; width: 100%; height: 24px; line-height: 24px; font-size: 16px; font-weight: 400; color: rgb(17, 17, 17); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }.grant-list ul.patent-view-list li .info .title label { display: inline-block; padding: 0px 8px; margin-right: 11px; height: 24px; line-height: 24px; font-size: 14px; text-align: center; font-weight: bold; background: rgb(255, 241, 233); color: rgb(246, 112, 31); border-radius: 4px; vertical-align: middle; }.grant-list ul.patent-view-list li .info .title strong span { color: rgb(0, 0, 0); font-weight: bolder; vertical-align: middle; }.grant-list ul.patent-view-list li .info .title strong span:hover { color: rgb(246, 112, 31); text-decoration: underline; }.grant-list ul.patent-view-list li .info dl.params { overflow: hidden; color: rgb(153, 153, 153); font-size: 12px; }.grant-list ul.patent-view-list li .info dl.params dd { float: left; padding: 5px 2.5%; height: 21px; line-height: 21px; width: 95%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; background: rgb(250, 250, 250); }.grant-list ul.patent-view-list li .info dl.params dd.browse { text-align: right; }.grant-list ul.patent-view-list li .info dl.params dd.spec { padding: 10px 2.5%; background: rgb(255, 255, 255); overflow: hidden; }.grant-list ul.patent-view-list li .info dl.params dd.spec .date { float: left; }.grant-list ul.patent-view-list li .info dl.params dd.spec .browse { float: right; }.grant-list ul.patent-view-list li .info dl.params dd em { display: inline-block; vertical-align: -2px; font-style: normal; }.side { float: right; width: 315px; }.side .mechanism-about, .side .patent-about { margin-bottom: 10px; padding: 20px; background: rgb(255, 255, 255); border-radius: 6px; }.side .patent-about { display: none; }.side .mechanism-about { position: relative; z-index: 1; }.side .mechanism-about .logo img { display: block; width: 100%; height: 55px; }.side .mechanism-about ul.list { width: 80%; margin: 0px auto -10px; padding-top: 20px; overflow: hidden; }.side .mechanism-about ul.list li { float: left; width: 50%; cursor: pointer; }.side .mechanism-about ul.list li img, .side .mechanism-about ul.list li span { display: block; margin: 0px auto; }.side .mechanism-about ul.list li img { width: 90px; height: 126px; border: 1px solid rgb(221, 221, 221); }.side .mechanism-about ul.list li img:hover { border-color: rgb(230, 106, 31); }.side .mechanism-about ul.list li span { padding: 10px 0px 0px; font-size: 12px; color: rgb(102, 102, 102); text-align: center; }.side .patent-about h2 { margin-bottom: 20px; font-size: 16px; font-weight: bold; }.side .patent-about ul.list li { margin-bottom: 10px; overflow: hidden; }.side .patent-about ul.list li a { display: block; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }.side .patent-about ul.list li:hover a { color: rgb(246, 112, 31); }.side .patent-about ul.list li span { color: rgb(246, 112, 31); vertical-align: middle; }.side .patent-about ul.list li strong { font-weight: normal; vertical-align: middle; }.side .introduce img { display: block; width: 100%; border-radius: 6px; }.side-fixed { position: fixed; width: 100%; top: 0px; left: 0px; overflow: hidden; }.side-fixed .side { z-index: 9; }#collection { position: fixed; bottom: 300px; left: 50%; margin-left: -700px; z-index: 999; }.collection li { position: relative; margin: 10px 0px; width: 68px; background: rgb(255, 255, 255); border-radius: 6px; box-shadow: rgb(221, 221, 221) 0px 0px 22px 0px; }.collection li em { position: absolute; right: -10px; top: -6px; padding: 3px; display: none; width: 24px; text-align: center; font-style: normal; font-size: 12px; color: rgb(255, 255, 255); background: rgb(246, 112, 31); border-radius: 6px; }.collection li a { display: block; padding: 12px 20px; }.collection li a.active { color: rgb(246, 112, 31); }.collection li i.add-num { position: absolute; width: 100%; font-style: normal; top: 0px; color: rgb(246, 112, 31); text-align: center; }.collection li #btn_view_collection:hover i { background-position: 0px -32px; }.collection li #btn_view_assist:hover i { background-position: -32px -32px; }.side .introduce a { display: block; width: 100%; overflow: hidden; }.side .introduce img { display: block; width: 100%; border-radius: 6px; }.side .introduce img { transition: 0.6s; }.side .introduce img:hover { transform: scale(1.3); }.icon-view { background: url("../image/icon/icon-view.png"); }.icon-view-browse { width: 20px; height: 15px; background-position: -65px -35px; vertical-align: middle; }.icon-view-tips { margin-right: 5px; width: 14px; height: 14px; background-position: -68px -4px; }.icon-view-grant { position: absolute; top: 0px; right: 0px; width: 52px; height: 52px; background-position: -97px -1px; z-index: -1; }.icon-view-limit { position: absolute; top: -12px; right: 0px; width: 39px; height: 24px; background-position: -169px -15px; }.icon-view-collection, .icon-view-assist, .icon-view-collection-active, .icon-view-assist-active { margin: 0px auto 5px; width: 21px; height: 21px; }.icon-view-collection { background-position: 0px 0px; }.icon-view-collection-active { background-position: 0px -32px; }.icon-view-assist { background-position: -32px 0px; }.icon-view-assist-active { background-position: -32px -32px; }.webpreview-error .btn-reload, .webpreview-last .btn-sub, .webpreview-feedback .btn-sub { background-color: rgb(230, 106, 31) !important; border-color: rgb(230, 106, 31) !important; }.webpreview-error .btn-feedback, .webpreview-last .btn-cel { border-color: rgb(230, 106, 31) !important; color: rgb(230, 106, 31) !important; }.webpreview-layer-title { background-color: rgb(230, 106, 31) !important; }</style><style>.layui-layer-imgbar, .layui-layer-imgtit a, .layui-layer-tab .layui-layer-title span, .layui-layer-title { text-overflow: ellipsis; white-space: nowrap; }html #layuicss-layer { display: none; position: absolute; width: 1989px; }.layui-layer, .layui-layer-shade { position: fixed; pointer-events: auto; }.layui-layer-shade { top: 0px; left: 0px; width: 100%; height: 100%; }.layui-layer { top: 150px; left: 0px; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border-radius: 2px; box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 50px; }.layui-layer-close { position: absolute; }.layui-layer-content { position: relative; }.layui-layer-border { border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 5px; }.layui-layer-load { background: rgb(238, 238, 238) url("loading-1.gif") center center no-repeat; }.layui-layer-ico { background: url("icon.png?v=20210802") no-repeat; }.layui-layer-btn a, .layui-layer-dialog .layui-layer-ico, .layui-layer-setwin a { display: inline-block; vertical-align: top; }.layui-layer-move { display: none; position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; cursor: move; opacity: 0; background-color: rgb(255, 255, 255); z-index: 2147483647; }.layui-layer-resize { position: absolute; width: 15px; height: 15px; right: 0px; bottom: 0px; cursor: se-resize; }.layer-anim { animation-fill-mode: both; animation-duration: 0.3s; }@keyframes layer-bounceIn {
+0% { opacity: 0; transform: scale(0.5); }
+100% { opacity: 1; transform: scale(1); }
+}@keyframes layer-bounceIn {
+0% { opacity: 0; transform: scale(0.5); }
+100% { opacity: 1; transform: scale(1); }
+}.layer-anim-00 { animation-name: layer-bounceIn; }@keyframes layer-zoomInDown {
+0% { opacity: 0; transform: scale(0.1) translateY(-2000px); animation-timing-function: ease-in-out; }
+60% { opacity: 1; transform: scale(0.475) translateY(60px); animation-timing-function: ease-out; }
+}@keyframes layer-zoomInDown {
+0% { opacity: 0; transform: scale(0.1) translateY(-2000px); animation-timing-function: ease-in-out; }
+60% { opacity: 1; transform: scale(0.475) translateY(60px); animation-timing-function: ease-out; }
+}.layer-anim-01 { animation-name: layer-zoomInDown; }@keyframes layer-fadeInUpBig {
+0% { opacity: 0; transform: translateY(2000px); }
+100% { opacity: 1; transform: translateY(0px); }
+}@keyframes layer-fadeInUpBig {
+0% { opacity: 0; transform: translateY(2000px); }
+100% { opacity: 1; transform: translateY(0px); }
+}.layer-anim-02 { animation-name: layer-fadeInUpBig; }@keyframes layer-zoomInLeft {
+0% { opacity: 0; transform: scale(0.1) translateX(-2000px); animation-timing-function: ease-in-out; }
+60% { opacity: 1; transform: scale(0.475) translateX(48px); animation-timing-function: ease-out; }
+}@keyframes layer-zoomInLeft {
+0% { opacity: 0; transform: scale(0.1) translateX(-2000px); animation-timing-function: ease-in-out; }
+60% { opacity: 1; transform: scale(0.475) translateX(48px); animation-timing-function: ease-out; }
+}.layer-anim-03 { animation-name: layer-zoomInLeft; }@keyframes layer-rollIn {
+0% { opacity: 0; transform: translateX(-100%) rotate(-120deg); }
+100% { opacity: 1; transform: translateX(0px) rotate(0deg); }
+}@keyframes layer-rollIn {
+0% { opacity: 0; transform: translateX(-100%) rotate(-120deg); }
+100% { opacity: 1; transform: translateX(0px) rotate(0deg); }
+}.layer-anim-04 { animation-name: layer-rollIn; }@keyframes layer-fadeIn {
+0% { opacity: 0; }
+100% { opacity: 1; }
+}.layer-anim-05 { animation-name: layer-fadeIn; }@keyframes layer-shake {
+0%, 100% { transform: translateX(0px); }
+10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+20%, 40%, 60%, 80% { transform: translateX(10px); }
+}@keyframes layer-shake {
+0%, 100% { transform: translateX(0px); }
+10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+20%, 40%, 60%, 80% { transform: translateX(10px); }
+}.layer-anim-06 { animation-name: layer-shake; }@keyframes fadeIn {
+0% { opacity: 0; }
+100% { opacity: 1; }
+}.layui-layer-title { padding: 0px 20px; height: 42px; text-align: center; line-height: 42px; font-size: 16px; color: rgb(255, 255, 255); overflow: hidden; background-color: rgb(69, 141, 236); }.layui-layer-setwin { position: absolute; right: 15px; top: 15px; font-size: 0px; line-height: initial; }.layui-layer-setwin a { position: relative; width: 16px; height: 16px; margin-left: 10px; font-size: 12px; }.layui-layer-setwin .layui-layer-min cite { position: absolute; width: 14px; height: 2px; left: 0px; top: 50%; margin-top: -1px; background-color: rgb(46, 45, 60); cursor: pointer; }.layui-layer-setwin .layui-layer-min:hover cite { background-color: rgb(45, 147, 202); }.layui-layer-setwin .layui-layer-max { background-position: -32px -40px; }.layui-layer-setwin .layui-layer-max:hover { background-position: -16px -40px; }.layui-layer-setwin .layui-layer-maxmin { background-position: -65px -40px; }.layui-layer-setwin .layui-layer-maxmin:hover { background-position: -49px -40px; }.layui-layer-setwin .layui-layer-close1 { background-position: -102px -38px; cursor: pointer; }.layui-layer-setwin .layui-layer-close1:hover { opacity: 0.7; }.layui-layer-setwin .layui-layer-close2 { position: absolute; right: -28px; top: -28px; width: 30px; height: 30px; margin-left: 0px; background-position: -149px -31px; }.layui-layer-setwin .layui-layer-close2:hover { background-position: -180px -31px; }.layui-layer-setwin .layui-layer-close3 { background-position: -84px -38px; }.layui-layer-setwin .layui-layer-close3:hover { opacity: 0.6; }.layui-layer-btn { text-align: right; padding: 6px 15px 20px; pointer-events: auto; user-select: none; }.layui-layer-btn a { height: 30px; line-height: 30px; margin: 5px 10px 0px; padding: 0px 24px; border: 1px solid rgb(221, 221, 221); background-color: rgb(249, 249, 249); color: rgb(153, 153, 153); border-radius: 3px; font-weight: 400; cursor: pointer; text-decoration: none; }.layui-layer-btn a:hover { opacity: 0.9; text-decoration: none; }.layui-layer-btn a:active { opacity: 0.8; }.layui-layer-btn .layui-layer-btn0 { border-color: rgb(69, 141, 236); background-color: rgb(69, 141, 236); color: rgb(255, 255, 255); }.layui-layer-btn-l { text-align: left; }.layui-layer-btn-c { text-align: center; }.layui-layer-dialog { min-width: 260px; }.layui-layer-dialog .layui-layer-content { position: relative; padding: 20px; line-height: 24px; word-break: break-all; font-size: 14px; overflow: hidden auto; }.layui-layer-dialog .layui-layer-content .layui-layer-ico { position: absolute; top: 16px; left: 15px; width: 30px; height: 30px; }.layui-layer-ico1 { background-position: -30px 0px; }.layui-layer-ico2 { background-position: -60px 0px; }.layui-layer-ico3 { background-position: -90px 0px; }.layui-layer-ico4 { background-position: -120px 0px; }.layui-layer-ico5 { background-position: -150px 0px; }.layui-layer-ico6 { background-position: -180px 0px; }.layui-layer-rim { border: 6px solid rgba(0, 0, 0, 0.3); border-radius: 5px; box-shadow: none; }.layui-layer-msg { min-width: 180px; border: 1px solid rgb(211, 212, 211); box-shadow: none; }.layui-layer-hui { min-width: 100px; background-color: rgba(0, 0, 0, 0.6); color: rgb(255, 255, 255); border: medium; }.layui-layer-hui .layui-layer-content { padding: 12px 25px; text-align: center; }.layui-layer-dialog .layui-layer-padding { padding: 20px 20px 20px 55px; text-align: left; }.layui-layer-page .layui-layer-content { position: relative; overflow: auto; }.layui-layer-iframe .layui-layer-btn, .layui-layer-page .layui-layer-btn { padding-top: 10px; }.layui-layer-nobg { background: 0px 0px; }.layui-layer-iframe iframe { display: block; width: 100%; }.layui-layer-loading { border-radius: 100%; background: 0px 0px; box-shadow: none; border: medium; }.layui-layer-loading .layui-layer-content { width: 60px; height: 24px; background: url("loading-0.gif") no-repeat; }.layui-layer-loading .layui-layer-loading1 { width: 37px; height: 37px; background: url("loading-1.gif") no-repeat; }.layui-layer-ico16, .layui-layer-loading .layui-layer-loading2 { width: 32px; height: 32px; background: url("loading-2.gif") no-repeat; }.layui-layer-tips { background: 0px 0px; box-shadow: none; border: medium; }.layui-layer-tips .layui-layer-content { position: relative; line-height: 22px; min-width: 12px; padding: 8px 15px; font-size: 12px; border-radius: 2px; box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 3px; background-color: rgb(0, 0, 0); color: rgb(255, 255, 255); }.layui-layer-tips .layui-layer-close { right: -2px; top: -1px; }.layui-layer-tips i.layui-layer-TipsG { position: absolute; width: 0px; height: 0px; border-width: 8px; border-color: transparent; border-style: dashed; }.layui-layer-tips i.layui-layer-TipsB, .layui-layer-tips i.layui-layer-TipsT { left: 5px; border-right-style: solid; border-right-color: rgb(0, 0, 0); }.layui-layer-tips i.layui-layer-TipsT { bottom: -8px; }.layui-layer-tips i.layui-layer-TipsB { top: -8px; }.layui-layer-tips i.layui-layer-TipsL, .layui-layer-tips i.layui-layer-TipsR { top: 5px; border-bottom-style: solid; border-bottom-color: rgb(0, 0, 0); }.layui-layer-tips i.layui-layer-TipsR { left: -8px; }.layui-layer-tips i.layui-layer-TipsL { right: -8px; }.layui-layer-lan[type="dialog"] { min-width: 280px; }.layui-layer-lan .layui-layer-title { background: rgb(68, 118, 167); color: rgb(255, 255, 255); border: medium; }.layui-layer-lan .layui-layer-btn { padding: 5px 10px 10px; text-align: right; border-top: 1px solid rgb(233, 231, 231); }.layui-layer-lan .layui-layer-btn a { background: rgb(255, 255, 255); border-color: rgb(233, 231, 231); color: rgb(51, 51, 51); }.layui-layer-lan .layui-layer-btn .layui-layer-btn1 { background: rgb(201, 197, 197); }.layui-layer-molv .layui-layer-title { background: rgb(0, 159, 149); color: rgb(255, 255, 255); border: medium; }.layui-layer-molv .layui-layer-btn a { background: rgb(0, 159, 149); border-color: rgb(0, 159, 149); }.layui-layer-molv .layui-layer-btn .layui-layer-btn1 { background: rgb(146, 184, 177); }.layui-layer-iconext { background: url("icon-ext.png") no-repeat; }.layui-layer-prompt .layui-layer-input { display: block; width: 230px; height: 36px; margin: 0px auto; line-height: 30px; padding-left: 10px; border: 1px solid rgb(230, 230, 230); color: rgb(51, 51, 51); }.layui-layer-prompt textarea.layui-layer-input { width: 300px; height: 100px; line-height: 20px; padding: 6px 10px; }.layui-layer-prompt .layui-layer-content { padding: 20px; }.layui-layer-prompt .layui-layer-btn { padding-top: 0px; }.layui-layer-tab { box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 50px; }.layui-layer-tab .layui-layer-title { padding-left: 0px; overflow: visible; }.layui-layer-tab .layui-layer-title span { position: relative; float: left; min-width: 80px; max-width: 100px; padding: 0px 20px; text-align: center; overflow: hidden; cursor: pointer; }.layui-layer-tab .layui-layer-title span.layui-this { height: 43px; border-left: 1px solid rgb(238, 238, 238); border-right: 1px solid rgb(238, 238, 238); background-color: rgb(255, 255, 255); z-index: 10; }.layui-layer-tab .layui-layer-title span:first-child { border-left: medium; }.layui-layer-tabmain { line-height: 24px; clear: both; }.layui-layer-tabmain .layui-layer-tabli { display: none; }.layui-layer-tabmain .layui-layer-tabli.layui-this { display: block; }.layui-layer-photos { animation-duration: 0.8s; }.layui-layer-photos .layui-layer-content { overflow: hidden; text-align: center; }.layui-layer-photos .layui-layer-phimg img { position: relative; width: 100%; display: inline-block; vertical-align: top; }.layui-layer-imgbar, .layui-layer-imguide { display: none; }.layui-layer-imgnext, .layui-layer-imgprev { position: absolute; top: 50%; width: 27px; height: 44px; margin-top: -22px; outline: 0px; }.layui-layer-imgprev { left: 10px; background-position: -5px -5px; }.layui-layer-imgprev:hover { background-position: -33px -5px; }.layui-layer-imgnext { right: 10px; background-position: -5px -50px; }.layui-layer-imgnext:hover { background-position: -33px -50px; }.layui-layer-imgbar { position: absolute; left: 0px; bottom: 0px; width: 100%; height: 32px; line-height: 32px; background-color: rgba(0, 0, 0, 0.8); color: rgb(255, 255, 255); overflow: hidden; font-size: 0px; }.layui-layer-imgtit * { display: inline-block; vertical-align: top; font-size: 12px; }.layui-layer-imgtit a { max-width: 65%; overflow: hidden; color: rgb(255, 255, 255); }.layui-layer-imgtit a:hover { color: rgb(255, 255, 255); text-decoration: underline; }.layui-layer-imgtit em { padding-left: 10px; font-style: normal; }@keyframes layer-bounceOut {
+100% { opacity: 0; transform: scale(0.7); }
+30% { transform: scale(1.05); }
+0% { transform: scale(1); }
+}@keyframes layer-bounceOut {
+100% { opacity: 0; transform: scale(0.7); }
+30% { transform: scale(1.05); }
+0% { transform: scale(1); }
+}.layer-anim-close { animation-name: layer-bounceOut; animation-fill-mode: both; animation-duration: 0.2s; }@media screen and (max-width: 1100px) {
+  .layui-layer-iframe { overflow-y: auto; }
+}.layer-title-left, .layer-title-center, .layer-dialog-center { border-radius: 6px; }.layer-title-left iframe, .layer-title-center iframe, .layer-title-left .layui-layer-content, .layer-title-center .layui-layer-content { border-radius: 0px 0px 6px 6px; }.layer-title-left .layui-layer-title, .layer-title-center .layui-layer-title { padding: 2px 20px; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); border-bottom: 1px solid rgb(221, 221, 221); border-radius: 6px 6px 0px 0px; }.layer-title-left .layui-layer-title { text-align: left; }.layer-title-center .layui-layer-title { text-align: center; }.layer-title-left .layui-layer-btn a, .layer-title-center .layui-layer-btn a, .layer-dialog-center .layui-layer-btn a { height: 40px; line-height: 40px; background-color: rgb(238, 238, 238); border: 0px; }.layer-title-left .layui-layer-btn .layui-layer-btn0, .layer-title-center .layui-layer-btn .layui-layer-btn0, .layer-dialog-center .layui-layer-btn .layui-layer-btn0 { border-color: rgb(40, 120, 255); background-color: rgb(40, 120, 255); }.layer-title-left .layui-layer-btn .layui-layer-btn1:hover, .layer-title-center .layui-layer-btn .layui-layer-btn1:hover, .layer-dialog-center .layui-layer-btn .layui-layer-btn1:hover { color: rgb(102, 102, 102); }.layer-title-left .layui-layer-btn, .layer-title-center .layui-layer-btn, .layer-dialog-center .layui-layer-btn { padding: 30px 15px; }.layer-title-left .layui-layer-setwin, .layer-title-center .layui-layer-setwin { right: 20px; }.layer-title-left .layui-layer-setwin .layui-layer-close3, .layer-title-center .layui-layer-setwin .layui-layer-close3 { background-position: -100px -38px; }.layer-dialog-center .layui-layer-content { padding: 0px 20px; text-align: center; }</style></head>
+<body>
+<div id="header" class="header">
+    <div class="container">
+        <div class="logo">
+            <a href="https://max.book118.com" target="_blank" title="原创力文档网">
+                <img alt="logo" src="//static.book118.com/user_center_v1/static/home/images/logo.png">
+                <strong>原创力.专利</strong>
+                <span>知识共享平台</span>
+            </a>
+        </div>
+        <div class="nav">
+            <ul class="list">
+                <li><a class="" href="/" title="首页">首页</a></li>
+                <li><a class="" href="/cate-1.html" target="_blank" title="分类">分类</a></li>
+            </ul>
+        </div>
+        <div class="member">
+            <a href="javascript:;" id="btn_header_login" title="点击登陆">
+                <i class="icon-font icon-common icon-common-header"></i>
+                <span>登陆 / 注册</span>
+            </a>
+        </div>
+            <div class="search">
+                <input maxlength="50" class="search-control" name="keywords" type="text" aria-label="请输入专利标题或申请(专利）号搜索" placeholder="请输入专利标题或申请(专利）号搜索" autocomplete="off" value="一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器">
+                <i class="line"></i>
+                <button class="btn-search" title="点击搜索" id="btn_header_search">搜索</button>
+            </div>
+    </div>
+</div>
+
+<div id="site">
+    <div class="container">
+        <ol class="breadcrumb">
+            <li>您所在位置：</li>
+            <li><a href="/" title="网站首页">网站首页</a></li>
+            <li><i class="icon-font icon-common icon-common-site"></i><a href="javascript:;" title="专利分类">专利分类</a></li><li><i class="icon-font icon-common icon-common-site"></i><a href="/cate-7.html" title="物理">物理</a></li>        </ol>
+    </div>
+</div>
+<div id="main">
+    <div class="container">
+        <div class="main">
+            <div class="detail">
+                <div class="title">
+                    <div class="type">发明</div>
+                    <h1>一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器2024</h1>
+                </div>
+                <div class="date">
+                    <span>2024-04-11 07:23:53</span>
+                    <span>发布于四川</span>
+                    <span><i class="icon-font icon-view icon-view-browse"></i> <em>2</em></span>
+                </div>
+                <div class="msg">
+                    <ul>
+                        <li>申请专利号：CN202311693749.4</li>
+                        <li>公开（公告）日：2024-04-09</li>
+                        <li>公开（公告）号：CN117850961A</li>
+                        <li>申请人：天翼云科技有限公司</li>
+                    </ul>
+                    <div class="abstract"> 摘要：本发明公开了一种基于linux内核与KVM而实现的虚拟机vcpu线程专用调度器，主体为VMSCH，其特征在于：所述VMSCH即为虚拟机vcpu调度器，所述VMSCH优先级介于RT调度策略与CFS调度策略之间，优先级为99，并将RT优先级由1‑99调整为1‑98，所述VMSCH仅管理vcpu线程的调度，不管理其它线程。本发明中vcpu独占pcpu的占空比可动态配置，也无需开机启动配置，避免了采用isolate隔离出pcpu给vcpu使用方案缺少的灵活性，避免了RT调度策略在带宽限制发生之后且idle状态导致的pcpu资源浪费，且本发明具备CPU架构无关性，实现之后，即可天然支持任何CPU体系架构，比如X86、ARM和龙芯等，具有极为广泛的适用范围。</div>
+                </div>
+            </div>
+            <div class="preview">
+                <div class="preview-hd"></div>
+                <div class="preview-bd" style="cursor: grab;"><div class="webpreview-item" data-id="1" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" src="//view-cache.book118.com/view18/M04/19/01/wKh2D2YWOn2AJgHRAAC_vHA1zqw230.png" style="display: block;"><div class="pages"><span>1/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="2" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" src="//view-cache.book118.com/view23/M04/15/15/wKh2HWYWOn2AZWRMAAGUOlWKbYY212.png" style="display: block;"><div class="pages"><span>2/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="3" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view18/M01/19/01/wKh2D2YWOn2ADGPNAADGaV3ItVc957.png" src="//view-cache.book118.com/view18/M01/19/01/wKh2D2YWOn2ADGPNAADGaV3ItVc957.png" style="display: block;"><div class="pages"><span>3/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="4" style="min-height: 1121px;"><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="" data-src="//view-cache.book118.com/view21/M05/37/1C/wKh2EGYWOn2AA5o8AADThjfUQaA598.png" src="//view-cache.book118.com/view21/M05/37/1C/wKh2EGYWOn2AA5o8AADThjfUQaA598.png" style="display: block;"><div class="pages"><span>4/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-item" data-id="5" style="min-height: 1121px;"><div class="loading"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><span>预览加载中，请您耐心等待几秒...</span></div><img oncontextmenu="return false;" ondragstart="return false;" onload="WebPreview.Image.onLoad(this)" onerror="WebPreview.Image.onError(this)" class="lazy" data-src="//view-cache.book118.com/view23/M02/16/0F/wKh2EGYWOn2AQ3rXAAF2psS_kk4852.png"><div class="pages"><span>5/<em class="actual-page">14</em>页</span></div></div><div class="webpreview-split">&nbsp;</div><div class="webpreview-grab"></div></div>
+                <div class="preview-ft"><div class="btns"><button class="btn-continue" id="btn_preview_remain">继续浏览（7）</button><button id="btn_download_max" class="btn-download">下载专利源文件</button></div><div class="tips"><i class="icon-font icon-view icon-view-tips"></i><span>提示：该技术已申请专利，仅供学习研究，如用于商业用途，请联系我们</span></div></div>
+            </div>
+                        <div class="substance">
+                <h2>专利内容</h2>
+                <p>
+   (19)国家知识产权局 
+                             (12)发明专利申请 
+                                                     (10)申请公布号 CN 117850961 A 
+                                                     (43)申请公布日 2024.04.09 
+   (21)申请号  202311693749.4 
+   (22)申请日  2023.12.11 
+   (71)申请人  天翼云科技有限公司 
+      地址  100007  北京市东城区青龙胡同甲1 
+          号、3号2幢2层205-32室 
+   (72)发明人  王春林　刘强　王夕波　曾健　 
+            韩丁　 
+   (51)Int.Cl. 
+      G06F  9/455 (2018.01) 
+    
+                                               权利要求书3页  说明书8页  附图2页 
+   (54)发明名称 
+      一种基于linux内核与KVM而实现的虚拟机 
+  vcpu线程专用调度器 
+   (57)摘要 
+      本发明公开了一种基于linux内核与KVM而 
+  实现的虚拟机vcpu线程专用调度器，主体为 
+  VMSCH ，其特征在于：所述VMSCH即为虚拟机vcpu 
+  调度器，所述VMSCH优先级介于RT调度策略与CFS 
+  调度策略之间，优先级为99，并将RT优先级由1‑ 
+  99调整为1‑98，所述VMSCH仅管理vcpu线程的调 
+  度，不管理其它线程。本发明中vcpu独占pcpu的 
+  占空比可动态配置，也无需开机启动配置，避免 
+  了采用isolate隔离出pcpu给vcpu使用方案缺少 
+  的灵活性，避免了RT调度策略在带宽限制发生之 
+  后且idle状态导致的pcpu资源浪费，且本发明具 
+A 备CPU架构无关性，实现之后，即可天然支持任何 
+  
+1 CPU体系架构，比如X86、ARM和龙芯等，具有极为 
+6 
+9 
+0 广泛的适用范围。 
+5 
+8 
+7 
+1 
+1 
+  
+N 
+C 
+</p>
+            </div>
+                        <div class="new">
+                <h2>最新专利</h2>
+                <div class="grant-list">
+                    <ul class="patent-view-list">
+                    <li class="item"><a href="/view/10f634024e0759210315881x.html" title="集成电路模拟方法、集成电路模拟装置和可读存储介质" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">集成电路模拟方法、集成电路模拟装置和可读存储介质</em><em class="date">公开日期：2025-08-29</em><em class="open-num">公开号：CN118070729A</em><em class="apply-num">申请号：CN202410315881.X</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>集成电路模拟方法、集成电路模拟装置和可读存储介质</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-06-01 07:27:08</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202410315881.X</dd><dd>公开号：CN118070729A</dd></dl></div></a></li><li class="item"><a href="/view/1160a202350gom2117103432.html" title="一种利用Tree进行调用链路堆栈打印的方法" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">一种利用Tree进行调用链路堆栈打印的方法</em><em class="date">公开日期：2025-08-29</em><em class="open-num">公开号：CN117909110A</em><em class="apply-num">申请号：CN202311710343.2</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>一种利用Tree进行调用链路堆栈打印的方法</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-04-21 07:44:54</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202311710343.2</dd><dd>公开号：CN117909110A</dd></dl></div></a></li><li class="item"><a href="/view/1g236z0231q4d72118178582.html" title="采样方法、装置、计算设备及存储介质" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">采样方法、装置、计算设备及存储介质</em><em class="date">公开日期：2025-08-29</em><em class="open-num">公开号：CN117875806A</em><em class="apply-num">申请号：CN202311817858.2</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>采样方法、装置、计算设备及存储介质</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-04-16 07:21:18</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202311817858.2</dd><dd>公开号：CN117875806A</dd></dl></div></a></li><li class="item"><a href="/view/173pj3024776o52100904989.html" title="一种局部热刺激诱导RDX炸药自持反应模拟方法及系统" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">一种局部热刺激诱导RDX炸药自持反应模拟方法及系统</em><em class="date">公开日期：2025-08-29</em><em class="open-num">公开号：CN117763874A</em><em class="apply-num">申请号：CN202410090498.9</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>一种局部热刺激诱导RDX炸药自持反应模拟方法及系统</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-03-29 07:32:10</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202410090498.9</dd><dd>公开号：CN117763874A</dd></dl></div></a></li><li class="item"><a href="/view/1y5756023o7pzn2110613595.html" title="日志打印方法及相关装置" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">日志打印方法及相关装置</em><em class="date">公开日期：2025-08-29</em><em class="open-num">公开号：CN117707439A</em><em class="apply-num">申请号：CN202311061359.5</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>日志打印方法及相关装置</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-03-18 07:48:49</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202311061359.5</dd><dd>公开号：CN117707439A</dd></dl></div></a></li><li class="item"><a href="/view/145208022061532109935894.html" title="一种隐私保护方法及电子设备" target="_blank"><div class="front"><span class="cover"><strong class="front"><em class="title">一种隐私保护方法及电子设备</em><em class="date">公开日期：2025-08-29</em><em class="open-num">公开号：CN117633856A</em><em class="apply-num">申请号：CN202210993589.4</em></strong></span></div><div class="info"><div class="title"><strong><label>发明</label><span>一种隐私保护方法及电子设备</span></strong></div><dl class="params"><dd class="spec"><span class="date">发布时间：2024-03-05 07:11:21</span><span class="browse"><i class="icon-font icon-view icon-view-browse"></i><em>0</em></span></dd><dd>申请号：CN202210993589.4</dd><dd>公开号：CN117633856A</dd></dl></div></a></li></ul>
+                </div>
+            </div>
+        </div>
+        <!-- 侧边栏 -->
+        <div class="side">
+            <div class="mechanism-about">
+                <div class="icon icon-view icon-view-grant"></div>
+                <div class="logo">
+                    <img class="lazy-success" src="//img.book118.com/sr1/M00/0A/11/wKh2AmOALBeIJxFHAAAvK1dvuUUAA7YvgEL7gAAAC9D239.png" data-src="//img.book118.com/sr1/M00/0A/11/wKh2AmOALBeIJxFHAAAvK1dvuUUAA7YvgEL7gAAAC9D239.png" alt="logo">  
+                </div>
+                <ul class="list">
+                    <li>
+                        <a href="//img.book118.com/sr1/M00/0D/26/wKh2AmPbEemIFx-uAAJcfVyFn40AA8sCABg2TcAAlyV287.png" title="授权合同" target="_blank">
+                            <img class="lazy-success" src="//img.book118.com/sr1/M00/0D/26/wKh2AmPbEemIFx-uAAJcfVyFn40AA8sCABg2TcAAlyV287.png" data-src="//img.book118.com/sr1/M00/0D/26/wKh2AmPbEemIFx-uAAJcfVyFn40AA8sCABg2TcAAlyV287.png" alt="授权合同">                
+                            <span>授权合同</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="//img.book118.com/sr1/M00/02/25/wKh2AmfzLZaID0X-AAEtnMzTq_oAAzqvQAK3b0AAS6A805.jpg" title="服务协议" target="_blank">
+                            <img class="lazy-success" src="//img.book118.com/sr1/M00/02/25/wKh2AmfzLZaID0X-AAEtnMzTq_oAAzqvQAK3b0AAS6A805.jpg" data-src="//img.book118.com/sr1/M00/02/25/wKh2AmfzLZaID0X-AAEtnMzTq_oAAzqvQAK3b0AAS6A805.jpg" alt="服务协议">
+                            <span>服务协议</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="patent-about" style="display: block;">
+                <h2>相关专利</h2>
+                <ul class="list"><li><a href="/view/1k3w2f0249ia842205341247.html" title="一种散剂精确灌装装置" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种散剂精确灌装装置</strong></a></li><li><a href="/view/16gq6a02494dt82205329404.html" title="一种多充电口的锂电池组件" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种多充电口的锂电池组件</strong></a></li><li><a href="/view/16p4n20243294b220529755x.html" title="一种金属零件涂层加工输送机" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种金属零件涂层加工输送机</strong></a></li><li><a href="/view/1v563h024m8kwr2205259863.html" title="线缆绝缘层去除装置" target="_blank"><span class="type">【实用新型】</span><strong class="title">线缆绝缘层去除装置</strong></a></li><li><a href="/view/1u77fi0242a3j22205245818.html" title="一种心电图诊断专用平台" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种心电图诊断专用平台</strong></a></li><li><a href="/view/19079002428u282205243884.html" title="半导体芯片的封装结构和计算设备" target="_blank"><span class="type">【实用新型】</span><strong class="title">半导体芯片的封装结构和计算设备</strong></a></li><li><a href="/view/18xgy302490f132205243579.html" title="码垛机排列滚筒皮带结构" target="_blank"><span class="type">【实用新型】</span><strong class="title">码垛机排列滚筒皮带结构</strong></a></li><li><a href="/view/17d1qk024i8z762205223289.html" title="一种畜牧养殖草料粉碎装置" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种畜牧养殖草料粉碎装置</strong></a></li><li><a href="/view/15932d024cm83h2205188707.html" title="一种用于烟气净化的大气治理设备" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种用于烟气净化的大气治理设备</strong></a></li><li><a href="/view/10y774024h675p2205186792.html" title="一种可快速定位的调节式玻璃切割机" target="_blank"><span class="type">【实用新型】</span><strong class="title">一种可快速定位的调节式玻璃切割机</strong></a></li></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 收藏点赞 -->
+<div id="collection">
+    <ul class="collection">
+        <li>
+            <em>0</em>
+            <a href="javascript:;" title="收藏" id="btn_view_collection">
+                <i class="icon icon-view icon-view-collection"></i>
+                <span>收藏</span>
+            </a>
+        </li>
+        <li>
+            <em>0</em>
+            <a href="javascript:;" title="点赞" id="btn_view_assist">
+                <i class="icon icon-view icon-view-assist"></i>
+                <span>点赞</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div id="footer" class="footer">
+    <div class="container">
+        <dl>
+            <dd><a href="/home/about/about.html" target="_blank" title="关于我们">关于我们</a></dd>
+            <dd><a href="/home/about/agreement.html" target="_blank" title="服务协议">服务协议</a></dd>
+            <dd><a href="/home/about/copyright.html" target="_blank" title="隐私声明">隐私声明</a></dd>
+        </dl>
+        <ul>
+            <li class="desc">原创力专利网是原创力文档旗下专业提供专利pdf下载、专利pdf在线阅读、专利检索、专利申请服务等一条龙的网站，目前网站的所有专利都是最新的，后续我们将提供国内更多的专利申请相关的服务，包括专利复审、专利交易、专利年费缴纳、专利权恢复等。本站所有资源均来源于“知识产权出版社”，且已获得正式授权，并达成长期战略合作关系。目前全站共有17497656件专利，后续我们会不断增加专利数量，努力争取达到内容数量最多最全的专利网站。我们将持续更新最新专利内容，完善相关专利服务，助您在专利查询、专利应用、专利学习查找、专利申请等方面用得开心、用得满意！</li>
+            <li><i class="icon-font icon-common icon-common-police"></i> 公安局备案号:51011502000106
+                    | 工信部备案号:<a href="http://beian.miit.gov.cn" title="蜀ICP备08101938号-1" target="_blank" rel="nofollow">蜀ICP备08101938号-1</a>
+                    | ICP经营许可证/EDI许可证:<a href="//max.book118.com/jyxkz.html" title="川B2-20180569" target="_blank">川B2-20180569</a>
+                    | <a href="//max.book118.com/yyzz.html" title="公司营业执照" target="_blank">公司营业执照</a>
+                    | 出版物经营许可证:<a href="//max.book118.com/html/cbwxkz.html" title="成新出发高新字第046号" target="_blank">成新出发高新字第046号</a>
+            </li>
+            <li>@2010-2025 zhuanli.book118.com原创力专利.All Rights Reserved 四川文动网络科技有限公司</li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var __SRV__ = '1.0.',
+        _STATIC_ = '/static',
+        __UTIL_ROOT__ = "/static/home/util",
+        __PLUGIN_ROOT__ = '/static/plugin',
+        __OPEN_HOST__ = '//openapi.book118.com/',
+        __LIB_ROOT__ = '/static/lib';
+    var base = {
+        member: {
+            status: 0,
+            token:'',
+            url: {
+                info: '/user/user/getUserInfo.html',//获取用户信息
+                login: '/user/index/login.html',//登陆
+                quit: '/user/user/logout.html'//退出登陆
+            },
+            auth: {
+                url: {
+                    status: '/user/index/getUserStatus.html'
+                }
+            }
+        },
+        url:{
+            user_center:'/user/user/readRecord.html',
+            search_url: '/search.html'
+        }
+    }
+</script>
+<script type="text/javascript" src="/static/plugin/layer/layer.js?v=1.20221111"></script>
+<script type="text/javascript" src="/static/home/util/js/util.js?v=1.0.20221111"></script>
+<script type="text/javascript" src="/static/home/common/js/common.js?v=1.0.20230825"></script>
+
+<script type="text/javascript">
+    var PAY_READ_TAG = 1,
+        NOT_DOWNLOAD_TAG = 1;
+    base.spider = 0;
+    base.detail = {
+        isCanDowload :1, //0 不可下载，1 可下载
+        noCanShow:2,//不可阅读页数
+        max_url : 'https://max.book118.com/html/2024/0410/7004156146006063.shtm?from=patent', //可下载时跳转max详情页链接
+        fav: 0,//收藏量
+        goodpost: 0,//点赞量
+        sid: '1394370237t2sg2116937494',//点赞收藏传值加密ID
+        request:{
+            isDigg: '/user/index/digg.html',//点赞接口
+            isCollect: '/user/user/setCollect.html',//收藏/取消收藏
+            newInfo:'/home/view/newInfo.html',//最新专利
+            relateInfo:'/home/view/relateInfo.html',//相关专利
+            extendInfo:'/home/view/extendInfo.html'//扩展信息
+        },
+        preview: {
+            pic: {
+                aid: 645830490, //解密后的id
+                actual_page: 14, //真实页数
+                preview_page: 12,  //可预览页数
+                view_token: 'iPeK7yzLDIwjGVXMm97fO2kW2xvI6uYwBEivXtcWHz0=' //预览的token
+            }
+        }
+    }
+</script>
+
+
+
+<script type="text/javascript" src="/static/home/view/js/index.js?v=1.0.20221111"></script>
+<script type="text/javascript" src="//static.book118.com/open/static/webpreview/webpreview.js?v=1.0.20221117"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?1d9ce0aa0f5bc1823940d03a850503de";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
