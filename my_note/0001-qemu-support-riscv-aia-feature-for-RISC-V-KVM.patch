@@ -1,7 +1,7 @@
-From 5866f75c544b91e79d4c8adf92550deed474d418 Mon Sep 17 00:00:00 2001
+From 1d345354fcc0682e1e054863a6118a80f4ad72f0 Mon Sep 17 00:00:00 2001
 From: xiangwencheng <xiangwencheng@lanxincomputing.com>
-Date: Thu, 4 Sep 2025 14:18:34 +0800
-Subject: [PATCH v3 1/3] qemu: support riscv-aia feature for RISC-V KVM
+Date: Thu, 4 Sep 2025 16:11:26 +0800
+Subject: [PATCH] qemu: support riscv-aia feature for RISC-V KVM
 
 riscv-aia feature was introduced in qemu-8.2 to specify the
 KVM AIA mode. The "riscv-aia" parameter is passed along with
@@ -15,25 +15,24 @@ This patch add the corresponding feature named 'riscv-aia'.
 
 Signed-off-by: BillXiang <xiangwencheng@lanxincomputing.com>
 ---
- src/conf/domain_conf.c            | 29 ++++++++++++++++++++++++++++-
- src/conf/domain_conf.h            | 10 ++++++++++
+ src/conf/domain_conf.c            | 28 +++++++++++++++++++++++++++-
+ src/conf/domain_conf.h            | 11 +++++++++++
  src/conf/schemas/domaincommon.rng | 12 ++++++++++++
  src/libvirt_private.syms          |  2 ++
  src/qemu/qemu_command.c           | 13 ++++++++++---
  5 files changed, 62 insertions(+), 4 deletions(-)
 
 diff --git a/src/conf/domain_conf.c b/src/conf/domain_conf.c
-index 7766e302ec..a25cce551f 100644
+index 7766e302ec..a9f1161133 100644
 --- a/src/conf/domain_conf.c
 +++ b/src/conf/domain_conf.c
-@@ -224,6 +224,15 @@ VIR_ENUM_IMPL(virDomainKVM,
+@@ -224,6 +224,14 @@ VIR_ENUM_IMPL(virDomainKVM,
                "poll-control",
                "pv-ipi",
                "dirty-ring",
 +              "riscv-aia",
 +);
 +
-+VIR_ENUM_DECL(virDomainKVMRiscvAIAMode);
 +VIR_ENUM_IMPL(virDomainKVMRiscvAIAMode,
 +              VIR_DOMAIN_KVM_TISCV_AIA_MODE_LAST,
 +              "auto",
@@ -42,7 +41,7 @@ index 7766e302ec..a25cce551f 100644
  );
  
  VIR_ENUM_IMPL(virDomainXen,
-@@ -17183,6 +17192,15 @@ virDomainFeaturesKVMDefParse(virDomainDef *def,
+@@ -17183,6 +17191,15 @@ virDomainFeaturesKVMDefParse(virDomainDef *def,
                  return -1;
              }
          }
@@ -58,7 +57,7 @@ index 7766e302ec..a25cce551f 100644
      }
  
      def->features[VIR_DOMAIN_FEATURE_KVM] = VIR_TRISTATE_SWITCH_ON;
-@@ -21697,6 +21715,7 @@ virDomainDefFeaturesCheckABIStability(virDomainDef *src,
+@@ -21697,6 +21714,7 @@ virDomainDefFeaturesCheckABIStability(virDomainDef *src,
              case VIR_DOMAIN_KVM_POLLCONTROL:
              case VIR_DOMAIN_KVM_PVIPI:
              case VIR_DOMAIN_KVM_DIRTY_RING:
@@ -66,7 +65,7 @@ index 7766e302ec..a25cce551f 100644
                  if (src->kvm_features->features[i] != dst->kvm_features->features[i]) {
                      virReportError(VIR_ERR_CONFIG_UNSUPPORTED,
                                     _("State of KVM feature '%1$s' differs: source: '%2$s', destination: '%3$s'"),
-@@ -28752,7 +28771,15 @@ virDomainDefFormatFeatures(virBuffer *buf,
+@@ -28752,7 +28770,15 @@ virDomainDefFormatFeatures(virBuffer *buf,
                          }
                      }
                      break;
@@ -84,10 +83,10 @@ index 7766e302ec..a25cce551f 100644
                      break;
                  }
 diff --git a/src/conf/domain_conf.h b/src/conf/domain_conf.h
-index eca820892e..81f66070f2 100644
+index eca820892e..0250b3db49 100644
 --- a/src/conf/domain_conf.h
 +++ b/src/conf/domain_conf.h
-@@ -2270,10 +2270,19 @@ typedef enum {
+@@ -2270,10 +2270,20 @@ typedef enum {
      VIR_DOMAIN_KVM_POLLCONTROL,
      VIR_DOMAIN_KVM_PVIPI,
      VIR_DOMAIN_KVM_DIRTY_RING,
@@ -103,11 +102,12 @@ index eca820892e..81f66070f2 100644
 +
 +    VIR_DOMAIN_KVM_TISCV_AIA_MODE_LAST
 +} virDomainKVMRiscvAIAMode;
++VIR_ENUM_DECL(virDomainKVMRiscvAIAMode);
 +
  typedef enum {
      VIR_DOMAIN_MSRS_UNKNOWN = 0,
  
-@@ -2476,6 +2485,7 @@ struct _virDomainFeatureKVM {
+@@ -2476,6 +2486,7 @@ struct _virDomainFeatureKVM {
      int features[VIR_DOMAIN_KVM_LAST];
  
      unsigned int dirty_ring_size; /* size of dirty ring for each vCPU, no units */
