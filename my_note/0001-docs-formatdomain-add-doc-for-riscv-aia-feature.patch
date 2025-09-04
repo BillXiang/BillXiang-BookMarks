@@ -1,0 +1,33 @@
+From 093bdab3fbc468ec8c6837162528e3d333b8b468 Mon Sep 17 00:00:00 2001
+From: xiangwencheng <xiangwencheng@lanxincomputing.com>
+Date: Thu, 4 Sep 2025 14:23:47 +0800
+Subject: [PATCH] docs: formatdomain: add doc for riscv-aia feature
+
+Signed-off-by: BillXiang <xiangwencheng@lanxincomputing.com>
+---
+ docs/formatdomain.rst | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/docs/formatdomain.rst b/docs/formatdomain.rst
+index 9f7311b6d5..a694eeb140 100644
+--- a/docs/formatdomain.rst
++++ b/docs/formatdomain.rst
+@@ -2085,6 +2085,7 @@ Hypervisors may allow certain CPU / machine features to be toggled on/off.
+        <poll-control state='on'/>
+        <pv-ipi state='off'/>
+        <dirty-ring state='on' size='4096'/>
++       <riscv-aia state='on' mode='auto'/>
+      </kvm>
+      <xen>
+        <e820_host state='on'/>
+@@ -2206,6 +2207,7 @@ are:
+    poll-control   Decrease IO completion latency by introducing a grace period of busy waiting on, off                                                :since:`6.10.0 (QEMU 4.2)`
+    pv-ipi         Paravirtualized send IPIs                                                    on, off                                                :since:`7.10.0 (QEMU 3.1)`
+    dirty-ring     Enable dirty ring feature                                                    on, off; size - must be power of 2, range [1024,65536] :since:`8.0.0 (QEMU 6.1)`
++   riscv-aia      Set riscv KVM AIA mode. Defaults to 'auto'.                                  on, off; mode - optional string emul, hwaccel or auto  :since:`11.8.0 (QEMU 8.2)`
+    ============== ============================================================================ ====================================================== ============================
+ 
+ ``xen``
+-- 
+2.34.1
+
