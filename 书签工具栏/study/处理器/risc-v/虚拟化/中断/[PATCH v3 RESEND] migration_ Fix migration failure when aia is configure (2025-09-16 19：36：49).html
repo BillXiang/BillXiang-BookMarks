@@ -1,0 +1,654 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/中断/[PATCH v3 RESEND] migration_ Fix migration failure when aia is configure (2025-09-16 19：36：49).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lists.nongnu.org/archive/html/qemu-riscv/2025-06/msg00168.html
+ Summary: 
+-->
+<html><head>
+<title>[PATCH v3 RESEND] migration: Fix migration failure when aia is configure</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+<body>
+<center>
+<table border="0" cellspacing="2" cellpadding="0" bgcolor="#000000">
+<tbody><tr><td><table border="0" bgcolor="#FFFFCC">
+<tbody><tr><td><big><b>qemu-riscv</b></big></td></tr></tbody></table></td></tr></tbody></table>
+<div class="nowrap">
+<small>[<a href="../">Top</a>][<a href="/archive/html">All Lists</a>]</small>
+</div>
+<form method="get" action="/archive/cgi-bin/namazu.cgi">
+<input type="text" name="query" size="30">
+<input type="submit" name="submit" value="Search">
+<input type="hidden" name="idxname" value="qemu-riscv">
+<a href="/archive/cgi-bin/namazu.cgi?idxname=qemu-riscv">Advanced</a>
+</form>
+
+</center>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<hr>
+[<a href="msg00167.html">Date Prev</a>][<a href="msg00169.html">Date Next</a>][<a href="msg00151.html">Thread Prev</a>][<a href="msg00276.html">Thread Next</a>][<a href="index.html#00168">Date Index</a>][<a href="threads.html#00168">Thread Index</a>]
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<h2>[PATCH v3 RESEND] migration: Fix migration failure when aia is configure</h2>
+<hr>
+<table border="0">
+<tbody>
+<tr>
+<td align="right" valign="top">
+<b>From</b>: </td>
+<td align="left">
+liu.xuemei1</td>
+</tr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+
+<tr>
+<td align="right" valign="top">
+<b>Subject</b>: </td>
+<td align="left">
+[PATCH v3 RESEND] migration: Fix migration failure when aia is configured as aplic-imsic</td>
+</tr>
+
+<tr>
+<td align="right" valign="top">
+<b>Date</b>: </td>
+<td align="left">
+Mon, 16 Jun 2025 15:00:34 +0800 (CST)</td>
+</tr>
+
+</tbody>
+</table>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<hr>
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Address an error in migration when aia is configured as 'aplic-imsic' in
+riscv kvm vm by adding riscv_aplic_state_needed() and
+riscv_imsic_state_needed() to determine whether the corresponding sates are
+needed.
+
+Previously, the fields in the vmsds of 'riscv_aplic' and 'riscv_imsic' can
+only be initialized under certain special conditions in commit 95a97b3fd2.
+However, the corresponding ses of these vmsds are inserted into the
+savevm_state.handlers unconditionally. This led to migration failure
+characterized by uninitialized fields when save vm state:
+qemu-system-riscv64: ../migration/vmstate.c:433: vmstate_save_state_v:
+Assertion 'first_elem || !n_elems || !size' failed.
+
+Fixes: 95a97b3fd2 ("target/riscv: update APLIC and IMSIC to support KVM AIA")
+
+Signed-off-by: Xuemei Liu &lt;liu.xuemei1@zte.com.cn&gt;
+---
+ Changes in v3:
+ - Increase version_id and minimum_version_id
+
+ hw/intc/riscv_aplic.c | 12 ++++++++++--
+ hw/intc/riscv_imsic.c | 10 ++++++++--
+ 2 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/hw/intc/riscv_aplic.c b/hw/intc/riscv_aplic.c
+index 8bcd9f4697..4fa5f7597b 100644
+--- a/hw/intc/riscv_aplic.c
++++ b/hw/intc/riscv_aplic.c
+@@ -962,10 +962,18 @@ static const Property riscv_aplic_properties[] = {
+     DEFINE_PROP_BOOL("mmode", RISCVAPLICState, mmode, 0),
+ };
+
++static bool riscv_aplic_state_needed(void *opaque)
++{
++    RISCVAPLICState *aplic = opaque;
++
++    return riscv_use_emulated_aplic(aplic-&gt;msimode);
++}
++
+ static const VMStateDescription vmstate_riscv_aplic = {
+     .name = "riscv_aplic",
+-    .version_id = 2,
+-    .minimum_version_id = 2,
++    .version_id = 3,
++    .minimum_version_id = 3,
++    .needed = riscv_aplic_state_needed,
+     .fields = (const VMStateField[]) {
+             VMSTATE_UINT32(domaincfg, RISCVAPLICState),
+             VMSTATE_UINT32(mmsicfgaddr, RISCVAPLICState),
+diff --git a/hw/intc/riscv_imsic.c b/hw/intc/riscv_imsic.c
+index 2169988167..6174e1a05d 100644
+--- a/hw/intc/riscv_imsic.c
++++ b/hw/intc/riscv_imsic.c
+@@ -398,10 +398,16 @@ static const Property riscv_imsic_properties[] = {
+     DEFINE_PROP_UINT32("num-irqs", RISCVIMSICState, num_irqs, 0),
+ };
+
++static bool riscv_imsic_state_needed(void *opaque)
++{
++    return !kvm_irqchip_in_kernel();
++}
++
+ static const VMStateDescription vmstate_riscv_imsic = {
+     .name = "riscv_imsic",
+-    .version_id = 1,
+-    .minimum_version_id = 1,
++    .version_id = 2,
++    .minimum_version_id = 2,
++    .needed = riscv_imsic_state_needed,
+     .fields = (const VMStateField[]) {
+             VMSTATE_VARRAY_UINT32(eidelivery, RISCVIMSICState,
+                                   num_pages, 0,
+-- 
+2.27.0
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<form method="post" action="/mp/yyz.py" enctype="multipart/form-data">
+<input type="hidden" name="a" value="liu.xuemei1">
+<input type="hidden" name="b" value="[PATCH v3 RESEND] migration: Fix migration failure when aia is configured as aplic-imsic">
+<input type="hidden" name="d" value="20250616150034827wuHs_ffe3Qm8cqFXT7HeW@zte.com.cn">
+<input type="hidden" name="c" value="zte.com.cn">
+<center>reply via email to<br><input type="submit" value=" liu.xuemei1 "></center>
+</form>
+<hr>
+<table width="100%">
+<tbody><tr><td align="left">[Prev in Thread]</td>
+<td align="center"><b>Current Thread</b></td>
+<td align="right">[<a href="msg00276.html">Next in Thread</a>]</td></tr></tbody></table>
+<ul>
+<li><font color="#666666"><strong>[PATCH v3 RESEND] migration: Fix migration failure when aia is configured as aplic-imsic</strong>,
+<em>liu.xuemei1</em></font>&nbsp;<b>&lt;=</b>
+<ul>
+<li><b><a name="00276" href="msg00276.html">Re: [PATCH v3 RESEND] migration: Fix migration failure when aia is configured as aplic-imsic</a></b>, <i>Alistair Francis</i>, <tt>2025/06/30</tt>
+</li>
+</ul>
+</li>
+</ul>
+
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00167.html">Re: [PATCH v2 01/12] python: convert packages to PEP517/pyproject.toml</a></strong>
+</li>
+<li>Next by Date:
+<strong><a href="msg00169.html">Re: [PATCH v4 2/2] hw/riscv: Initial support for BOSC's Xiangshan Kunminghu FPGA prototype</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00151.html">[PATCH v2 00/12] Python: Fix 'make check-dev' and modernize to 3.9+</a></strong>
+</li>
+<li>Next by thread:
+<strong><a href="msg00276.html">Re: [PATCH v3 RESEND] migration: Fix migration failure when aia is configured as aplic-imsic</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="index.html#00168"><strong>Date</strong></a></li>
+<li><a href="threads.html#00168"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<!--X-User-Footer-End-->
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
