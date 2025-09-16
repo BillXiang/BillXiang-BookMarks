@@ -1,0 +1,737 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/qemu/Contribute/[PATCH] target_riscv_kvm_ Sync vCPU mp_state for migration (2025-09-16 19：12：32).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lists.nongnu.org/archive/html/qemu-riscv/2025-09/msg00311.html
+ Summary: 
+-->
+<html><head>
+<title>[PATCH] target/riscv/kvm: Sync vCPU mp_state for migration</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+</style></head>
+<body>
+<center>
+<table border="0" cellspacing="2" cellpadding="0" bgcolor="#000000">
+<tbody><tr><td><table border="0" bgcolor="#FFFFCC">
+<tbody><tr><td><big><b>qemu-riscv</b></big></td></tr></tbody></table></td></tr></tbody></table>
+<div class="nowrap">
+<small>[<a href="../">Top</a>][<a href="/archive/html">All Lists</a>]</small>
+</div>
+<form method="get" action="/archive/cgi-bin/namazu.cgi">
+<input type="text" name="query" size="30">
+<input type="submit" name="submit" value="Search">
+<input type="hidden" name="idxname" value="qemu-riscv">
+<a href="/archive/cgi-bin/namazu.cgi?idxname=qemu-riscv">Advanced</a>
+</form>
+
+</center>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<hr>
+[<a href="msg00310.html">Date Prev</a>][Date Next][<a href="msg00309.html">Thread Prev</a>][Thread Next][<a href="index.html#00311">Date Index</a>][<a href="threads.html#00311">Thread Index</a>]
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<h2>[PATCH] target/riscv/kvm: Sync vCPU mp_state for migration</h2>
+<hr>
+<table border="0">
+<tbody>
+<tr>
+<td align="right" valign="top">
+<b>From</b>: </td>
+<td align="left">
+BillXiang</td>
+</tr>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+
+<tr>
+<td align="right" valign="top">
+<b>Subject</b>: </td>
+<td align="left">
+[PATCH] target/riscv/kvm: Sync vCPU mp_state for migration</td>
+</tr>
+
+<tr>
+<td align="right" valign="top">
+<b>Date</b>: </td>
+<td align="left">
+Tue, 16 Sep 2025 18:48:42 +0800</td>
+</tr>
+
+</tbody>
+</table>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<hr>
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<pre>Fix secondary vCPUs(id &gt; 0) stall after migration.
+
+Signed-off-by: BillXiang &lt;xiangwencheng@lanxincomputing.com&gt;
+---
+ target/riscv/cpu.h           |  3 +++
+ target/riscv/kvm/kvm-cpu.c   | 34 ++++++++++++++++++++++++++--------
+ target/riscv/kvm/kvm_riscv.h |  3 ++-
+ target/riscv/machine.c       | 30 ++++++++++++++++++++++++++++++
+ 4 files changed, 61 insertions(+), 9 deletions(-)
+
+diff --git a/target/riscv/cpu.h b/target/riscv/cpu.h
+index 4a862da615..4290229c56 100644
+--- a/target/riscv/cpu.h
++++ b/target/riscv/cpu.h
+@@ -20,6 +20,7 @@
+ #ifndef RISCV_CPU_H
+ #define RISCV_CPU_H
+ 
++#include &lt;linux/kvm.h&gt;
+ #include "hw/core/cpu.h"
+ #include "hw/registerfields.h"
+ #include "hw/qdev-properties.h"
+@@ -546,6 +547,8 @@ struct ArchCPU {
+     RISCVCPUConfig cfg;
+     RISCVSATPModes satp_modes;
+ 
++    struct kvm_mp_state mp_state;
++
+     QEMUTimer *pmu_timer;
+     /* A bitmask of Available programmable counters */
+     uint32_t pmu_avail_ctrs;
+diff --git a/target/riscv/kvm/kvm-cpu.c b/target/riscv/kvm/kvm-cpu.c
+index 5c19062c19..f0a97293f9 100644
+--- a/target/riscv/kvm/kvm-cpu.c
++++ b/target/riscv/kvm/kvm-cpu.c
+@@ -1348,17 +1348,16 @@ int kvm_arch_get_registers(CPUState *cs, Error **errp)
+         return ret;
+     }
+ 
++    RISCVCPU *cpu = RISCV_CPU(cs);
++    ret = kvm_riscv_sync_mpstate_to_qemu(cpu);
++
+     return ret;
+ }
+ 
+-int kvm_riscv_sync_mpstate_to_kvm(RISCVCPU *cpu, int state)
++int kvm_riscv_sync_mpstate_to_kvm(RISCVCPU *cpu)
+ {
+     if (cap_has_mp_state) {
+-        struct kvm_mp_state mp_state = {
+-            .mp_state = state
+-        };
+-
+-        int ret = kvm_vcpu_ioctl(CPU(cpu), KVM_SET_MP_STATE, &amp;mp_state);
++        int ret = kvm_vcpu_ioctl(CPU(cpu), KVM_SET_MP_STATE, &amp;cpu-&gt;mp_state);
+         if (ret) {
+             fprintf(stderr, "%s: failed to sync MP_STATE %d/%s
+",
+                     __func__, ret, strerror(-ret));
+@@ -1369,6 +1368,17 @@ int kvm_riscv_sync_mpstate_to_kvm(RISCVCPU *cpu, int 
+state)
+     return 0;
+ }
+ 
++int kvm_riscv_sync_mpstate_to_qemu(RISCVCPU *cpu)
++{
++    if (cap_has_mp_state) {
++        int ret = kvm_vcpu_ioctl(CPU(cpu), KVM_GET_MP_STATE, &amp;cpu-&gt;mp_state);
++        if (ret) {
++            return ret;
++        }
++    }
++    return 0;
++}
++
+ int kvm_arch_put_registers(CPUState *cs, int level, Error **errp)
+ {
+     int ret = 0;
+@@ -1396,13 +1406,21 @@ int kvm_arch_put_registers(CPUState *cs, int level, 
+Error **errp)
+     if (KVM_PUT_RESET_STATE == level) {
+         RISCVCPU *cpu = RISCV_CPU(cs);
+         if (cs-&gt;cpu_index == 0) {
+-            ret = kvm_riscv_sync_mpstate_to_kvm(cpu, KVM_MP_STATE_RUNNABLE);
++            cpu-&gt;mp_state.mp_state = KVM_MP_STATE_RUNNABLE;
++            ret = kvm_riscv_sync_mpstate_to_kvm(cpu);
+         } else {
+-            ret = kvm_riscv_sync_mpstate_to_kvm(cpu, KVM_MP_STATE_STOPPED);
++            cpu-&gt;mp_state.mp_state = KVM_MP_STATE_STOPPED;
++            ret = kvm_riscv_sync_mpstate_to_kvm(cpu);
+         }
+         if (ret) {
+             return ret;
+         }
++    } else if (KVM_PUT_FULL_STATE == level) {
++        RISCVCPU *cpu = RISCV_CPU(cs);
++        ret = kvm_riscv_sync_mpstate_to_kvm(cpu);
++        if (ret) {
++            return ret;
++        }
+     }
+ 
+     return ret;
+diff --git a/target/riscv/kvm/kvm_riscv.h b/target/riscv/kvm/kvm_riscv.h
+index b2bcd1041f..770f58bf0a 100644
+--- a/target/riscv/kvm/kvm_riscv.h
++++ b/target/riscv/kvm/kvm_riscv.h
+@@ -28,7 +28,8 @@ void kvm_riscv_aia_create(MachineState *machine, uint64_t 
+group_shift,
+                           uint64_t aplic_base, uint64_t imsic_base,
+                           uint64_t guest_num);
+ void riscv_kvm_aplic_request(void *opaque, int irq, int level);
+-int kvm_riscv_sync_mpstate_to_kvm(RISCVCPU *cpu, int state);
++int kvm_riscv_sync_mpstate_to_kvm(RISCVCPU *cpu);
++int kvm_riscv_sync_mpstate_to_qemu(RISCVCPU *cpu);
+ void riscv_kvm_cpu_finalize_features(RISCVCPU *cpu, Error **errp);
+ uint64_t kvm_riscv_get_timebase_frequency(RISCVCPU *cpu);
+ 
+diff --git a/target/riscv/machine.c b/target/riscv/machine.c
+index 1600ec44f0..178ae6a3a0 100644
+--- a/target/riscv/machine.c
++++ b/target/riscv/machine.c
+@@ -251,6 +251,28 @@ static const VMStateDescription vmstate_debug = {
+     }
+ };
+ 
++static int get_mp_state(QEMUFile *f, void *opaque, size_t size,
++                    const VMStateField *field)
++{
++    RISCVCPU *cpu = opaque;
++    cpu-&gt;mp_state.mp_state = qemu_get_be32(f);
++    return 0;
++}
++
++static int put_mp_state(QEMUFile *f, void *opaque, size_t size,
++                    const VMStateField *field, JSONWriter *vmdesc)
++{
++    RISCVCPU *cpu = opaque;
++    qemu_put_be32(f, cpu-&gt;mp_state.mp_state);
++    return 0;
++}
++
++static const VMStateInfo vmstate_mp_state = {
++    .name = "mp_state",
++    .get = get_mp_state,
++    .put = put_mp_state,
++};
++
+ static int riscv_cpu_post_load(void *opaque, int version_id)
+ {
+     RISCVCPU *cpu = opaque;
+@@ -457,6 +479,14 @@ const VMStateDescription vmstate_riscv_cpu = {
+         VMSTATE_UINTTL(env.sscratch, RISCVCPU),
+         VMSTATE_UINTTL(env.mscratch, RISCVCPU),
+         VMSTATE_UINT64(env.stimecmp, RISCVCPU),
++        {
++            .name = "mp_state",
++            .version_id = 0,
++            .size = sizeof(bool),
++            .info = &amp;vmstate_mp_state,
++            .flags = VMS_SINGLE,
++            .offset = 0,
++        },
+ 
+         VMSTATE_END_OF_LIST()
+     },
+-- 
+2.46.2.windows.1
+
+
+</pre>
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<form method="post" action="/mp/yyz.py" enctype="multipart/form-data">
+<input type="hidden" name="a" value="xiangwencheng">
+<input type="hidden" name="b" value="[PATCH] target/riscv/kvm: Sync vCPU mp_state for migration">
+<input type="hidden" name="d" value="20250916104843.1953-1-xiangwencheng@lanxincomputing.com">
+<input type="hidden" name="c" value="lanxincomputing.com">
+<center>reply via email to<br><input type="submit" value=" BillXiang "></center>
+</form>
+<hr>
+<table width="100%">
+<tbody><tr><td align="left">[Prev in Thread]</td>
+<td align="center"><b>Current Thread</b></td>
+<td align="right">[Next in Thread]</td></tr></tbody></table>
+<ul>
+<li><font color="#666666"><strong>[PATCH] target/riscv/kvm: Sync vCPU mp_state for migration</strong>,
+<em>BillXiang</em></font>&nbsp;<b>&lt;=</b>
+</li></ul>
+
+<hr>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<ul>
+<li>Prev by Date:
+<strong><a href="msg00310.html">[PATCH v9 1/2] target/riscv: Use tcg nodes for strided vector ld/st generation</a></strong>
+</li>
+<li>Previous by thread:
+<strong><a href="msg00309.html">[PATCH v9 0/2] Generate strided vector loads/stores with tcg nodes</a></strong>
+</li>
+<li>Index(es):
+<ul>
+<li><a href="index.html#00311"><strong>Date</strong></a></li>
+<li><a href="threads.html#00311"><strong>Thread</strong></a></li>
+</ul>
+</li>
+</ul>
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<!--X-User-Footer-End-->
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
