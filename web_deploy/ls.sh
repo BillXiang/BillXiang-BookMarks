@@ -43,7 +43,7 @@ html_head="<!DOCTYPE html>
               <tr><td><a href='./index.html'><b>Recently Read</b></a></td></tr>
               <tr><td><a href='./all.html'><b>All</b></a></td></tr>
               <tr><td><a href='./docs.html'><b>Docs</b></a></td></tr>
-              <tr><td><a href='./tags/Contribute.html'><b>Contributes</b></a></td></tr>
+              <tr><td><a href='./tags/Contribute.html'><b>Contributions</b></a></td></tr>
               <tr><td>"
               
     html_mid="</td></tr>
