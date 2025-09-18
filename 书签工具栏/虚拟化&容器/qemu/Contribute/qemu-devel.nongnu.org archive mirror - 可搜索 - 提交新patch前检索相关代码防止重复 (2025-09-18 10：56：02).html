@@ -1,0 +1,794 @@
+<!-- Filename: 书签工具栏/虚拟化&容器/qemu/Contribute/qemu-devel.nongnu.org archive mirror - 可搜索 - 提交新patch前检索相关代码防止重复 (2025-09-18 10：56：02).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-devel/
+ Summary: 
+-->
+<html><head><title>qemu-devel.nongnu.org archive mirror</title><link rel="alternate" title="Atom feed" href="new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="./"><pre><b>qemu-devel.nongnu.org archive mirror</b>
+<input name="q" type="text"><input type="submit" value="search"> <a href="_/text/help/">help</a> / <a href="_/text/color/">color</a> / <a id="mirror" href="_/text/mirror/">mirror</a> / <a href="new.atom">Atom feed</a></pre></form><pre><a href="bb702a89-c198-43d0-bc4e-22c355d3ac20@rsg.ci.i.u-tokyo.ac.jp/T/#t">[PATCH v13 07/27] migration: push Error **errp into qemu_loadvm_state()</a>
+ 2025-09-18  2:06 UTC  (12+ messages)
+
+<a href="20250909132533.32205-1-zhiwei_liu@linux.alibaba.com/T/#t">[RFC PATCH 0/5] target/riscv: Implement SMSDID and SMMPT extension</a>
+ 2025-09-18  2:05 UTC  (7+ messages)
+` <a href="a1fa9371-bd5a-49da-97db-86846ec597e2@linux.alibaba.com/T/#u">[RFC PATCH 1/5] target/riscv: Add basic definitions and CSRs for SMMPT</a>
+` <a href="a891478d-0fc4-428f-b0ca-ae48fe133821@linux.alibaba.com/T/#u">[RFC PATCH 5/5] target/riscv: Enable SMMPT extension</a>
+
+<a href="20250903213809.3779860-1-lixiaoyan@google.com/T/#t">[PATCH 0/5] Add Aspeed GPIO test and Support Nuvoton Serial GPIO Expansion (SGPIO) device</a>
+ 2025-09-18  0:59 UTC  (5+ messages)
+` <a href="e244fdb5d2d889674a583df8f8b9bc4bf8d476f4.camel@codeconstruct.com.au/T/#u">[PATCH 1/5] hw/gpio: Add property for ASPEED GPIO in 32 bits basis</a>
+
+<a href="20250502021605.1795985-1-alejandro.j.jimenez@oracle.com/T/#t">[PATCH v2 00/20] AMD vIOMMU: DMA remapping support for VFIO devices</a>
+ 2025-09-18  0:55 UTC  (13+ messages)
+` <a href="e3c5df9f-5f0b-42ae-bfa2-50dc5afcb7cb@oracle.com/T/#u">[PATCH v2 05/20] amd_iommu: Add helper function to extract the DTE</a>
+` <a href="f8b37c27-db20-4e03-bb34-88357f33a26d@oracle.com/T/#u">[PATCH v2 09/20] amd_iommu: Add basic structure to support IOMMU notifier updates</a>
+` <a href="cb2f1cc3-146a-4950-98fe-a763d6f8fd91@oracle.com/T/#u">[PATCH v2 18/20] amd_iommu: Toggle address translation mode on devtab entry invalidation</a>
+
+<a href="20250917232131.495848-1-zycai@linux.ibm.com/T/#t">[PATCH v6 00/28] Secure IPL Support for SCSI Scheme of virtio-blk/virtio-scsi Devices</a>
+ 2025-09-17 23:21 UTC  (29+ messages)
+` <a href="20250917232131.495848-2-zycai@linux.ibm.com/T/#u">[PATCH v6 01/28] Add boot-certs to s390-ccw-virtio machine type option</a>
+` <a href="20250917232131.495848-3-zycai@linux.ibm.com/T/#u">[PATCH v6 02/28] crypto/x509-utils: Refactor with GNUTLS fallback</a>
+` <a href="20250917232131.495848-4-zycai@linux.ibm.com/T/#u">[PATCH v6 03/28] crypto/x509-utils: Add helper functions for certificate store</a>
+` <a href="20250917232131.495848-5-zycai@linux.ibm.com/T/#u">[PATCH v6 04/28] hw/s390x/ipl: Create</a> "
+` <a href="20250917232131.495848-6-zycai@linux.ibm.com/T/#u">[PATCH v6 05/28] s390x/diag: Introduce DIAG 320 for Certificate Store Facility</a>
+` <a href="20250917232131.495848-7-zycai@linux.ibm.com/T/#u">[PATCH v6 06/28] s390x/diag: Refactor address validation check from diag308_parm_check</a>
+` <a href="20250917232131.495848-8-zycai@linux.ibm.com/T/#u">[PATCH v6 07/28] s390x/diag: Implement DIAG 320 subcode 1</a>
+` <a href="20250917232131.495848-9-zycai@linux.ibm.com/T/#u">[PATCH v6 08/28] crypto/x509-utils: Add helper functions for DIAG 320 subcode 2</a>
+` <a href="20250917232131.495848-10-zycai@linux.ibm.com/T/#u">[PATCH v6 09/28] s390x/diag: Implement</a> "
+` <a href="20250917232131.495848-11-zycai@linux.ibm.com/T/#u">[PATCH v6 10/28] s390x/diag: Introduce DIAG 508 for secure IPL operations</a>
+` <a href="20250917232131.495848-12-zycai@linux.ibm.com/T/#u">[PATCH v6 11/28] crypto/x509-utils: Add helper functions for DIAG 508 subcode 1</a>
+` <a href="20250917232131.495848-13-zycai@linux.ibm.com/T/#u">[PATCH v6 12/28] s390x/diag: Implement DIAG 508 subcode 1 for signature verification</a>
+` <a href="20250917232131.495848-14-zycai@linux.ibm.com/T/#u">[PATCH v6 13/28] pc-bios/s390-ccw: Introduce IPL Information Report Block (IIRB)</a>
+` <a href="20250917232131.495848-15-zycai@linux.ibm.com/T/#u">[PATCH v6 14/28] pc-bios/s390-ccw: Define memory for IPLB and convert IPLB to pointers</a>
+` <a href="20250917232131.495848-16-zycai@linux.ibm.com/T/#u">[PATCH v6 15/28] hw/s390x/ipl: Add IPIB flags to IPL Parameter Block</a>
+` <a href="20250917232131.495848-17-zycai@linux.ibm.com/T/#u">[PATCH v6 16/28] s390x: Guest support for Secure-IPL Facility</a>
+` <a href="20250917232131.495848-18-zycai@linux.ibm.com/T/#u">[PATCH v6 17/28] pc-bios/s390-ccw: Refactor zipl_run()</a>
+` <a href="20250917232131.495848-19-zycai@linux.ibm.com/T/#u">[PATCH v6 18/28] pc-bios/s390-ccw: Rework zipl_load_segment function</a>
+` <a href="20250917232131.495848-20-zycai@linux.ibm.com/T/#u">[PATCH v6 19/28] pc-bios/s390-ccw: Add signature verification for secure IPL in audit mode</a>
+` <a href="20250917232131.495848-21-zycai@linux.ibm.com/T/#u">[PATCH v6 20/28] s390x: Guest support for Secure-IPL Code Loading Attributes Facility (SCLAF)</a>
+` <a href="20250917232131.495848-22-zycai@linux.ibm.com/T/#u">[PATCH v6 21/28] pc-bios/s390-ccw: Add additional security checks for secure boot</a>
+` <a href="20250917232131.495848-23-zycai@linux.ibm.com/T/#u">[PATCH v6 22/28] Add secure-boot to s390-ccw-virtio machine type option</a>
+` <a href="20250917232131.495848-24-zycai@linux.ibm.com/T/#u">[PATCH v6 23/28] hw/s390x/ipl: Set IPIB flags for secure IPL</a>
+` <a href="20250917232131.495848-25-zycai@linux.ibm.com/T/#u">[PATCH v6 24/28] pc-bios/s390-ccw: Handle true secure IPL mode</a>
+` <a href="20250917232131.495848-26-zycai@linux.ibm.com/T/#u">[PATCH v6 25/28] pc-bios/s390-ccw: Handle secure boot with multiple boot devices</a>
+` <a href="20250917232131.495848-27-zycai@linux.ibm.com/T/#u">[PATCH v6 26/28] hw/s390x/ipl: Handle secure boot without specifying a boot device</a>
+` <a href="20250917232131.495848-28-zycai@linux.ibm.com/T/#u">[PATCH v6 27/28] docs/specs: Add secure IPL documentation</a>
+` <a href="20250917232131.495848-29-zycai@linux.ibm.com/T/#u">[PATCH v6 28/28] docs/system/s390x:</a> "
+
+<a href="20250905115128.376295-1-richard.henderson@linaro.org/T/#t">[PATCH v2 0/7] target/sparc: Relax some decode for v7/v8</a>
+ 2025-09-17 22:23 UTC  (12+ messages)
+` <a href="afda6b74-f081-4622-a6ca-ce1f0567daad@ilande.co.uk/T/#u">[PATCH v2 1/7] target/sparc: Allow TRANS macro with no extra arguments</a>
+` <a href="a0b6d92e-6cb7-4d78-b327-0120d9264749@ilande.co.uk/T/#u">[PATCH v2 4/7] target/sparc: Loosen decode of RDPSR for v7</a>
+` <a href="a571b7dc-c42b-42b0-b5e9-fe7b766594a6@ilande.co.uk/T/#u">[PATCH v2 5/7] target/sparc: Loosen decode of RDWIM</a> "
+` <a href="763f051f-79b3-4f38-b597-cd59c0ca2679@ilande.co.uk/T/#u">[PATCH v2 6/7] target/sparc: Loosen decode of RDTBR</a> "
+` <a href="b41dbd62-4641-4b59-8c81-924ef3f7b95f@linaro.org/T/#u">[PATCH v2 7/7] target/sparc: Relax decode of rs2_or_imm</a> "
+
+<a href="20250830025025.3610-1-hibriansong@gmail.com/T/#t">[PATCH 0/4] export/fuse: Add FUSE-over-io_uring for Storage Exports</a>
+ 2025-09-17 22:06 UTC  (9+ messages)
+` <a href="f36a42af-4194-4563-a1a5-0c403e678d0c@gmail.com/T/#u">[PATCH 1/4] export/fuse: add opt to enable FUSE-over-io_uring</a>
+` <a href="00777028-aaf4-4607-80a7-d91ea9e9685a@gmail.com/T/#u">[PATCH 3/4] export/fuse: Safe termination for FUSE-uring</a>
+
+<a href="aMstJdBDMR8S2S9-@x1.local/T/#t">[PATCH 0/3] migration/tls: Graceful shutdowns for main and postcopy channels</a>
+ 2025-09-17 22:00 UTC  (11+ messages)
+` <a href="871po4x209.fsf@suse.de/T/#u">[PATCH 1/3] migration/tls: Gracefully shutdown main and preempt channels</a>
+` <a href="aMsvitYEzHao0i83@x1.local/T/#u">[PATCH 2/3] migration: Make migration_has_failed() work even for CANCELLING</a>
+` <a href="87qzw4vlci.fsf@suse.de/T/#u">[PATCH 3/3] migration/multifd: Use the new graceful termination helper</a>
+
+<a href="20250912100755.316518-1-thuth@redhat.com/T/#t">[PATCH v4 0/4] tests/functional: Test with scripts/vmstate-static-checker.py</a>
+ 2025-09-17 21:25 UTC  (3+ messages)
+` <a href="87o6r8vkji.fsf@suse.de/T/#u">[PATCH v4 4/4] tests/functional: Use vmstate-static-checker.py to test data from v7.2</a>
+
+<a href="20250917115207.1730186-1-armbru@redhat.com/T/#t">[PATCH v2 00/12] Error reporting cleanup, a fix, and &amp;error_warn removal</a>
+ 2025-09-17 20:34 UTC  (13+ messages)
+` <a href="20250917115207.1730186-2-armbru@redhat.com/T/#u">[PATCH v2 01/12] monitor: Clean up HMP gdbserver error reporting</a>
+` <a href="3e8721f5-f390-4050-9621-7a0bd9b8022d@linaro.org/T/#u">[PATCH v2 02/12] tcg: Fix error reporting on mprotect() failure in tcg_region_init()</a>
+` <a href="20250917141558.00007ae1@huawei.com/T/#u">[PATCH v2 03/12] hw/cxl: Convert cxl_fmws_link() to Error</a>
+` <a href="20250917115207.1730186-7-armbru@redhat.com/T/#u">[PATCH v2 06/12] net/slirp: Clean up error reporting</a>
+` <a href="e871527f-49df-4435-9460-cb1813991e80@linaro.org/T/#u">[PATCH v2 07/12] ui/spice-core:</a> "
+` <a href="7743993b-7ad8-4fe2-a80b-6a40a4fa8360@linaro.org/T/#u">[PATCH v2 08/12] util/oslib-win32: Do not treat null @errp as &amp;error_warn</a>
+` <a href="b972a642-c12e-4deb-9eaf-c334d1b6e598@yandex-team.ru/T/#u">[PATCH v2 12/12] error: Kill @error_warn</a>
+
+<a href="87455ffc-8b2b-486b-96ed-09be7a66482f@linaro.org/T/#t">[PULL 00/36] target-arm queue</a>
+ 2025-09-17 20:09 UTC  (4+ messages)
+
+<a href="874it0x4ge.fsf@suse.de/T/#t">[PATCH v3] hw/sensor: added MAX16600 device model</a>
+ 2025-09-17 19:29 UTC  (2+ messages)
+
+<a href="20250714155941.22176-1-shameerali.kolothum.thodi@huawei.com/T/#t">[RFC PATCH v3 00/15] hw/arm/virt: Add support for user-creatable accelerated SMMUv3</a>
+ 2025-09-17 19:04 UTC  (7+ messages)
+` <a href="20250917190401.GD1391379@nvidia.com/T/#u">[RFC PATCH v3 06/15] hw/arm/smmuv3-accel: Restrict accelerated SMMUv3 to vfio-pci endpoints with iommufd</a>
+
+<a href="20250827205949.364606-1-peterx@redhat.com/T/#t">[PATCH RFC 0/9] migration: Threadify loadvm process</a>
+ 2025-09-17 18:38 UTC  (9+ messages)
+` <a href="87frclvsxy.fsf@suse.de/T/#u">[PATCH RFC 5/9] migration: Thread-ify precopy vmstate load process</a>
+` <a href="87cy7pvsn8.fsf@suse.de/T/#u">[PATCH RFC 7/9] migration/postcopy: Remove workaround on wait preempt channel</a>
+` <a href="87a52tvsla.fsf@suse.de/T/#u">[PATCH RFC 8/9] migration/ram: Remove workaround on ram yield during load</a>
+` <a href="877bxwx6tw.fsf@suse.de/T/#u">[PATCH RFC 9/9] migration/rdma: Remove rdma_cm_poll_handler</a>
+
+<a href="68ea175aba137ac0e4336bfacf09453925e6b47d.camel@gmail.com/T/#t">[PATCH v4 00/10] virtio-console: notify about the terminal size</a>
+ 2025-09-17 18:32 UTC  (4+ messages)
+
+<a href="20250915162535.147642-1-maxbr@linux.ibm.com/T/#t">[PATCH] char-pty: add support for the terminal size</a>
+ 2025-09-17 18:29 UTC  (11+ messages)
+` <a href="15cc6bcd675f2e20efe4fbd6332018a693122b9c.camel@gmail.com/T/#u">[PATCH v2]</a> "
+
+<a href="9ec1f289-58f8-4537-90e1-89eeb9bd72e6@linaro.org/T/#t">[PULL v2 0/8] Tracing patches</a>
+ 2025-09-17 18:09 UTC  (2+ messages)
+
+<a href="aMr3aNpHz1ySnBEg@redhat.com/T/#t">More check-functional asset download issues</a>
+ 2025-09-17 18:01 UTC  (2+ messages)
+
+<a href="20250912164808.371944-1-milesg@linux.ibm.com/T/#t">[PATCH v4 0/9] Add IBM PPE42 CPU support</a>
+ 2025-09-17 16:52 UTC  (9+ messages)
+` <a href="66fb8c67-b04b-48d6-a33f-eda1cd24aeaf@redhat.com/T/#u">[PATCH v4 6/9] target/ppc: Add IBM PPE42 special instructions</a>
+
+<a href="87seglm3lh.fsf@draig.linaro.org/T/#t">[PATCH] checkpatch: Ignore removed lines in license check</a>
+ 2025-09-17 16:43 UTC  (7+ messages)
+
+<a href="20250917173914.0000331e@huawei.com/T/#t">[RFC QEMU PATCH v7] hw/arm/sbsa-ref: Support CXL Host Bridge &amp; CFMW</a>
+ 2025-09-17 16:39 UTC  (2+ messages)
+
+<a href="20250807105910.240070-1-wangyuquan1236@phytium.com.cn/T/#t">[RFC QEMU PATCH v4 0/2] cxl: Support creation of a new CXL Host Bridge</a>
+ 2025-09-17 16:37 UTC  (5+ messages)
+` <a href="20250917173242.00004009@huawei.com/T/#u">[RFC QEMU PATCH v4 1/2] hw/pxb-cxl: Rename the pxb cxl host bridge</a>
+` <a href="20250917173742.000078cc@huawei.com/T/#u">[RFC QEMU PATCH v4 2/2] pci-host/cxl: Support creation of a new CXL Host Bridge</a>
+
+<a href="aMq2V0rD2Q27VXOg@redhat.com/T/#t">[PATCH v3 0/7] Do not unparent in instance_finalize()</a>
+ 2025-09-17 16:33 UTC  (19+ messages)
+` <a href="aMrgw4EUz81u8Rae@redhat.com/T/#u">[PATCH v3 1/7] docs/devel:</a> "
+` <a href="aMrhGZrMhzUPWmGf@redhat.com/T/#u">[PATCH v3 2/7] vfio/pci:</a> "
+` <a href="aMrhU7-Z-mKUUVe3@redhat.com/T/#u">[PATCH v3 3/7] hw/core/register:</a> "
+` <a href="aMrhmYmZvRapJREE@redhat.com/T/#u">[PATCH v3 4/7] hv-balloon:</a> "
+` <a href="aMricbjgn2q6ZiYQ@redhat.com/T/#u">[PATCH v3 5/7] hw/sd/sdhci:</a> "
+` <a href="aMritI1Iklpgbdo2@redhat.com/T/#u">[PATCH v3 6/7] vfio:</a> "
+` <a href="aMri5IsvtMayThCO@redhat.com/T/#u">[PATCH v3 7/7] hw/xen:</a> "
+
+<a href="15b36cb6-69a2-44bf-80f9-46704d8d9e65@linaro.org/T/#t">[PULL 00/61] CPU, Rust, x86 changes for 2025-09-13</a>
+ 2025-09-17 16:33 UTC  (2+ messages)
+
+<a href="20250916080736.1266083-1-arpit1.kumar@samsung.com/T/#t">[PATCH v4 0/2] FM-API Physical Switch Command Set Support</a>
+ 2025-09-17 16:29 UTC  (6+ messages)
+  ` <a href="20250917165535.000021b1@huawei.com/T/#u">[PATCH v4 1/2] hw/cxl: Refactored Identify Switch Device &amp; Get Physical Port State</a>
+  ` <a href="20250917172905.00005fa3@huawei.com/T/#u">[PATCH v4 2/2] hw/cxl: Add Physical Port Control (Opcode 5102h)</a>
+
+<a href="aMreTDMJVwrxLsil@redhat.com/T/#t">[PATCH for 10.0.x stable] tests/docker/dockerfiles/python.docker: pull fedora:40 image instead of fedora:latest</a>
+ 2025-09-17 16:14 UTC  (2+ messages)
+
+<a href="20250917-qom-v1-0-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#t">[PATCH 00/35] memory: QOM-ify AddressSpace</a>
+ 2025-09-17 16:01 UTC  (43+ messages)
+` <a href="da9ea507-e0c5-4e4e-8624-9cddc77b7ab2@linaro.org/T/#u">[PATCH 01/35]</a> "
+` <a href="546a6886-6812-4abe-affd-70ff59f85a04@linaro.org/T/#u">[PATCH 02/35] hw/core/loader: Use address_space_get_path()</a>
+` <a href="20250917-qom-v1-3-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 03/35] vfio:</a> "
+` <a href="6cb5ae94-14b8-4315-8981-d1817b375059@linaro.org/T/#u">[PATCH 04/35] hw/alpha: QOM-ify AddressSpace</a>
+` <a href="cd595791-a110-4088-98dd-fefb90fa2da2@linaro.org/T/#u">[PATCH 05/35] hw/arm:</a> "
+` <a href="20250917-qom-v1-6-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 06/35] hw/display:</a> "
+` <a href="20250917-qom-v1-7-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 07/35] hw/dma:</a> "
+` <a href="20250917-qom-v1-8-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 08/35] hw/fsi:</a> "
+` <a href="20250917-qom-v1-9-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 09/35] hw/i2c:</a> "
+` <a href="20250917-qom-v1-10-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 10/35] hw/i386:</a> "
+` <a href="20250917-qom-v1-11-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 11/35] hw/intc:</a> "
+` <a href="20250917-qom-v1-12-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 12/35] hw/loongarch:</a> "
+` <a href="20250917142424.000019d3@huawei.com/T/#u">[PATCH 13/35] hw/mem:</a> "
+` <a href="20250917-qom-v1-14-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 14/35] hw/misc:</a> "
+` <a href="20250917-qom-v1-15-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 15/35] hw/net:</a> "
+` <a href="20250917-qom-v1-16-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 16/35] hw/nubus:</a> "
+` <a href="20250917-qom-v1-17-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 17/35] hw/pci:</a> "
+` <a href="20250917-qom-v1-18-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 18/35] hw/pci-host:</a> "
+` <a href="20250917-qom-v1-19-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 19/35] hw/ppc:</a> "
+` <a href="20250917-qom-v1-20-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 20/35] hw/remote:</a> "
+` <a href="20250917-qom-v1-21-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 21/35] hw/riscv:</a> "
+` <a href="20250917-qom-v1-22-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 22/35] hw/s390x:</a> "
+` <a href="20250917-qom-v1-23-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 23/35] hw/scsi:</a> "
+` <a href="20250917-qom-v1-24-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 24/35] hw/sd:</a> "
+` <a href="20250917-qom-v1-25-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 25/35] hw/sparc:</a> "
+` <a href="20250917-qom-v1-26-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 26/35] hw/sparc64:</a> "
+` <a href="20250917-qom-v1-27-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 27/35] hw/ssi:</a> "
+` <a href="20250917-qom-v1-28-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 28/35] hw/usb:</a> "
+` <a href="20250917-qom-v1-29-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 29/35]</a> "
+` <a href="20250917-qom-v1-30-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 30/35] hw/virtio:</a> "
+` <a href="20250917-qom-v1-31-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 31/35] system/physmem:</a> "
+` <a href="20250917-qom-v1-32-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 32/35] target/i386:</a> "
+` <a href="20250917-qom-v1-33-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 33/35] target/mips:</a> "
+` <a href="20250917-qom-v1-34-7262db7b0a84@rsg.ci.i.u-tokyo.ac.jp/T/#u">[PATCH 34/35] target/xtensa:</a> "
+` <a href="a392927d-74cb-4005-95f6-6e7fa1eaae1b@linaro.org/T/#u">[PATCH 35/35] memory: Drop non-QOM AddressSpace support</a>
+
+<a href="6F6BF0F431B23852+20250917124734.443966-1-liweiwei@kubuds.cn/T/#u">[PATCH] accel/tcg: fix self-modify-code problem when modify code in a single tb loop</a>
+ 2025-09-17 12:47 UTC 
+
+<a href="13a10abd-00a9-4c70-84e5-f62409e73215@vivier.eu/T/#t">[PATCH trivial] vhost-user-test: remove trailing newlines in g_test_message() calls</a>
+ 2025-09-17 15:40 UTC  (2+ messages)
+
+<a href="20250910180357.320297-1-berrange@redhat.com/T/#t">[PATCH v3 00/20] util: sync error_report &amp; qemu_log output more closely</a>
+ 2025-09-17 15:33 UTC  (7+ messages)
+` <a href="aMrUNYrYeDB_sagn@redhat.com/T/#u">[PATCH v3 02/20] monitor: initialize global data from a constructor</a>
+` <a href="aMrUrca-L89L-TbP@redhat.com/T/#u">[PATCH v3 08/20] log: avoid repeated prefix on incremental qemu_log calls</a>
+
+<a href="8c01dc12-d636-4a04-8abf-55c72c020d0b@tls.msk.ru/T/#t">[PATCH] hw/net/can: Remove redundant status bit setting in can_sja1000</a>
+ 2025-09-17 14:45 UTC  (2+ messages)
+
+<a href="20250911134324.3702720-1-eric.auger@redhat.com/T/#t">[RFC 0/3] Mitigation of migration failures accross different host kernels</a>
+ 2025-09-17 14:37 UTC  (3+ messages)
+` <a href="21e612a3-35c4-d38c-4654-e40ceb43874d@redhat.com/T/#u">[RFC 1/3] target/arm/cpu: Add new CPU property for KVM regs to hide</a>
+
+<a href="20250917143330.294698-1-Jonathan.Cameron@huawei.com/T/#t">[PATCH qemu for 10.2 0/3] cxl: Additional RAS features support</a>
+ 2025-09-17 14:33 UTC  (4+ messages)
+` <a href="20250917143330.294698-2-Jonathan.Cameron@huawei.com/T/#u">[PATCH qemu for 10.2 1/3] hw/cxl/cxl-mailbox-utils: Move declaration of scrub and ECS feature attributes in cmd_features_set_feature()</a>
+` <a href="20250917143330.294698-3-Jonathan.Cameron@huawei.com/T/#u">[PATCH qemu for 10.2 2/3] hw/cxl: Add support for Maintenance command and Post Package Repair (PPR)</a>
+` <a href="20250917143330.294698-4-Jonathan.Cameron@huawei.com/T/#u">[PATCH qemu for 10.2 3/3] hw/cxl: Add emulation for memory sparing control feature</a>
+
+<a href="20240423150951.41600-1-pbonzini@redhat.com/T/#t">[PULL 00/63] First batch of i386 and build system patch for QEMU 9.1</a>
+ 2025-09-17 14:23 UTC  (4+ messages)
+` <a href="28a17da6-8cde-4248-9302-2a55b3125938@tls.msk.ru/T/#u">[PULL 30/63] q35: Introduce smm_ranges property for q35-pci-host</a>
+
+<a href="28d4d70d-9571-45eb-a4e7-f79ea1454c2c@tls.msk.ru/T/#t">[PATCH] Revert "tests/qtest: use qos_printf instead of g_test_message"</a>
+ 2025-09-17 14:19 UTC  (2+ messages)
+
+<a href="20250917141355.293217-1-Jonathan.Cameron@huawei.com/T/#t">[PATCH qemu for 10.2 0/5] cxl: r3.2 specification events updates</a>
+ 2025-09-17 14:13 UTC  (6+ messages)
+` <a href="20250917141355.293217-2-Jonathan.Cameron@huawei.com/T/#u">[PATCH qemu for 10.2 1/5] qapi: cxl: Refactor CXL event injection for common commands arguments</a>
+` <a href="20250917141355.293217-3-Jonathan.Cameron@huawei.com/T/#u">[PATCH qemu for 10.2 2/5] hw/cxl/events: Update for rev3.2 common event record format</a>
+` <a href="20250917141355.293217-4-Jonathan.Cameron@huawei.com/T/#u">[PATCH qemu for 10.2 3/5] hw/cxl/events: Updates for rev3.2 general media event record</a>
+` <a href="20250917141355.293217-5-Jonathan.Cameron@huawei.com/T/#u">[PATCH qemu for 10.2 4/5] hw/cxl/events: Updates for rev3.2 DRAM</a> "
+` <a href="20250917141355.293217-6-Jonathan.Cameron@huawei.com/T/#u">[PATCH qemu for 10.2 5/5] hw/cxl/events: Updates for rev3.2 memory module</a> "
+
+<a href="db0c9db3-372f-429d-842d-341493204d7a@tls.msk.ru/T/#t">[PATCH] hw/usb/hcd-uhci: don't assert for SETUP to non-0 endpoint</a>
+ 2025-09-17 14:03 UTC  (2+ messages)
+
+<a href="20250915084037.1816893-1-max.chou@sifive.com/T/#t">[RFC PATCH 0/8] Add Zvfbfa extension support</a>
+ 2025-09-17 13:57 UTC  (7+ messages)
+` <a href="98db7d09-3a60-4a57-aba6-10cda530c79b@ventanamicro.com/T/#u">[RFC PATCH 1/8] target/riscv: Add cfg properities for Zvfbfa extensions</a>
+` <a href="1e38dd76-f94a-4b2b-bdb5-329448c7dd1b@ventanamicro.com/T/#u">[RFC PATCH 2/8] target/riscv: Add the Zvfbfa extension implied rule</a>
+` <a href="26d72d8e-5e58-4a04-865c-34f6094e74e9@ventanamicro.com/T/#u">[RFC PATCH 3/8] target/riscv: rvv: Add new VTYPE CSR field - altfmt</a>
+
+<a href="20250903030114.274535-1-npiggin@gmail.com/T/#t">[PATCH 0/3] target/riscv: corner case fixes</a>
+ 2025-09-17 13:53 UTC  (8+ messages)
+` <a href="aMq9axr_wINfBpxP@redhat.com/T/#u">[PATCH 2/3] target/risvc: Fix vector whole ldst vstart check</a>
+
+<a href="20250915132211.135095-1-vsementsov@yandex-team.ru/T/#t">[PATCH v3 00/13] io: deal with blocking/non-blocking fds</a>
+ 2025-09-17 13:51 UTC  (6+ messages)
+` <a href="87jz1x426u.fsf@pond.sub.org/T/#u">[PATCH v3 04/13] util/error: add &amp;error_reporter</a>
+
+<a href="cover.1747223385.git.mst@redhat.com/T/#t">[PULL 00/27] virtio,pci,pc: fixes, features</a>
+ 2025-09-17 13:05 UTC  (4+ messages)
+` <a href="20250917140503.0000231b@huawei.com/T/#u">[PULL 03/27] hw/cxl/cxl-mailbox-utils: Add support for Media operations discovery commands cxl r3.2 (8.2.10.9.5.3)</a>
+
+<a href="cover.1757676218.git.pabeni@redhat.com/T/#t">[PATCH v6 00/14] virtio: introduce support for GSO over UDP tunnel</a>
+ 2025-09-17 12:36 UTC  (20+ messages)
+` <a href="uxfnphbm2iyxp5crxov27uxyw4gibvz3d5yzgajhzt3jwpc75b@ywoj355ppyjk/T/#u">[PATCH v6 02/14] linux-headers: deal with counted_by annotation</a>
+` <a href="CAGxU2F6aLxtLvk9G1knJxiK+OXd8zfjoMAcZYxPduk-GSzT=Zw@mail.gmail.com/T/#u">[PATCH v6 04/14] virtio: introduce extended features type</a>
+` <a href="hitycqljplv6nj5ypghgdxclvmgcbxtukagvgjpv7s5xwof6ae@2nm5n3zssar3/T/#u">[PATCH v6 05/14] virtio: serialize extended features state</a>
+` <a href="nszuwj7p6zgfhbaz5yyc2kid4noqoi2egetah52lix4kxjmhly@echi6d4st6b7/T/#u">[PATCH v6 06/14] virtio: add support for negotiating extended features</a>
+` <a href="noxeu2gkgenvy744hopuwlvkanauo3vlga4jgc6whl4tygorcz@afwpr5z26pfu/T/#u">[PATCH v6 07/14] virtio-pci: implement support for</a> "
+` <a href="bfqz5lugh6mhr45enggp5rrvjm3lwwppwk4hbbaqko2l4sdtmy@essbkol3nxru/T/#u">[PATCH v6 08/14] vhost: add support for negotiating</a> "
+` <a href="qvjqek2lh66xqhult7jcwzwfm5kwa5dtq6vqerpjqowwetn7bo@u5g2kze4rwkt/T/#u">[PATCH v6 09/14] qmp: update virtio features map to support</a> "
+` <a href="66nse2kwrtb342irpnxm664sqmzmlj2hlfpusuajlelwys2vc7@lygaes6y4hmp/T/#u">[PATCH v6 10/14] vhost-backend: implement extended features support</a>
+` <a href="fpulb7rhwna5dky4ta6hr6sledmyicc6wqwvkuvand6koosiqn@gvf6hjc5gzik/T/#u">[PATCH v6 13/14] net: implement tunnel probing</a>
+
+<a href="20250917115509.401015-1-f.ebner@proxmox.com/T/#t">[PATCH v2 0/5] block: refresh filter parents when child was resized</a>
+ 2025-09-17 11:54 UTC  (6+ messages)
+` <a href="20250917115509.401015-2-f.ebner@proxmox.com/T/#u">[PATCH v2 1/5] include/block/block_int-common: document when resize callback is used</a>
+` <a href="20250917115509.401015-3-f.ebner@proxmox.com/T/#u">[PATCH v2 2/5] block: make bdrv_co_parent_cb_resize() a proper IO API function</a>
+` <a href="20250917115509.401015-4-f.ebner@proxmox.com/T/#u">[PATCH v2 3/5] block: implement 'resize' callback for child_of_bds class</a>
+` <a href="20250917115509.401015-5-f.ebner@proxmox.com/T/#u">[PATCH v2 4/5] iotests: add test for resizing a node below filters</a>
+` <a href="20250917115509.401015-6-f.ebner@proxmox.com/T/#u">[PATCH v2 5/5] iotests: add test for resizing a 'file' node below a 'raw' node</a>
+</pre><hr><pre id="nav">page: <a href="?t=20250917115635" rel="next">next (older)</a>
+- recent:[<b>subjects (threaded)</b>|<a href="./topics_new.html">topics (new)</a>|<a href="./topics_active.html">topics (active)</a>]</pre><hr><pre>This is a public inbox, see <a href="_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
