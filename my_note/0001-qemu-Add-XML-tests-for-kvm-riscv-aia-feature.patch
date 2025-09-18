@@ -1,0 +1,154 @@
+From d7dcb54c0e459512226ec3e354c870cca5d1765b Mon Sep 17 00:00:00 2001
+From: xiangwencheng <xiangwencheng@lanxincomputing.com>
+Date: Thu, 18 Sep 2025 11:58:33 +0800
+Subject: [PATCH v4 2/3] qemu: Add XML tests for kvm riscv-aia feature
+
+Signed-off-by: BillXiang <xiangwencheng@lanxincomputing.com>
+---
+ .../caps_9.1.0_riscv64.replies                |  4 +++
+ .../caps_9.1.0_riscv64.xml                    |  3 ++
+ ...atures-aia-aplic-imsic.riscv64-latest.args | 31 +++++++++++++++++++
+ ...eatures-aia-aplic-imsic.riscv64-latest.xml |  1 +
+ .../riscv64-virt-features-aia-aplic-imsic.xml | 30 ++++++++++++++++++
+ tests/qemuxmlconftest.c                       |  1 +
+ 6 files changed, 70 insertions(+)
+ create mode 100644 tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.riscv64-latest.args
+ create mode 120000 tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.riscv64-latest.xml
+ create mode 100644 tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.xml
+
+diff --git a/tests/qemucapabilitiesdata/caps_9.1.0_riscv64.replies b/tests/qemucapabilitiesdata/caps_9.1.0_riscv64.replies
+index 51896936cc..b394d68d00 100644
+--- a/tests/qemucapabilitiesdata/caps_9.1.0_riscv64.replies
++++ b/tests/qemucapabilitiesdata/caps_9.1.0_riscv64.replies
+@@ -24238,6 +24238,10 @@
+       "name": "tcg-accel",
+       "parent": "accel"
+     },
++    {
++      "name": "kvm-accel",
++      "parent": "accel"
++    },
+     {
+       "name": "ES1370",
+       "parent": "pci-device"
+diff --git a/tests/qemucapabilitiesdata/caps_9.1.0_riscv64.xml b/tests/qemucapabilitiesdata/caps_9.1.0_riscv64.xml
+index 9ceefed89f..6fbe05aa8d 100644
+--- a/tests/qemucapabilitiesdata/caps_9.1.0_riscv64.xml
++++ b/tests/qemucapabilitiesdata/caps_9.1.0_riscv64.xml
+@@ -3,6 +3,7 @@
+   <qemuctime>0</qemuctime>
+   <selfctime>0</selfctime>
+   <selfvers>0</selfvers>
++  <flag name='kvm'/>
+   <flag name='sdl'/>
+   <flag name='spice'/>
+   <flag name='hda-duplex'/>
+@@ -180,10 +181,12 @@
+   <cpu type='tcg' name='thead-c906' typename='thead-c906-riscv-cpu'/>
+   <cpu type='tcg' name='sifive-u54' typename='sifive-u54-riscv-cpu'/>
+   <cpu type='tcg' name='veyron-v1' typename='veyron-v1-riscv-cpu'/>
++  <cpu type='kvm' name='rv64' typename='rv64-riscv-cpu'/>
+   <machine type='tcg' name='virt' maxCpus='512' defaultCPU='rv64-riscv-cpu' numaMemSupported='yes' defaultRAMid='riscv_virt_board.ram' acpi='yes'/>
+   <machine type='tcg' name='spike' maxCpus='8' default='yes' defaultCPU='rv64-riscv-cpu' numaMemSupported='yes' defaultRAMid='riscv.spike.ram' acpi='no'/>
+   <machine type='tcg' name='microchip-icicle-kit' maxCpus='5' defaultRAMid='microchip.icicle.kit.ram' acpi='no'/>
+   <machine type='tcg' name='sifive_u' maxCpus='5' defaultCPU='sifive-u54-riscv-cpu' defaultRAMid='riscv.sifive.u.ram' acpi='no'/>
+   <machine type='tcg' name='shakti_c' maxCpus='1' defaultCPU='shakti-c-riscv-cpu' defaultRAMid='riscv.shakti.c.ram' acpi='no'/>
+   <machine type='tcg' name='sifive_e' maxCpus='1' defaultCPU='sifive-e51-riscv-cpu' defaultRAMid='riscv.sifive.e.ram' acpi='no'/>
++  <machine type='kvm' name='virt' maxCpus='512' defaultCPU='rv64-riscv-cpu' numaMemSupported='yes' defaultRAMid='riscv_virt_board.ram' acpi='yes'/>
+ </qemuCaps>
+diff --git a/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.riscv64-latest.args b/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.riscv64-latest.args
+new file mode 100644
+index 0000000000..3dadcdcd7c
+--- /dev/null
++++ b/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.riscv64-latest.args
+@@ -0,0 +1,31 @@
++LC_ALL=C \
++PATH=/bin \
++HOME=/var/lib/libvirt/qemu/domain--1-guest \
++USER=test \
++LOGNAME=test \
++XDG_DATA_HOME=/var/lib/libvirt/qemu/domain--1-guest/.local/share \
++XDG_CACHE_HOME=/var/lib/libvirt/qemu/domain--1-guest/.cache \
++XDG_CONFIG_HOME=/var/lib/libvirt/qemu/domain--1-guest/.config \
++/usr/bin/qemu-system-riscv64 \
++-name guest=guest,debug-threads=on \
++-S \
++-object '{"qom-type":"secret","id":"masterKey0","format":"raw","file":"/var/lib/libvirt/qemu/domain--1-guest/master-key.aes"}' \
++-machine virt,usb=off,aia=aplic-imsic,dump-guest-core=off,memory-backend=riscv_virt_board.ram,acpi=off \
++-accel kvm,riscv-aia=auto \
++-cpu rv64 \
++-m size=4194304k \
++-object '{"qom-type":"memory-backend-ram","id":"riscv_virt_board.ram","size":4294967296}' \
++-overcommit mem-lock=off \
++-smp 4,sockets=4,cores=1,threads=1 \
++-uuid 1ccfd97d-5eb4-478a-bbe6-88d254c16db7 \
++-display none \
++-no-user-config \
++-nodefaults \
++-chardev socket,id=charmonitor,fd=1729,server=on,wait=off \
++-mon chardev=charmonitor,id=monitor,mode=control \
++-rtc base=utc \
++-no-shutdown \
++-boot strict=on \
++-audiodev '{"id":"audio1","driver":"none"}' \
++-sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny \
++-msg timestamp=on
+diff --git a/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.riscv64-latest.xml b/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.riscv64-latest.xml
+new file mode 120000
+index 0000000000..73a864a8c2
+--- /dev/null
++++ b/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.riscv64-latest.xml
+@@ -0,0 +1 @@
++riscv64-virt-features-aia-aplic-imsic.xml
+\ No newline at end of file
+diff --git a/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.xml b/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.xml
+new file mode 100644
+index 0000000000..31d4f30401
+--- /dev/null
++++ b/tests/qemuxmlconfdata/riscv64-virt-features-aia-aplic-imsic.xml
+@@ -0,0 +1,30 @@
++<domain type='kvm'>
++  <name>guest</name>
++  <uuid>1ccfd97d-5eb4-478a-bbe6-88d254c16db7</uuid>
++  <memory unit='KiB'>4194304</memory>
++  <currentMemory unit='KiB'>4194304</currentMemory>
++  <vcpu placement='static'>4</vcpu>
++  <os>
++    <type arch='riscv64' machine='virt'>hvm</type>
++    <boot dev='hd'/>
++  </os>
++  <features>
++    <kvm>
++      <riscv-aia state='on' mode='auto'/>
++    </kvm>
++    <aia value='aplic-imsic'/>
++  </features>
++  <cpu mode='custom' match='exact' check='none'>
++    <model fallback='forbid'>rv64</model>
++  </cpu>
++  <clock offset='utc'/>
++  <on_poweroff>destroy</on_poweroff>
++  <on_reboot>restart</on_reboot>
++  <on_crash>destroy</on_crash>
++  <devices>
++    <emulator>/usr/bin/qemu-system-riscv64</emulator>
++    <controller type='pci' index='0' model='pcie-root'/>
++    <audio id='1' type='none'/>
++    <memballoon model='none'/>
++  </devices>
++</domain>
+diff --git a/tests/qemuxmlconftest.c b/tests/qemuxmlconftest.c
+index 171a6f1c78..5a2a14f7a6 100644
+--- a/tests/qemuxmlconftest.c
++++ b/tests/qemuxmlconftest.c
+@@ -2999,6 +2999,7 @@ mymain(void)
+     DO_TEST_CAPS_ARCH_LATEST("x86_64-default-cpu-tcg-features", "x86_64");
+ 
+     DO_TEST_CAPS_ARCH_LATEST("riscv64-virt-features-aia", "riscv64");
++    DO_TEST_CAPS_ARCH_LATEST("riscv64-virt-features-aia-aplic-imsic", "riscv64");
+ 
+     DO_TEST_CAPS_LATEST("virtio-9p-multidevs");
+     DO_TEST_CAPS_LATEST("virtio-9p-createmode");
+-- 
+2.34.1
+
