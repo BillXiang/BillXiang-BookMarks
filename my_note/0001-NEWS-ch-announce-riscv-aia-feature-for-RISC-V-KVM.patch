@@ -1,1 +1,32 @@
+From 5551c274fac7f1fbdb764de5adf7b6b1578b9497 Mon Sep 17 00:00:00 2001
+From: xiangwencheng <xiangwencheng@lanxincomputing.com>
+Date: Thu, 18 Sep 2025 11:59:39 +0800
+Subject: [PATCH v4 3/3] NEWS: ch: announce riscv-aia feature for RISC-V KVM
+
+Signed-off-by: xiangwencheng <xiangwencheng@lanxincomputing.com>
+---
+ NEWS.rst | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/NEWS.rst b/NEWS.rst
+index 1b8e188f5e..db98d9e7c2 100644
+--- a/NEWS.rst
++++ b/NEWS.rst
+@@ -32,6 +32,13 @@ v11.8.0 (unreleased)
+     On the XML side, the existing <acpi> element has been extended with a
+     "nodeset" attribute to specify the NUMA node affinity of a PCI device.
+ 
++  * qemu: Add ``riscv-aia`` attribute for RISC-V KVM
++
++    This attribute was introduced in qemu-8.2 to specify the KVM AIA mode. 
++    1) "riscv-aia=emul": IMSIC is emulated by hypervisor
++    2) "riscv-aia=hwaccel": use hardware guest IMSIC
++    3) "riscv-aia=auto": use the hardware guest IMSICs whenever available otherwise we fallback to software emulation.
++
+ * **Improvements**
+ 
+ * **Bug fixes**
+-- 
+2.34.1
+
 
