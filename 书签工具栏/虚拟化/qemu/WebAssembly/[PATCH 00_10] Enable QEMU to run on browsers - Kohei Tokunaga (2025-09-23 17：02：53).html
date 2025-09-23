@@ -1,0 +1,807 @@
+<!-- Filename: 书签工具栏/虚拟化/qemu/WebAssembly/[PATCH 00_10] Enable QEMU to run on browsers - Kohei Tokunaga (2025-09-23 17：02：53).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-devel/cover.1744032780.git.ktokunaga.mail@gmail.com/
+ Summary: 
+-->
+<html><head><title>[PATCH 00/10] Enable QEMU to run on browsers - Kohei Tokunaga</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20250407151615"><b>qemu-devel.nongnu.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Kohei Tokunaga &lt;ktokunaga.mail@gmail.com&gt;
+To: <a href="../../qemu-devel/?t=20250407151615">qemu-devel@nongnu.org</a>
+Cc: "Alex Bennée" &lt;alex.bennee@linaro.org&gt;,
+	"Philippe Mathieu-Daudé" &lt;philmd@linaro.org&gt;,
+	"Thomas Huth" &lt;thuth@redhat.com&gt;,
+	"Richard Henderson" &lt;richard.henderson@linaro.org&gt;,
+	"Paolo Bonzini" &lt;pbonzini@redhat.com&gt;,
+	"Kevin Wolf" &lt;kwolf@redhat.com&gt;,
+	"Hanna Reitz" &lt;hreitz@redhat.com&gt;,
+	"Kohei Tokunaga" &lt;ktokunaga.mail@gmail.com&gt;,
+	"Christian Schoenebeck" &lt;qemu_oss@crudebyte.com&gt;,
+	"Greg Kurz" &lt;groug@kaod.org&gt;,
+	"Palmer Dabbelt" &lt;palmer@dabbelt.com&gt;,
+	"Alistair Francis" &lt;alistair.francis@wdc.com&gt;,
+	"Weiwei Li" &lt;liwei1518@gmail.com&gt;,
+	"Daniel Henrique Barboza" &lt;dbarboza@ventanamicro.com&gt;,
+	"Liu Zhiwei" &lt;zhiwei_liu@linux.alibaba.com&gt;,
+	"Marc-André Lureau" &lt;marcandre.lureau@redhat.com&gt;,
+	"Daniel P . Berrangé" &lt;berrange@redhat.com&gt;,
+	"Eduardo Habkost" &lt;eduardo@habkost.net&gt;,
+	"Peter Maydell" &lt;peter.maydell@linaro.org&gt;,
+	"Stefan Hajnoczi" &lt;stefanha@redhat.com&gt;,
+	qemu-block@nongnu.org, <a href="../../qemu-riscv/?t=20250407151615">qemu-riscv@nongnu.org</a>,
+	<a href="../../qemu-arm/?t=20250407151615">qemu-arm@nongnu.org</a>
+Subject: <a href="#r" id="t">[PATCH 00/10] Enable QEMU to run on browsers</a>
+Date: Mon,  7 Apr 2025 23:45:51 +0900	<a href="#r">[thread overview]</a>
+Message-ID: &lt;cover.1744032780.git.ktokunaga.mail@gmail.com&gt; (<a href="raw">raw</a>)
+
+This patch series enables QEMU's system emulator to run in a browser using
+Emscripten.
+It includes implementations and workarounds to address browser environment
+limitations, as shown in the following.
+
+# New TCG Backend for Browsers
+
+A new TCG backend translates IR instructions into Wasm instructions and runs
+them using the browser's WebAssembly APIs (WebAssembly.Module and
+WebAssembly.instantiate). To minimize compilation overhead and avoid hitting
+the browser's limitation of the number of instances, this backend integrates
+a forked TCI. TBs run on TCI by default, with frequently executed TBs
+compiled into WebAssembly.
+
+# Workaround for Running 64-bit Guests
+
+The current implementation uses Wasm's 32-bit memory model, even though Wasm
+supports 64-bit variables and instructions. This patch explores implementing
+TCG 64-bit instructions while leveraging SoftMMU for address translation. To
+enable 64-bit guest support in Wasm today, it was necessary to partially
+revert recent changes that removed support for different pointer widths
+between the host and guest (e.g., commits
+a70af12addd9060fdf8f3dbd42b42e3072c3914f and
+bf455ec50b6fea15b4d2493059365bf94c706273) when compiling with
+Emscripten. While this serves as a temporary workaround, a long-term
+solution could involve adopting Wasm's 64-bit memory model once it gains
+broader support, as it is currently not widely adopted (e.g., unsupported by
+Safari and libffi). Feedback and suggestions on this approach are welcome.
+
+# Emscripten-Based Coroutine Backend
+
+Emscripten does not support couroutine methods currently used by QEMU but
+provides a coroutine implementation called "fiber". This patch series
+introduces a coroutine backend using fiber. However, fiber does not support
+submitting coroutines to other threads. So this patch series modifies
+hw/9pfs/coth.h to disable this behavior when compiled with Emscripten.
+
+# Overview of build process
+
+This section provides an overview of the build process for compiling QEMU
+using Emscripten. Full instructions are available in the sample
+repository[1].
+
+To compile QEMU with Emscripten, the following dependencies are required.
+The emsdk-wasm32-cross.docker environment includes all necessary components
+and can be used as the build environment:
+
+- Emscripten SDK (emsdk) v3.1.50
+- Libraries cross-compiled with Emscripten (refer to
+  emsdk-wasm32-cross.docker for build steps)
+  - GLib v2.84.0
+  - zlib v1.3.1
+  - libffi v3.4.7
+  - Pixman v0.44.2
+
+QEMU can be compiled using Emscripten's emconfigure and emmake, which
+automatically set environment variables such as CC for targeting Emscripten.
+
+emconfigure configure --static --disable-tools --target-list=x86_64-softmmu
+emmake make -j$(nproc)
+
+This process generates the following files:
+
+- qemu-system-x86_64.js
+- qemu-system-x86_64.wasm
+- qemu-system-x86_64.worker.js
+
+Guest images can be packaged using Emscripten's file_packager.py tool.
+For example, if the images are stored in a directory named "pack", the
+following command packages them, allowing QEMU to access them through
+Emscripten's virtual filesystem:
+
+/path/to/file_packager.py qemu-system-x86_64.data --preload pack &gt; load.js
+
+This process generates the following files:
+
+- qemu-system-x86_64.data
+- load.js
+
+Emscripten allows passing arguments to the QEMU command via the Module
+object in JavaScript:
+
+Module['arguments'] = [
+    '-nographic', '-m', '512M', '-accel', 'tcg,tb-size=500',
+    '-L', 'pack/',
+    '-drive', 'if=virtio,format=raw,file=pack/rootfs.bin',
+    '-kernel', 'pack/bzImage',
+    '-append', 'earlyprintk=ttyS0 console=ttyS0 root=/dev/vda loglevel=7',
+];
+
+The sample repository[1] provides a complete setup, including an HTML file
+that implements a terminal UI.
+
+[1] <a href="https://github.com/ktock/qemu-wasm-sample">https://github.com/ktock/qemu-wasm-sample</a>
+
+# Additional references
+
+- A talk at FOSDEM 2025:
+  <a href="https://fosdem.org/2025/schedule/event/fosdem-2025-6290-running-qemu-inside-browser/">https://fosdem.org/2025/schedule/event/fosdem-2025-6290-running-qemu-inside-browser/</a>
+- Demo page on GitHub Pages: <a href="https://ktock.github.io/qemu-wasm-demo/">https://ktock.github.io/qemu-wasm-demo/</a>
+
+Kohei Tokunaga (10):
+  various: Fix type conflict of GLib function pointers
+  various: Define macros for dependencies on emscripten
+  util/mmap-alloc: Add qemu_ram_mmap implementation for emscripten
+  util: Add coroutine backend for emscripten
+  meson: Add wasm build in build scripts
+  include/exec: Allow using 64bit guest addresses on emscripten
+  tcg: Add a TCG backend for WebAssembly
+  hw/9pfs: Allow using hw/9pfs with emscripten
+  gitlab: Enable CI for wasm build
+  MAINTAINERS: Update MAINTAINERS file for wasm-related files
+
+ .gitlab-ci.d/buildtest-template.yml           |   27 +
+ .gitlab-ci.d/buildtest.yml                    |    9 +
+ .gitlab-ci.d/container-cross.yml              |    5 +
+ MAINTAINERS                                   |   11 +
+ accel/tcg/cputlb.c                            |    8 +-
+ block/file-posix.c                            |   18 +
+ configs/meson/emscripten.txt                  |    6 +
+ configure                                     |    7 +
+ fsdev/file-op-9p.h                            |    3 +
+ fsdev/meson.build                             |    2 +-
+ hw/9pfs/9p-util-stub.c                        |   43 +
+ hw/9pfs/9p-util.h                             |   18 +
+ hw/9pfs/9p.c                                  |    3 +
+ hw/9pfs/coth.h                                |   12 +
+ hw/9pfs/meson.build                           |    2 +
+ hw/riscv/riscv_hart.c                         |    9 +-
+ include/accel/tcg/getpc.h                     |    2 +-
+ include/exec/tlb-common.h                     |   14 +-
+ include/exec/vaddr.h                          |   11 +
+ include/qemu/atomic.h                         |    4 +
+ include/qemu/cacheflush.h                     |    3 +-
+ include/tcg/helper-info.h                     |    4 +-
+ include/tcg/tcg.h                             |    2 +-
+ meson.build                                   |   30 +-
+ meson_options.txt                             |    2 +-
+ os-posix.c                                    |    5 +
+ qom/object.c                                  |    5 +-
+ scripts/meson-buildoptions.sh                 |    2 +-
+ target/arm/helper.c                           |    4 +-
+ tcg/meson.build                               |    5 +
+ tcg/tcg.c                                     |   26 +-
+ tcg/wasm32.c                                  | 1260 +++++
+ tcg/wasm32.h                                  |   39 +
+ tcg/wasm32/tcg-target-con-set.h               |   18 +
+ tcg/wasm32/tcg-target-con-str.h               |    8 +
+ tcg/wasm32/tcg-target-has.h                   |  102 +
+ tcg/wasm32/tcg-target-mo.h                    |   12 +
+ tcg/wasm32/tcg-target-opc.h.inc               |    4 +
+ tcg/wasm32/tcg-target-reg-bits.h              |   12 +
+ tcg/wasm32/tcg-target.c.inc                   | 4484 +++++++++++++++++
+ tcg/wasm32/tcg-target.h                       |   65 +
+ .../dockerfiles/emsdk-wasm32-cross.docker     |  145 +
+ util/cacheflush.c                             |    3 +-
+ util/coroutine-fiber.c                        |  127 +
+ util/mmap-alloc.c                             |   18 +
+ 45 files changed, 6561 insertions(+), 38 deletions(-)
+ create mode 100644 configs/meson/emscripten.txt
+ create mode 100644 hw/9pfs/9p-util-stub.c
+ create mode 100644 tcg/wasm32.c
+ create mode 100644 tcg/wasm32.h
+ create mode 100644 tcg/wasm32/tcg-target-con-set.h
+ create mode 100644 tcg/wasm32/tcg-target-con-str.h
+ create mode 100644 tcg/wasm32/tcg-target-has.h
+ create mode 100644 tcg/wasm32/tcg-target-mo.h
+ create mode 100644 tcg/wasm32/tcg-target-opc.h.inc
+ create mode 100644 tcg/wasm32/tcg-target-reg-bits.h
+ create mode 100644 tcg/wasm32/tcg-target.c.inc
+ create mode 100644 tcg/wasm32/tcg-target.h
+ create mode 100644 tests/docker/dockerfiles/emsdk-wasm32-cross.docker
+ create mode 100644 util/coroutine-fiber.c
+
+-- 
+2.25.1
+
+
+</pre><hr><pre><a href="../2be81d2f86704662c9fa33ceb46077804e34ac77.1744032780.git.ktokunaga.mail@gmail.com/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20250407151615">~2025-04-07 15:16 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>46+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2025-04-07 14:45 <a id="r" href="#t">Kohei Tokunaga [this message]</a></b>
+2025-04-07 14:45 ` <a href="../2be81d2f86704662c9fa33ceb46077804e34ac77.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 01/10] various: Fix type conflict of GLib function pointers</a> Kohei Tokunaga
+2025-04-09 10:54   ` <a href="../e6cbd3ae-356d-4805-bca1-90b0e98c4d0d@linaro.org/">Philippe Mathieu-Daudé</a>
+2025-04-09 13:43     ` <a href="../CAEDrbUZwvhV_kiAZEdnk4AwPfpspEOLfhMsOuf_A+u2C4JK8fQ@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-10 15:58   ` <a href="../65a63820-e59d-47d4-883a-4affe40f9b38@redhat.com/">Paolo Bonzini</a>
+2025-04-11 10:55     ` <a href="../CAEDrbUYDtpLqUAH-7T8xPk-YneY3B6sBw5TB_diNb7g9xzpYyQ@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-07 14:45 ` <a href="../5f2a8fa2d7116b1d65b79fbb3a95244096fb7308.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 02/10] various: Define macros for dependencies on emscripten</a> Kohei Tokunaga
+2025-04-10 15:53   ` <a href="../5cc73887-1073-49d3-8267-0e84483bfc2b@redhat.com/">Paolo Bonzini</a>
+2025-04-11 10:59     ` <a href="../CAEDrbUaMN3OM0_vyRZwfdu9eTQ=H0Ruc-=ZbEWB3VoNgKqE+6g@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-07 14:45 ` <a href="../8c2b176bd4c499233a88dcd18e62d8cf94e08f56.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 03/10] util/mmap-alloc: Add qemu_ram_mmap implementation for emscripten</a> Kohei Tokunaga
+2025-04-07 14:45 ` <a href="../b6b8274b7dae5f3e4ee12c1d20cf9c329dd350bf.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 04/10] util: Add coroutine backend</a> " Kohei Tokunaga
+2025-04-07 14:45 ` <a href="../04b7137a464e0925e2ae533bbde4fcdfe0dfe069.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 05/10] meson: Add wasm build in build scripts</a> Kohei Tokunaga
+2025-04-09 10:55   ` <a href="../e0dcc4e6-1e8e-468f-83e5-36ffb014eeef@linaro.org/">Philippe Mathieu-Daudé</a>
+2025-04-09 13:35     ` <a href="../671805c9-f802-412b-998e-ba83719f1e72@redhat.com/">Paolo Bonzini</a>
+2025-04-10 12:24       ` <a href="../CAEDrbUbnAzXpmNSNi11j7+a0DCYHy7d_MCY=TMqHUoxmo_ZHGw@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-10 12:55         ` <a href="../CABgObfaL3f3BD56ajE=Dv+VKidjpW=FRuwTyFHr_Fpu5uAqmpg@mail.gmail.com/">Paolo Bonzini</a>
+2025-04-11 11:23           ` <a href="../CAEDrbUbDuHPrRmTUUoM0nszzC_8i9Lxjs0vxrSxa6Wa8z4HW9A@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-07 14:45 ` <a href="../04ab0a8c2ab61c47530f77b149ad29123a0ee382.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 06/10] include/exec: Allow using 64bit guest addresses on emscripten</a> Kohei Tokunaga
+2025-04-07 14:45 ` <a href="../24b5ff124d70043aff97dc30aa45f8a502676989.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 07/10] tcg: Add a TCG backend for WebAssembly</a> Kohei Tokunaga
+2025-04-09 10:58   ` <a href="../069ad872-5012-4f2a-8ba6-e2a22ce2bb49@linaro.org/">Philippe Mathieu-Daudé</a>
+2025-04-09 13:53     ` <a href="../CAEDrbUYX+i908=QxmvSt6SHAK9O6cwu9cT+5NbCw1xbwz3Ja7w@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-11 10:50   ` <a href="../264d9113-16ce-4c05-a468-78e1f9921df6@linaro.org/">Philippe Mathieu-Daudé</a>
+2025-04-12  9:04     ` <a href="../CAEDrbUZO+vJZacBJeE2Od_9Eb+vjX1JYCsNz1QQA4MKFTi9cnw@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-12  9:12       ` <a href="../CAEDrbUbgUE2E5u7R4xyASzSpvpFQycDxwEueDpHE6AXuaAtLWA@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-07 14:45 ` <a href="../16376e4b63fad6f847ceadb39b8f9780fc288198.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 08/10] hw/9pfs: Allow using hw/9pfs with emscripten</a> Kohei Tokunaga
+2025-04-10 11:27   ` <a href="../2533109.DitPQcejgS@silver/">Christian Schoenebeck</a>
+2025-04-11 10:47     ` <a href="../CAEDrbUakVwwn228nSb0rD1C9qiZ-tpcHBzLRDVyGRNsim97=JQ@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-12  8:21       ` <a href="../2441396.svyq9LpYvz@silver/">Christian Schoenebeck</a>
+2025-04-12 10:21         ` <a href="../1881242.gqbg26PhFk@silver/">Christian Schoenebeck</a>
+2025-04-12 10:38           ` <a href="../2555565.yjhJSkacHZ@silver/">Christian Schoenebeck</a>
+2025-04-13  8:12             ` <a href="../CAEDrbUYKJvXVpaBjyde5=Lp9+rAv1oBJbYf9ZewepQgMhegXZg@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-10 16:29   ` <a href="../2e9cb17e-47a4-49d3-a815-612bcbdcc92d@redhat.com/">Paolo Bonzini</a>
+2025-04-11 14:03     ` <a href="../CAEDrbUYDsZo_XO_prUnz8yZ_+gU1UgNiba48svDmANuqcTMyWw@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-07 14:46 ` <a href="../3cf17a9fb1ead58fb8be2d8782c793530cad07e2.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 09/10] gitlab: Enable CI for wasm build</a> Kohei Tokunaga
+2025-04-07 14:46 ` <a href="../ab804f360d7828dd281c337e897c5817410e075d.1744032780.git.ktokunaga.mail@gmail.com/">[PATCH 10/10] MAINTAINERS: Update MAINTAINERS file for wasm-related files</a> Kohei Tokunaga
+2025-04-09 19:21 ` <a href="../20250409192115.GA5528@fedora/">[PATCH 00/10] Enable QEMU to run on browsers</a> Stefan Hajnoczi
+2025-04-10 12:20   ` <a href="../dc36c24e-dc4a-4c24-97b7-8b812441ffce@linaro.org/">Philippe Mathieu-Daudé</a>
+2025-04-10 13:11     ` <a href="../CAEDrbUZ4mbCT-npk8Nha4fDd9a5PGguAxS_RD0wG96gpQRUp+g@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-10 13:13       ` <a href="../CAEDrbUYM3aK5ErvF=+oV=q-NVLO0uzxbYjHzcxPGvTLp7yNtwA@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-10 21:17         ` <a href="../83f44749-0eea-48f0-8aa5-3882132e30d0@linaro.org/">Pierrick Bouvier</a>
+2025-04-11 14:36           ` <a href="../CAEDrbUbjD0d-pP_s1oV7gSuFoDpKTDiXd7bQf6p5hQUcN_iT+g@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-11 15:28             ` <a href="../b360cb8f-0e5b-4811-b625-29e0538ba61b@linaro.org/">Pierrick Bouvier</a>
+2025-04-11  9:07         ` <a href="../26951ab5-cc40-465c-88d2-d70e98bae3f6@redhat.com/">Paolo Bonzini</a>
+2025-04-11 14:41           ` <a href="../CAEDrbUYj9362hWQuTNA28cMRLTrjd4MeqkN8BUpZUpEVbPcsTg@mail.gmail.com/">Kohei Tokunaga</a>
+2025-04-11 10:34   ` <a href="../Z_jwRMsLhtjzdcF5@redhat.com/">Daniel P. Berrangé</a>
+2025-04-11 15:17     ` <a href="../CAEDrbUZPFa8nyQNg=ag36RL4vt2ic3pPL240v1vp1D1G+3Lb-w@mail.gmail.com/">Kohei Tokunaga</a>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=cover.1744032780.git.ktokunaga.mail@gmail.com \n    --to=ktokunaga.mail@gmail.com \n    --cc=alex.bennee@linaro.org \n    --cc=alistair.francis@wdc.com \n    --cc=berrange@redhat.com \n    --cc=dbarboza@ventanamicro.com \n    --cc=eduardo@habkost.net \n    --cc=groug@kaod.org \n    --cc=hreitz@redhat.com \n    --cc=kwolf@redhat.com \n    --cc=liwei1518@gmail.com \n    --cc=marcandre.lureau@redhat.com \n    --cc=palmer@dabbelt.com \n    --cc=pbonzini@redhat.com \n    --cc=peter.maydell@linaro.org \n    --cc=philmd@linaro.org \n    --cc=qemu-arm@nongnu.org \n    --cc=qemu-block@nongnu.org \n    --cc=qemu-devel@nongnu.org \n    --cc=qemu-riscv@nongnu.org \n    --cc=qemu_oss@crudebyte.com \n    --cc=richard.henderson@linaro.org \n    --cc=stefanha@redhat.com \n    --cc=thuth@redhat.com \n    --cc=zhiwei_liu@linux.alibaba.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:ktokunaga.mail@gmail.com?In-Reply-To=%3Ccover.1744032780.git.ktokunaga.mail@gmail.com%3E&amp;Cc=alex.bennee%40linaro.org%2Calistair.francis%40wdc.com%2Cberrange%40redhat.com%2Cdbarboza%40ventanamicro.com%2Ceduardo%40habkost.net%2Cgroug%40kaod.org%2Chreitz%40redhat.com%2Ckwolf%40redhat.com%2Cliwei1518%40gmail.com%2Cmarcandre.lureau%40redhat.com%2Cpalmer%40dabbelt.com%2Cpbonzini%40redhat.com%2Cpeter.maydell%40linaro.org%2Cphilmd%40linaro.org%2Cqemu-arm%40nongnu.org%2Cqemu-block%40nongnu.org%2Cqemu-devel%40nongnu.org%2Cqemu-riscv%40nongnu.org%2Cqemu_oss%40crudebyte.com%2Crichard.henderson%40linaro.org%2Cstefanha%40redhat.com%2Cthuth%40redhat.com%2Czhiwei_liu%40linux.alibaba.com&amp;Subject=Re%3A%20%5BPATCH%2000%2F10%5D%20Enable%20QEMU%20to%20run%20on%20browsers">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
