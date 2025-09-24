@@ -1,0 +1,946 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/libvirt/Contribute/[PATCH v4 1_3] qemu_ support riscv-aia feature for RISC-V KVM (2025-09-24 11：33：17).html
+ Page saved with X-Webpage-Conserve 
+ url: https://www.mail-archive.com/devel@lists.libvirt.org/msg12301.html
+ Summary: 
+-->
+<html lang="en"><head>
+<title>[PATCH v4 1/3] qemu: support riscv-aia feature for RISC-V KVM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="contents" href="index.html#12301" id="c">
+<link rel="index" href="maillist.html#12301" id="i">
+<link rel="prev" href="msg12295.html" id="p">
+<link rel="next" href="msg12309.html" id="n">
+<link rel="canonical" href="https://www.mail-archive.com/devel@lists.libvirt.org/msg12301.html">
+<link rel="stylesheet" href="/normalize.css" media="screen">
+<link rel="stylesheet" href="/master.css" media="screen">
+
+<!--[if lt IE 9]>
+<link rel="stylesheet" href="/ie.css" media="screen">
+<![endif]-->
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>[hidden] { display: none; }html { font-family: sans-serif; }body { margin: 0px; }a:focus { outline: dotted thin; }a:active, a:hover { outline: 0px; }h1 { font-size: 2em; }b, strong { font-weight: bold; }code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }pre { white-space: pre-wrap; overflow-wrap: break-word; }img { border: 0px; }button, input, select, button, input { line-height: normal; }button, html input[type="button"], input[type="reset"], input[type="submit"] { appearance: button; cursor: pointer; }button[disabled], input[disabled] { cursor: default; }input[type="search"] { appearance: textfield; box-sizing: content-box; }table { border-collapse: collapse; border-spacing: 0px; }</style><style>pre, code, kbd, samp, tt { margin: 0px; font-family: courier, "courier new", monospace; font-size: 1em; }body { margin: 0px; border-top: 5px solid rgb(160, 30, 30); padding: 0px; color: rgb(0, 0, 0); background: rgb(255, 255, 255); font: 87.5% / 1.4 helvetica, arial, sans-serif; }h1, h2, h3, h4, h5, h6 { margin: 0px; color: rgb(160, 30, 30); line-height: 1.2; }h2 { margin: 0px 0px 5px; }img { display: block; max-width: 100%; }pre { margin: 0px; font-family: courier, "courier new", monospace; }ul { margin: 0px; padding: 0px; list-style: none; }blockquote { margin: 0px; padding: 0px 0px 0px 20px; color: rgb(160, 30, 30); border-left: 3px solid rgb(160, 30, 30); }iframe { border: medium; }a:link { color: rgb(0, 80, 150); }a:visited { color: rgb(160, 30, 30); }a:focus { color: rgb(0, 0, 0); }a:hover { color: rgb(57, 115, 66); }a:active { color: rgb(160, 30, 30); }h1, .font24 { font-size: 171.429%; }h2, .font16 { font-size: 114.286%; }.font13 { font-size: 92.8571%; }.italic { font-style: italic; }.monospace { font-family: courier, "courier new", monospace; }.darkgray { color: rgb(102, 102, 102); }.darkgray a:link, .darkgray a:visited { text-decoration: none; color: rgb(102, 102, 102); }.subject a:link, .subject a:visited { text-decoration: none; color: rgb(160, 30, 30); }.tSliceList .subject a:visited { color: rgb(102, 102, 102); }.lightgray { color: rgb(187, 187, 187); }.white { color: rgb(255, 255, 255); }.black { color: rgb(0, 0, 0); }.margintopdouble { margin-top: 2em; }.margintop { margin-top: 1em; }.marginbottom { margin-bottom: 1em; }.hidden { display: none; }.overflow { overflow: hidden; zoom: 1; }.icons { color: rgb(102, 102, 102); }.icons li { padding: 0.2em 0px 0.2em 20px; }.tSliceList .icons li { padding: 0px 0px 0px 20px; }.icons-home { background: url("/icons.png") 0px 5px no-repeat; }.icons-list { background: url("/icons.png") 0px -95px no-repeat; }.icons-about { background: url("/icons.png") 0px -195px no-repeat; }.icons-prev { background: url("/icons.png") 0px -295px no-repeat; }.icons-next { background: url("/icons.png") 0px -395px no-repeat; }.icons-email { background: url("/icons.png") 0px -495px no-repeat; }.icons-expand { background: url("/icons.png") 0px -795px no-repeat; }.tSliceList .icons li .icons-email { padding: 0.2em 0px 0.2em 1.5em; }.tSliceCur { color: rgb(0, 0, 0); background-color: rgb(244, 245, 245); }.skipLink a { position: absolute; left: -1000px; z-index: 2; margin: 0px; padding: 0.5em; background: rgb(255, 255, 255); font-size: 200%; font-weight: bold; text-decoration: none; }.skipLink a:active, .skipLink a:focus, .skipLink a:hover { display: inline; top: 0px; left: 0px; color: rgb(255, 255, 255); background: rgb(0, 0, 0); }.footer li { display: inline; margin: 0px 0.7em 0px 0px; padding: 0px 0.7em 0px 0px; border-right: 1px solid rgb(51, 51, 51); }.footer li:last-child { margin: 0px; padding: 0px; border-right: medium; }.footer a:link, .footer a:visited { color: rgb(255, 255, 255); }.footer a:focus { color: rgb(0, 0, 0); background: rgb(255, 255, 255); }.footer a:hover { color: rgb(255, 255, 255); background: rgb(57, 115, 66); }.footer a:active { color: rgb(255, 255, 255); background: rgb(160, 30, 30); }.msgActions { padding-top: 20px; border-top: 2px solid rgb(221, 221, 221); }.submittext { float: left; width: 228px; height: 20px; margin: 0px; border: 1px solid rgb(153, 153, 153); border-radius: 4px 0px 0px 4px; padding: 3px 10px; }.submitbutton { float: left; }::-webkit-input-placeholder { color: rgb(119, 119, 119); }:-moz-placeholder { color: rgb(119, 119, 119); }.pipe { margin-right: 0.5em; border-right: 1px solid rgb(221, 221, 221); padding-right: 0.8em; }@media screen and (max-width: 400px) {
+  .content, .aside, .submitform { float: none; }
+  .content { margin: 20px 10% 0px; width: 80%; }
+  .aside { margin: 30px 10%; width: 80%; }
+  .msgReply { margin: 20px 0px 0px; }
+  .submittext { width: 60%; }
+  .submitbutton { width: 32px; }
+  .logo, .bannersquare, .bannertower { display: none; }
+  .footer { clear: both; padding: 10px 10%; border-top: 5px solid rgb(160, 30, 30); background: rgb(0, 0, 0); }
+}@media screen and (min-width: 700px) {
+  .textaligncenter { text-align: center; }
+  .textalignright { text-align: right; }
+  .msgReply { float: right; margin: 0px !important; width: 49%; text-align: right; }
+  .msgShare { float: left; width: 49%; }
+  .msgButtonItems { float: left; width: 24.5%; }
+  .button { display: inline-block; border-radius: 4px; border: 1px solid rgb(187, 187, 187); padding: 4px 12px; background-color: rgb(238, 238, 238); background-image: linear-gradient(rgb(255, 255, 255), rgb(221, 221, 221)); text-decoration: none; line-height: 1; }
+  a.button:link, a.button:visited { color: rgb(51, 51, 51); }
+  a.button:focus { border: 1px solid rgb(85, 85, 85); color: rgb(255, 255, 255); background-color: rgb(0, 0, 0); background-image: linear-gradient(rgb(68, 68, 68), rgb(34, 34, 34)); }
+  a.button:hover { border: 1px solid rgb(72, 131, 66); color: rgb(255, 255, 255); background-color: rgb(57, 115, 66); background-image: linear-gradient(rgb(72, 131, 66), rgb(43, 100, 66)); }
+  a.button:active { border: 1px solid rgb(174, 43, 30); color: rgb(255, 255, 255); background-color: rgb(160, 30, 30); background-image: linear-gradient(rgb(174, 43, 30), rgb(144, 6, 30)); }
+  .buttonleft { background-color: rgb(238, 238, 238); background-image: url("/icons.png"), linear-gradient(rgb(255, 255, 255), rgb(221, 221, 221)); background-repeat: no-repeat, repeat; background-position: 0px -297px, 0px 0px; padding: 4px 12px 4px 16px; }
+  .buttonright { background-color: rgb(238, 238, 238); background-image: url("/icons.png"), linear-gradient(rgb(255, 255, 255), rgb(221, 221, 221)); background-repeat: no-repeat, repeat; background-position: 100% -397px, 0px 0px; padding: 4px 16px 4px 12px; }
+  a.buttonleft:focus, a.buttonright:focus { border: 1px solid rgb(85, 85, 85); color: rgb(255, 255, 255); background-color: rgb(0, 0, 0); background-image: url("/icons.png"), linear-gradient(rgb(68, 68, 68), rgb(34, 34, 34)); }
+  a.buttonleft:hover, a.buttonright:hover { border: 1px solid rgb(72, 131, 66); color: rgb(255, 255, 255); background-color: rgb(57, 115, 66); background-image: url("/icons.png"), linear-gradient(rgb(72, 131, 66), rgb(43, 100, 66)); }
+  a.buttonleft:active, a.buttonright:active { border: 1px solid rgb(174, 43, 30); color: rgb(255, 255, 255); background-color: rgb(160, 30, 30); background-image: url("/icons.png"), linear-gradient(rgb(174, 43, 30), rgb(144, 6, 30)); }
+  .buttondisabled { background-color: rgb(187, 187, 187); background-image: url("/icons.png"), linear-gradient(rgb(204, 204, 204), rgb(170, 170, 170)); }
+  .icons ul { margin: 5px 0px 0px; padding: 0px 0px 0px 1em; color: rgb(102, 102, 102); }
+  .icons li ul { margin: 5px 0px 0px; padding: 0px 0px 0px 1em; }
+}@media screen and (min-width: 400px) and (max-width: 800px) {
+  .content, .aside { float: none; }
+  .content { margin: 20px 5% 0px; width: 90%; }
+  .aside { margin: 30px 5%; width: 90%; }
+  .msgReply { margin: 20px 0px 0px; }
+  .submittext { width: 70%; }
+  .submitbutton { width: 32px; }
+  .logo { display: none; }
+  .bannertower { clear: both; }
+  .footer { clear: both; padding: 10px 5%; border-top: 5px solid rgb(160, 30, 30); background: rgb(0, 0, 0); }
+}@media screen and (min-width: 800px) {
+  .container { width: 1020px; }
+  .logo { position: relative; top: -5px; }
+  .content, .aside { float: left; padding: 0px 0px 20px; }
+  .content { margin: 20px 0px 0px 20px; width: 680px; }
+  .aside { margin: 0px 0px 0px 20px; width: 300px; }
+  .submittext { width: 228px; }
+  .submitbutton { width: 32px; }
+  .footer { clear: both; padding: 10px 20px; border-top: 5px solid rgb(160, 30, 30); background: rgb(0, 0, 0); }
+}</style></head>
+<body>
+<script language="javascript" type="text/javascript">
+document.onkeydown = NavigateThrough;
+function NavigateThrough (event)
+{
+  if (!document.getElementById) return;
+  if (window.event) event = window.event;
+  if (event.target.tagName == 'INPUT') return;
+  if (event.ctrlKey || event.metaKey) return;
+  var link = null;
+  switch (event.keyCode ? event.keyCode : event.which ? event.which : null) {
+    case 74:
+    case 80:
+      link = document.getElementById ('p');
+      break;
+    case 75:
+    case 78:
+      link = document.getElementById ('n');
+      break;
+    case 69:
+      link = document.getElementById ('e');
+      break;
+    }
+  if (link && link.href) document.location = link.href;
+}
+</script>
+<div itemscope="" itemtype="http://schema.org/Article" class="container">
+<div class="skipLink">
+<a href="#nav">Skip to site navigation (Press enter)</a>
+</div>
+<div class="content" role="main">
+<div class="msgHead">
+<h1>
+<span class="subject"><a href="/search?l=devel@lists.libvirt.org&amp;q=subject:%22%5C%5BPATCH+v4+1%5C%2F3%5C%5D+qemu%5C%3A+support+riscv%5C-aia+feature+for+RISC%5C-V+KVM%22&amp;o=newest" rel="nofollow"><span itemprop="name">[PATCH v4 1/3] qemu: support riscv-aia feature for RISC-V KVM</span></a></span>
+</h1>
+<p class="darkgray font13">
+<span class="sender pipe"><a href="/search?l=devel@lists.libvirt.org&amp;q=from:%22BillXiang%22" rel="nofollow"><span itemprop="author" itemscope="" itemtype="http://schema.org/Person"><span itemprop="name">BillXiang</span></span></a></span>
+<span class="date"><a href="/search?l=devel@lists.libvirt.org&amp;q=date:20250918" rel="nofollow">Thu, 18 Sep 2025 06:55:35 -0700</a></span>
+</p>
+</div>
+<div itemprop="articleBody" class="msgBody">
+<!--X-Body-of-Message-->
+<pre>From: xiangwencheng &lt;xiangwench...@lanxincomputing.com&gt;
+
+riscv-aia feature was introduced in qemu-8.2 to specify the
+KVM AIA mode. The "riscv-aia" parameter is passed along with
+-accel in QEMU command-line.
+1) "riscv-aia=emul": IMSIC is emulated by hypervisor
+2) "riscv-aia=hwaccel": use hardware guest IMSIC
+3) "riscv-aia=auto": use the hardware guest IMSICs whenever available
+otherwise we fallback to software emulation.</pre><pre>
+This patch add the corresponding feature named 'riscv-aia'.
+
+Signed-off-by: BillXiang &lt;xiangwench...@lanxincomputing.com&gt;
+---
+v3[1] -&gt; v4:
+ - Add XML tests.
+ - Fix broken indentations.
+ - Remove optional mark of 'mode' in XML schema.
+[1] 
+<a rel="nofollow" href="https://lists.libvirt.org/archives/list/devel@lists.libvirt.org/thread/CGZIWV7GHPGSAFARWKXQ6YBBXHXWS6TW/">https://lists.libvirt.org/archives/list/devel@lists.libvirt.org/thread/CGZIWV7GHPGSAFARWKXQ6YBBXHXWS6TW/</a>
+---
+ docs/formatdomain.rst             |  7 +++++++
+ src/conf/domain_conf.c            | 28 +++++++++++++++++++++++++++-
+ src/conf/domain_conf.h            | 11 +++++++++++
+ src/conf/schemas/domaincommon.rng | 10 ++++++++++
+ src/libvirt_private.syms          |  2 ++
+ src/qemu/qemu_command.c           | 13 ++++++++++---
+ 6 files changed, 67 insertions(+), 4 deletions(-)
+
+diff --git a/docs/formatdomain.rst b/docs/formatdomain.rst
+index f50dce477f..3ac8c315db 100644
+--- a/docs/formatdomain.rst
++++ b/docs/formatdomain.rst
+@@ -2085,6 +2085,7 @@ Hypervisors may allow certain CPU / machine features to 
+be toggled on/off.
+        &lt;poll-control state='on'/&gt;
+        &lt;pv-ipi state='off'/&gt;
+        &lt;dirty-ring state='on' size='4096'/&gt;
++       &lt;riscv-aia state='on' mode='auto'/&gt;
+      &lt;/kvm&gt;
+      &lt;xen&gt;
+        &lt;e820_host state='on'/&gt;
+@@ -2206,6 +2207,12 @@ are:
+    poll-control   Decrease IO completion latency by introducing a grace period 
+of busy waiting on, off                                                
+:since:`6.10.0 (QEMU 4.2)`
+    pv-ipi         Paravirtualized send IPIs                                    
+                on, off                                                
+:since:`7.10.0 (QEMU 3.1)`
+    dirty-ring     Enable dirty ring feature                                    
+                on, off; size - must be power of 2, range [1024,65536] 
+:since:`8.0.0 (QEMU 6.1)`
++   riscv-aia      Set riscv KVM AIA mode. Defaults to 'auto'.                  
+                on, off; mode - must be emul, hwaccel or auto          
+:since:`11.8.0 (QEMU 8.2)`
++                  The "riscv-aia" parameter is passed along with --accel in 
+QEMU command-line.
++                  1) "riscv-aia=emul": IMSIC is emulated by hypervisor
++                  2) "riscv-aia=hwaccel": use hardware guest IMSIC
++                  3) "riscv-aia=auto": use the hardware guest IMSICs whenever 
+available
++                                       otherwise we fallback to software 
+emulation.
+    ============== 
+============================================================================ 
+====================================================== 
+============================
+ 
+ ``xen``
+diff --git a/src/conf/domain_conf.c b/src/conf/domain_conf.c
+index 281846dfbe..bd52429881 100644
+--- a/src/conf/domain_conf.c
++++ b/src/conf/domain_conf.c
+@@ -224,6 +224,14 @@ VIR_ENUM_IMPL(virDomainKVM,
+               "poll-control",
+               "pv-ipi",
+               "dirty-ring",
++              "riscv-aia",
++);
++
++VIR_ENUM_IMPL(virDomainKVMRiscvAIAMode,
++              VIR_DOMAIN_KVM_RISCV_AIA_MODE_LAST,
++              "auto",
++              "emul",
++              "hwaccel",
+ );
+ 
+ VIR_ENUM_IMPL(virDomainXen,
+@@ -17213,6 +17221,15 @@ virDomainFeaturesKVMDefParse(virDomainDef *def,
+                 return -1;
+             }
+         }
++
++        if (feature == VIR_DOMAIN_KVM_RISCV_AIA &amp;&amp;
++            value == VIR_TRISTATE_SWITCH_ON) {
++            if (virXMLPropEnum(feat, "mode",
++                               virDomainKVMRiscvAIAModeTypeFromString,
++                               VIR_XML_PROP_REQUIRED,
++                               &amp;def-&gt;kvm_features-&gt;kvm_riscv_aia_mode) &lt; 0)
++                return -1;
++        }
+     }
+ 
+     def-&gt;features[VIR_DOMAIN_FEATURE_KVM] = VIR_TRISTATE_SWITCH_ON;
+@@ -21729,6 +21746,7 @@ virDomainDefFeaturesCheckABIStability(virDomainDef *src,
+             case VIR_DOMAIN_KVM_POLLCONTROL:
+             case VIR_DOMAIN_KVM_PVIPI:
+             case VIR_DOMAIN_KVM_DIRTY_RING:
++            case VIR_DOMAIN_KVM_RISCV_AIA:
+                 if (src-&gt;kvm_features-&gt;features[i] != 
+dst-&gt;kvm_features-&gt;features[i]) {
+                     virReportError(VIR_ERR_CONFIG_UNSUPPORTED,
+                                    _("State of KVM feature '%1$s' differs: 
+source: '%2$s', destination: '%3$s'"),
+@@ -28786,7 +28804,15 @@ virDomainDefFormatFeatures(virBuffer *buf,
+                         }
+                     }
+                     break;
+-
++                case VIR_DOMAIN_KVM_RISCV_AIA:
++                    if (def-&gt;kvm_features-&gt;features[j] != 
+VIR_TRISTATE_SWITCH_ABSENT) {
++                        virBufferAsprintf(&amp;childBuf, "&lt;%s state='%s'",
++                                          virDomainKVMTypeToString(j),
++                                          
+virTristateSwitchTypeToString(def-&gt;kvm_features-&gt;features[j]));
++                        virBufferAsprintf(&amp;childBuf, " mode='%s'/&gt;
+",
++                                          
+virDomainKVMRiscvAIAModeTypeToString(def-&gt;kvm_features-&gt;kvm_riscv_aia_mode));
++                    }
++                    break;
+                 case VIR_DOMAIN_KVM_LAST:
+                     break;
+                 }
+diff --git a/src/conf/domain_conf.h b/src/conf/domain_conf.h
+index 39807b5fe3..457dcce039 100644
+--- a/src/conf/domain_conf.h
++++ b/src/conf/domain_conf.h
+@@ -2272,10 +2272,20 @@ typedef enum {
+     VIR_DOMAIN_KVM_POLLCONTROL,
+     VIR_DOMAIN_KVM_PVIPI,
+     VIR_DOMAIN_KVM_DIRTY_RING,
++    VIR_DOMAIN_KVM_RISCV_AIA,
+ 
+     VIR_DOMAIN_KVM_LAST
+ } virDomainKVM;
+ 
++typedef enum {
++    VIR_DOMAIN_KVM_RISCV_AIA_MODE_AUTO = 0,
++    VIR_DOMAIN_KVM_RISCV_AIA_MODE_EMUL,
++    VIR_DOMAIN_KVM_RISCV_AIA_MODE_HWACCEL,
++
++    VIR_DOMAIN_KVM_RISCV_AIA_MODE_LAST
++} virDomainKVMRiscvAIAMode;
++VIR_ENUM_DECL(virDomainKVMRiscvAIAMode);
++
+ typedef enum {
+     VIR_DOMAIN_MSRS_UNKNOWN = 0,
+ 
+@@ -2478,6 +2488,7 @@ struct _virDomainFeatureKVM {
+     int features[VIR_DOMAIN_KVM_LAST];
+ 
+     unsigned int dirty_ring_size; /* size of dirty ring for each vCPU, no 
+units */
++    virDomainKVMRiscvAIAMode kvm_riscv_aia_mode;
+ };
+ 
+ typedef struct _virDomainFeatureTCG virDomainFeatureTCG;
+diff --git a/src/conf/schemas/domaincommon.rng 
+b/src/conf/schemas/domaincommon.rng
+index b9230a35b4..888477acc9 100644
+--- a/src/conf/schemas/domaincommon.rng
++++ b/src/conf/schemas/domaincommon.rng
+@@ -8207,6 +8207,16 @@
+             &lt;/optional&gt;
+           &lt;/element&gt;
+         &lt;/optional&gt;
++        &lt;optional&gt;
++          &lt;element name="riscv-aia"&gt;
++            &lt;ref name="featurestate"/&gt;
++            &lt;attribute name="mode"&gt;
++              &lt;data type="string"&gt;
++                &lt;param name="pattern"&gt;(auto|emul|hwaccel)&lt;/param&gt;
++              &lt;/data&gt;
++            &lt;/attribute&gt;
++          &lt;/element&gt;
++        &lt;/optional&gt;
+       &lt;/interleave&gt;
+     &lt;/element&gt;
+   &lt;/define&gt;
+diff --git a/src/libvirt_private.syms b/src/libvirt_private.syms
+index fe72402527..dfa54c2d68 100644
+--- a/src/libvirt_private.syms
++++ b/src/libvirt_private.syms
+@@ -501,6 +501,8 @@ virDomainIOThreadIDDel;
+ virDomainIOThreadIDFind;
+ virDomainKeyWrapCipherNameTypeFromString;
+ virDomainKeyWrapCipherNameTypeToString;
++virDomainKVMRiscvAIAModeTypeFromString;
++virDomainKVMRiscvAIAModeTypeToString;
+ virDomainLaunchSecurityTypeFromString;
+ virDomainLaunchSecurityTypeToString;
+ virDomainLeaseDefFree;
+diff --git a/src/qemu/qemu_command.c b/src/qemu/qemu_command.c
+index 031f09b7a5..ff07c1d95f 100644
+--- a/src/qemu/qemu_command.c
++++ b/src/qemu/qemu_command.c
+@@ -6720,6 +6720,9 @@ qemuBuildCpuCommandLine(virCommand *cmd,
+ 
+             case VIR_DOMAIN_KVM_DIRTY_RING:
+                 break;
++            
++            case VIR_DOMAIN_KVM_RISCV_AIA:
++                break;
+ 
+             case VIR_DOMAIN_KVM_LAST:
+                 break;
+@@ -7355,9 +7358,13 @@ qemuBuildAccelCommandLine(virCommand *cmd,
+          * not that either kvm or tcg can be specified by libvirt
+          * so do not worry about the conflict of specifying both
+          * */
+-        if (def-&gt;features[VIR_DOMAIN_FEATURE_KVM] == VIR_TRISTATE_SWITCH_ON &amp;&amp;
+-            def-&gt;kvm_features-&gt;features[VIR_DOMAIN_KVM_DIRTY_RING] == 
+VIR_TRISTATE_SWITCH_ON) {
+-            virBufferAsprintf(&amp;buf, ",dirty-ring-size=%d", 
+def-&gt;kvm_features-&gt;dirty_ring_size);
++        if (def-&gt;features[VIR_DOMAIN_FEATURE_KVM] == VIR_TRISTATE_SWITCH_ON) {
++            if (def-&gt;kvm_features-&gt;features[VIR_DOMAIN_KVM_DIRTY_RING] == 
+VIR_TRISTATE_SWITCH_ON) {
++                virBufferAsprintf(&amp;buf, ",dirty-ring-size=%d", 
+def-&gt;kvm_features-&gt;dirty_ring_size);
++            }
++            if (def-&gt;kvm_features-&gt;features[VIR_DOMAIN_KVM_RISCV_AIA] == 
+VIR_TRISTATE_SWITCH_ON) {
++                virBufferAsprintf(&amp;buf, ",riscv-aia=%s", 
+virDomainKVMRiscvAIAModeTypeToString(def-&gt;kvm_features-&gt;kvm_riscv_aia_mode));
++            }
+         }
+         break;
+ 
+-- 
+2.34.1
+</pre>
+
+</div>
+<div class="msgButtons margintopdouble">
+<ul class="overflow">
+<li class="msgButtonItems"><a class="button buttonleft " accesskey="p" href="msg12295.html">Previous message</a></li>
+<li class="msgButtonItems textaligncenter"><a class="button" accesskey="c" href="index.html#12301">View by thread</a></li>
+<li class="msgButtonItems textaligncenter"><a class="button" accesskey="i" href="maillist.html#12301">View by date</a></li>
+<li class="msgButtonItems textalignright"><a class="button buttonright " accesskey="n" href="msg12309.html">Next message</a></li>
+</ul>
+</div>
+<a name="tslice"></a>
+<div class="tSliceList margintopdouble">
+<ul class="icons monospace">
+
+</ul>
+</div>
+<div class="overflow msgActions margintopdouble">
+<div class="msgReply">
+<h2>
+					Reply via email to
+</h2>
+<form method="POST" action="/mailto.php">
+<input type="hidden" name="subject" value="[PATCH v4 1/3] qemu: support riscv-aia feature for RISC-V KVM">
+<input type="hidden" name="msgid" value="20250918054414.913-1-xiangwencheng@lanxincomputing.com">
+<input type="hidden" name="relpath" value="devel@lists.libvirt.org/msg12301.html">
+<input type="submit" value=" BillXiang ">
+</form>
+</div>
+</div>
+</div>
+<div class="aside" role="complementary">
+<div class="logo">
+<a href="/"><img src="data:image/png;base64,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" width="247" height="88" alt="The Mail Archive"></a>
+</div>
+<form class="overflow" action="/search" method="get">
+<input type="hidden" name="l" value="devel@lists.libvirt.org">
+<label class="hidden" for="q">Search the site</label>
+<input class="submittext" type="text" id="q" name="q" placeholder="Search devel">
+<input class="submitbutton" name="submit" type="image" src="/submit.png" alt="Submit">
+</form>
+<div class="nav margintop" id="nav" role="navigation">
+<ul class="icons font16">
+<li class="icons-home"><a href="/">The Mail Archive home</a></li>
+<li class="icons-list"><a href="/devel@lists.libvirt.org/">devel - all messages</a></li>
+<li class="icons-about"><a href="/devel@lists.libvirt.org/info.html">devel - about the list</a></li>
+<li class="icons-expand"><a href="/search?l=devel@lists.libvirt.org&amp;q=subject:%22%5C%5BPATCH+v4+1%5C%2F3%5C%5D+qemu%5C%3A+support+riscv%5C-aia+feature+for+RISC%5C-V+KVM%22&amp;o=newest&amp;f=1" title="e" id="e">Expand</a></li>
+<li class="icons-prev"><a href="msg12295.html" title="p">Previous message</a></li>
+<li class="icons-next"><a href="msg12309.html" title="n">Next message</a></li>
+</ul>
+</div>
+<div class="listlogo margintopdouble">
+
+</div>
+<div class="margintopdouble">
+
+</div>
+</div>
+</div>
+<div class="footer" role="contentinfo">
+<ul>
+<li><a href="/">The Mail Archive home</a></li>
+<li><a href="/faq.html#newlist">Add your mailing list</a></li>
+<li><a href="/faq.html">FAQ</a></li>
+<li><a href="/faq.html#support">Support</a></li>
+<li><a href="/faq.html#privacy">Privacy</a></li>
+<li class="darkgray">20250918054414.913-1-xiangwencheng@lanxincomputing.com</li>
+</ul>
+</div>
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
