@@ -118,6 +118,8 @@ read_dir(){
                 cat docs.tmp
             elif [[ "$kimi" -ne 1 ]];then
                 file_name=$(echo $file | awk -F'/' '{print $NF}')
+                echo "###################"
+                echo $file
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
                     echo $a,$b,$c
