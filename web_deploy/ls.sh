@@ -116,10 +116,17 @@ read_dir(){
                 cat docs.tmp
             elif [[ "$kimi" -ne 1 ]];then
                 file_name=$(echo $file | awk -F'/' '{print $NF}')
-                tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf " "}else{printf "\n"}}}}')
-                tags_url=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf "<a href=./tags/"$i">"$i"</a>";if(i!=NF-1){printf " "}else{printf "\n"}}}}')
-                echo "<tr><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$file_name</a></td></tr>" >> docs.tmp
-                echo "<tr style='margin-bottom: 20px;'><td>TAGs:$tags_url</td></tr>" >> docs.tmp
+                echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
+                do
+                    echo $a,$b,$c
+                    tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf " "}else{printf "\n"}}}}')
+                    tags_url=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf "<a href=./tags/"$i">"$i"</a>";if(i!=NF-1){printf " "}else{printf "\n"}}}}')
+                    echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
+                        <tr><td style='display: none;'>_${a}_${b}_</td><td>${a} ${b}</td></tr> \
+                        <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$c</a></td></tr> \
+                        <tr><td>TAGs:$tags_url</td></tr> \
+                        </tbody></table></td></tr>" >> docs.tmp
+                done
             fi
         fi
     done
@@ -163,7 +170,7 @@ echo "<!DOCTYPE html>
           <tbody>" | tee index_content.html all_content.html docs_content.html
 awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- | head -n 20 >> index_content.html
 awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- >> all_content.html
-cat docs.tmp |grep -v url.tmp |grep -v docs.tmp|grep -v tags >> docs_content.html
+awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' docs.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- |grep -v "url.tmp" |grep -v "docs.tmp"|grep -v "tags"|grep -v "favicon.ico"|grep -v "README.md" >> docs_content.html
 echo "    </tbody>
       </table>
       </body>" | tee -a index_content.html all_content.html docs_content.html
