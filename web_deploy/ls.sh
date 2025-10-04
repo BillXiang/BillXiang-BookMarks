@@ -50,7 +50,7 @@ html_head="<!DOCTYPE html>
               <tr>
                  <td>
                    <h3><a href=\"https://github.akams.cn/\">Github Proxy:</a></h3>
-                   <input id='github-proxy' value=\"https://gh.llkk.cc/\"></input><br>
+                   <input id='github-proxy' value=\"https://gh.llkk.cc/\"><br>
                    <button onclick='setGithubProxy()'>Set</button>
                  </td>
               </tr>
@@ -174,7 +174,7 @@ echo "<!DOCTYPE html>
           <tbody>" | tee index_content.html all_content.html docs_content.html
 awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- | head -n 20 >> index_content.html
 awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' url.tmp | sort -rn -k1 -k2 -k3 -k4 -k5 -k6 | cut -f7- >> all_content.html
-cat docs.tmp | grep -v "url.tmp" |grep -v "docs.tmp"|grep -v "tags"|grep -v "favicon.ico"|grep -v "README.md" |tee -a docs_content.html
+awk -F '[：_-]' '{print $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9 "\t" $0}' docs.tmp | |grep -v "url.tmp" |grep -v "docs.tmp"|grep -v "tags"|grep -v "favicon.ico"|grep -v "README.md" |tee -a docs_content.html
 echo "    </tbody>
       </table>
       </body>" | tee -a index_content.html all_content.html docs_content.html
