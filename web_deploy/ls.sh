@@ -224,10 +224,6 @@ echo "        </tbody>
 
 echo "        </tbody>
             </table>
-          </td>
-        </tr>
-        </tbody>
-      </table>
     </body>
 </html>" >> docs.html
 rm -f *.tmp
