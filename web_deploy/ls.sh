@@ -33,7 +33,7 @@ html_head="<!DOCTYPE html>
       </script>
     </head>
     <body>
-      <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="">
+      <img src="./web_deploy/avatar.jpeg" class="round_icon"  alt="me">
       <table id="root-table" width="100%">
       <tbody>
       <tr>
@@ -130,6 +130,7 @@ read_dir(){
                         <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$c</a></td></tr> \
                         <tr><td>TAGs:$tags_url</td></tr> \
                         </tbody></table></td></tr>" | tee -a docs.tmp
+                    cat docs.tmp
                 done
             fi
         fi
