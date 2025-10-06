@@ -125,11 +125,12 @@ read_dir(){
                     echo $a,$b,$c
                     tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf " "}else{printf "\n"}}}}')
                     tags_url=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf "<a href=./tags/"$i">"$i"</a>";if(i!=NF-1){printf " "}else{printf "\n"}}}}')
+                    cd tags
                     echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
                         <tr><td style='display: none;'>_${a}_${b}_</td><td>${a} ${b}</td></tr> \
                         <tr style='font-size: 25px;'><td><a href=\"https://billxiang.github.io/BillXiang-BookMarks/$file\">$c</a></td></tr> \
                         <tr><td>TAGs:$tags_url</td></tr> \
-                        </tbody></table></td></tr>" | tee -a docs.tmp
+                        </tbody></table></td></tr>" | tee -a ../docs.tmp ../url.tmp $tags
                     #cat docs.tmp
                 done
             fi
