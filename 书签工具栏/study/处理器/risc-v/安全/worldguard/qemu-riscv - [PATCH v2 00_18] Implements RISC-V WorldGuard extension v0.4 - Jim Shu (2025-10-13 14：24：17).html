@@ -1,0 +1,734 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/安全/worldguard/qemu-riscv - [PATCH v2 00_18] Implements RISC-V WorldGuard extension v0.4 - Jim Shu (2025-10-13 14：24：17).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-riscv/20250417105249.18232-1-jim.shu@sifive.com/
+ Summary: 
+-->
+<html><head><title>[PATCH v2 00/18] Implements RISC-V WorldGuard extension v0.4 - Jim Shu</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20250417105341"><b>qemu-riscv.nongnu.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Jim Shu &lt;jim.shu@sifive.com&gt;
+To: <a href="../../qemu-devel/?t=20250417105341">qemu-devel@nongnu.org</a>, <a href="../../qemu-riscv/?t=20250417105341">qemu-riscv@nongnu.org</a>
+Cc: "Richard Henderson" &lt;richard.henderson@linaro.org&gt;,
+	"Paolo Bonzini" &lt;pbonzini@redhat.com&gt;,
+	"Palmer Dabbelt" &lt;palmer@dabbelt.com&gt;,
+	"Alistair Francis" &lt;alistair.francis@wdc.com&gt;,
+	"Weiwei Li" &lt;liwei1518@gmail.com&gt;,
+	"Daniel Henrique Barboza" &lt;dbarboza@ventanamicro.com&gt;,
+	"Liu Zhiwei" &lt;zhiwei_liu@linux.alibaba.com&gt;,
+	"Eduardo Habkost" &lt;eduardo@habkost.net&gt;,
+	"Marcel Apfelbaum" &lt;marcel.apfelbaum@gmail.com&gt;,
+	"Philippe Mathieu-Daudé" &lt;philmd@linaro.org&gt;,
+	"Yanan Wang" &lt;wangyanan55@huawei.com&gt;,
+	"Zhao Liu" &lt;zhao1.liu@intel.com&gt;, "Peter Xu" &lt;peterx@redhat.com&gt;,
+	"David Hildenbrand" &lt;david@redhat.com&gt;,
+	"Michael Rolnik" &lt;mrolnik@gmail.com&gt;,
+	"Helge Deller" &lt;deller@gmx.de&gt;, "Song Gao" &lt;gaosong@loongson.cn&gt;,
+	"Laurent Vivier" &lt;laurent@vivier.eu&gt;,
+	"Edgar E. Iglesias" &lt;edgar.iglesias@gmail.com&gt;,
+	"Aurelien Jarno" &lt;aurelien@aurel32.net&gt;,
+	"Jiaxun Yang" &lt;jiaxun.yang@flygoat.com&gt;,
+	"Aleksandar Rikalo" &lt;arikalo@gmail.com&gt;,
+	"Stafford Horne" &lt;shorne@gmail.com&gt;,
+	"Nicholas Piggin" &lt;npiggin@gmail.com&gt;,
+	"Ilya Leoshkevich" &lt;iii@linux.ibm.com&gt;,
+	"Thomas Huth" &lt;thuth@redhat.com&gt;,
+	"Mark Cave-Ayland" &lt;mark.cave-ayland@ilande.co.uk&gt;,
+	"Artyom Tarasenko" &lt;atar4qemu@gmail.com&gt;,
+	"Bastian Koppelmann" &lt;kbastian@mail.uni-paderborn.de&gt;,
+	"Max Filippov" &lt;jcmvbkbc@gmail.com&gt;,
+	qemu-ppc@nongnu.org (open list:PowerPC TCG CPUs),
+	qemu-s390x@nongnu.org (open list:S390 TCG CPUs),
+	"Jim Shu" &lt;jim.shu@sifive.com&gt;
+Subject: <a href="#r" id="t">[PATCH v2 00/18] Implements RISC-V WorldGuard extension v0.4</a>
+Date: Thu, 17 Apr 2025 18:52:31 +0800	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20250417105249.18232-1-jim.shu@sifive.com&gt; (<a href="raw">raw</a>)
+
+This patchset implements Smwg/Smwgd/Sswg CPU extension and wgChecker
+device defined in WorldGuard spec v0.4.
+
+The WG v0.4 spec could be found here:
+<a href="https://lists.riscv.org/g/security/attachment/711/0/worldguard_rvia_spec-v0.4.pdf">https://lists.riscv.org/g/security/attachment/711/0/worldguard_rvia_spec-v0.4.pdf</a>
+
+To enable WG in QEMU, pass "wg=on" as machine parameter to virt machine.
+It enables both WG CPU CSRs to apply WID of CPU and wgCheckers on
+the DRAM, FLASH, and UART to protect these resources.
+
+This patchset contains 5 parts:
+
+1. Commit  1 ~ 2: Bugfix of IOMMUMemoryRegion
+2. Commit  3 ~ 4: Extend IOMMUMemoryRegion and MemTxAttr for WG support
+3. Commit  5 ~ 13: Add WG global device and CPU extensions
+4. Commit 14 ~ 17: Add WG checker device
+5. Commit 18: Add WG support to the virt machine
+
+QEMU code can be found at [1]
+
+[1] <a href="https://github.com/cwshu/qemu/tree/riscv-wg-v2">https://github.com/cwshu/qemu/tree/riscv-wg-v2</a>
+
+Changed since v1:
+- Remove the assertion of 4k sections limitation. Remove
+  iotlb_to_section() and rename 'xlat_section' to 'xlat'.
+- Fix RST issue and typo in virt machine doc
+
+Changed since RFCv1:
+- Rebase to latest QEMU (v10.0.0-rc3)
+- Add the description of HW config and CPU option of WG in the
+  virt machine documentation
+- Expose CPU options of WG after WG CPU code has been implemented
+- Change 'mwid' and 'mwidlist' options to experimental options
+- Change 'world_id' to unsigned int type + bit field.
+
+Jim Shu (18):
+  accel/tcg: Store section pointer in CPUTLBEntryFull
+  system/physmem: Remove the assertion of page-aligned section number
+  accel/tcg: memory access from CPU will pass access_type to IOMMU
+  exec: Add RISC-V WorldGuard WID to MemTxAttrs
+  hw/misc: riscv_worldguard: Add RISC-V WorldGuard global config
+  target/riscv: Add CPU options of WorldGuard CPU extension
+  target/riscv: Add hard-coded CPU state of WG extension
+  target/riscv: Add defines for WorldGuard CSRs
+  target/riscv: Allow global WG config to set WG CPU callbacks
+  target/riscv: Implement WorldGuard CSRs
+  target/riscv: Add WID to MemTxAttrs of CPU memory transactions
+  target/riscv: Expose CPU options of WorldGuard
+  hw/misc: riscv_worldguard: Add API to enable WG extension of CPU
+  hw/misc: riscv_wgchecker: Implement RISC-V WorldGuard Checker
+  hw/misc: riscv_wgchecker: Implement wgchecker slot registers
+  hw/misc: riscv_wgchecker: Implement correct block-access behavior
+  hw/misc: riscv_wgchecker: Check the slot settings in translate
+  hw/riscv: virt: Add WorldGuard support
+
+ accel/tcg/cputlb.c                   |   49 +-
+ docs/system/riscv/virt.rst           |   20 +
+ hw/misc/Kconfig                      |    3 +
+ hw/misc/meson.build                  |    1 +
+ hw/misc/riscv_wgchecker.c            | 1160 ++++++++++++++++++++++++++
+ hw/misc/riscv_worldguard.c           |  272 ++++++
+ hw/misc/trace-events                 |    9 +
+ hw/riscv/Kconfig                     |    1 +
+ hw/riscv/virt.c                      |  163 +++-
+ include/exec/cputlb.h                |   13 +-
+ include/exec/exec-all.h              |   18 +-
+ include/exec/memattrs.h              |    8 +-
+ include/hw/core/cpu.h                |   12 +-
+ include/hw/misc/riscv_worldguard.h   |  123 +++
+ include/hw/riscv/virt.h              |   15 +-
+ system/physmem.c                     |   39 +-
+ target/alpha/helper.c                |    2 +-
+ target/avr/helper.c                  |    2 +-
+ target/hppa/mem_helper.c             |    1 -
+ target/i386/tcg/system/excp_helper.c |    3 +-
+ target/loongarch/tcg/tlb_helper.c    |    2 +-
+ target/m68k/helper.c                 |   10 +-
+ target/microblaze/helper.c           |    8 +-
+ target/mips/tcg/system/tlb_helper.c  |    4 +-
+ target/openrisc/mmu.c                |    2 +-
+ target/ppc/mmu_helper.c              |    2 +-
+ target/riscv/cpu.c                   |   17 +-
+ target/riscv/cpu.h                   |   12 +
+ target/riscv/cpu_bits.h              |    5 +
+ target/riscv/cpu_cfg.h               |    5 +
+ target/riscv/cpu_helper.c            |   69 +-
+ target/riscv/csr.c                   |  107 +++
+ target/riscv/tcg/tcg-cpu.c           |   11 +
+ target/rx/cpu.c                      |    3 +-
+ target/s390x/tcg/excp_helper.c       |    2 +-
+ target/sh4/helper.c                  |    2 +-
+ target/sparc/mmu_helper.c            |    6 +-
+ target/tricore/helper.c              |    2 +-
+ target/xtensa/helper.c               |    3 +-
+ 39 files changed, 2074 insertions(+), 112 deletions(-)
+ create mode 100644 hw/misc/riscv_wgchecker.c
+ create mode 100644 hw/misc/riscv_worldguard.c
+ create mode 100644 include/hw/misc/riscv_worldguard.h
+
+-- 
+2.17.1
+
+
+</pre><hr><pre><a href="../20250417105249.18232-2-jim.shu@sifive.com/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20250417105341">~2025-04-17 10:53 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>39+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2025-04-17 10:52 <a id="r" href="#t">Jim Shu [this message]</a></b>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-2-jim.shu@sifive.com/">[PATCH v2 01/18] accel/tcg: Store section pointer in CPUTLBEntryFull</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-3-jim.shu@sifive.com/">[PATCH v2 02/18] system/physmem: Remove the assertion of page-aligned section number</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-4-jim.shu@sifive.com/">[PATCH v2 03/18] accel/tcg: memory access from CPU will pass access_type to IOMMU</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-5-jim.shu@sifive.com/">[PATCH v2 04/18] exec: Add RISC-V WorldGuard WID to MemTxAttrs</a> Jim Shu
+2025-08-09 12:34   ` <a href="../e7616702-8a7b-4617-8433-236a1086bdf9@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-10-08  5:54     ` <a href="../CALw707rstv76_oESKHzbeuPakSesWNBXogQoCJN4pHMj_wz7eg@mail.gmail.com/">Jim Shu</a>
+2025-10-12 17:27       ` <a href="../125b7913-c8c0-448b-9f3f-3b893436b901@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-6-jim.shu@sifive.com/">[PATCH v2 05/18] hw/misc: riscv_worldguard: Add RISC-V WorldGuard global config</a> Jim Shu
+2025-08-09 12:37   ` <a href="../92759967-2fb0-4bb3-96f0-ed8c3ca11a8a@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-7-jim.shu@sifive.com/">[PATCH v2 06/18] target/riscv: Add CPU options of WorldGuard CPU extension</a> Jim Shu
+2025-08-09 12:47   ` <a href="../a28a8a53-013f-4b47-86ac-4053aab1cdde@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-10-08  7:22     ` <a href="../CALw707qo8pjoVBaBYEQe7rfyGOh_mL7gdO+8228DMAuAKv=s7A@mail.gmail.com/">Jim Shu</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-8-jim.shu@sifive.com/">[PATCH v2 07/18] target/riscv: Add hard-coded CPU state of WG extension</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-9-jim.shu@sifive.com/">[PATCH v2 08/18] target/riscv: Add defines for WorldGuard CSRs</a> Jim Shu
+2025-08-09 12:49   ` <a href="../5c159058-83a5-487e-87ca-6d2d3211b0f4@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-10-jim.shu@sifive.com/">[PATCH v2 09/18] target/riscv: Allow global WG config to set WG CPU callbacks</a> Jim Shu
+2025-08-09 12:50   ` <a href="../bdd56f8e-af0f-4ffe-bed3-d5acf5c42adb@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-11-jim.shu@sifive.com/">[PATCH v2 10/18] target/riscv: Implement WorldGuard CSRs</a> Jim Shu
+2025-08-09 12:54   ` <a href="../15f7d1c4-50ce-4cc7-913c-f25947c1b735@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-12-jim.shu@sifive.com/">[PATCH v2 11/18] target/riscv: Add WID to MemTxAttrs of CPU memory transactions</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-13-jim.shu@sifive.com/">[PATCH v2 12/18] target/riscv: Expose CPU options of WorldGuard</a> Jim Shu
+2025-08-09 12:55   ` <a href="../6d8bcbd3-7855-4307-8edd-c6835c232124@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-14-jim.shu@sifive.com/">[PATCH v2 13/18] hw/misc: riscv_worldguard: Add API to enable WG extension of CPU</a> Jim Shu
+2025-08-09 13:07   ` <a href="../20701dc8-d156-4ad9-8945-282321c15527@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-08-13  3:07     ` <a href="../4d658cff-d8ab-4d95-b340-c6b7b5375395@yeah.net/">Chao Liu</a>
+2025-10-08  6:19       ` <a href="../CALw707r3tBUGbZqYXbPc2B+so6AVhYqUr7ccYYjVidDqqAWemw@mail.gmail.com/">Jim Shu</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-15-jim.shu@sifive.com/">[PATCH v2 14/18] hw/misc: riscv_wgchecker: Implement RISC-V WorldGuard Checker</a> Jim Shu
+2025-08-09 16:39   ` <a href="../efccad5e-d5a8-4ebe-b2ae-1b683239399d@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-10-08  7:23     ` <a href="../CALw707pdRABgsz5b40tKo_G6uhD_2+okGg8fEtRdtfG4RshoAA@mail.gmail.com/">Jim Shu</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-16-jim.shu@sifive.com/">[PATCH v2 15/18] hw/misc: riscv_wgchecker: Implement wgchecker slot registers</a> Jim Shu
+2025-08-09 16:42   ` <a href="../302021ef-7960-4610-bed2-99405765f530@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-17-jim.shu@sifive.com/">[PATCH v2 16/18] hw/misc: riscv_wgchecker: Implement correct block-access behavior</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-18-jim.shu@sifive.com/">[PATCH v2 17/18] hw/misc: riscv_wgchecker: Check the slot settings in translate</a> Jim Shu
+2025-08-09 16:43   ` <a href="../026f53fb-2f48-45c8-b873-8fa6b677abf3@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-19-jim.shu@sifive.com/">[PATCH v2 18/18] hw/riscv: virt: Add WorldGuard support</a> Jim Shu
+2025-08-09 16:53   ` <a href="../5810e0f2-cb33-49e1-89c2-102dfa064e11@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-10-08  7:23     ` <a href="../CALw707rP7FpbLosQO-uej4Y=9HgpKmXb9jm27J0_ZX=pi1F6cg@mail.gmail.com/">Jim Shu</a>
+2025-08-09 17:00 ` <a href="../fc3faef9-c69b-42da-8e26-9f59d45ee14b@ventanamicro.com/">[PATCH v2 00/18] Implements RISC-V WorldGuard extension v0.4</a> Daniel Henrique Barboza
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20250417105249.18232-1-jim.shu@sifive.com \n    --to=jim.shu@sifive.com \n    --cc=alistair.francis@wdc.com \n    --cc=arikalo@gmail.com \n    --cc=atar4qemu@gmail.com \n    --cc=aurelien@aurel32.net \n    --cc=david@redhat.com \n    --cc=dbarboza@ventanamicro.com \n    --cc=deller@gmx.de \n    --cc=edgar.iglesias@gmail.com \n    --cc=eduardo@habkost.net \n    --cc=gaosong@loongson.cn \n    --cc=iii@linux.ibm.com \n    --cc=jcmvbkbc@gmail.com \n    --cc=jiaxun.yang@flygoat.com \n    --cc=kbastian@mail.uni-paderborn.de \n    --cc=laurent@vivier.eu \n    --cc=liwei1518@gmail.com \n    --cc=marcel.apfelbaum@gmail.com \n    --cc=mark.cave-ayland@ilande.co.uk \n    --cc=mrolnik@gmail.com \n    --cc=npiggin@gmail.com \n    --cc=palmer@dabbelt.com \n    --cc=pbonzini@redhat.com \n    --cc=peterx@redhat.com \n    --cc=philmd@linaro.org \n    --cc=qemu-devel@nongnu.org \n    --cc=qemu-ppc@nongnu.org \n    --cc=qemu-riscv@nongnu.org \n    --cc=qemu-s390x@nongnu.org \n    --cc=richard.henderson@linaro.org \n    --cc=shorne@gmail.com \n    --cc=thuth@redhat.com \n    --cc=wangyanan55@huawei.com \n    --cc=zhao1.liu@intel.com \n    --cc=zhiwei_liu@linux.alibaba.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:jim.shu@sifive.com?In-Reply-To=%3C20250417105249.18232-1-jim.shu@sifive.com%3E&amp;Cc=alistair.francis%40wdc.com%2Carikalo%40gmail.com%2Catar4qemu%40gmail.com%2Caurelien%40aurel32.net%2Cdavid%40redhat.com%2Cdbarboza%40ventanamicro.com%2Cdeller%40gmx.de%2Cedgar.iglesias%40gmail.com%2Ceduardo%40habkost.net%2Cgaosong%40loongson.cn%2Ciii%40linux.ibm.com%2Cjcmvbkbc%40gmail.com%2Cjiaxun.yang%40flygoat.com%2Ckbastian%40mail.uni-paderborn.de%2Claurent%40vivier.eu%2Cliwei1518%40gmail.com%2Cmarcel.apfelbaum%40gmail.com%2Cmark.cave-ayland%40ilande.co.uk%2Cmrolnik%40gmail.com%2Cnpiggin%40gmail.com%2Cpalmer%40dabbelt.com%2Cpbonzini%40redhat.com%2Cpeterx%40redhat.com%2Cphilmd%40linaro.org%2Cqemu-devel%40nongnu.org%2Cqemu-ppc%40nongnu.org%2Cqemu-riscv%40nongnu.org%2Cqemu-s390x%40nongnu.org%2Crichard.henderson%40linaro.org%2Cshorne%40gmail.com%2Cthuth%40redhat.com%2Cwangyanan55%40huawei.com%2Czhao1.liu%40intel.com%2Czhiwei_liu%40linux.alibaba.com&amp;Subject=Re%3A%20%5BPATCH%20v2%2000%2F18%5D%20Implements%20RISC-V%20WorldGuard%20extension%20v0.4">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
