@@ -1,0 +1,1012 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/安全/worldguard/qemu-riscv - [PATCH v2 18_18] hw_riscv_ virt_ Add WorldGuard support - Jim Shu (2025-10-13 14：24：46).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-riscv/20250417105249.18232-19-jim.shu@sifive.com/
+ Summary: 
+-->
+<html><head><title>[PATCH v2 18/18] hw/riscv: virt: Add WorldGuard support - Jim Shu</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20250417105816"><b>qemu-riscv.nongnu.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Jim Shu &lt;jim.shu@sifive.com&gt;
+To: <a href="../../qemu-devel/?t=20250417105816">qemu-devel@nongnu.org</a>, <a href="../../qemu-riscv/?t=20250417105816">qemu-riscv@nongnu.org</a>
+Cc: "Richard Henderson" &lt;richard.henderson@linaro.org&gt;,
+	"Paolo Bonzini" &lt;pbonzini@redhat.com&gt;,
+	"Palmer Dabbelt" &lt;palmer@dabbelt.com&gt;,
+	"Alistair Francis" &lt;alistair.francis@wdc.com&gt;,
+	"Weiwei Li" &lt;liwei1518@gmail.com&gt;,
+	"Daniel Henrique Barboza" &lt;dbarboza@ventanamicro.com&gt;,
+	"Liu Zhiwei" &lt;zhiwei_liu@linux.alibaba.com&gt;,
+	"Eduardo Habkost" &lt;eduardo@habkost.net&gt;,
+	"Marcel Apfelbaum" &lt;marcel.apfelbaum@gmail.com&gt;,
+	"Philippe Mathieu-Daudé" &lt;philmd@linaro.org&gt;,
+	"Yanan Wang" &lt;wangyanan55@huawei.com&gt;,
+	"Zhao Liu" &lt;zhao1.liu@intel.com&gt;, "Peter Xu" &lt;peterx@redhat.com&gt;,
+	"David Hildenbrand" &lt;david@redhat.com&gt;,
+	"Michael Rolnik" &lt;mrolnik@gmail.com&gt;,
+	"Helge Deller" &lt;deller@gmx.de&gt;, "Song Gao" &lt;gaosong@loongson.cn&gt;,
+	"Laurent Vivier" &lt;laurent@vivier.eu&gt;,
+	"Edgar E. Iglesias" &lt;edgar.iglesias@gmail.com&gt;,
+	"Aurelien Jarno" &lt;aurelien@aurel32.net&gt;,
+	"Jiaxun Yang" &lt;jiaxun.yang@flygoat.com&gt;,
+	"Aleksandar Rikalo" &lt;arikalo@gmail.com&gt;,
+	"Stafford Horne" &lt;shorne@gmail.com&gt;,
+	"Nicholas Piggin" &lt;npiggin@gmail.com&gt;,
+	"Ilya Leoshkevich" &lt;iii@linux.ibm.com&gt;,
+	"Thomas Huth" &lt;thuth@redhat.com&gt;,
+	"Mark Cave-Ayland" &lt;mark.cave-ayland@ilande.co.uk&gt;,
+	"Artyom Tarasenko" &lt;atar4qemu@gmail.com&gt;,
+	"Bastian Koppelmann" &lt;kbastian@mail.uni-paderborn.de&gt;,
+	"Max Filippov" &lt;jcmvbkbc@gmail.com&gt;,
+	qemu-ppc@nongnu.org (open list:PowerPC TCG CPUs),
+	qemu-s390x@nongnu.org (open list:S390 TCG CPUs),
+	"Jim Shu" &lt;jim.shu@sifive.com&gt;
+Subject: <a href="#r" id="t">[PATCH v2 18/18] hw/riscv: virt: Add WorldGuard support</a>
+Date: Thu, 17 Apr 2025 18:52:49 +0800	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20250417105249.18232-19-jim.shu@sifive.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20250417105249.18232-1-jim.shu@sifive.com/">20250417105249.18232-1-jim.shu@sifive.com</a>&gt;
+
+* Add 'wg=on' option to enable RISC-V WorldGuard
+* Add wgChecker to protect several resources:
+  DRAM, FLASH, UART.
+
+Signed-off-by: Jim Shu &lt;jim.shu@sifive.com&gt;
+---
+ <a id="iZ31docs:system:riscv:virt.rst" href="#Z31docs:system:riscv:virt.rst">docs/system/riscv/virt.rst</a> |  20 +++++
+ <a id="iZ31hw:riscv:Kconfig" href="#Z31hw:riscv:Kconfig">hw/riscv/Kconfig</a>           |   1 +
+ <a id="iZ31hw:riscv:virt.c" href="#Z31hw:riscv:virt.c">hw/riscv/virt.c</a>            | 163 ++++++++++++++++++++++++++++++++++++-
+ <a id="iZ31include:hw:riscv:virt.h" href="#Z31include:hw:riscv:virt.h">include/hw/riscv/virt.h</a>    |  15 +++-
+ 4 files <a href="#related">changed</a>, 195 insertions(+), 4 deletions(-)
+
+<span class="head"><a href="#iZ31docs:system:riscv:virt.rst" id="Z31docs:system:riscv:virt.rst">diff</a> --git a/docs/system/riscv/virt.rst b/docs/system/riscv/virt.rst
+index 60850970ce..eef1233350 100644
+--- a/docs/system/riscv/virt.rst
++++ b/docs/system/riscv/virt.rst
+</span><span class="hunk">@@ -146,6 +146,26 @@ The following machine-specific options are supported:
+</span> 
+   Enables the riscv-iommu-sys platform device. Defaults to 'off'.
+ 
+<span class="add">+- wg=[on|off]
++
++  When this option is "on", RISC-V WorldGuard will be enabled in the system
++  to provide the isolation of multiple worlds. RISC-V HARTs will enable WG
++  extensions to have WID in memory transaction. wgCheckers in front of RAMs
++  and device MMIO will be enabled to provide the access control of resources
++  if the transaction contains WID. When not specified, this option is assumed
++  to be "off".
++
++  The WG configuration of virt machine includes 4 worlds. For WG configuration
++  of CPUs, the M-mode WID of CPU (``mwid``) is set to the largest WID number,
++  and the authorized WID list of CPU (``mwidlist``) includes all WIDs. We can
++  modify the configuration of all CPUs via ``x-mwid`` and ``x-mwidlist``
++  CPU options. There are 3 wgCheckers in the virt machine, which separately
++  protects DRAM, FLASH, and UART. Default WG configuration on the virt machine
++  is enough to run the demo of dual OSes in the different worlds. For example,
++  running both Linux kernel and Secure OS (e.g. OP-TEE) in it's own world.
++
++  This option is restricted to the TCG accelerator.
++
+</span> Running Linux kernel
+ --------------------
+ 
+<span class="head"><a href="#iZ31hw:riscv:Kconfig" id="Z31hw:riscv:Kconfig">diff</a> --git a/hw/riscv/Kconfig b/hw/riscv/Kconfig
+index e6a0ac1fa1..5c3e7b3479 100644
+--- a/hw/riscv/Kconfig
++++ b/hw/riscv/Kconfig
+</span><span class="hunk">@@ -68,6 +68,7 @@ config RISCV_VIRT
+</span>     select PLATFORM_BUS
+     select ACPI
+     select ACPI_PCI
+<span class="add">+    select RISCV_WORLDGUARD
+</span> 
+ config SHAKTI_C
+     bool
+<span class="head"><a href="#iZ31hw:riscv:virt.c" id="Z31hw:riscv:virt.c">diff</a> --git a/hw/riscv/virt.c b/hw/riscv/virt.c
+index e517002fdf..da873bc8b8 100644
+--- a/hw/riscv/virt.c
++++ b/hw/riscv/virt.c
+</span><span class="hunk">@@ -58,6 +58,7 @@
+</span> #include "qapi/qapi-visit-common.h"
+ #include "hw/virtio/virtio-iommu.h"
+ #include "hw/uefi/var-service-api.h"
+<span class="add">+#include "hw/misc/riscv_worldguard.h"
+</span> 
+ /* KVM AIA only supports APLIC MSI. APLIC Wired is always emulated by QEMU. */
+ static bool virt_use_kvm_aia_aplic_imsic(RISCVVirtAIAType aia_type)
+<span class="hunk">@@ -89,6 +90,9 @@ static const MemMapEntry virt_memmap[] = {
+</span>     [VIRT_PCIE_PIO] =     {  0x3000000,       0x10000 },
+     [VIRT_IOMMU_SYS] =    {  0x3010000,        0x1000 },
+     [VIRT_PLATFORM_BUS] = {  0x4000000,     0x2000000 },
+<span class="add">+    [VIRT_WGC_DRAM] =     {  0x6000000,        0x1000 },
++    [VIRT_WGC_FLASH] =    {  0x6001000,        0x1000 },
++    [VIRT_WGC_UART] =     {  0x6002000,        0x1000 },
+</span>     [VIRT_PLIC] =         {  0xc000000, VIRT_PLIC_SIZE(VIRT_CPUS_MAX * 2) },
+     [VIRT_APLIC_M] =      {  0xc000000, APLIC_SIZE(VIRT_CPUS_MAX) },
+     [VIRT_APLIC_S] =      {  0xd000000, APLIC_SIZE(VIRT_CPUS_MAX) },
+<span class="hunk">@@ -114,6 +118,38 @@ static MemMapEntry virt_high_pcie_memmap;
+</span> 
+ #define VIRT_FLASH_SECTOR_SIZE (256 * KiB)
+ 
+<span class="add">+/* wgChecker helpers */
++typedef struct WGCInfo {
++    int memmap_idx;
++    uint32_t irq_num;
++    uint32_t slot_count;
++
++    int num_of_child;
++    MemoryRegion *c_region[WGC_NUM_REGIONS];
++    uint64_t c_offset[WGC_NUM_REGIONS];
++} WGCInfo;
++
++enum {
++    WGC_DRAM,
++    WGC_FLASH,
++    WGC_UART,
++    WGC_NUM,
++};
++
++static WGCInfo virt_wgcinfo[] = {
++    [WGC_DRAM]  = { VIRT_WGC_DRAM, WGC_DRAM_IRQ, 16 },
++    [WGC_FLASH] = { VIRT_WGC_FLASH, WGC_FLASH_IRQ, 16 },
++    [WGC_UART]  = { VIRT_WGC_UART, WGC_UART_IRQ, 1 },
++};
++
++static void wgc_append_child(WGCInfo *info, MemoryRegion *region,
++                             uint64_t offset)
++{
++    info-&gt;c_region[info-&gt;num_of_child] = region;
++    info-&gt;c_offset[info-&gt;num_of_child] = offset;
++    info-&gt;num_of_child += 1;
++}
++
+</span> static PFlashCFI01 *virt_flash_create1(RISCVVirtState *s,
+                                        const char *name,
+                                        const char *alias_prop_name)
+<span class="hunk">@@ -164,7 +200,8 @@ static void virt_flash_map1(PFlashCFI01 *flash,
+</span> }
+ 
+ static void virt_flash_map(RISCVVirtState *s,
+<span class="del">-                           MemoryRegion *sysmem)
+</span><span class="add">+                           MemoryRegion *sysmem,
++                           WGCInfo *info)
+</span> {
+     hwaddr flashsize = virt_memmap[VIRT_FLASH].size / 2;
+     hwaddr flashbase = virt_memmap[VIRT_FLASH].base;
+<span class="hunk">@@ -173,6 +210,15 @@ static void virt_flash_map(RISCVVirtState *s,
+</span>                     sysmem);
+     virt_flash_map1(s-&gt;flash[1], flashbase + flashsize, flashsize,
+                     sysmem);
+<span class="add">+
++    if (info) {
++        wgc_append_child(info,
++                         sysbus_mmio_get_region(SYS_BUS_DEVICE(s-&gt;flash[0]), 0),
++                         flashbase);
++        wgc_append_child(info,
++                         sysbus_mmio_get_region(SYS_BUS_DEVICE(s-&gt;flash[1]), 0),
++                         flashbase + flashsize);
++    }
+</span> }
+ 
+ static void create_pcie_irq_map(RISCVVirtState *s, void *fdt, char *nodename,
+<span class="hunk">@@ -1426,6 +1472,71 @@ static void virt_build_smbios(RISCVVirtState *s)
+</span>     }
+ }
+ 
+<span class="add">+static DeviceState *create_wgc(WGCInfo *info, DeviceState *irqchip)
++{
++    MemoryRegion *system_memory = get_system_memory();
++    DeviceState *wgc;
++    MemoryRegion *upstream_mr, *downstream_mr;
++    qemu_irq irq = qdev_get_gpio_in(irqchip, info-&gt;irq_num);
++    hwaddr base, size;
++
++    /* Unmap downstream_mr from system_memory if it is already mapped. */
++    for (int i=0; i&lt;info-&gt;num_of_child; i++) {
++        downstream_mr = info-&gt;c_region[i];
++
++        g_assert(downstream_mr);
++        if (downstream_mr-&gt;container == system_memory) {
++            memory_region_del_subregion(system_memory, downstream_mr);
++        }
++
++        /*
++         * Clear the offset of downstream_mr, so we could correctly do
++         * address_space_init() to it in wgchecker.
++         */
++        memory_region_set_address(downstream_mr, 0);
++    }
++
++    base = virt_memmap[info-&gt;memmap_idx].base;
++    size = virt_memmap[info-&gt;memmap_idx].size;
++
++    wgc = riscv_wgchecker_create(
++        base, size, irq, info-&gt;slot_count, 0, 0,
++        info-&gt;num_of_child, info-&gt;c_region, info-&gt;c_offset, 0, NULL);
++
++    /* Map upstream_mr to system_memory */
++    for (int i=0; i&lt;info-&gt;num_of_child; i++) {
++        upstream_mr = sysbus_mmio_get_region(SYS_BUS_DEVICE(wgc), i+1);
++        g_assert(upstream_mr);
++        memory_region_add_subregion(system_memory, info-&gt;c_offset[i], upstream_mr);
++    }
++
++    return wgc;
++}
++
++static void virt_create_worldguard(WGCInfo *wgcinfo, int wgc_num,
++                                   DeviceState *irqchip)
++{
++    CPUState *cpu;
++
++    /* Global WG config */
++    riscv_worldguard_create(VIRT_WG_NWORLDS,
++                            VIRT_WG_TRUSTEDWID,
++                            VIRT_WG_HWBYPASS,
++                            VIRT_WG_TZCOMPAT);
++
++    /* Enable WG extension of each CPU */
++    CPU_FOREACH(cpu) {
++        CPURISCVState *env = cpu ? cpu_env(cpu) : NULL;
++
++        riscv_worldguard_apply_cpu(env-&gt;mhartid);
++    }
++
++    /* Create all wgChecker devices */
++    for (int i=0; i&lt;wgc_num; i++) {
++        create_wgc(&amp;wgcinfo[i], DEVICE(irqchip));
++    }
++}
++
+</span> static void virt_machine_done(Notifier *notifier, void *data)
+ {
+     RISCVVirtState *s = container_of(notifier, RISCVVirtState,
+<span class="hunk">@@ -1527,10 +1638,12 @@ static void virt_machine_done(Notifier *notifier, void *data)
+</span> static void virt_machine_init(MachineState *machine)
+ {
+     const MemMapEntry *memmap = virt_memmap;
+<span class="add">+    WGCInfo *wgcinfo = virt_wgcinfo;
+</span>     RISCVVirtState *s = RISCV_VIRT_MACHINE(machine);
+     MemoryRegion *system_memory = get_system_memory();
+     MemoryRegion *mask_rom = g_new(MemoryRegion, 1);
+     DeviceState *mmio_irqchip, *virtio_irqchip, *pcie_irqchip;
+<span class="add">+    SerialMM *uart;
+</span>     int i, base_hartid, hart_count;
+     int socket_count = riscv_socket_count(machine);
+ 
+<span class="hunk">@@ -1546,6 +1659,11 @@ static void virt_machine_init(MachineState *machine)
+</span>         exit(1);
+     }
+ 
+<span class="add">+    if (!tcg_enabled() &amp;&amp; s-&gt;have_wg) {
++        error_report("'wg' is only available with TCG acceleration");
++        exit(1);
++    }
++
+</span>     /* Initialize sockets */
+     mmio_irqchip = virtio_irqchip = pcie_irqchip = NULL;
+     for (i = 0; i &lt; socket_count; i++) {
+<span class="hunk">@@ -1673,6 +1791,10 @@ static void virt_machine_init(MachineState *machine)
+</span>     memory_region_add_subregion(system_memory, memmap[VIRT_DRAM].base,
+         machine-&gt;ram);
+ 
+<span class="add">+    if (tcg_enabled() &amp;&amp; s-&gt;have_wg) {
++        wgc_append_child(&amp;wgcinfo[WGC_DRAM], machine-&gt;ram, memmap[VIRT_DRAM].base);
++    }
++
+</span>     /* boot rom */
+     memory_region_init_rom(mask_rom, NULL, "riscv_virt_board.mrom",
+                            memmap[VIRT_MROM].size, &amp;error_fatal);
+<span class="hunk">@@ -1700,10 +1822,16 @@ static void virt_machine_init(MachineState *machine)
+</span> 
+     create_platform_bus(s, mmio_irqchip);
+ 
+<span class="del">-    serial_mm_init(system_memory, memmap[VIRT_UART0].base,
+</span><span class="add">+    uart = serial_mm_init(system_memory, memmap[VIRT_UART0].base,
+</span>         0, qdev_get_gpio_in(mmio_irqchip, UART0_IRQ), 399193,
+         serial_hd(0), DEVICE_LITTLE_ENDIAN);
+ 
+<span class="add">+    if (tcg_enabled() &amp;&amp; s-&gt;have_wg) {
++        wgc_append_child(&amp;wgcinfo[WGC_UART],
++                         sysbus_mmio_get_region(SYS_BUS_DEVICE(uart), 0),
++                         memmap[VIRT_UART0].base);
++    }
++
+</span>     sysbus_create_simple("goldfish_rtc", memmap[VIRT_RTC].base,
+         qdev_get_gpio_in(mmio_irqchip, RTC_IRQ));
+ 
+<span class="hunk">@@ -1712,7 +1840,16 @@ static void virt_machine_init(MachineState *machine)
+</span>         pflash_cfi01_legacy_drive(s-&gt;flash[i],
+                                   drive_get(IF_PFLASH, 0, i));
+     }
+<span class="del">-    virt_flash_map(s, system_memory);
+</span><span class="add">+
++    if (tcg_enabled() &amp;&amp; s-&gt;have_wg) {
++        virt_flash_map(s, system_memory, &amp;wgcinfo[WGC_FLASH]);
++    } else {
++        virt_flash_map(s, system_memory, NULL);
++    }
++
++    if (tcg_enabled() &amp;&amp; s-&gt;have_wg) {
++        virt_create_worldguard(wgcinfo, WGC_NUM, mmio_irqchip);
++    }
+</span> 
+     /* load/create device tree */
+     if (machine-&gt;dtb) {
+<span class="hunk">@@ -1757,6 +1894,20 @@ static void virt_machine_instance_init(Object *obj)
+</span>     s-&gt;iommu_sys = ON_OFF_AUTO_AUTO;
+ }
+ 
+<span class="add">+static bool virt_get_wg(Object *obj, Error **errp)
++{
++    RISCVVirtState *s = RISCV_VIRT_MACHINE(obj);
++
++    return s-&gt;have_wg;
++}
++
++static void virt_set_wg(Object *obj, bool value, Error **errp)
++{
++    RISCVVirtState *s = RISCV_VIRT_MACHINE(obj);
++
++    s-&gt;have_wg = value;
++}
++
+</span> static char *virt_get_aia_guests(Object *obj, Error **errp)
+ {
+     RISCVVirtState *s = RISCV_VIRT_MACHINE(obj);
+<span class="hunk">@@ -1977,6 +2128,12 @@ static void virt_machine_class_init(ObjectClass *oc, void *data)
+</span>                               NULL, NULL);
+     object_class_property_set_description(oc, "iommu-sys",
+                                           "Enable IOMMU platform device");
+<span class="add">+
++    object_class_property_add_bool(oc, "wg", virt_get_wg,
++                                   virt_set_wg);
++    object_class_property_set_description(oc, "wg",
++                                              "Set on/off to enable/disable the "
++                                              "RISC-V WorldGuard.");
+</span> }
+ 
+ static const TypeInfo virt_machine_typeinfo = {
+<span class="head"><a href="#iZ31include:hw:riscv:virt.h" id="Z31include:hw:riscv:virt.h">diff</a> --git a/include/hw/riscv/virt.h b/include/hw/riscv/virt.h
+index 48a14bea2e..3a631a6a23 100644
+--- a/include/hw/riscv/virt.h
++++ b/include/hw/riscv/virt.h
+</span><span class="hunk">@@ -57,6 +57,7 @@ struct RISCVVirtState {
+</span>     bool have_aclint;
+     RISCVVirtAIAType aia_type;
+     int aia_guests;
+<span class="add">+    bool have_wg;
+</span>     char *oem_id;
+     char *oem_table_id;
+     OnOffAuto acpi;
+<span class="hunk">@@ -87,11 +88,17 @@ enum {
+</span>     VIRT_PLATFORM_BUS,
+     VIRT_PCIE_ECAM,
+     VIRT_IOMMU_SYS,
+<span class="add">+    VIRT_WGC_DRAM,
++    VIRT_WGC_FLASH,
++    VIRT_WGC_UART
+</span> };
+ 
+ enum {
+     UART0_IRQ = 10,
+     RTC_IRQ = 11,
+<span class="add">+    WGC_DRAM_IRQ = 15,
++    WGC_FLASH_IRQ = 16,
++    WGC_UART_IRQ = 17,
+</span>     VIRTIO_IRQ = 1, /* 1 to 8 */
+     VIRTIO_COUNT = 8,
+     PCIE_IRQ = 0x20, /* 32 to 35 */
+<span class="hunk">@@ -102,7 +109,7 @@ enum {
+</span> #define VIRT_PLATFORM_BUS_NUM_IRQS 32
+ 
+ #define VIRT_IRQCHIP_NUM_MSIS 255
+<span class="del">-#define VIRT_IRQCHIP_NUM_SOURCES 96
+</span><span class="add">+#define VIRT_IRQCHIP_NUM_SOURCES 128
+</span> #define VIRT_IRQCHIP_NUM_PRIO_BITS 3
+ #define VIRT_IRQCHIP_MAX_GUESTS_BITS 3
+ #define VIRT_IRQCHIP_MAX_GUESTS ((1U &lt;&lt; VIRT_IRQCHIP_MAX_GUESTS_BITS) - 1U)
+<span class="hunk">@@ -158,4 +165,10 @@ uint32_t imsic_num_bits(uint32_t count);
+</span> #error "Can't accommodate all IMSIC groups in address space"
+ #endif
+ 
+<span class="add">+/* WorldGuard */
++#define VIRT_WG_NWORLDS         4
++#define VIRT_WG_TRUSTEDWID      3
++#define VIRT_WG_HWBYPASS        true
++#define VIRT_WG_TZCOMPAT        false
++
+</span> #endif
+-- 
+2.17.1
+
+
+</pre><hr><pre><a href="../5810e0f2-cb33-49e1-89c2-102dfa064e11@ventanamicro.com/" rel="next">next</a> <a href="../026f53fb-2f48-45c8-b873-8fa6b677abf3@ventanamicro.com/" rel="prev">prev</a> <a href="../20250417105249.18232-1-jim.shu@sifive.com/">parent</a> <a href="#R">reply</a>	other threads:[<a href="../?t=20250417105816">~2025-04-17 10:58 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>39+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2025-04-17 10:52 <a href="../20250417105249.18232-1-jim.shu@sifive.com/">[PATCH v2 00/18] Implements RISC-V WorldGuard extension v0.4</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-2-jim.shu@sifive.com/">[PATCH v2 01/18] accel/tcg: Store section pointer in CPUTLBEntryFull</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-3-jim.shu@sifive.com/">[PATCH v2 02/18] system/physmem: Remove the assertion of page-aligned section number</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-4-jim.shu@sifive.com/">[PATCH v2 03/18] accel/tcg: memory access from CPU will pass access_type to IOMMU</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-5-jim.shu@sifive.com/">[PATCH v2 04/18] exec: Add RISC-V WorldGuard WID to MemTxAttrs</a> Jim Shu
+2025-08-09 12:34   ` <a href="../e7616702-8a7b-4617-8433-236a1086bdf9@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-10-08  5:54     ` <a href="../CALw707rstv76_oESKHzbeuPakSesWNBXogQoCJN4pHMj_wz7eg@mail.gmail.com/">Jim Shu</a>
+2025-10-12 17:27       ` <a href="../125b7913-c8c0-448b-9f3f-3b893436b901@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-6-jim.shu@sifive.com/">[PATCH v2 05/18] hw/misc: riscv_worldguard: Add RISC-V WorldGuard global config</a> Jim Shu
+2025-08-09 12:37   ` <a href="../92759967-2fb0-4bb3-96f0-ed8c3ca11a8a@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-7-jim.shu@sifive.com/">[PATCH v2 06/18] target/riscv: Add CPU options of WorldGuard CPU extension</a> Jim Shu
+2025-08-09 12:47   ` <a href="../a28a8a53-013f-4b47-86ac-4053aab1cdde@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-10-08  7:22     ` <a href="../CALw707qo8pjoVBaBYEQe7rfyGOh_mL7gdO+8228DMAuAKv=s7A@mail.gmail.com/">Jim Shu</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-8-jim.shu@sifive.com/">[PATCH v2 07/18] target/riscv: Add hard-coded CPU state of WG extension</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-9-jim.shu@sifive.com/">[PATCH v2 08/18] target/riscv: Add defines for WorldGuard CSRs</a> Jim Shu
+2025-08-09 12:49   ` <a href="../5c159058-83a5-487e-87ca-6d2d3211b0f4@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-10-jim.shu@sifive.com/">[PATCH v2 09/18] target/riscv: Allow global WG config to set WG CPU callbacks</a> Jim Shu
+2025-08-09 12:50   ` <a href="../bdd56f8e-af0f-4ffe-bed3-d5acf5c42adb@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-11-jim.shu@sifive.com/">[PATCH v2 10/18] target/riscv: Implement WorldGuard CSRs</a> Jim Shu
+2025-08-09 12:54   ` <a href="../15f7d1c4-50ce-4cc7-913c-f25947c1b735@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-12-jim.shu@sifive.com/">[PATCH v2 11/18] target/riscv: Add WID to MemTxAttrs of CPU memory transactions</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-13-jim.shu@sifive.com/">[PATCH v2 12/18] target/riscv: Expose CPU options of WorldGuard</a> Jim Shu
+2025-08-09 12:55   ` <a href="../6d8bcbd3-7855-4307-8edd-c6835c232124@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-14-jim.shu@sifive.com/">[PATCH v2 13/18] hw/misc: riscv_worldguard: Add API to enable WG extension of CPU</a> Jim Shu
+2025-08-09 13:07   ` <a href="../20701dc8-d156-4ad9-8945-282321c15527@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-08-13  3:07     ` <a href="../4d658cff-d8ab-4d95-b340-c6b7b5375395@yeah.net/">Chao Liu</a>
+2025-10-08  6:19       ` <a href="../CALw707r3tBUGbZqYXbPc2B+so6AVhYqUr7ccYYjVidDqqAWemw@mail.gmail.com/">Jim Shu</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-15-jim.shu@sifive.com/">[PATCH v2 14/18] hw/misc: riscv_wgchecker: Implement RISC-V WorldGuard Checker</a> Jim Shu
+2025-08-09 16:39   ` <a href="../efccad5e-d5a8-4ebe-b2ae-1b683239399d@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-10-08  7:23     ` <a href="../CALw707pdRABgsz5b40tKo_G6uhD_2+okGg8fEtRdtfG4RshoAA@mail.gmail.com/">Jim Shu</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-16-jim.shu@sifive.com/">[PATCH v2 15/18] hw/misc: riscv_wgchecker: Implement wgchecker slot registers</a> Jim Shu
+2025-08-09 16:42   ` <a href="../302021ef-7960-4610-bed2-99405765f530@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-04-17 10:52 ` <a href="../20250417105249.18232-17-jim.shu@sifive.com/">[PATCH v2 16/18] hw/misc: riscv_wgchecker: Implement correct block-access behavior</a> Jim Shu
+2025-04-17 10:52 ` <a href="../20250417105249.18232-18-jim.shu@sifive.com/">[PATCH v2 17/18] hw/misc: riscv_wgchecker: Check the slot settings in translate</a> Jim Shu
+2025-08-09 16:43   ` <a href="../026f53fb-2f48-45c8-b873-8fa6b677abf3@ventanamicro.com/">Daniel Henrique Barboza</a>
+<b>2025-04-17 10:52 ` <a id="r" href="#t">Jim Shu [this message]</a></b>
+2025-08-09 16:53   ` <a href="../5810e0f2-cb33-49e1-89c2-102dfa064e11@ventanamicro.com/">[PATCH v2 18/18] hw/riscv: virt: Add WorldGuard support</a> Daniel Henrique Barboza
+2025-10-08  7:23     ` <a href="../CALw707rP7FpbLosQO-uej4Y=9HgpKmXb9jm27J0_ZX=pi1F6cg@mail.gmail.com/">Jim Shu</a>
+2025-08-09 17:00 ` <a href="../fc3faef9-c69b-42da-8e26-9f59d45ee14b@ventanamicro.com/">[PATCH v2 00/18] Implements RISC-V WorldGuard extension v0.4</a> Daniel Henrique Barboza
+</pre><form id="related" action="../"><pre>find likely ancestor, descendant, or conflicting patches for <a href="#t">this message</a>:
+<textarea name="q" cols="72" rows="4">( dfblob:60850970c dfblob:eef123335 dfblob:e6a0ac1fa dfblob:5c3e7b347
+dfblob:e517002fd dfblob:da873bc8b dfblob:48a14bea2 dfblob:3a631a6a2 )
+ OR (
+bs:"[PATCH v2 18/18] hw/riscv: virt: Add WorldGuard support" )</textarea>
+<input type="submit" value="search">	(<a href="../_/text/help/#search">help</a>)</pre></form>
+<hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20250417105249.18232-19-jim.shu@sifive.com \n    --to=jim.shu@sifive.com \n    --cc=alistair.francis@wdc.com \n    --cc=arikalo@gmail.com \n    --cc=atar4qemu@gmail.com \n    --cc=aurelien@aurel32.net \n    --cc=david@redhat.com \n    --cc=dbarboza@ventanamicro.com \n    --cc=deller@gmx.de \n    --cc=edgar.iglesias@gmail.com \n    --cc=eduardo@habkost.net \n    --cc=gaosong@loongson.cn \n    --cc=iii@linux.ibm.com \n    --cc=jcmvbkbc@gmail.com \n    --cc=jiaxun.yang@flygoat.com \n    --cc=kbastian@mail.uni-paderborn.de \n    --cc=laurent@vivier.eu \n    --cc=liwei1518@gmail.com \n    --cc=marcel.apfelbaum@gmail.com \n    --cc=mark.cave-ayland@ilande.co.uk \n    --cc=mrolnik@gmail.com \n    --cc=npiggin@gmail.com \n    --cc=palmer@dabbelt.com \n    --cc=pbonzini@redhat.com \n    --cc=peterx@redhat.com \n    --cc=philmd@linaro.org \n    --cc=qemu-devel@nongnu.org \n    --cc=qemu-ppc@nongnu.org \n    --cc=qemu-riscv@nongnu.org \n    --cc=qemu-s390x@nongnu.org \n    --cc=richard.henderson@linaro.org \n    --cc=shorne@gmail.com \n    --cc=thuth@redhat.com \n    --cc=wangyanan55@huawei.com \n    --cc=zhao1.liu@intel.com \n    --cc=zhiwei_liu@linux.alibaba.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:jim.shu@sifive.com?In-Reply-To=%3C20250417105249.18232-19-jim.shu@sifive.com%3E&amp;Cc=alistair.francis%40wdc.com%2Carikalo%40gmail.com%2Catar4qemu%40gmail.com%2Caurelien%40aurel32.net%2Cdavid%40redhat.com%2Cdbarboza%40ventanamicro.com%2Cdeller%40gmx.de%2Cedgar.iglesias%40gmail.com%2Ceduardo%40habkost.net%2Cgaosong%40loongson.cn%2Ciii%40linux.ibm.com%2Cjcmvbkbc%40gmail.com%2Cjiaxun.yang%40flygoat.com%2Ckbastian%40mail.uni-paderborn.de%2Claurent%40vivier.eu%2Cliwei1518%40gmail.com%2Cmarcel.apfelbaum%40gmail.com%2Cmark.cave-ayland%40ilande.co.uk%2Cmrolnik%40gmail.com%2Cnpiggin%40gmail.com%2Cpalmer%40dabbelt.com%2Cpbonzini%40redhat.com%2Cpeterx%40redhat.com%2Cphilmd%40linaro.org%2Cqemu-devel%40nongnu.org%2Cqemu-ppc%40nongnu.org%2Cqemu-riscv%40nongnu.org%2Cqemu-s390x%40nongnu.org%2Crichard.henderson%40linaro.org%2Cshorne%40gmail.com%2Cthuth%40redhat.com%2Cwangyanan55%40huawei.com%2Czhao1.liu%40intel.com%2Czhiwei_liu%40linux.alibaba.com&amp;Subject=Re%3A%20%5BPATCH%20v2%2018%2F18%5D%20hw%2Friscv%3A%20virt%3A%20Add%20WorldGuard%20support">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
