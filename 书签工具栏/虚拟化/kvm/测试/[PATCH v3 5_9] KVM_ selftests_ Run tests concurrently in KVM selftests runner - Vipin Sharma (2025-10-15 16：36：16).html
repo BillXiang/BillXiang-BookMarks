@@ -1,0 +1,686 @@
+<!-- Filename: 书签工具栏/虚拟化/kvm/测试/[PATCH v3 5_9] KVM_ selftests_ Run tests concurrently in KVM selftests runner - Vipin Sharma (2025-10-15 16：36：16).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/kvm/20250930163635.4035866-6-vipinsh@google.com/
+ Summary: 
+-->
+<html><head><title>[PATCH v3 5/9] KVM: selftests: Run tests concurrently in KVM selftests runner - Vipin Sharma</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20250930163657"><b>kvm.vger.kernel.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Vipin Sharma &lt;vipinsh@google.com&gt;
+To: <a href="../../kvm/?t=20250930163657">kvm@vger.kernel.org</a>, kvmarm@lists.linux.dev,
+	<a href="../../kvm-riscv/?t=20250930163657">kvm-riscv@lists.infradead.org</a>
+Cc: seanjc@google.com, pbonzini@redhat.com,
+	borntraeger@linux.ibm.com,  frankja@linux.ibm.com,
+	imbrenda@linux.ibm.com, anup@brainfault.org,
+	 atish.patra@linux.dev, zhaotianrui@loongson.cn,
+	maobibo@loongson.cn,  chenhuacai@kernel.org, maz@kernel.org,
+	oliver.upton@linux.dev,  ajones@ventanamicro.com,
+	Vipin Sharma &lt;vipinsh@google.com&gt;
+Subject: <a href="#r" id="t">[PATCH v3 5/9] KVM: selftests: Run tests concurrently in KVM selftests runner</a>
+Date: Tue, 30 Sep 2025 09:36:31 -0700	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20250930163635.4035866-6-vipinsh@google.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20250930163635.4035866-1-vipinsh@google.com/">20250930163635.4035866-1-vipinsh@google.com</a>&gt;
+
+Add a command line argument, --jobs, to specify how many tests can
+execute concurrently. Set default to 1.
+
+Example:
+  python3 runner --test-dirs tests -j 10
+
+Signed-off-by: Vipin Sharma &lt;vipinsh@google.com&gt;
+---
+ <a id="iZ31testing:selftests:kvm:runner:__main__.py" href="#Z31testing:selftests:kvm:runner:__main__.py">.../testing/selftests/kvm/runner/__main__.py</a>  |  6 ++++
+ <a id="iZ31selftests:kvm:runner:test_runner.py" href="#Z31selftests:kvm:runner:test_runner.py">.../selftests/kvm/runner/test_runner.py</a>       | 28 +++++++++++++------
+ 2 files <a href="#related">changed</a>, 26 insertions(+), 8 deletions(-)
+
+<span class="head"><a href="#iZ31testing:selftests:kvm:runner:__main__.py" id="Z31testing:selftests:kvm:runner:__main__.py">diff</a> --git a/tools/testing/selftests/kvm/runner/__main__.py b/tools/testing/selftests/kvm/runner/__main__.py
+index b27a41e86271..b98f72c9f7ee 100644
+--- a/tools/testing/selftests/kvm/runner/__main__.py
++++ b/tools/testing/selftests/kvm/runner/__main__.py
+</span><span class="hunk">@@ -54,6 +54,12 @@ def cli():
+</span>                         default=False,
+                         help="Appends timestamp to the output directory.")
+ 
+<span class="add">+    parser.add_argument("-j",
++                        "--jobs",
++                        default=1,
++                        type=int,
++                        help="Maximum number of tests that can be run concurrently. (Default: 1)")
++
+</span>     return parser.parse_args()
+ 
+ 
+<span class="head"><a href="#iZ31selftests:kvm:runner:test_runner.py" id="Z31selftests:kvm:runner:test_runner.py">diff</a> --git a/tools/testing/selftests/kvm/runner/test_runner.py b/tools/testing/selftests/kvm/runner/test_runner.py
+index b9101f0e0432..92eec18fe5c6 100644
+--- a/tools/testing/selftests/kvm/runner/test_runner.py
++++ b/tools/testing/selftests/kvm/runner/test_runner.py
+</span><span class="hunk">@@ -4,6 +4,8 @@
+</span> # Author: vipinsh@google.com (Vipin Sharma)
+ 
+ import logging
+<span class="add">+import concurrent.futures
++
+</span> from selftest import Selftest
+ from selftest import SelftestStatus
+ 
+<span class="hunk">@@ -14,11 +16,16 @@ class TestRunner:
+</span>     def __init__(self, testcases, args):
+         self.tests = []
+         self.output_dir = args.output
+<span class="add">+        self.jobs = args.jobs
+</span> 
+         for testcase in testcases:
+             self.tests.append(Selftest(testcase, args.path, args.timeout,
+                                        args.output))
+ 
+<span class="add">+    def _run_test(self, test):
++        test.run()
++        return test
++
+</span>     def _log_result(self, test_result):
+         logger.info("*** stdout ***
+" + test_result.stdout)
+         logger.info("*** stderr ***
+" + test_result.stderr)
+<span class="hunk">@@ -28,12 +35,17 @@ class TestRunner:
+</span>     def start(self):
+         ret = 0
+ 
+<span class="del">-        for test in self.tests:
+-            test.run()
+-            self._log_result(test)
+-
+-            if (test.status not in [SelftestStatus.PASSED,
+-                                    SelftestStatus.NO_RUN,
+-                                    SelftestStatus.SKIPPED]):
+-                ret = 1
+</span><span class="add">+        with concurrent.futures.ProcessPoolExecutor(max_workers=self.jobs) as executor:
++            all_futures = []
++            for test in self.tests:
++                future = executor.submit(self._run_test, test)
++                all_futures.append(future)
++
++            for future in concurrent.futures.as_completed(all_futures):
++                test_result = future.result()
++                self._log_result(test_result)
++                if (test_result.status not in [SelftestStatus.PASSED,
++                                               SelftestStatus.NO_RUN,
++                                               SelftestStatus.SKIPPED]):
++                    ret = 1
+</span>         return ret
+-- 
+2.51.0.618.g983fd99d29-goog
+
+</pre><hr><pre><a href="../20250930163635.4035866-7-vipinsh@google.com/" rel="next">next</a> <a href="../20250930163635.4035866-5-vipinsh@google.com/" rel="prev">prev</a> <a href="../20250930163635.4035866-1-vipinsh@google.com/">parent</a> <a href="#R">reply</a>	other threads:[<a href="../?t=20250930163657">~2025-09-30 16:36 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>20+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2025-09-30 16:36 <a href="../20250930163635.4035866-1-vipinsh@google.com/">[PATCH v3 0/9] KVM Selftest Runner</a> Vipin Sharma
+2025-09-30 16:36 ` <a href="../20250930163635.4035866-2-vipinsh@google.com/">[PATCH v3 1/9] KVM: selftest: Create KVM selftest runner</a> Vipin Sharma
+2025-09-30 22:23   ` <a href="../20250930222348.GA16152.vipinsh@google.com/">Vipin Sharma</a>
+2025-10-10  9:47   ` <a href="../DDEJP752Q32A.1YMQI5QN4IP0A@google.com/">Brendan Jackman</a>
+2025-09-30 16:36 ` <a href="../20250930163635.4035866-3-vipinsh@google.com/">[PATCH v3 2/9] KVM: selftests: Provide executables path option to the</a> " Vipin Sharma
+2025-09-30 16:36 ` <a href="../20250930163635.4035866-4-vipinsh@google.com/">[PATCH v3 3/9] KVM: selftests: Add timeout option in selftests runner</a> Vipin Sharma
+2025-09-30 16:36 ` <a href="../20250930163635.4035866-5-vipinsh@google.com/">[PATCH v3 4/9] KVM: selftests: Add option to save selftest runner output to a directory</a> Vipin Sharma
+<b>2025-09-30 16:36 ` <a id="r" href="#t">Vipin Sharma [this message]</a></b>
+2025-09-30 16:36 ` <a href="../20250930163635.4035866-7-vipinsh@google.com/">[PATCH v3 6/9] KVM: selftests: Add various print flags to KVM selftest runner</a> Vipin Sharma
+2025-09-30 16:36 ` <a href="../20250930163635.4035866-8-vipinsh@google.com/">[PATCH v3 7/9] KVM: selftests: Print sticky KVM selftests runner status at bottom</a> Vipin Sharma
+2025-09-30 16:36 ` <a href="../20250930163635.4035866-9-vipinsh@google.com/">[PATCH v3 8/9] KVM: selftests: Add rule to generate default tests for KVM selftests runner</a> Vipin Sharma
+2025-09-30 16:36 ` <a href="../20250930163635.4035866-10-vipinsh@google.com/">[PATCH v3 9/9] KVM: selftests: Provide README.rst</a> " Vipin Sharma
+2025-10-01  8:44   ` <a href="../86qzvnypsp.wl-maz@kernel.org/">Marc Zyngier</a>
+2025-10-01 17:32     ` <a href="../20251001173225.GA420255.vipinsh@google.com/">Vipin Sharma</a>
+2025-10-02 14:41       ` <a href="../86a529z7qh.wl-maz@kernel.org/">Marc Zyngier</a>
+2025-10-03  1:02         ` <a href="../aN8gkEMHuvIVPcCt@google.com/">Sean Christopherson</a>
+2025-10-03  6:39         ` <a href="../20251003063931.GA1130776.vipinsh@google.com/">Vipin Sharma</a>
+2025-10-10  9:58   ` <a href="../DDEJY5ON407O.2O7CMOY9311NV@google.com/">Brendan Jackman</a>
+2025-10-10 18:14     ` <a href="../aOlM7ngJJsEW-5sV@google.com/">Sean Christopherson</a>
+2025-10-10 19:38       ` <a href="../CAHVum0e9fFfivmDg2N9VvWQfPdc4DfV0_qEhrRaFQXFjhr8LRA@mail.gmail.com/">Vipin Sharma</a>
+</pre><form id="related" action="../"><pre>find likely ancestor, descendant, or conflicting patches for <a href="#t">this message</a>:
+<textarea name="q" cols="72" rows="4">( dfblob:b27a41e8627 dfblob:b98f72c9f7e dfblob:b9101f0e043
+dfblob:92eec18fe5c )
+ OR (
+bs:"[PATCH v3 5/9] KVM: selftests: Run tests concurrently in KVM selftests runner" )</textarea>
+<input type="submit" value="search">	(<a href="../_/text/help/#search">help</a>)</pre></form>
+<hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20250930163635.4035866-6-vipinsh@google.com \n    --to=vipinsh@google.com \n    --cc=ajones@ventanamicro.com \n    --cc=anup@brainfault.org \n    --cc=atish.patra@linux.dev \n    --cc=borntraeger@linux.ibm.com \n    --cc=chenhuacai@kernel.org \n    --cc=frankja@linux.ibm.com \n    --cc=imbrenda@linux.ibm.com \n    --cc=kvm-riscv@lists.infradead.org \n    --cc=kvm@vger.kernel.org \n    --cc=kvmarm@lists.linux.dev \n    --cc=maobibo@loongson.cn \n    --cc=maz@kernel.org \n    --cc=oliver.upton@linux.dev \n    --cc=pbonzini@redhat.com \n    --cc=seanjc@google.com \n    --cc=zhaotianrui@loongson.cn \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:vipinsh@google.com?In-Reply-To=%3C20250930163635.4035866-6-vipinsh@google.com%3E&amp;Cc=ajones%40ventanamicro.com%2Canup%40brainfault.org%2Catish.patra%40linux.dev%2Cborntraeger%40linux.ibm.com%2Cchenhuacai%40kernel.org%2Cfrankja%40linux.ibm.com%2Cimbrenda%40linux.ibm.com%2Ckvm-riscv%40lists.infradead.org%2Ckvm%40vger.kernel.org%2Ckvmarm%40lists.linux.dev%2Cmaobibo%40loongson.cn%2Cmaz%40kernel.org%2Coliver.upton%40linux.dev%2Cpbonzini%40redhat.com%2Cseanjc%40google.com%2Czhaotianrui%40loongson.cn&amp;Subject=Re%3A%20%5BPATCH%20v3%205%2F9%5D%20KVM%3A%20selftests%3A%20Run%20tests%20concurrently%20in%20KVM%20selftests%20runner">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
