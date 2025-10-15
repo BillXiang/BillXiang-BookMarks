@@ -1,0 +1,664 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/中断/[RFC PATCH 0_6] iommu_riscv_ Add MRIF support - fangyu.yu (2025-10-15 16：41：19).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/linux-riscv/20250811061104.10326-1-fangyu.yu@linux.alibaba.com/
+ Summary: 
+-->
+<html><head><title>[RFC PATCH 0/6] iommu/riscv: Add MRIF support - fangyu.yu</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20250811061130"><b>linux-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: fangyu.yu@linux.alibaba.com
+To: anup@brainfault.org, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr,
+	atishp@atishpatra.org, tjeznach@rivosinc.com, joro@8bytes.org,
+	will@kernel.org, robin.murphy@arm.com, sunilvl@ventanamicro.com,
+	rafael.j.wysocki@intel.com, tglx@linutronix.de,
+	ajones@ventanamicro.com
+Cc: guoren@linux.alibaba.com, guoren@kernel.org, <a href="../../kvm/?t=20250811061130">kvm@vger.kernel.org</a>,
+	<a href="../../kvm-riscv/?t=20250811061130">kvm-riscv@lists.infradead.org</a>, <a href="../../linux-riscv/?t=20250811061130">linux-riscv@lists.infradead.org</a>,
+	<a href="../../lkml/?t=20250811061130">linux-kernel@vger.kernel.org</a>, iommu@lists.linux.dev,
+	Fangyu Yu &lt;fangyu.yu@linux.alibaba.com&gt;
+Subject: <a href="#r" id="t">[RFC PATCH 0/6] iommu/riscv: Add MRIF support</a>
+Date: Mon, 11 Aug 2025 14:10:58 +0800	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20250811061104.10326-1-fangyu.yu@linux.alibaba.com&gt; (<a href="raw">raw</a>)
+
+From: Fangyu Yu &lt;fangyu.yu@linux.alibaba.com&gt;
+
+According to the RISC-V IOMMU Spec, an IOMMU may optionally support
+memory-resident interrupt files  (MRIFs). When the guest  interrupt 
+files are used up, an MRIF can record an incoming MSI.
+
+At present, the hypervisor has allocated an MRIF for each IMSIC, we
+only need to configure the PPN of the MRIF into the MSI PTE of  the
+IOMMU in MRIF mode.At the same time, we also need to configure NPPN
+and NID for notice MSIs, in these patches,we use the host interrupt
+(allocated  via  VFIO) as the notice MSIs, so that we don't need to 
+allocate a new MSI interrupt,  and we can easily redirect the guest
+interrupt back to the host interrupt when MRIF is not  supported on
+the IOMMU hardware.
+
+This RFC series are based on [1] by Andrew Jones.
+
+Self Test:
+-----------
+1. Key parameters for starting host QEMU:
+./qemu-system-riscv64&nbsp; \n-M virt,aia=aplic-imsic,aia-guests=1 -m 8G -smp 2  \n-nographic -device riscv-iommu-pci,vendor-id=0x1efd,device-id=0x0008 \n-netdev user,id=net1,hostfwd=tcp::2323-:22 \n-device e1000e,netdev=net1 \n-drive file=./nvme_disk.qcow2,if=none,id=nvm \n-device nvme,serial=deadbeef,drive=nvm \n...
+
+2. Steps to start a virtual machine：
+# lspci
+00:00.0 Host bridge: Red Hat, Inc. QEMU PCIe Host bridge
+00:01.0 IOMMU: Device 1efd:0008 (rev 01)
+00:02.0 Ethernet controller: Intel Corporation 82574L Gigabit Network Connection
+00:03.0 Non-Volatile memory controller: Red Hat, Inc. QEMU NVM Express Controller (rev 02)
+00:04.0 Unclassified device [0002]: Red Hat, Inc. Virtio filesystem
+# echo 0000:00:02.0 &gt; /sys/bus/pci/drivers/e1000e/unbind
+# echo 0000:00:03.0 &gt; /sys/bus/pci/drivers/nvme/unbind
+# echo 8086 10d3 &gt; /sys/bus/pci/drivers/vfio-pci/new_id
+# echo 1b36 0010 &gt; /sys/bus/pci/drivers/vfio-pci/new_id
+
+qemu-system-riscv64 -M virt,aia=aplic-imsic --enable-kvm -m 2G -smp 4 \n-device vfio-pci,host=0000:00:02.0 \n-device vfio-pci,host=0000:00:03.0 \n...
+
+3. Test within guest os:
+root@qemu:/mnt/nvme# lspci
+00:00.0 Host bridge: Red Hat, Inc. QEMU PCIe Host bridge
+00:01.0 Ethernet controller: Intel Corporation 82574L Gigabit Network Connection
+00:02.0 Non-Volatile memory controller: Red Hat, Inc. QEMU NVM Express Controller (rev 02)
+root@qemu:~# mount /dev/nvme0n1p1 /mnt/nvme/
+root@qemu:~# cd /mnt/nvme/
+root@qemu:/mnt/nvme# ping 11.122.129.243 -i 0.1 | tee c.txt
+64 bytes from 11.122.129.243: icmp_seq=18533 ttl=255 time=1.18 ms
+64 bytes from 11.122.129.243: icmp_seq=18534 ttl=255 time=1.60 ms
+^C
+--- 11.122.129.243 ping statistics ---
+18534 packets transmitted, 18534 received, 0% packet loss, time 1934380ms
+rtt min/avg/max/mdev = 0.437/11.986/3451.393/118.494 ms, pipe 34
+
+root@qemu:/mnt/nvme# cat /proc/interrupts
+	CPU0       CPU1       CPU2       CPU3
+10:      49856     218638     192244      58721 RISC-V INTC   5 Edge      riscv-timer
+12:          0     105519          0          0 PCI-MSIX-0000:00:01.0   0 Edge      eth0-rx-0
+13:          0          0      97134          0 PCI-MSIX-0000:00:01.0   1 Edge      eth0-tx-0
+14:          0          0          0          2 PCI-MSIX-0000:00:01.0   2 Edge      eth0
+16:          0      42752          0          0 PCI-MSIX-0000:00:02.0   0 Edge      nvme0q0
+17:        376          0          0          0 PCI-MSIX-0000:00:02.0   1 Edge      nvme0q1
+18:          0       1308          0          0 PCI-MSIX-0000:00:02.0   2 Edge      nvme0q2
+19:          0          0      49757          0 PCI-MSIX-0000:00:02.0   3 Edge      nvme0q3
+20:          0          0          0       1282 PCI-MSIX-0000:00:02.0   4 Edge      nvme0q4
+
+[1] <a href="https://github.com/jones-drew/linux/tree/riscv/iommu-irqbypass-rfc-v2-rc1">https://github.com/jones-drew/linux/tree/riscv/iommu-irqbypass-rfc-v2-rc1</a>
+
+Fangyu Yu (6):
+  RISC-V: Add more elements to irqbypass vcpu_info
+  RISC-V: KVM: Transfer the physical address of MRIF to iommu-ir
+  RISC-V: KVM: Add a xarray to record host irq msg
+  iommu/riscv: Add irq_mask and irq_ack configure for iommu-ir
+  iommu/riscv: Add MRIF mode support
+  RISC-V: KVM: Check the MRIF in notice MSI irq handler
+
+ arch/riscv/include/asm/irq.h     |   3 +
+ arch/riscv/kvm/aia_imsic.c       | 119 ++++++++++++++++++++++++++++---
+ drivers/iommu/riscv/iommu-bits.h |   6 ++
+ drivers/iommu/riscv/iommu-ir.c   |  40 +++++++++--
+ 4 files changed, 156 insertions(+), 12 deletions(-)
+
+-- 
+2.49.0
+
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre><a href="../20250811061104.10326-2-fangyu.yu@linux.alibaba.com/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20250811061130">~2025-08-11  6:11 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>7+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2025-08-11  6:10 <a id="r" href="#t">fangyu.yu [this message]</a></b>
+2025-08-11  6:10 ` <a href="../20250811061104.10326-2-fangyu.yu@linux.alibaba.com/">[RFC PATCH 1/6] RISC-V: Add more elements to irqbypass vcpu_info</a> fangyu.yu
+2025-08-11  6:11 ` <a href="../20250811061104.10326-3-fangyu.yu@linux.alibaba.com/">[RFC PATCH 2/6] RISC-V: KVM: Transfer the physical address of MRIF to iommu-ir</a> fangyu.yu
+2025-08-11  6:11 ` <a href="../20250811061104.10326-4-fangyu.yu@linux.alibaba.com/">[RFC PATCH 3/6] RISC-V: KVM: Add a xarray to record host irq msg</a> fangyu.yu
+2025-08-11  6:11 ` <a href="../20250811061104.10326-5-fangyu.yu@linux.alibaba.com/">[RFC PATCH 4/6] iommu/riscv: Add irq_mask and irq_ack configure for iommu-ir</a> fangyu.yu
+2025-08-11  6:11 ` <a href="../20250811061104.10326-6-fangyu.yu@linux.alibaba.com/">[RFC PATCH 5/6] iommu/riscv: Add MRIF mode support</a> fangyu.yu
+2025-08-11  6:11 ` <a href="../20250811061104.10326-7-fangyu.yu@linux.alibaba.com/">[RFC PATCH 6/6] RISC-V: KVM: Check the MRIF in notice MSI irq handler</a> fangyu.yu
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20250811061104.10326-1-fangyu.yu@linux.alibaba.com \n    --to=fangyu.yu@linux.alibaba.com \n    --cc=ajones@ventanamicro.com \n    --cc=alex@ghiti.fr \n    --cc=anup@brainfault.org \n    --cc=aou@eecs.berkeley.edu \n    --cc=atishp@atishpatra.org \n    --cc=guoren@kernel.org \n    --cc=guoren@linux.alibaba.com \n    --cc=iommu@lists.linux.dev \n    --cc=joro@8bytes.org \n    --cc=kvm-riscv@lists.infradead.org \n    --cc=kvm@vger.kernel.org \n    --cc=linux-kernel@vger.kernel.org \n    --cc=linux-riscv@lists.infradead.org \n    --cc=palmer@dabbelt.com \n    --cc=paul.walmsley@sifive.com \n    --cc=rafael.j.wysocki@intel.com \n    --cc=robin.murphy@arm.com \n    --cc=sunilvl@ventanamicro.com \n    --cc=tglx@linutronix.de \n    --cc=tjeznach@rivosinc.com \n    --cc=will@kernel.org \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:fangyu.yu@linux.alibaba.com?In-Reply-To=%3C20250811061104.10326-1-fangyu.yu@linux.alibaba.com%3E&amp;Cc=ajones%40ventanamicro.com%2Calex%40ghiti.fr%2Canup%40brainfault.org%2Caou%40eecs.berkeley.edu%2Catishp%40atishpatra.org%2Cguoren%40kernel.org%2Cguoren%40linux.alibaba.com%2Ciommu%40lists.linux.dev%2Cjoro%408bytes.org%2Ckvm-riscv%40lists.infradead.org%2Ckvm%40vger.kernel.org%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cpalmer%40dabbelt.com%2Cpaul.walmsley%40sifive.com%2Crafael.j.wysocki%40intel.com%2Crobin.murphy%40arm.com%2Csunilvl%40ventanamicro.com%2Ctglx%40linutronix.de%2Ctjeznach%40rivosinc.com%2Cwill%40kernel.org&amp;Subject=Re%3A%20%5BRFC%20PATCH%200%2F6%5D%20iommu%2Friscv%3A%20Add%20MRIF%20support">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
