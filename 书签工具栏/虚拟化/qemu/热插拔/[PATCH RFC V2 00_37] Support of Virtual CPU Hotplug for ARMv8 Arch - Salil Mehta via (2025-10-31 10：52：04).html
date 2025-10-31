@@ -1,0 +1,1307 @@
+<!-- Filename: 书签工具栏/虚拟化/qemu/热插拔/[PATCH RFC V2 00_37] Support of Virtual CPU Hotplug for ARMv8 Arch - Salil Mehta via (2025-10-31 10：52：04).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-devel/20230926100436.28284-1-salil.mehta@huawei.com/
+ Summary: 
+-->
+<html><head><title>[PATCH RFC V2 00/37] Support of Virtual CPU Hotplug for ARMv8 Arch - Salil Mehta via</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20230926100715"><b>qemu-devel.nongnu.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Salil Mehta via &lt;<a href="../../qemu-devel/?t=20230926100715">qemu-devel@nongnu.org</a>&gt;
+To: &lt;<a href="../../qemu-devel/?t=20230926100715">qemu-devel@nongnu.org</a>&gt;, &lt;<a href="../../qemu-arm/?t=20230926100715">qemu-arm@nongnu.org</a>&gt;
+Cc: &lt;salil.mehta@huawei.com&gt;, &lt;maz@kernel.org&gt;,
+	&lt;jean-philippe@linaro.org&gt;, &lt;jonathan.cameron@huawei.com&gt;,
+	&lt;lpieralisi@kernel.org&gt;, &lt;peter.maydell@linaro.org&gt;,
+	&lt;richard.henderson@linaro.org&gt;, &lt;imammedo@redhat.com&gt;,
+	&lt;andrew.jones@linux.dev&gt;, &lt;david@redhat.com&gt;, &lt;philmd@linaro.org&gt;,
+	&lt;eric.auger@redhat.com&gt;, &lt;will@kernel.org&gt;, &lt;ardb@kernel.org&gt;,
+	&lt;oliver.upton@linux.dev&gt;, &lt;pbonzini@redhat.com&gt;, &lt;mst@redhat.com&gt;,
+	&lt;gshan@redhat.com&gt;, &lt;rafael@kernel.org&gt;,
+	&lt;borntraeger@linux.ibm.com&gt;, &lt;alex.bennee@linaro.org&gt;,
+	&lt;linux@armlinux.org.uk&gt;, &lt;darren@os.amperecomputing.com&gt;,
+	&lt;ilkka@os.amperecomputing.com&gt;, &lt;vishnu@os.amperecomputing.com&gt;,
+	&lt;karl.heubaum@oracle.com&gt;, &lt;miguel.luis@oracle.com&gt;,
+	&lt;salil.mehta@opnsrc.net&gt;, &lt;zhukeqian1@huawei.com&gt;,
+	&lt;wangxiongfeng2@huawei.com&gt;, &lt;wangyanan55@huawei.com&gt;,
+	&lt;jiakernel2@gmail.com&gt;, &lt;maobibo@loongson.cn&gt;,
+	&lt;lixianglai@loongson.cn&gt;
+Subject: <a href="#r" id="t">[PATCH RFC V2 00/37] Support of Virtual CPU Hotplug for ARMv8 Arch</a>
+Date: Tue, 26 Sep 2023 11:03:59 +0100	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20230926100436.28284-1-salil.mehta@huawei.com&gt; (<a href="raw">raw</a>)
+
+[ *REPEAT: Sent patches got held at internal server yesterday* ]
+
+PROLOGUE
+========
+
+To assist in review and set the right expectations from this RFC, please first
+read below sections *APPENDED AT THE END* of this cover letter,
+
+1. Important *DISCLAIMER* [Section (X)]
+2. Work presented at KVMForum Conference (slides available) [Section (V)F]
+3. Organization of patches [Section (XI)]
+4. References [Section (XII)]
+5. Detailed TODO list of the leftover work or work-in-progress [Section (IX)]
+
+NOTE: There has been an interest shown by other organizations in adapting
+this series for their architecture. I am planning to split this RFC into
+architecture *agnostic* and *specific* patch-sets in subsequent releases. ARM
+specific patch-set will continue as RFC V3 and architecture agnostic patch-set
+will be floated without RFC tag and can be consumed in this Qemu cycle if
+MAINTAINERs ack it.
+
+[Please check section (XI)B for details of architecture agnostic patches]
+
+
+SECTIONS [I - XIII] are as follows :
+
+(I) Key Changes (RFC V1 -&gt; RFC V2)
+    ==================================
+
+    RFC V1: <a href="https://lore.kernel.org/qemu-devel/20200613213629.21984-1-salil.mehta@huawei.com/">https://lore.kernel.org/qemu-devel/20200613213629.21984-1-salil.mehta@huawei.com/</a>
+
+1. ACPI MADT Table GIC CPU Interface can now be presented [6] as ACPI
+   *online-capable* or *enabled* to the Guest OS at the boot time. This means
+   associated CPUs can have ACPI _STA as *enabled* or *disabled* even after boot
+   See, UEFI ACPI 6.5 Spec, Section 05, Table 5.37 GICC CPU Interface Flags[20]
+2. SMCC/HVC Hypercall exit handling in userspace/Qemu for PSCI CPU_{ON,OFF}
+   request. This is required to {dis}allow online'ing a vCPU.
+3. Always presenting unplugged vCPUs in CPUs ACPI AML code as ACPI _STA.PRESENT 
+   to the Guest OS. Toggling ACPI _STA.Enabled to give an effect of the
+   hot{un}plug.
+4. Live Migration works (some issues are still there)
+5. TCG/HVF/qtest does not support Hotplug and falls back to default.
+6. Code for TCG support do exists in this release (it is a work-in-progress)
+7. ACPI _OSC method can now be used by OSPM to negotiate Qemu VM platform
+   hotplug capability (_OSC Query support still pending)
+8. Misc. Bug fixes
+
+(II) Summary
+     =======
+
+This patch-set introduces the virtual CPU hotplug support for ARMv8 architecture
+in QEMU. Idea is to be able to hotplug and hot-unplug the vCPUs while guest VM
+is running and no reboot is required. This does *not* makes any assumption of
+the physical CPU hotplug availability within the host system but rather tries to
+solve the problem at virtualizer/QEMU layer. Introduces ACPI CPU hotplug hooks
+and event handling to interface with the guest kernel, code to initialize, plug
+and unplug CPUs. No changes are required within the host kernel/KVM except the
+support of hypercall exit handling in the user-space/Qemu which has recently
+been added to the kernel. Its corresponding Guest kernel changes have been
+posted on the mailing-list [3] [4] by James Morse.
+
+(III) Motivation
+      ==========
+
+This allows scaling the guest VM compute capacity on-demand which would be
+useful for the following example scenarios,
+
+1. Vertical Pod Autoscaling [9][10] in the cloud: Part of the orchestration
+   framework which could adjust resource requests (CPU and Mem requests) for
+   the containers in a pod, based on usage.
+2. Pay-as-you-grow Business Model: Infrastructure provider could allocate and
+   restrict the total number of compute resources available to the guest VM
+   according to the SLA (Service Level Agreement). VM owner could request for
+   more compute to be hot-plugged for some cost.
+
+For example, Kata Container VM starts with a minimum amount of resources (i.e.
+hotplug everything approach). why?
+
+1. Allowing faster *boot time* and
+2. Reduction in *memory footprint*
+
+Kata Container VM can boot with just 1 vCPU and then later more vCPUs can be
+hot-plugged as per requirement.
+
+(IV) Terminology
+     ===========
+
+(*) Posssible CPUs: Total vCPUs which could ever exist in VM. This includes
+                    any cold booted CPUs plus any CPUs which could be later
+                    hot-plugged.
+                    - Qemu parameter(-smp maxcpus=N)
+(*) Present CPUs:   Possible CPUs which are ACPI 'present'. These might or might
+                    not be ACPI 'enabled'. 
+                    - Present vCPUs = Possible vCPUs (Always on ARM Arch)
+(*) Enabled CPUs:   Possible CPUs which are ACPI ‘present’ and 'enabled' and can
+                    now be ‘onlined’ (PSCI) for use by Guest Kernel. All cold
+                    booted vCPUs are ACPI 'enabled' at boot. Later, using
+                    device_add more vCPUs can be hotplugged and be made ACPI
+                    'enabled.
+                    - Qemu parameter(-smp cpus=N). Can be used to specify some
+		      cold booted vCPUs during VM init. Some can be added using
+		      '-device' option.
+
+(V) Constraints Due To ARMv8 CPU Architecture [+] Other Impediments
+    ===============================================================
+
+A. Physical Limitation to Support CPU Hotplug: (Architectural Constraint)
+   1. ARMv8 CPU architecture does not support the concept of the physical CPU
+      hotplug. 
+      a. There are many per-CPU components like PMU, SVE, MTE, Arch timers etc.
+         whose behaviour need to be clearly defined when CPU is hot(un)plugged.
+         There is no specification for this.
+
+   2. Other ARM components like GIC etc. have not been designed to realize
+      physical CPU hotplug capability as of now. For example,
+      a. Every physical CPU has a unique GICC (GIC CPU Interface) by construct.
+         Architecture does not specifies what CPU hot(un)plug would mean in
+         context to any of these.
+      b. CPUs/GICC are physically connected to unique GICR (GIC Redistributor).
+         GIC Redistributors are always part of always-on power domain. Hence,
+         cannot be powered-off as per specification.
+
+B. Impediments in Firmware/ACPI (Architectural Constraint)
+
+   1. Firmware has to expose GICC, GICR and other per-CPU features like PMU,
+      SVE, MTE, Arch Timers etc. to the OS. Due to architectural constraint
+      stated in above section A1(a),  all interrupt controller structures of
+      MADT describing GIC CPU Interfaces and the GIC Redistibutors MUST be
+      presented by firmware to the OSPM during the boot time. 
+   2. Architectures that support CPU hotplug can evaluate ACPI _MAT method to
+      get this kind of information from the firmware even after boot and the
+      OSPM has capability to process these. ARM kernel uses information in MADT
+      interrupt controller structures to identify number of Present CPUs during
+      boot and hence does not allow to change these after boot. Number of
+      present CPUs cannot be changed. It is an architectural constraint!
+
+C. Impediments in KVM to Support Virtual CPU Hotplug (Architectural Constraint)
+
+   1. KVM VGIC:
+       a. Sizing of various VGIC resources like memory regions etc. related to
+          the redistributor happens only once and is fixed at the VM init time
+          and cannot be changed later after initialization has happened.
+          KVM statically configures these resources based on the number of vCPUs
+          and the number/size of redistributor ranges.
+       b. Association between vCPU and its VGIC redistributor is fixed at the
+          VM init time within the KVM i.e. when redistributor iodevs gets
+          registered. VGIC does not allows to setup/change this association
+          after VM initialization has happened. Physically, every CPU/GICC is
+          uniquely connected with its redistributor and there is no
+          architectural way to set this up.
+   2. KVM vCPUs:
+       a. Lack of specification means destruction of KVM vCPUs does not exist as
+          there is no reference to tell what to do with other per-vCPU
+          components like redistributors, arch timer etc.
+       b. Infact, KVM does not implements destruction of vCPUs for any
+          architecture. This is independent of the fact whether architecture
+          actually supports CPU Hotplug feature. For example, even for x86 KVM
+          does not implements destruction of vCPUs.
+
+D. Impediments in Qemu to Support Virtual CPU Hotplug (KVM Constraints-&gt;Arch)
+
+   1. Qemu CPU Objects MUST be created to initialize all the Host KVM vCPUs to
+      overcome the KVM constraint. KVM vCPUs are created, initialized when Qemu
+      CPU Objects are realized. But keepinsg the QOM CPU objects realized for
+      'yet-to-be-plugged' vCPUs can create problems when these new vCPUs shall
+      be plugged using device_add and a new QOM CPU object shall be created.
+   2. GICV3State and GICV3CPUState objects MUST be sized over *possible vCPUs*
+      during VM init time while QOM GICV3 Object is realized. This is because
+      KVM VGIC can only be initialized once during init time. But every
+      GICV3CPUState has an associated QOM CPU Object. Later might corresponds to
+      vCPU which are 'yet-to-be-plugged'(unplugged at init).
+   3. How should new QOM CPU objects be connected back to the GICV3CPUState
+      objects and disconnected from it in case CPU is being hot(un)plugged?
+   4. How should 'unplugged' or 'yet-to-be-plugged' vCPUs be represented in the
+      QOM for which KVM vCPU already exists? For example, whether to keep,
+       a. No QOM CPU objects Or
+       b. Unrealized CPU Objects
+   5. How should vCPU state be exposed via ACPI to the Guest? Especially for
+      the unplugged/yet-to-be-plugged vCPUs whose CPU objects might not exists
+      within the QOM but the Guest always expects all possible vCPUs to be
+      identified as ACPI *present* during boot.
+   6. How should Qemu expose GIC CPU interfaces for the unplugged or
+      yet-to-beplugged vCPUs using ACPI MADT Table to the Guest?
+
+E. Summary of Approach ([+] Workarounds to problems in sections A, B, C &amp; D)
+
+   1. At VM Init, pre-create all the possible vCPUs in the Host KVM i.e. even
+      for the vCPUs which are yet-to-be-plugged in Qemu but keep them in the
+      powered-off state.
+   2. After the KVM vCPUs have been initialized in the Host, the KVM vCPU
+      objects corresponding to the unplugged/yet-to-be-plugged vCPUs are parked
+      at the existing per-VM "kvm_parked_vcpus" list in Qemu. (similar to x86)
+   3. GICV3State and GICV3CPUState objects are sized over possible vCPUs during
+      VM init time i.e. when Qemu GIC is realized. This in turn sizes KVM VGIC
+      resources like memory regions etc. related to the redistributors with the
+      number of possible KVM vCPUs. This never changes after VM has initialized.
+   4. Qemu CPU objects corresponding to unplugged/yet-to-be-plugged vCPUs are
+      released post Host KVM CPU and GIC/VGIC initialization.
+   5. Build ACPI MADT Table with below updates 
+      a. Number of GIC CPU interface entries (=possible vCPUs)
+      b. Present Boot vCPU as MADT.GICC.Enabled=1 (Not hot[un]pluggable) 
+      c. Present hot(un)pluggable vCPUs as MADT.GICC.online-capable=1  
+         - MADT.GICC.Enabled=0 (Mutually exclusive) [6][7]
+	 - vCPU can be ACPI enabled+onlined after Guest boots (Firmware Policy) 
+	 - Some issues with above (details in later sections)
+   6. Expose below ACPI Status to Guest kernel
+      a. Always _STA.Present=1 (all possible vCPUs)
+      b. _STA.Enabled=1 (plugged vCPUs)
+      c. _STA.Enabled=0 (unplugged vCPUs)
+   7. vCPU hotplug *realizes* new QOM CPU object. Following happens,
+      a. Realizes, initializes QOM CPU Object &amp; spawns Qemu vCPU thread
+      b. Unparks the existing KVM vCPU ("kvm_parked_vcpus" list)
+         - Attaches to QOM CPU object.
+      c. Reinitializes KVM vCPU in the Host
+         - Resets the core and sys regs, sets defaults etc.
+      d. Runs KVM vCPU (created with "start-powered-off")
+	 - vCPU thread sleeps (waits for vCPU reset via PSCI) 
+      e. Updates Qemu GIC
+         - Wires back IRQs related to this vCPU.
+         - GICV3CPUState association with QOM CPU Object.
+      f. Updates [6] ACPI _STA.Enabled=1
+      g. Notifies Guest about new vCPU (via ACPI GED interface)
+	 - Guest checks _STA.Enabled=1
+	 - Guest adds processor (registers CPU with LDM) [3]
+      h. Plugs the QOM CPU object in the slot.
+         - slot-number = cpu-index{socket,cluster,core,thread}
+      i. Guest online's vCPU (CPU_ON PSCI call over HVC/SMC)
+         - KVM exits HVC/SMC Hypercall [5] to Qemu (Policy Check).
+         - Qemu powers-on KVM vCPU in the Host
+   8. vCPU hot-unplug *unrealizes* QOM CPU Object. Following happens,
+      a. Notifies Guest (via ACPI GED interface) vCPU hot-unplug event
+         - Guest offline's vCPU (CPU_OFF PSCI call over HVC/SMC) 
+      b. KVM exits HVC/SMC Hypercall [5] to Qemu (Policy Check).
+         - Qemu powers-off the KVM vCPU in the Host
+      c Guest signals *Eject* vCPU to Qemu
+      d. Qemu updates [6] ACPI _STA.Enabled=0
+      e. Updates GIC
+         - Un-wires IRQs related to this vCPU
+         - GICV3CPUState association with new QOM CPU Object is updated.
+      f. Unplugs the vCPU
+	 - Removes from slot
+         - Parks KVM vCPU ("kvm_parked_vcpus" list)
+         - Unrealizes QOM CPU Object &amp; joins back Qemu vCPU thread
+	 - Destroys QOM CPU object 
+      g. Guest checks ACPI _STA.Enabled=0
+         - Removes processor (unregisters CPU with LDM) [3]
+
+F. Work Presented at KVM Forum Conferences:
+   Details of above work has been presented at KVMForum2020 and KVMForum2023
+   conferences. Slides are available at below links,
+   a. KVMForum 2023
+      - Challenges Revisited in Supporting Virt CPU Hotplug on architectures that don't Support CPU Hotplug (like ARM64)
+        <a href="https://kvm-forum.qemu.org/2023/talk/9SMPDQ/">https://kvm-forum.qemu.org/2023/talk/9SMPDQ/</a>
+   b. KVMForum 2020
+      - Challenges in Supporting Virtual CPU Hotplug on SoC Based Systems (like ARM64) - Salil Mehta, Huawei
+        <a href="https://sched.co/eE4m">https://sched.co/eE4m</a>
+
+(VI) Commands Used
+     =============
+
+    A. Qemu launch commands to init the machine
+
+    $ qemu-system-aarch64 --enable-kvm -machine virt,gic-version=3 \n    -cpu host -smp cpus=4,maxcpus=6 \n    -m 300M \n    -kernel Image \n    -initrd rootfs.cpio.gz \n    -append "console=ttyAMA0 root=/dev/ram rdinit=/init maxcpus=2 acpi=force" \n    -nographic \n    -bios  QEMU_EFI.fd \n
+    B. Hot-(un)plug related commands
+
+    # Hotplug a host vCPU(accel=kvm)
+    $ device_add host-arm-cpu,id=core4,core-id=4
+
+    # Hotplug a vCPU(accel=tcg)
+    $ device_add cortex-a57-arm-cpu,id=core4,core-id=4
+
+    # Delete the vCPU
+    $ device_del core4
+
+    Sample output on guest after boot:
+
+    $ cat /sys/devices/system/cpu/possible
+    0-5
+    $ cat /sys/devices/system/cpu/present
+    0-5
+    $ cat /sys/devices/system/cpu/enabled
+    0-3
+    $ cat /sys/devices/system/cpu/online
+    0-1
+    $ cat /sys/devices/system/cpu/offline
+    2-5
+
+    Sample output on guest after hotplug of vCPU=4:
+
+    $ cat /sys/devices/system/cpu/possible
+    0-5
+    $ cat /sys/devices/system/cpu/present
+    0-5
+    $ cat /sys/devices/system/cpu/enabled
+    0-4
+    $ cat /sys/devices/system/cpu/online
+    0-1,4
+    $ cat /sys/devices/system/cpu/offline
+    2-3,5
+
+    Note: vCPU=4 was explicitly 'onlined' after hot-plug
+    $ echo 1 &gt; /sys/devices/system/cpu/cpu4/online
+
+(VII) Repository
+      ==========
+
+ (*) QEMU changes for vCPU hotplug could be cloned from below site,
+     <a href="https://github.com/salil-mehta/qemu.git">https://github.com/salil-mehta/qemu.git</a> virt-cpuhp-armv8/rfc-v2
+ (*) Guest Kernel changes (by James Morse, ARM) are available here:
+     <a href="https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git">https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git</a> virtual_cpu_hotplug/rfc/v2
+
+
+(VIII) KNOWN ISSUES
+       ============
+
+1. Migration has been lightly tested. Below are some of the known issues:
+   - Ocassional CPU stall (not always repeatable)
+   - Negative test case like asymmetric source/destination VM config causes dump.
+   - Migration with TCG is not working properly.
+2. TCG with Single threaded mode is broken.
+3. HVF and qtest support is broken. 
+4. ACPI MADT Table flags [7] MADT.GICC.Enabled and MADT.GICC.online-capable are
+   mutually exclusive i.e. as per the change [6] a vCPU cannot be both
+   GICC.Enabled and GICC.online-capable. This means,
+      [ Link: <a href="https://bugzilla.tianocore.org/show_bug.cgi?id=3706">https://bugzilla.tianocore.org/show_bug.cgi?id=3706</a> ]
+   a. If we have to support hot-unplug of the cold-booted vCPUs then these MUST
+      be specified as GICC.online-capable in the MADT Table during boot by the
+      firmware/Qemu. But this requirement conflicts with the requirement to
+      support new Qemu changes with legacy OS which dont understand
+      MADT.GICC.online-capable Bit. Legacy OS during boot time will ignore this
+      bit and hence these vCPUs will not appear on such OS. This is unexpected
+      behaviour.
+   b. In case we decide to specify vCPUs as MADT.GICC.Enabled and try to unplug
+      these cold-booted vCPUs from OS (which in actual should be blocked by
+      returning error at Qemu) then features like 'kexec' will break.
+   c. As I understand, removal of the cold-booted vCPUs is a required feature
+      and x86 world allows it.
+   d. Hence, either we need a specification change to make the MADT.GICC.Enabled
+      and MADT.GICC.online-capable Bits NOT mutually exclusive or NOT support
+      removal of cold-booted vCPUs. In the later case, a check can be introduced
+      to bar the users from unplugging vCPUs, which were cold-booted, using QMP
+      commands. (Needs discussion!)
+      Please check below patch part of this patch-set:
+          [hw/arm/virt: Expose cold-booted CPUs as MADT GICC Enabled]
+5. Code related to the notification to GICV3 about hot(un)plug of a vCPU event
+   might need further discussion.
+
+
+(IX) THINGS TO DO
+     ============
+
+1. Fix the Migration Issues
+2. Fix issues related to TCG/Emulation support.
+3. Comprehensive Testing. Current testing is very basic.
+   a. Negative Test cases
+4. Qemu Documentation(.rst) need to be updated.
+5. Fix qtest, HVF Support
+6. Fix the design issue related to ACPI MADT.GICC flags discussed in known
+   issues. This might require UEFI ACPI specification change!
+7. Add ACPI _OSC 'Query' support. Only part of _OSC support exists now.
+
+ Above is *not* a complete list. Will update later!
+
+Best regards
+Salil.
+
+(X) DISCLAIMER
+    ==========
+
+This work is an attempt to present a proof-of-concept of the ARM64 vCPU hotplug
+implementation to the community. This is *not* a production level code and might
+have bugs. Only a basic testing has been done on HiSilicon Kunpeng920 SoC for
+servers. Once the design and core idea behind the implementation has been
+verified more efforts can be put to harden the code.
+
+This work is *mostly* in the lines of the discussions which have happened in the
+previous years[see refs below] across different channels like mailing-list,
+Linaro Open Discussions platform, various conferences like KVMFourm etc. This
+RFC is being used as a way to verify the idea mentioned in this cover-letter and
+to get community views. Once this has been agreed, a formal patch shall be
+posted to the mailing-list for review.
+
+[The concept being presented has been found to work!]
+
+(XI) ORGANIZATION OF PATCHES
+     =======================
+ 
+ A. All patches [Architecture 'agnostic' + 'specific']:
+
+   [Patch 1-9, 23, 36] logic required during machine init
+    (*) Some validation checks
+    (*) Introduces core-id property and some util functions required later.
+    (*) Refactors Parking logic of vCPUs    
+    (*) Logic to pre-create vCPUs
+    (*) GIC initialization pre-sized with possible vCPUs.
+    (*) Some refactoring to have common hot and cold plug logic together.
+    (*) Release of disable QOM CPU objects in post_cpu_init()
+    (*) Support of ACPI _OSC method to negotiate platform hotplug capabilities
+   [Patch 10-22] logic related to ACPI at machine init time
+    (*) Changes required to Enable ACPI for cpu hotplug
+    (*) Initialization ACPI GED framework to cater CPU Hotplug Events
+    (*) Build ACPI AML related to CPU control dev 
+    (*) ACPI MADT/MAT changes
+   [Patch 24-35] Logic required during vCPU hot-(un)plug
+    (*) Basic framework changes to suppport vCPU hot-(un)plug
+    (*) ACPI GED changes for hot-(un)plug hooks.
+    (*) wire-unwire the IRQs
+    (*) GIC notification logic
+    (*) ARMCPU unrealize logic
+    (*) Handling of SMCC Hypercall Exits by KVM to Qemu  
+   
+ B. Architecture *agnostic* patches part of patch-set:
+
+   [Patch 5,9,11,13,16,20,24,31,33] Common logic to support hotplug 
+    (*) Refactors Parking logic of vCPUs
+    (*) Introduces ACPI GED Support for vCPU Hotplug Events
+    (*) Introduces ACPI AML change for CPU Control Device     
+
+(XII) REFERENCES
+      ==========
+
+[1] <a href="https://lore.kernel.org/qemu-devel/20200613213629.21984-1-salil.mehta@huawei.com/">https://lore.kernel.org/qemu-devel/20200613213629.21984-1-salil.mehta@huawei.com/</a>
+[2] <a href="https://lore.kernel.org/linux-arm-kernel/20200625133757.22332-1-salil.mehta@huawei.com/">https://lore.kernel.org/linux-arm-kernel/20200625133757.22332-1-salil.mehta@huawei.com/</a>
+[3] <a href="https://lore.kernel.org/lkml/20230203135043.409192-1-james.morse@arm.com/">https://lore.kernel.org/lkml/20230203135043.409192-1-james.morse@arm.com/</a>
+[4] <a href="https://lore.kernel.org/all/20230913163823.7880-1-james.morse@arm.com/">https://lore.kernel.org/all/20230913163823.7880-1-james.morse@arm.com/</a>
+[5] <a href="https://lore.kernel.org/all/20230404154050.2270077-1-oliver.upton@linux.dev/">https://lore.kernel.org/all/20230404154050.2270077-1-oliver.upton@linux.dev/</a>
+[6] <a href="https://bugzilla.tianocore.org/show_bug.cgi?id=3706">https://bugzilla.tianocore.org/show_bug.cgi?id=3706</a>
+[7] <a href="https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#gic-cpu-interface-gicc-structure">https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#gic-cpu-interface-gicc-structure</a>
+[8] <a href="https://bugzilla.tianocore.org/show_bug.cgi?id=4481#c5">https://bugzilla.tianocore.org/show_bug.cgi?id=4481#c5</a>
+[9] <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/verticalpodautoscaler">https://cloud.google.com/kubernetes-engine/docs/concepts/verticalpodautoscaler</a>
+[10] <a href="https://docs.aws.amazon.com/eks/latest/userguide/vertical-pod-autoscaler.html">https://docs.aws.amazon.com/eks/latest/userguide/vertical-pod-autoscaler.html</a>
+[11] <a href="https://lkml.org/lkml/2019/7/10/235">https://lkml.org/lkml/2019/7/10/235</a>
+[12] <a href="https://lists.cs.columbia.edu/pipermail/kvmarm/2018-July/032316.html">https://lists.cs.columbia.edu/pipermail/kvmarm/2018-July/032316.html</a>
+[13] <a href="https://lists.gnu.org/archive/html/qemu-devel/2020-01/msg06517.html">https://lists.gnu.org/archive/html/qemu-devel/2020-01/msg06517.html</a>
+[14] <a href="https://op-lists.linaro.org/archives/list/linaro-open-discussions@op-lists.linaro.org/thread/7CGL6JTACPUZEYQC34CZ2ZBWJGSR74WE/">https://op-lists.linaro.org/archives/list/linaro-open-discussions@op-lists.linaro.org/thread/7CGL6JTACPUZEYQC34CZ2ZBWJGSR74WE/</a>
+[15] <a href="http://lists.nongnu.org/archive/html/qemu-devel/2018-07/msg01168.html">http://lists.nongnu.org/archive/html/qemu-devel/2018-07/msg01168.html</a>
+[16] <a href="https://lists.gnu.org/archive/html/qemu-devel/2020-06/msg00131.html">https://lists.gnu.org/archive/html/qemu-devel/2020-06/msg00131.html</a>
+[17] <a href="https://op-lists.linaro.org/archives/list/linaro-open-discussions@op-lists.linaro.org/message/X74JS6P2N4AUWHHATJJVVFDI2EMDZJ74/">https://op-lists.linaro.org/archives/list/linaro-open-discussions@op-lists.linaro.org/message/X74JS6P2N4AUWHHATJJVVFDI2EMDZJ74/</a>
+[18] <a href="https://lore.kernel.org/lkml/20210608154805.216869-1-jean-philippe@linaro.org/">https://lore.kernel.org/lkml/20210608154805.216869-1-jean-philippe@linaro.org/</a>
+[19] <a href="https://lore.kernel.org/all/20230913163823.7880-1-james.morse@arm.com/">https://lore.kernel.org/all/20230913163823.7880-1-james.morse@arm.com/</a> 
+[20] <a href="https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#gicc-cpu-interface-flags">https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#gicc-cpu-interface-flags</a>
+
+(XIII) ACKNOWLEDGEMENTS
+       ================
+
+I would like to take this opportunity to thank below people for various
+discussions with me over different channels during the development:
+
+Marc Zyngier (Google)               Catalin Marinas (ARM),         
+James Morse(ARM),                   Will Deacon (Google), 
+Jean-Phillipe Brucker (Linaro),     Sudeep Holla (ARM),
+Lorenzo Pieralisi (Linaro),         Gavin Shan (Redhat), 
+Jonathan Cameron (Huawei),          Darren Hart (Ampere),
+Igor Mamedov (Redhat),              Ilkka Koskinen (Ampere),
+Andrew Jones (Redhat),              Karl Heubaum (Oracle),
+Keqian Zhu (Huawei),                Miguel Luis (Oracle),
+Xiongfeng Wang (Huawei),            Vishnu Pajjuri (Ampere),
+Shameerali Kolothum (Huawei)        Russell King (Oracle)
+Xuwei/Joy (Huawei),                 Peter Maydel (Linaro)
+Zengtao/Prime (Huawei),             And all those whom I have missed! 
+
+Many thanks to below people for their current or past contributions:
+
+1. James Morse (ARM)
+   (Current Kernel part of vCPU Hotplug Support on AARCH64)
+2. Jean-Philippe Brucker (Linaro)
+   (Protoyped one of the earlier PSCI based POC [17][18] based on RFC V1)
+3. Keqian Zhu (Huawei)
+   (Co-developed Qemu prototype)
+4. Xiongfeng Wang (Huawei)
+   (Co-developed earlier kernel prototype)
+5. Vishnu Pajjuri (Ampere)
+   (Verification on Ampere ARM64 Platforms + fixes)
+6. Miguel Luis (Oracle)
+   (Verification on Oracle ARM64 Platforms + fixes)
+
+
+Author Salil Mehta (1):
+  target/arm/kvm,tcg: Register/Handle SMCCC hypercall exits to VMM/Qemu
+
+Jean-Philippe Brucker (2):
+  hw/acpi: Make _MAT method optional
+  target/arm/kvm: Write CPU state back to KVM on reset
+
+Miguel Luis (1):
+  tcg/mttcg: enable threads to unregister in tcg_ctxs[]
+
+Salil Mehta (33):
+  arm/virt,target/arm: Add new ARMCPU {socket,cluster,core,thread}-id property
+  cpus-common: Add common CPU utility for possible vCPUs
+  hw/arm/virt: Move setting of common CPU properties in a function
+  arm/virt,target/arm: Machine init time change common to vCPU {cold|hot}-plug
+  accel/kvm: Extract common KVM vCPU {creation,parking} code
+  arm/virt,kvm: Pre-create disabled possible vCPUs @machine init
+  arm/virt,gicv3: Changes to pre-size GIC with possible vcpus @machine init
+  arm/virt: Init PMU at host for all possible vcpus
+  hw/acpi: Move CPU ctrl-dev MMIO region len macro to common header file
+  arm/acpi: Enable ACPI support for vcpu hotplug
+  hw/acpi: Add ACPI CPU hotplug init stub
+  hw/acpi: Use qemu_present_cpu() API in ACPI CPU hotplug init
+  hw/acpi: Init GED framework with cpu hotplug events
+  arm/virt: Add cpu hotplug events to GED during creation
+  arm/virt: Create GED dev before *disabled* CPU Objs are destroyed
+  hw/acpi: Update CPUs AML with cpu-(ctrl)dev change
+  arm/virt/acpi: Build CPUs AML with CPU Hotplug support
+  arm/virt: Make ARM vCPU *present* status ACPI *persistent*
+  hw/acpi: ACPI/AML Changes to reflect the correct _STA.{PRES,ENA} Bits to Guest
+  hw/acpi: Update GED _EVT method AML with cpu scan
+  hw/arm: MADT Tbl change to size the guest with possible vCPUs
+  arm/virt: Release objects for *disabled* possible vCPUs after init
+  hw/acpi: Update ACPI GED framework to support vCPU Hotplug
+  arm/virt: Add/update basic hot-(un)plug framework
+  arm/virt: Changes to (un)wire GICC&lt;-&gt;vCPU IRQs during hot-(un)plug
+  hw/arm,gicv3: Changes to update GIC with vCPU hot-plug notification
+  hw/intc/arm-gicv3*: Changes required to (re)init the vCPU register info
+  arm/virt: Update the guest(via GED) about CPU hot-(un)plug events
+  hw/arm: Changes required for reset and to support next boot
+  physmem,gdbstub: Common helping funcs/changes to *unrealize* vCPU
+  target/arm: Add support of *unrealize* ARMCPU during vCPU Hot-unplug
+  hw/arm: Support hotplug capability check using _OSC method
+  hw/arm/virt: Expose cold-booted CPUs as MADT GICC Enabled
+
+ accel/kvm/kvm-all.c                    |  61 +-
+ accel/tcg/tcg-accel-ops-mttcg.c        |   1 +
+ cpus-common.c                          |  37 ++
+ gdbstub/gdbstub.c                      |  13 +
+ hw/acpi/acpi-cpu-hotplug-stub.c        |   6 +
+ hw/acpi/cpu.c                          |  91 ++-
+ hw/acpi/generic_event_device.c         |  33 +
+ hw/arm/Kconfig                         |   1 +
+ hw/arm/boot.c                          |   2 +-
+ hw/arm/virt-acpi-build.c               | 110 +++-
+ hw/arm/virt.c                          | 863 ++++++++++++++++++++-----
+ hw/core/gpio.c                         |   2 +-
+ hw/i386/acpi-build.c                   |   2 +-
+ hw/intc/arm_gicv3.c                    |   1 +
+ hw/intc/arm_gicv3_common.c             |  66 +-
+ hw/intc/arm_gicv3_cpuif.c              | 265 ++++----
+ hw/intc/arm_gicv3_cpuif_common.c       |   5 +
+ hw/intc/arm_gicv3_kvm.c                |  39 +-
+ hw/intc/gicv3_internal.h               |   2 +
+ include/exec/cpu-common.h              |   8 +
+ include/exec/gdbstub.h                 |   1 +
+ include/hw/acpi/cpu.h                  |   7 +-
+ include/hw/acpi/cpu_hotplug.h          |   4 +
+ include/hw/acpi/generic_event_device.h |   5 +
+ include/hw/arm/boot.h                  |   2 +
+ include/hw/arm/virt.h                  |  10 +-
+ include/hw/core/cpu.h                  |  77 +++
+ include/hw/intc/arm_gicv3_common.h     |  23 +
+ include/hw/qdev-core.h                 |   2 +
+ include/sysemu/kvm.h                   |   2 +
+ include/tcg/tcg.h                      |   1 +
+ softmmu/physmem.c                      |  25 +
+ target/arm/arm-powerctl.c              |  51 +-
+ target/arm/cpu-qom.h                   |   3 +
+ target/arm/cpu.c                       | 112 ++++
+ target/arm/cpu.h                       |  17 +
+ target/arm/cpu64.c                     |  15 +
+ target/arm/gdbstub.c                   |   6 +
+ target/arm/helper.c                    |  27 +-
+ target/arm/internals.h                 |  12 +-
+ target/arm/kvm.c                       |  93 ++-
+ target/arm/kvm64.c                     |  59 +-
+ target/arm/kvm_arm.h                   |  24 +
+ target/arm/meson.build                 |   1 +
+ target/arm/{tcg =&gt; }/psci.c            |   8 +
+ target/arm/tcg/meson.build             |   4 -
+ tcg/tcg.c                              |  23 +
+ 47 files changed, 1873 insertions(+), 349 deletions(-)
+ rename target/arm/{tcg =&gt; }/psci.c (97%)
+
+-- 
+2.34.1
+
+
+</pre><hr><pre><a href="../20230926100436.28284-2-salil.mehta@huawei.com/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20230926100715">~2023-09-26 10:07 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>153+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2023-09-26 10:03 <a id="r" href="#t">Salil Mehta via [this message]</a></b>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-2-salil.mehta@huawei.com/">[PATCH RFC V2 01/37] arm/virt, target/arm: Add new ARMCPU {socket, cluster, core, thread}-id property</a> Salil Mehta via
+2023-09-26 23:57   ` <a href="../6cd28639-2cfa-f233-c6d9-d5d2ec5b1c58@redhat.com/">[PATCH RFC V2 01/37] arm/virt,target/arm: Add new ARMCPU {socket,cluster,core,thread}-id property</a> Gavin Shan
+2023-10-02  9:53     ` <a href="../1cb12b5dd9f344f5a7a303ddbc5f5dfd@huawei.com/">Salil Mehta via</a>
+2023-10-02  9:53       ` <a href="../20231002095329.zzdw5mmRfewwFqr81mgxH-hOee7zYLp9FmhVWQYEjZw@z/">Salil Mehta</a>
+2023-10-03  5:05       ` <a href="../7bc21702-c5a0-cf91-235f-3d8d68536c93@redhat.com/">Gavin Shan</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-3-salil.mehta@huawei.com/">[PATCH RFC V2 02/37] cpus-common: Add common CPU utility for possible vCPUs</a> Salil Mehta via
+2023-09-27  3:54   ` <a href="../44e4f955-ab51-92ca-8d65-e3a38d8d6657@redhat.com/">Gavin Shan</a>
+2023-10-02 10:21     ` <a href="../b002d32909f64a048371ff501bcedfc3@huawei.com/">Salil Mehta via</a>
+2023-10-02 10:21       ` <a href="../20231002102157.q8g4k03jetk27K94eIS_EL7q8vswpG9eps90QcG6NPs@z/">Salil Mehta</a>
+2023-10-03  5:34       ` <a href="../adb880c1-f90b-30b5-6066-95dff426971e@redhat.com/">Gavin Shan</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-4-salil.mehta@huawei.com/">[PATCH RFC V2 03/37] hw/arm/virt: Move setting of common CPU properties in a function</a> Salil Mehta via
+2023-09-27  5:16   ` <a href="../c987543c-c05d-31cf-5cfa-e703d4b90d8f@redhat.com/">Gavin Shan</a>
+2023-10-02 10:24     ` <a href="../fa8ec6306f124953b939c95a67de1d9a@huawei.com/">Salil Mehta via</a>
+2023-10-02 10:24       ` <a href="../20231002102458.NpeCA134I0uRV0fDqlizO8j6ptJK8EPl8i02XzG6TGY@z/">Salil Mehta</a>
+2023-10-10  6:46   ` <a href="../3632ee24-47f7-ae68-8790-26eb2cf9950b@redhat.com/">Shaoqin Huang</a>
+2023-10-10  9:47     ` <a href="../1aa6ddfdb874451a9446d1e6347f60c0@huawei.com/">Salil Mehta via</a>
+2023-10-10  9:47       ` <a href="../20231010094728.V-VyeZ8r0QzOQP6IeevGJl7LG9W1N2k3EyrQyfSNPBo@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-5-salil.mehta@huawei.com/">[PATCH RFC V2 04/37] arm/virt, target/arm: Machine init time change common to vCPU {cold|hot}-plug</a> Salil Mehta via
+2023-09-27  6:28   ` <a href="../1c5fa24c-6bf3-750f-4f22-087e4a9311af@redhat.com/">[PATCH RFC V2 04/37] arm/virt,target/arm:</a> " Gavin Shan
+2023-10-02 16:12     ` <a href="../de871e3d7b8f440b93b20c734fe5b7a8@huawei.com/">Salil Mehta via</a>
+2023-10-02 16:12       ` <a href="../20231002161243.FFZ1e2SNDCo7DKgKyHyT-mlPI9euCIOxU5PC8Q5Z1Pw@z/">Salil Mehta</a>
+2024-01-16 15:59       ` <a href="../20240116155911.00004fe1@Huawei.com/">Jonathan Cameron via</a>
+2023-09-27  6:30   ` <a href="../41003807-062f-1121-956e-72e0444e048f@redhat.com/">Gavin Shan</a>
+2023-10-02 10:27     ` <a href="../aaed4b2e463840e9b41e07c27efedbcd@huawei.com/">Salil Mehta via</a>
+2023-10-02 10:27       ` <a href="../20231002102744.Gg7QO1xTeMVT5j_OUyJYd86FEeRIChquuoWNgoyf-IA@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-6-salil.mehta@huawei.com/">[PATCH RFC V2 05/37] accel/kvm: Extract common KVM vCPU {creation, parking} code</a> Salil Mehta via
+2023-09-27  6:51   ` <a href="../d58c51d2-53e4-3873-7c87-c6ccc3025ed9@redhat.com/">[PATCH RFC V2 05/37] accel/kvm: Extract common KVM vCPU {creation,parking} code</a> Gavin Shan
+2023-10-02 16:20     ` <a href="../2a1d9be1afb54290b6b0e4a54711e030@huawei.com/">Salil Mehta via</a>
+2023-10-02 16:20       ` <a href="../20231002162051.RK8rqBG-u05Ccuogr22kMLmvUxabJMRsvOUVOIahAzI@z/">Salil Mehta</a>
+2023-10-03  5:39       ` <a href="../dafa4d84-4e23-6bb9-fa33-17861c28ee4a@redhat.com/">Gavin Shan</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-7-salil.mehta@huawei.com/">[PATCH RFC V2 06/37] arm/virt, kvm: Pre-create disabled possible vCPUs @machine init</a> Salil Mehta via
+2023-09-27 10:04   ` <a href="../b9dd8569-e95d-2085-9965-08686ce6666d@redhat.com/">[PATCH RFC V2 06/37] arm/virt,kvm:</a> " Gavin Shan
+2023-10-02 16:39     ` <a href="../937661757ac54dcbadba09179f6fdbf8@huawei.com/">Salil Mehta via</a>
+2023-10-02 16:39       ` <a href="../20231002163954.xD_PTSaPnLwckQJoVinNQdDyucDdYOA7AXZ48Uv4JoQ@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-8-salil.mehta@huawei.com/">[PATCH RFC V2 07/37] arm/virt, gicv3: Changes to pre-size GIC with possible vcpus</a> " Salil Mehta via
+2023-09-28  0:14   ` <a href="../ae71fa00-fcc5-ef34-ef94-b3fd37622582@redhat.com/">Gavin Shan</a>
+2023-10-16 16:15     ` <a href="../6530351c0fa94f68ab4be05198434794@huawei.com/">Salil Mehta via</a>
+2023-10-16 16:15       ` <a href="../20231016161557.oPX51zybe3NnI74Zy_uzjjRIzibtyy5F1Npj7K32kHo@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-9-salil.mehta@huawei.com/">[PATCH RFC V2 08/37] arm/virt: Init PMU at host for all possible vcpus</a> Salil Mehta via
+2023-09-26 10:04 ` <a href="../20230926100436.28284-10-salil.mehta@huawei.com/">[PATCH RFC V2 09/37] hw/acpi: Move CPU ctrl-dev MMIO region len macro to common header file</a> Salil Mehta via
+2023-09-28  0:19   ` <a href="../a478929d-9b43-4e87-c16a-e33f82aa20da@redhat.com/">Gavin Shan</a>
+2023-10-16 16:20     ` <a href="../49dbcbe515d740fbad2c5ae6cf0b1d00@huawei.com/">Salil Mehta via</a>
+2023-10-16 16:20       ` <a href="../20231016162042.cHNaCmm-hBAFYYy8205YC-KkePUqI4BYMEnptbyrdWw@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-11-salil.mehta@huawei.com/">[PATCH RFC V2 10/37] arm/acpi: Enable ACPI support for vcpu hotplug</a> Salil Mehta via
+2023-09-28  0:25   ` <a href="../ce26889c-344a-b09c-a8b4-35904ffff771@redhat.com/">Gavin Shan</a>
+2023-10-16 21:23     ` <a href="../ddfe09973e71404098e3528d18da45ff@huawei.com/">Salil Mehta via</a>
+2023-10-16 21:23       ` <a href="../20231016212358.iNqMqT0DWm2fuD30zEZ7IsTHl6GeN-Xz8P-PJoWUFC8@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-12-salil.mehta@huawei.com/">[PATCH RFC V2 11/37] hw/acpi: Add ACPI CPU hotplug init stub</a> Salil Mehta via
+2023-09-28  0:28   ` <a href="../dd1028a6-e229-07e3-95e8-ba636dc0651e@redhat.com/">Gavin Shan</a>
+2023-10-16 21:27     ` <a href="../13766047efd84bf0b23dbc070578c320@huawei.com/">Salil Mehta via</a>
+2023-10-16 21:27       ` <a href="../20231016212715.OR_LqUnnqlbRBRYeb8vTSvHzrWAXRDBQsSjeq_-5fmg@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-13-salil.mehta@huawei.com/">[PATCH RFC V2 12/37] hw/acpi: Use qemu_present_cpu() API in ACPI CPU hotplug init</a> Salil Mehta via
+2023-09-28  0:40   ` <a href="../4fb2eef9-6742-1eeb-721a-b3db04b1be97@redhat.com/">Gavin Shan</a>
+2023-10-16 21:41     ` <a href="../6bfe936bdfa94dad97c59451f5ce5f09@huawei.com/">Salil Mehta via</a>
+2023-10-16 21:41       ` <a href="../20231016214145.WC2UkL_j7Go6PB5iyB3GCK-sCDu-McNxUPpjt9gffY4@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-14-salil.mehta@huawei.com/">[PATCH RFC V2 13/37] hw/acpi: Init GED framework with cpu hotplug events</a> Salil Mehta via
+2023-09-28  0:56   ` <a href="../f3db9fe9-2fbb-003e-3da4-26c401d09c1f@redhat.com/">Gavin Shan</a>
+2023-10-16 21:44     ` <a href="../473a67579196412199aef3dcac579512@huawei.com/">Salil Mehta via</a>
+2023-10-16 21:44       ` <a href="../20231016214416.w6vI-fqMr-SpEAkF86W7BDztTPEW4vW57cTTdq46ytU@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-15-salil.mehta@huawei.com/">[PATCH RFC V2 14/37] arm/virt: Add cpu hotplug events to GED during creation</a> Salil Mehta via
+2023-09-28  1:03   ` <a href="../1e526a50-7001-a15b-79cb-e223048b52ce@redhat.com/">Gavin Shan</a>
+2023-10-16 21:46     ` <a href="../f6508f4d86424959b72b8faa423e95a0@huawei.com/">Salil Mehta via</a>
+2023-10-16 21:46       ` <a href="../20231016214624.3yi0WFveYbJOZuZsTpaMy1NLmQxNe-pJHh5PAeXGwR4@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-16-salil.mehta@huawei.com/">[PATCH RFC V2 15/37] arm/virt: Create GED dev before *disabled* CPU Objs are destroyed</a> Salil Mehta via
+2023-09-28  1:08   ` <a href="../37064f7b-1ad5-b636-3cdb-97208d995c95@redhat.com/">Gavin Shan</a>
+2023-10-16 21:54     ` <a href="../2522f2dfb57c4796bab685dc87b21906@huawei.com/">Salil Mehta via</a>
+2023-10-16 21:54       ` <a href="../20231016215436.xl3uPhNHI-NsB-9sGMAMXsgTbGzkqobj5Ucfbkr6N6I@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-17-salil.mehta@huawei.com/">[PATCH RFC V2 16/37] hw/acpi: Update CPUs AML with cpu-(ctrl)dev change</a> Salil Mehta via
+2023-09-28  1:26   ` <a href="../26f2a18a-4315-443f-560a-c4f007434206@redhat.com/">Gavin Shan</a>
+2023-10-16 21:57     ` <a href="../283e5d2580814fbebeb33d66a1104cf5@huawei.com/">Salil Mehta via</a>
+2023-10-16 21:57       ` <a href="../20231016215724.M-HohJrzzJUEFsGVbzvLJaLkhplvjuP3aM3o4LftOiQ@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-18-salil.mehta@huawei.com/">[PATCH RFC V2 17/37] arm/virt/acpi: Build CPUs AML with CPU Hotplug support</a> Salil Mehta via
+2023-09-28  1:36   ` <a href="../832342cb-74bc-58dd-c5d7-6f995baeb0f2@redhat.com/">Gavin Shan</a>
+2023-10-16 22:05     ` <a href="../612789af828d4f31ab595a0580074d04@huawei.com/">Salil Mehta via</a>
+2023-10-16 22:05       ` <a href="../20231016220554.wsKTkkUw7xN0h0eomQU0mn6d7MXqQCJsgPm6I8wUhFw@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-19-salil.mehta@huawei.com/">[PATCH RFC V2 18/37] arm/virt: Make ARM vCPU *present* status ACPI *persistent*</a> Salil Mehta via
+2023-09-28 23:18   ` <a href="../550271cb-c415-f98e-afb4-d62df70c3ffb@redhat.com/">Gavin Shan</a>
+2023-10-16 22:33     ` <a href="../d2479495683f4c1d9337914b451e2282@huawei.com/">Salil Mehta via</a>
+2023-10-16 22:33       ` <a href="../20231016223325.PraAJ2UVHwP2fdtobHDMU80DqQ2khBQCbaBvulJlBUs@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-20-salil.mehta@huawei.com/">[PATCH RFC V2 19/37] hw/acpi: ACPI/AML Changes to reflect the correct _STA.{PRES, ENA} Bits to Guest</a> Salil Mehta via
+2023-09-28 23:33   ` <a href="../da5e5609-1883-8650-c7d8-6868c7b74f1c@redhat.com/">[PATCH RFC V2 19/37] hw/acpi: ACPI/AML Changes to reflect the correct _STA.{PRES,ENA}</a> " Gavin Shan
+2023-10-16 22:59     ` <a href="../138a62be6bdd4146b4dfcf0c45991a38@huawei.com/">Salil Mehta via</a>
+2023-10-16 22:59       ` <a href="../20231016225951.M4aO9NkpLD0zq1sVa6jyHhi2BJCdxItUglhlq5oMYec@z/">Salil Mehta</a>
+2024-01-17 21:46   ` <a href="../20240117214608.00007d1b@Huawei.com/">[PATCH RFC V2 19/37] hw/acpi: ACPI/AML Changes to reflect the correct _STA.{PRES, ENA}</a> " Jonathan Cameron via
+2023-09-26 10:04 ` <a href="../20230926100436.28284-21-salil.mehta@huawei.com/">[PATCH RFC V2 20/37] hw/acpi: Update GED _EVT method AML with cpu scan</a> Salil Mehta via
+2023-09-28 23:35   ` <a href="../14b334c1-0b5f-7f56-6f35-809925085dcf@redhat.com/">Gavin Shan</a>
+2023-10-16 23:01     ` <a href="../dcc4f8d8bb6a4752a070af470ecb1146@huawei.com/">Salil Mehta via</a>
+2023-10-16 23:01       ` <a href="../20231016230123.-wU11Na_p-FmDDBsT1jhwcwE6fwfAvVI4bHZtMZfpUE@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-22-salil.mehta@huawei.com/">[PATCH RFC V2 21/37] hw/arm: MADT Tbl change to size the guest with possible vCPUs</a> Salil Mehta via
+2023-09-28 23:43   ` <a href="../eb1ac571-7844-55e6-15e7-3dd7df21366b@redhat.com/">Gavin Shan</a>
+2023-10-16 23:15     ` <a href="../8f946b9978584363b3b6f59afb75c005@huawei.com/">Salil Mehta via</a>
+2023-10-16 23:15       ` <a href="../20231016231520.YY9uwC7oPnRw8H_Rt97EfNDQudDI_DIO57fRStIMQW8@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-23-salil.mehta@huawei.com/">[PATCH RFC V2 22/37] hw/acpi: Make _MAT method optional</a> Salil Mehta via
+2023-09-28 23:50   ` <a href="../ae6cdf01-2ede-69d8-cc6d-60ea1c80cefd@redhat.com/">Gavin Shan</a>
+2023-10-16 23:17     ` <a href="../8dcb9b1f298e4eabb5bb0dc7ad306f21@huawei.com/">Salil Mehta via</a>
+2023-10-16 23:17       ` <a href="../20231016231719.hXlAXd_CmCuGv4GcnxDf0Lb_L1JufHY8-K5RNyLmySo@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-24-salil.mehta@huawei.com/">[PATCH RFC V2 23/37] arm/virt: Release objects for *disabled* possible vCPUs after init</a> Salil Mehta via
+2023-09-28 23:57   ` <a href="../c45acbe4-f454-f6a0-923b-75ca1e790c03@redhat.com/">Gavin Shan</a>
+2023-10-16 23:28     ` <a href="../ba75d503d2794131a5888ec186b89d6d@huawei.com/">Salil Mehta via</a>
+2023-10-16 23:28       ` <a href="../20231016232838.XxWhgoIgOkOu93dCfipYySyuORONORlEWbDaGi-hUdE@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-25-salil.mehta@huawei.com/">[PATCH RFC V2 24/37] hw/acpi: Update ACPI GED framework to support vCPU Hotplug</a> Salil Mehta via
+2023-09-26 11:02   ` <a href="../20230926070112-mutt-send-email-mst@kernel.org/">Michael S. Tsirkin</a>
+2023-09-26 11:37     ` <a href="../f68a5ccc153f4971b5fbe681095a7624@huawei.com/">Salil Mehta via</a>
+2023-09-26 12:00       ` <a href="../20230926075838-mutt-send-email-mst@kernel.org/">Michael S. Tsirkin</a>
+2023-09-26 12:27         ` <a href="../94b11b88bfe4421ba92c62a44cdaef06@huawei.com/">Salil Mehta via</a>
+2023-09-26 13:02         ` <a href="../b5d15a63-57f8-f136-827f-c0dfbd9eb6bf@loongson.cn/">lixianglai</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-26-salil.mehta@huawei.com/">[PATCH RFC V2 25/37] arm/virt: Add/update basic hot-(un)plug framework</a> Salil Mehta via
+2023-09-29  0:20   ` <a href="../f18990cd-c211-4c23-aecb-0aec076bc19b@redhat.com/">Gavin Shan</a>
+2023-10-16 23:40     ` <a href="../80cc6c9281e5419191f46cbe058b0822@huawei.com/">Salil Mehta via</a>
+2023-10-16 23:40       ` <a href="../20231016234025.CxEflkGPuQdUFfGy0MXCQiBKrCn1KROJT13AETCnTMk@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-27-salil.mehta@huawei.com/">[PATCH RFC V2 26/37] arm/virt: Changes to (un)wire GICC&lt;-&gt;vCPU IRQs during hot-(un)plug</a> Salil Mehta via
+2023-09-26 10:04 ` <a href="../20230926100436.28284-28-salil.mehta@huawei.com/">[PATCH RFC V2 27/37] hw/arm, gicv3: Changes to update GIC with vCPU hot-plug notification</a> Salil Mehta via
+2023-09-26 10:04 ` <a href="../20230926100436.28284-29-salil.mehta@huawei.com/">[PATCH RFC V2 28/37] hw/intc/arm-gicv3*: Changes required to (re)init the vCPU register info</a> Salil Mehta via
+2023-09-26 10:04 ` <a href="../20230926100436.28284-30-salil.mehta@huawei.com/">[PATCH RFC V2 29/37] arm/virt: Update the guest(via GED) about CPU hot-(un)plug events</a> Salil Mehta via
+2023-09-29  0:30   ` <a href="../4d8980ac-f402-60d4-fe52-787815af8a7d@redhat.com/">Gavin Shan</a>
+2023-10-16 23:48     ` <a href="../a6ff886e9e6246cbb10f55eee4d85c97@huawei.com/">Salil Mehta via</a>
+2023-10-16 23:48       ` <a href="../20231016234848.Lox9hLR7Tot7XVtcl7gB_dFXlNFQx-zpN9e1RWKJEA8@z/">Salil Mehta</a>
+2023-09-26 10:04 ` <a href="../20230926100436.28284-31-salil.mehta@huawei.com/">[PATCH RFC V2 30/37] hw/arm: Changes required for reset and to support next boot</a> Salil Mehta via
+2023-09-26 10:04 ` <a href="../20230926100436.28284-32-salil.mehta@huawei.com/">[PATCH RFC V2 31/37] physmem, gdbstub: Common helping funcs/changes to *unrealize* vCPU</a> Salil Mehta via
+2023-10-03  6:33   ` <a href="../b71a91cc-a0fe-230b-f895-e163b37be157@linaro.org/">[PATCH RFC V2 31/37] physmem,gdbstub:</a> " Philippe Mathieu-Daudé
+2023-10-03 10:22     ` <a href="../7e02ed766bd54b7184e349611e61cf12@huawei.com/">Salil Mehta via</a>
+2023-10-03 10:22       ` <a href="../20231003102244.iYFinlIjGLDlgJzZLBO3fiClfoZ6hk3D3o99az4-YNc@z/">Salil Mehta</a>
+2023-10-04  9:17       ` <a href="../d5191246e108473c95fb6e9a6925f1bd@huawei.com/">Salil Mehta via</a>
+2023-10-04  9:17         ` <a href="../20231004091752.B9VUBuycVzKUaXG2uhrOFejOmdKkGGxA5vDeb28zS38@z/">Salil Mehta</a>
+2023-09-26 10:36 ` <a href="../20230926103654.34424-1-salil.mehta@huawei.com/">[PATCH RFC V2 32/37] target/arm: Add support of *unrealize* ARMCPU during vCPU Hot-unplug</a> Salil Mehta via
+2023-09-26 10:36   ` <a href="../20230926103654.34424-2-salil.mehta@huawei.com/">[PATCH RFC V2 33/37] target/arm/kvm: Write CPU state back to KVM on reset</a> Salil Mehta via
+2023-09-26 10:36   ` <a href="../20230926103654.34424-3-salil.mehta@huawei.com/">[PATCH RFC V2 34/37] target/arm/kvm, tcg: Register/Handle SMCCC hypercall exits to VMM/Qemu</a> Salil Mehta via
+2023-09-29  4:15     ` <a href="../a3ae4b88-6066-4c21-5fe5-cfe74bc58aaa@redhat.com/">[PATCH RFC V2 34/37] target/arm/kvm,tcg:</a> " Gavin Shan
+2023-10-17  0:03       ` <a href="../363b994b5e904622a8f5dde980d48056@huawei.com/">Salil Mehta via</a>
+2023-10-17  0:03         ` <a href="../20231017000329.JmgzCVeB4Jid8WTTCpm7R-RoJsF5ULqV8V6mj7aduiE@z/">Salil Mehta</a>
+2023-09-26 10:36   ` <a href="../20230926103654.34424-4-salil.mehta@huawei.com/">[PATCH RFC V2 35/37] hw/arm: Support hotplug capability check using _OSC method</a> Salil Mehta via
+2023-09-29  4:23     ` <a href="../ddbc526e-bba3-6b93-753f-6ba3de183755@redhat.com/">Gavin Shan</a>
+2023-10-17  0:13       ` <a href="../c2d8a144e9e5409d97ae2c72272ea5b7@huawei.com/">Salil Mehta via</a>
+2023-10-17  0:13         ` <a href="../20231017001326.FUBqQ1PTowF2GxQpnL3kIW0AhmSqbspazwixAHVSi6c@z/">Salil Mehta</a>
+2023-09-26 10:36   ` <a href="../20230926103654.34424-5-salil.mehta@huawei.com/">[PATCH RFC V2 36/37] tcg/mttcg: enable threads to unregister in tcg_ctxs[]</a> Salil Mehta via
+2023-09-26 10:36   ` <a href="../20230926103654.34424-6-salil.mehta@huawei.com/">[PATCH RFC V2 37/37] hw/arm/virt: Expose cold-booted CPUs as MADT GICC Enabled</a> Salil Mehta via
+2023-10-11 10:23 ` <a href="../cfcca2d3-212e-2a90-1acc-1d23105c3804@amperemail.onmicrosoft.com/">[PATCH RFC V2 00/37] Support of Virtual CPU Hotplug for ARMv8 Arch</a> Vishnu Pajjuri
+2023-10-11 10:32   ` <a href="../c6eb2290323644e89c40c834bb934f62@huawei.com/">Salil Mehta via</a>
+2023-10-11 10:32     ` <a href="../20231011103211.-gcnoSWroRBByFQFdAc10J11m-Ty4R-z_LpdBtE5rvw@z/">Salil Mehta</a>
+2023-10-11 11:08     ` <a href="../721d05b7-ee2b-999c-da72-d369483cfbb2@amperemail.onmicrosoft.com/">Vishnu Pajjuri</a>
+2023-10-11 20:15       ` <a href="../22929591-ebea-9a6b-914f-9f21d43931df@opnsrc.net/">Salil Mehta</a>
+2023-10-12 17:02 ` <a href="../BBD0C802-A71B-473E-A7E3-FDA5D0674D49@oracle.com/">Miguel Luis</a>
+2023-10-12 17:54   ` <a href="../3b1e102f20be420eb43d394d713e81f9@huawei.com/">Salil Mehta via</a>
+2023-10-12 17:54     ` <a href="../20231012175447._jEYHiyBublp2lgHPWZm3nUv0k1GgsPLGqPC5wHBt30@z/">Salil Mehta</a>
+2023-10-13 10:43     ` <a href="../B7333DFE-3A70-47E4-8024-4EBF2D410D93@oracle.com/">Miguel Luis</a>
+  -- strict thread matches above, loose matches on Subject: below --
+2023-09-25 19:43 <a href="../20230925194333.18244-1-salil.mehta@huawei.com/">Salil Mehta via</a>
+2023-09-25 20:03 ` <a href="../1ba2e69bf0a94c1498ab5863b365559b@huawei.com/">Salil Mehta via</a>
+2023-09-25 20:12   ` <a href="../ZRHpyxCe8ybsxKck@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-25 20:21     ` <a href="../a4f5b9370c2c45c7a09fe55f4a7b1a62@huawei.com/">Salil Mehta via</a>
+2023-09-25 23:58       ` <a href="../15913a45-35ef-29eb-00b4-db64cc80509c@redhat.com/">Gavin Shan</a>
+2023-09-25 17:11 <a href="../20230925171137.38412-1-salil.mehta@huawei.com/">Salil Mehta via</a>
+2023-09-25 17:17 ` <a href="../e52c32daa174447abcf0f07c6713d5a8@huawei.com/">Salil Mehta via</a>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20230926100436.28284-1-salil.mehta@huawei.com \n    --to=qemu-devel@nongnu.org \n    --cc=alex.bennee@linaro.org \n    --cc=andrew.jones@linux.dev \n    --cc=ardb@kernel.org \n    --cc=borntraeger@linux.ibm.com \n    --cc=darren@os.amperecomputing.com \n    --cc=david@redhat.com \n    --cc=eric.auger@redhat.com \n    --cc=gshan@redhat.com \n    --cc=ilkka@os.amperecomputing.com \n    --cc=imammedo@redhat.com \n    --cc=jean-philippe@linaro.org \n    --cc=jiakernel2@gmail.com \n    --cc=jonathan.cameron@huawei.com \n    --cc=karl.heubaum@oracle.com \n    --cc=linux@armlinux.org.uk \n    --cc=lixianglai@loongson.cn \n    --cc=lpieralisi@kernel.org \n    --cc=maobibo@loongson.cn \n    --cc=maz@kernel.org \n    --cc=miguel.luis@oracle.com \n    --cc=mst@redhat.com \n    --cc=oliver.upton@linux.dev \n    --cc=pbonzini@redhat.com \n    --cc=peter.maydell@linaro.org \n    --cc=philmd@linaro.org \n    --cc=qemu-arm@nongnu.org \n    --cc=rafael@kernel.org \n    --cc=richard.henderson@linaro.org \n    --cc=salil.mehta@huawei.com \n    --cc=salil.mehta@opnsrc.net \n    --cc=vishnu@os.amperecomputing.com \n    --cc=wangxiongfeng2@huawei.com \n    --cc=wangyanan55@huawei.com \n    --cc=will@kernel.org \n    --cc=zhukeqian1@huawei.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:qemu-devel@nongnu.org?In-Reply-To=%3C20230926100436.28284-1-salil.mehta@huawei.com%3E&amp;Cc=alex.bennee%40linaro.org%2Candrew.jones%40linux.dev%2Cardb%40kernel.org%2Cborntraeger%40linux.ibm.com%2Cdarren%40os.amperecomputing.com%2Cdavid%40redhat.com%2Ceric.auger%40redhat.com%2Cgshan%40redhat.com%2Cilkka%40os.amperecomputing.com%2Cimammedo%40redhat.com%2Cjean-philippe%40linaro.org%2Cjiakernel2%40gmail.com%2Cjonathan.cameron%40huawei.com%2Ckarl.heubaum%40oracle.com%2Clinux%40armlinux.org.uk%2Clixianglai%40loongson.cn%2Clpieralisi%40kernel.org%2Cmaobibo%40loongson.cn%2Cmaz%40kernel.org%2Cmiguel.luis%40oracle.com%2Cmst%40redhat.com%2Coliver.upton%40linux.dev%2Cpbonzini%40redhat.com%2Cpeter.maydell%40linaro.org%2Cphilmd%40linaro.org%2Cqemu-arm%40nongnu.org%2Crafael%40kernel.org%2Crichard.henderson%40linaro.org%2Csalil.mehta%40huawei.com%2Csalil.mehta%40opnsrc.net%2Cvishnu%40os.amperecomputing.com%2Cwangxiongfeng2%40huawei.com%2Cwangyanan55%40huawei.com%2Cwill%40kernel.org%2Czhukeqian1%40huawei.com&amp;Subject=Re%3A%20%5BPATCH%20RFC%20V2%2000%2F37%5D%20Support%20of%20Virtual%20CPU%20Hotplug%20for%20ARMv8%20Arch">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
