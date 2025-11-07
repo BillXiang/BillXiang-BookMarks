@@ -1,0 +1,1678 @@
+<!-- Filename: 书签工具栏/虚拟化/qemu/热插拔/[RFC PATCH v2 00_35] ACPI_arm64_ add support for virtual cpuhotplug - James Morse (2025-11-07 15：29：21).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/all/20230913163823.7880-1-james.morse@arm.com/
+ Summary: 
+-->
+<html><head><title>[RFC PATCH v2 00/35] ACPI/arm64: add support for virtual cpuhotplug - James Morse</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20230913163841"><b>All of lore.kernel.org</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: James Morse &lt;james.morse@arm.com&gt;
+To: <a href="../../linux-pm/?t=20230913163841">linux-pm@vger.kernel.org</a>, <a href="../../loongarch/?t=20230913163841">loongarch@lists.linux.dev</a>,
+	<a href="../../linux-acpi/?t=20230913163841">linux-acpi@vger.kernel.org</a>, <a href="../../linux-arch/?t=20230913163841">linux-arch@vger.kernel.org</a>,
+	<a href="../../lkml/?t=20230913163841">linux-kernel@vger.kernel.org</a>,
+	<a href="../../linux-arm-kernel/?t=20230913163841">linux-arm-kernel@lists.infradead.org</a>,
+	<a href="../../linux-riscv/?t=20230913163841">linux-riscv@lists.infradead.org</a>, kvmarm@lists.linux.dev
+Cc: x86@kernel.org, Salil Mehta &lt;salil.mehta@huawei.com&gt;,
+	Russell King &lt;linux@armlinux.org.uk&gt;,
+	Jean-Philippe Brucker &lt;jean-philippe@linaro.org&gt;,
+	jianyong.wu@arm.com, justin.he@arm.com
+Subject: <a href="#r" id="t">[RFC PATCH v2 00/35] ACPI/arm64: add support for virtual cpuhotplug</a>
+Date: Wed, 13 Sep 2023 16:37:48 +0000	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20230913163823.7880-1-james.morse@arm.com&gt; (<a href="raw">raw</a>)
+
+Hello!
+
+Changes since RFC-v1:
+ * riscv is new, ia64 is gone
+ * The KVM support is different, and upstream - no need to patch the host.
+
+---
+
+This series adds what looks like cpuhotplug support to arm64 for use in
+virtual machines. It does this by moving the cpu_register() calls for
+architectures that support ACPI out of the arch code by using
+GENERIC_CPU_DEVICES, then into the ACPI processor driver.
+
+The kubernetes folk really want to be able to add CPUs to an existing VM,
+in exactly the same way they do on x86. The use-case is pre-booting guests
+with one CPU, then adding the number that were actually needed when the
+workload is provisioned.
+
+Wait? Doesn't arm64 support cpuhotplug already!?
+In the arm world, cpuhotplug gets used to mean removing the power from a CPU.
+The CPU is offline, and remains present. For x86, and ACPI, cpuhotplug
+has the additional step of physically removing the CPU, so that it isn't
+present anymore.
+
+Arm64 doesn't support this, and can't support it: CPUs are really a slice
+of the SoC, and there is not enough information in the existing ACPI tables
+to describe which bits of the slice also got removed. Without a reference
+machine: adding this support to the spec is a wild goose chase.
+
+Critically: everything described in the firmware tables must remain present.
+
+For a virtual machine this is easy as all the other bits of 'virtual SoC'
+are emulated, so they can (and do) remain present when a vCPU is 'removed'.
+
+On a system that supports cpuhotplug the MADT has to describe every possible
+CPU at boot. Under KVM, the vGIC needs to know about every possible vCPU before
+the guest is started.
+With these constraints, virtual-cpuhotplug is really just a hypervisor/firmware
+policy about which CPUs can be brought online.
+
+This series adds support for virtual-cpuhotplug as exactly that: firmware
+policy. This may even work on a physical machine too; for a guest the part of
+firmware is played by the VMM. (typically Qemu).
+
+PSCI support is modified to return 'DENIED' if the CPU can't be brought
+online/enabled yet. The CPU object's _STA method's enabled bit is used to
+indicate firmware's current disposition. If the CPU has its enabled bit clear,
+it will not be registered with sysfs, and attempts to bring it online will
+fail. The notifications that _STA has changed its value then work in the same
+way as physical hotplug, and firmware can cause the CPU to be registered some
+time later, allowing it to be brought online.
+
+This creates something that looks like cpuhotplug to user-space, as the sysfs
+files appear and disappear, and the udev notifications look the same.
+
+One notable difference is the CPU present mask, which is exposed via sysfs.
+Because the CPUs remain present throughout, they can still be seen in that mask.
+This value does get used by webbrowsers to estimate the number of CPUs
+as the CPU online mask is constantly changed on mobile phones.
+
+Linux is tolerant of PSCI returning errors, as its always been allowed to do
+that. To avoid confusing OS that can't tolerate this, we needed an additional
+bit in the MADT GICC flags. This series copies ACPI_MADT_ONLINE_CAPABLE, which
+appears to be for this purpose, but calls it ACPI_MADT_GICC_CPU_CAPABLE as it
+has a different bit position in the GICC.
+
+This code is unconditionally enabled for all ACPI architectures.
+If there are problems with firmware tables on some devices, the CPUs will
+already be online by the time the acpi_processor_make_enabled() is called.
+A mismatch here causes a firmware-bug message and kernel taint. This should
+only affect people with broken firmware who also boot with maxcpus=1, and
+bring CPUs online later.
+
+I had a go at switching the remaining architectures over to GENERIC_CPU_DEVICES,
+so that the Kconfig symbol can be removed, but I got stuck with powerpc
+and s390.
+
+I've only build tested Loongarch and riscv. I've removed the ia64 specific
+patches, but left the changes in other patches to make git-grep review of
+renames easier.
+
+If folk want to play along at home, you'll need a copy of Qemu that supports this.
+<a href="https://github.com/salil-mehta/qemu.git">https://github.com/salil-mehta/qemu.git</a> salil/virt-cpuhp-armv8/rfc-v2-rc6
+
+Replace your '-smp' argument with something like:
+| -smp cpus=1,maxcpus=3,cores=3,threads=1,sockets=1
+
+then feed the following to the Qemu montior;
+| (qemu) device_add driver=host-arm-cpu,core-id=1,id=cpu1
+| (qemu) device_del cpu1
+
+
+Why is this still an RFC? I'm still looking for confirmation from the
+kubernetes/kata folk that this works for them. Because of this I've culled
+the CC list...
+
+
+This series is based on v6.6-rc1, and can be retrieved from:
+<a href="https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/">https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/</a> virtual_cpu_hotplug/rfc/v2
+
+
+Thanks,
+
+James Morse (34):
+  ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64 and riscv
+  drivers: base: Use present CPUs in GENERIC_CPU_DEVICES
+  drivers: base: Allow parts of GENERIC_CPU_DEVICES to be overridden
+  drivers: base: Move cpu_dev_init() after node_dev_init()
+  drivers: base: Print a warning instead of panic() when register_cpu()
+    fails
+  arm64: setup: Switch over to GENERIC_CPU_DEVICES using
+    arch_register_cpu()
+  x86: intel_epb: Don't rely on link order
+  x86/topology: Switch over to GENERIC_CPU_DEVICES
+  LoongArch: Switch over to GENERIC_CPU_DEVICES
+  riscv: Switch over to GENERIC_CPU_DEVICES
+  arch_topology: Make register_cpu_capacity_sysctl() tolerant to late
+    CPUs
+  ACPI: Use the acpi_device_is_present() helper in more places
+  ACPI: Rename acpi_scan_device_not_present() to be about enumeration
+  ACPI: Only enumerate enabled (or functional) devices
+  ACPI: processor: Add support for processors described as container
+    packages
+  ACPI: processor: Register CPUs that are online, but not described in
+    the DSDT
+  ACPI: processor: Register all CPUs from acpi_processor_get_info()
+  ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'
+  ACPI: Move acpi_bus_trim_one() before acpi_scan_hot_remove()
+  ACPI: Rename acpi_processor_hotadd_init and remove pre-processor
+    guards
+  ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+  ACPI: Check _STA present bit before making CPUs not present
+  ACPI: Warn when the present bit changes but the feature is not enabled
+  drivers: base: Implement weak arch_unregister_cpu()
+  LoongArch: Use the __weak version of arch_unregister_cpu()
+  arm64: acpi: Move get_cpu_for_acpi_id() to a header
+  ACPICA: Add new MADT GICC flags fields [code first?]
+  arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a
+    helper
+  irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
+  irqchip/gic-v3: Add support for ACPI's disabled but 'online capable'
+    CPUs
+  ACPI: add support to register CPUs based on the _STA enabled bit
+  arm64: document virtual CPU hotplug's expectations
+  ACPI: Add _OSC bits to advertise OS support for toggling CPU
+    present/enabled
+  cpumask: Add enabled cpumask for present CPUs that can be brought
+    online
+
+Jean-Philippe Brucker (1):
+  arm64: psci: Ignore DENIED CPUs
+
+ Documentation/arch/arm64/cpu-hotplug.rst   |  79 ++++++++++
+ Documentation/arch/arm64/index.rst         |   1 +
+ arch/arm64/Kconfig                         |   1 +
+ arch/arm64/include/asm/acpi.h              |  11 ++
+ arch/arm64/include/asm/cpu.h               |   1 -
+ arch/arm64/kernel/acpi_numa.c              |  11 --
+ arch/arm64/kernel/psci.c                   |   2 +-
+ arch/arm64/kernel/setup.c                  |  13 +-
+ arch/arm64/kernel/smp.c                    |   5 +-
+ arch/ia64/Kconfig                          |   2 +
+ arch/ia64/include/asm/acpi.h               |   2 +-
+ arch/ia64/include/asm/cpu.h                |   5 -
+ arch/ia64/kernel/acpi.c                    |   6 +-
+ arch/ia64/kernel/setup.c                   |   2 +-
+ arch/ia64/kernel/topology.c                |   2 +-
+ arch/loongarch/Kconfig                     |   2 +
+ arch/loongarch/configs/loongson3_defconfig |   2 +-
+ arch/loongarch/kernel/acpi.c               |   4 +-
+ arch/loongarch/kernel/topology.c           |  38 +----
+ arch/riscv/Kconfig                         |   1 +
+ arch/riscv/kernel/setup.c                  |  19 +--
+ arch/x86/Kconfig                           |   3 +
+ arch/x86/include/asm/cpu.h                 |   6 -
+ arch/x86/kernel/acpi/boot.c                |   4 +-
+ arch/x86/kernel/cpu/intel_epb.c            |   2 +-
+ arch/x86/kernel/topology.c                 |  25 +---
+ drivers/acpi/Kconfig                       |  14 +-
+ drivers/acpi/acpi_processor.c              | 160 ++++++++++++++++-----
+ drivers/acpi/bus.c                         |  16 +++
+ drivers/acpi/device_pm.c                   |   2 +-
+ drivers/acpi/device_sysfs.c                |   2 +-
+ drivers/acpi/internal.h                    |   1 -
+ drivers/acpi/processor_core.c              |   2 +-
+ drivers/acpi/property.c                    |   2 +-
+ drivers/acpi/scan.c                        | 147 ++++++++++++-------
+ drivers/base/arch_topology.c               |  38 +++--
+ drivers/base/cpu.c                         |  40 ++++--
+ drivers/base/init.c                        |   2 +-
+ drivers/firmware/psci/psci.c               |   2 +
+ drivers/irqchip/irq-gic-v3.c               |  38 ++---
+ include/acpi/acpi_bus.h                    |   1 +
+ include/acpi/actbl2.h                      |   1 +
+ include/acpi/processor.h                   |   2 +-
+ include/linux/acpi.h                       |  14 +-
+ include/linux/cpu.h                        |   6 +
+ include/linux/cpumask.h                    |  25 ++++
+ kernel/cpu.c                               |   3 +
+ 47 files changed, 516 insertions(+), 251 deletions(-)
+ create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
+
+-- 
+2.39.2
+
+</pre><hr><pre>WARNING: multiple messages have this Message-ID (<a href="d/">diff</a>)</pre><pre>From: James Morse &lt;james.morse@arm.com&gt;
+To: <a href="../../linux-pm/?t=20230913163918">linux-pm@vger.kernel.org</a>, <a href="../../loongarch/?t=20230913163918">loongarch@lists.linux.dev</a>,
+	<a href="../../linux-acpi/?t=20230913163918">linux-acpi@vger.kernel.org</a>, <a href="../../linux-arch/?t=20230913163918">linux-arch@vger.kernel.org</a>,
+	<a href="../../lkml/?t=20230913163918">linux-kernel@vger.kernel.org</a>,
+	<a href="../../linux-arm-kernel/?t=20230913163918">linux-arm-kernel@lists.infradead.org</a>,
+	<a href="../../linux-riscv/?t=20230913163918">linux-riscv@lists.infradead.org</a>, kvmarm@lists.linux.dev
+Cc: x86@kernel.org, Salil Mehta &lt;salil.mehta@huawei.com&gt;,
+	Russell King &lt;linux@armlinux.org.uk&gt;,
+	Jean-Philippe Brucker &lt;jean-philippe@linaro.org&gt;,
+	jianyong.wu@arm.com, justin.he@arm.com
+Subject: <a href="#r" id="t">[RFC PATCH v2 00/35] ACPI/arm64: add support for virtual cpuhotplug</a>
+Date: Wed, 13 Sep 2023 16:37:48 +0000	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20230913163823.7880-1-james.morse@arm.com&gt; (<a href="raw">raw</a>)
+
+Hello!
+
+Changes since RFC-v1:
+ * riscv is new, ia64 is gone
+ * The KVM support is different, and upstream - no need to patch the host.
+
+---
+
+This series adds what looks like cpuhotplug support to arm64 for use in
+virtual machines. It does this by moving the cpu_register() calls for
+architectures that support ACPI out of the arch code by using
+GENERIC_CPU_DEVICES, then into the ACPI processor driver.
+
+The kubernetes folk really want to be able to add CPUs to an existing VM,
+in exactly the same way they do on x86. The use-case is pre-booting guests
+with one CPU, then adding the number that were actually needed when the
+workload is provisioned.
+
+Wait? Doesn't arm64 support cpuhotplug already!?
+In the arm world, cpuhotplug gets used to mean removing the power from a CPU.
+The CPU is offline, and remains present. For x86, and ACPI, cpuhotplug
+has the additional step of physically removing the CPU, so that it isn't
+present anymore.
+
+Arm64 doesn't support this, and can't support it: CPUs are really a slice
+of the SoC, and there is not enough information in the existing ACPI tables
+to describe which bits of the slice also got removed. Without a reference
+machine: adding this support to the spec is a wild goose chase.
+
+Critically: everything described in the firmware tables must remain present.
+
+For a virtual machine this is easy as all the other bits of 'virtual SoC'
+are emulated, so they can (and do) remain present when a vCPU is 'removed'.
+
+On a system that supports cpuhotplug the MADT has to describe every possible
+CPU at boot. Under KVM, the vGIC needs to know about every possible vCPU before
+the guest is started.
+With these constraints, virtual-cpuhotplug is really just a hypervisor/firmware
+policy about which CPUs can be brought online.
+
+This series adds support for virtual-cpuhotplug as exactly that: firmware
+policy. This may even work on a physical machine too; for a guest the part of
+firmware is played by the VMM. (typically Qemu).
+
+PSCI support is modified to return 'DENIED' if the CPU can't be brought
+online/enabled yet. The CPU object's _STA method's enabled bit is used to
+indicate firmware's current disposition. If the CPU has its enabled bit clear,
+it will not be registered with sysfs, and attempts to bring it online will
+fail. The notifications that _STA has changed its value then work in the same
+way as physical hotplug, and firmware can cause the CPU to be registered some
+time later, allowing it to be brought online.
+
+This creates something that looks like cpuhotplug to user-space, as the sysfs
+files appear and disappear, and the udev notifications look the same.
+
+One notable difference is the CPU present mask, which is exposed via sysfs.
+Because the CPUs remain present throughout, they can still be seen in that mask.
+This value does get used by webbrowsers to estimate the number of CPUs
+as the CPU online mask is constantly changed on mobile phones.
+
+Linux is tolerant of PSCI returning errors, as its always been allowed to do
+that. To avoid confusing OS that can't tolerate this, we needed an additional
+bit in the MADT GICC flags. This series copies ACPI_MADT_ONLINE_CAPABLE, which
+appears to be for this purpose, but calls it ACPI_MADT_GICC_CPU_CAPABLE as it
+has a different bit position in the GICC.
+
+This code is unconditionally enabled for all ACPI architectures.
+If there are problems with firmware tables on some devices, the CPUs will
+already be online by the time the acpi_processor_make_enabled() is called.
+A mismatch here causes a firmware-bug message and kernel taint. This should
+only affect people with broken firmware who also boot with maxcpus=1, and
+bring CPUs online later.
+
+I had a go at switching the remaining architectures over to GENERIC_CPU_DEVICES,
+so that the Kconfig symbol can be removed, but I got stuck with powerpc
+and s390.
+
+I've only build tested Loongarch and riscv. I've removed the ia64 specific
+patches, but left the changes in other patches to make git-grep review of
+renames easier.
+
+If folk want to play along at home, you'll need a copy of Qemu that supports this.
+<a href="https://github.com/salil-mehta/qemu.git">https://github.com/salil-mehta/qemu.git</a> salil/virt-cpuhp-armv8/rfc-v2-rc6
+
+Replace your '-smp' argument with something like:
+| -smp cpus=1,maxcpus=3,cores=3,threads=1,sockets=1
+
+then feed the following to the Qemu montior;
+| (qemu) device_add driver=host-arm-cpu,core-id=1,id=cpu1
+| (qemu) device_del cpu1
+
+
+Why is this still an RFC? I'm still looking for confirmation from the
+kubernetes/kata folk that this works for them. Because of this I've culled
+the CC list...
+
+
+This series is based on v6.6-rc1, and can be retrieved from:
+<a href="https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/">https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/</a> virtual_cpu_hotplug/rfc/v2
+
+
+Thanks,
+
+James Morse (34):
+  ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64 and riscv
+  drivers: base: Use present CPUs in GENERIC_CPU_DEVICES
+  drivers: base: Allow parts of GENERIC_CPU_DEVICES to be overridden
+  drivers: base: Move cpu_dev_init() after node_dev_init()
+  drivers: base: Print a warning instead of panic() when register_cpu()
+    fails
+  arm64: setup: Switch over to GENERIC_CPU_DEVICES using
+    arch_register_cpu()
+  x86: intel_epb: Don't rely on link order
+  x86/topology: Switch over to GENERIC_CPU_DEVICES
+  LoongArch: Switch over to GENERIC_CPU_DEVICES
+  riscv: Switch over to GENERIC_CPU_DEVICES
+  arch_topology: Make register_cpu_capacity_sysctl() tolerant to late
+    CPUs
+  ACPI: Use the acpi_device_is_present() helper in more places
+  ACPI: Rename acpi_scan_device_not_present() to be about enumeration
+  ACPI: Only enumerate enabled (or functional) devices
+  ACPI: processor: Add support for processors described as container
+    packages
+  ACPI: processor: Register CPUs that are online, but not described in
+    the DSDT
+  ACPI: processor: Register all CPUs from acpi_processor_get_info()
+  ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'
+  ACPI: Move acpi_bus_trim_one() before acpi_scan_hot_remove()
+  ACPI: Rename acpi_processor_hotadd_init and remove pre-processor
+    guards
+  ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+  ACPI: Check _STA present bit before making CPUs not present
+  ACPI: Warn when the present bit changes but the feature is not enabled
+  drivers: base: Implement weak arch_unregister_cpu()
+  LoongArch: Use the __weak version of arch_unregister_cpu()
+  arm64: acpi: Move get_cpu_for_acpi_id() to a header
+  ACPICA: Add new MADT GICC flags fields [code first?]
+  arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a
+    helper
+  irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
+  irqchip/gic-v3: Add support for ACPI's disabled but 'online capable'
+    CPUs
+  ACPI: add support to register CPUs based on the _STA enabled bit
+  arm64: document virtual CPU hotplug's expectations
+  ACPI: Add _OSC bits to advertise OS support for toggling CPU
+    present/enabled
+  cpumask: Add enabled cpumask for present CPUs that can be brought
+    online
+
+Jean-Philippe Brucker (1):
+  arm64: psci: Ignore DENIED CPUs
+
+ Documentation/arch/arm64/cpu-hotplug.rst   |  79 ++++++++++
+ Documentation/arch/arm64/index.rst         |   1 +
+ arch/arm64/Kconfig                         |   1 +
+ arch/arm64/include/asm/acpi.h              |  11 ++
+ arch/arm64/include/asm/cpu.h               |   1 -
+ arch/arm64/kernel/acpi_numa.c              |  11 --
+ arch/arm64/kernel/psci.c                   |   2 +-
+ arch/arm64/kernel/setup.c                  |  13 +-
+ arch/arm64/kernel/smp.c                    |   5 +-
+ arch/ia64/Kconfig                          |   2 +
+ arch/ia64/include/asm/acpi.h               |   2 +-
+ arch/ia64/include/asm/cpu.h                |   5 -
+ arch/ia64/kernel/acpi.c                    |   6 +-
+ arch/ia64/kernel/setup.c                   |   2 +-
+ arch/ia64/kernel/topology.c                |   2 +-
+ arch/loongarch/Kconfig                     |   2 +
+ arch/loongarch/configs/loongson3_defconfig |   2 +-
+ arch/loongarch/kernel/acpi.c               |   4 +-
+ arch/loongarch/kernel/topology.c           |  38 +----
+ arch/riscv/Kconfig                         |   1 +
+ arch/riscv/kernel/setup.c                  |  19 +--
+ arch/x86/Kconfig                           |   3 +
+ arch/x86/include/asm/cpu.h                 |   6 -
+ arch/x86/kernel/acpi/boot.c                |   4 +-
+ arch/x86/kernel/cpu/intel_epb.c            |   2 +-
+ arch/x86/kernel/topology.c                 |  25 +---
+ drivers/acpi/Kconfig                       |  14 +-
+ drivers/acpi/acpi_processor.c              | 160 ++++++++++++++++-----
+ drivers/acpi/bus.c                         |  16 +++
+ drivers/acpi/device_pm.c                   |   2 +-
+ drivers/acpi/device_sysfs.c                |   2 +-
+ drivers/acpi/internal.h                    |   1 -
+ drivers/acpi/processor_core.c              |   2 +-
+ drivers/acpi/property.c                    |   2 +-
+ drivers/acpi/scan.c                        | 147 ++++++++++++-------
+ drivers/base/arch_topology.c               |  38 +++--
+ drivers/base/cpu.c                         |  40 ++++--
+ drivers/base/init.c                        |   2 +-
+ drivers/firmware/psci/psci.c               |   2 +
+ drivers/irqchip/irq-gic-v3.c               |  38 ++---
+ include/acpi/acpi_bus.h                    |   1 +
+ include/acpi/actbl2.h                      |   1 +
+ include/acpi/processor.h                   |   2 +-
+ include/linux/acpi.h                       |  14 +-
+ include/linux/cpu.h                        |   6 +
+ include/linux/cpumask.h                    |  25 ++++
+ kernel/cpu.c                               |   3 +
+ 47 files changed, 516 insertions(+), 251 deletions(-)
+ create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
+
+-- 
+2.39.2
+
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-arm-kernel">http://lists.infradead.org/mailman/listinfo/linux-arm-kernel</a>
+</pre><hr><pre>WARNING: multiple messages have this Message-ID (<a href="d/">diff</a>)</pre><pre>From: James Morse &lt;james.morse@arm.com&gt;
+To: <a href="../../linux-pm/?t=20230913163856">linux-pm@vger.kernel.org</a>, <a href="../../loongarch/?t=20230913163856">loongarch@lists.linux.dev</a>,
+	<a href="../../linux-acpi/?t=20230913163856">linux-acpi@vger.kernel.org</a>, <a href="../../linux-arch/?t=20230913163856">linux-arch@vger.kernel.org</a>,
+	<a href="../../lkml/?t=20230913163856">linux-kernel@vger.kernel.org</a>,
+	<a href="../../linux-arm-kernel/?t=20230913163856">linux-arm-kernel@lists.infradead.org</a>,
+	<a href="../../linux-riscv/?t=20230913163856">linux-riscv@lists.infradead.org</a>, kvmarm@lists.linux.dev
+Cc: x86@kernel.org, Salil Mehta &lt;salil.mehta@huawei.com&gt;,
+	Russell King &lt;linux@armlinux.org.uk&gt;,
+	Jean-Philippe Brucker &lt;jean-philippe@linaro.org&gt;,
+	jianyong.wu@arm.com, justin.he@arm.com
+Subject: <a href="#r" id="t">[RFC PATCH v2 00/35] ACPI/arm64: add support for virtual cpuhotplug</a>
+Date: Wed, 13 Sep 2023 16:37:48 +0000	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20230913163823.7880-1-james.morse@arm.com&gt; (<a href="raw">raw</a>)
+
+Hello!
+
+Changes since RFC-v1:
+ * riscv is new, ia64 is gone
+ * The KVM support is different, and upstream - no need to patch the host.
+
+---
+
+This series adds what looks like cpuhotplug support to arm64 for use in
+virtual machines. It does this by moving the cpu_register() calls for
+architectures that support ACPI out of the arch code by using
+GENERIC_CPU_DEVICES, then into the ACPI processor driver.
+
+The kubernetes folk really want to be able to add CPUs to an existing VM,
+in exactly the same way they do on x86. The use-case is pre-booting guests
+with one CPU, then adding the number that were actually needed when the
+workload is provisioned.
+
+Wait? Doesn't arm64 support cpuhotplug already!?
+In the arm world, cpuhotplug gets used to mean removing the power from a CPU.
+The CPU is offline, and remains present. For x86, and ACPI, cpuhotplug
+has the additional step of physically removing the CPU, so that it isn't
+present anymore.
+
+Arm64 doesn't support this, and can't support it: CPUs are really a slice
+of the SoC, and there is not enough information in the existing ACPI tables
+to describe which bits of the slice also got removed. Without a reference
+machine: adding this support to the spec is a wild goose chase.
+
+Critically: everything described in the firmware tables must remain present.
+
+For a virtual machine this is easy as all the other bits of 'virtual SoC'
+are emulated, so they can (and do) remain present when a vCPU is 'removed'.
+
+On a system that supports cpuhotplug the MADT has to describe every possible
+CPU at boot. Under KVM, the vGIC needs to know about every possible vCPU before
+the guest is started.
+With these constraints, virtual-cpuhotplug is really just a hypervisor/firmware
+policy about which CPUs can be brought online.
+
+This series adds support for virtual-cpuhotplug as exactly that: firmware
+policy. This may even work on a physical machine too; for a guest the part of
+firmware is played by the VMM. (typically Qemu).
+
+PSCI support is modified to return 'DENIED' if the CPU can't be brought
+online/enabled yet. The CPU object's _STA method's enabled bit is used to
+indicate firmware's current disposition. If the CPU has its enabled bit clear,
+it will not be registered with sysfs, and attempts to bring it online will
+fail. The notifications that _STA has changed its value then work in the same
+way as physical hotplug, and firmware can cause the CPU to be registered some
+time later, allowing it to be brought online.
+
+This creates something that looks like cpuhotplug to user-space, as the sysfs
+files appear and disappear, and the udev notifications look the same.
+
+One notable difference is the CPU present mask, which is exposed via sysfs.
+Because the CPUs remain present throughout, they can still be seen in that mask.
+This value does get used by webbrowsers to estimate the number of CPUs
+as the CPU online mask is constantly changed on mobile phones.
+
+Linux is tolerant of PSCI returning errors, as its always been allowed to do
+that. To avoid confusing OS that can't tolerate this, we needed an additional
+bit in the MADT GICC flags. This series copies ACPI_MADT_ONLINE_CAPABLE, which
+appears to be for this purpose, but calls it ACPI_MADT_GICC_CPU_CAPABLE as it
+has a different bit position in the GICC.
+
+This code is unconditionally enabled for all ACPI architectures.
+If there are problems with firmware tables on some devices, the CPUs will
+already be online by the time the acpi_processor_make_enabled() is called.
+A mismatch here causes a firmware-bug message and kernel taint. This should
+only affect people with broken firmware who also boot with maxcpus=1, and
+bring CPUs online later.
+
+I had a go at switching the remaining architectures over to GENERIC_CPU_DEVICES,
+so that the Kconfig symbol can be removed, but I got stuck with powerpc
+and s390.
+
+I've only build tested Loongarch and riscv. I've removed the ia64 specific
+patches, but left the changes in other patches to make git-grep review of
+renames easier.
+
+If folk want to play along at home, you'll need a copy of Qemu that supports this.
+<a href="https://github.com/salil-mehta/qemu.git">https://github.com/salil-mehta/qemu.git</a> salil/virt-cpuhp-armv8/rfc-v2-rc6
+
+Replace your '-smp' argument with something like:
+| -smp cpus=1,maxcpus=3,cores=3,threads=1,sockets=1
+
+then feed the following to the Qemu montior;
+| (qemu) device_add driver=host-arm-cpu,core-id=1,id=cpu1
+| (qemu) device_del cpu1
+
+
+Why is this still an RFC? I'm still looking for confirmation from the
+kubernetes/kata folk that this works for them. Because of this I've culled
+the CC list...
+
+
+This series is based on v6.6-rc1, and can be retrieved from:
+<a href="https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/">https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/</a> virtual_cpu_hotplug/rfc/v2
+
+
+Thanks,
+
+James Morse (34):
+  ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64 and riscv
+  drivers: base: Use present CPUs in GENERIC_CPU_DEVICES
+  drivers: base: Allow parts of GENERIC_CPU_DEVICES to be overridden
+  drivers: base: Move cpu_dev_init() after node_dev_init()
+  drivers: base: Print a warning instead of panic() when register_cpu()
+    fails
+  arm64: setup: Switch over to GENERIC_CPU_DEVICES using
+    arch_register_cpu()
+  x86: intel_epb: Don't rely on link order
+  x86/topology: Switch over to GENERIC_CPU_DEVICES
+  LoongArch: Switch over to GENERIC_CPU_DEVICES
+  riscv: Switch over to GENERIC_CPU_DEVICES
+  arch_topology: Make register_cpu_capacity_sysctl() tolerant to late
+    CPUs
+  ACPI: Use the acpi_device_is_present() helper in more places
+  ACPI: Rename acpi_scan_device_not_present() to be about enumeration
+  ACPI: Only enumerate enabled (or functional) devices
+  ACPI: processor: Add support for processors described as container
+    packages
+  ACPI: processor: Register CPUs that are online, but not described in
+    the DSDT
+  ACPI: processor: Register all CPUs from acpi_processor_get_info()
+  ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'
+  ACPI: Move acpi_bus_trim_one() before acpi_scan_hot_remove()
+  ACPI: Rename acpi_processor_hotadd_init and remove pre-processor
+    guards
+  ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+  ACPI: Check _STA present bit before making CPUs not present
+  ACPI: Warn when the present bit changes but the feature is not enabled
+  drivers: base: Implement weak arch_unregister_cpu()
+  LoongArch: Use the __weak version of arch_unregister_cpu()
+  arm64: acpi: Move get_cpu_for_acpi_id() to a header
+  ACPICA: Add new MADT GICC flags fields [code first?]
+  arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a
+    helper
+  irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
+  irqchip/gic-v3: Add support for ACPI's disabled but 'online capable'
+    CPUs
+  ACPI: add support to register CPUs based on the _STA enabled bit
+  arm64: document virtual CPU hotplug's expectations
+  ACPI: Add _OSC bits to advertise OS support for toggling CPU
+    present/enabled
+  cpumask: Add enabled cpumask for present CPUs that can be brought
+    online
+
+Jean-Philippe Brucker (1):
+  arm64: psci: Ignore DENIED CPUs
+
+ Documentation/arch/arm64/cpu-hotplug.rst   |  79 ++++++++++
+ Documentation/arch/arm64/index.rst         |   1 +
+ arch/arm64/Kconfig                         |   1 +
+ arch/arm64/include/asm/acpi.h              |  11 ++
+ arch/arm64/include/asm/cpu.h               |   1 -
+ arch/arm64/kernel/acpi_numa.c              |  11 --
+ arch/arm64/kernel/psci.c                   |   2 +-
+ arch/arm64/kernel/setup.c                  |  13 +-
+ arch/arm64/kernel/smp.c                    |   5 +-
+ arch/ia64/Kconfig                          |   2 +
+ arch/ia64/include/asm/acpi.h               |   2 +-
+ arch/ia64/include/asm/cpu.h                |   5 -
+ arch/ia64/kernel/acpi.c                    |   6 +-
+ arch/ia64/kernel/setup.c                   |   2 +-
+ arch/ia64/kernel/topology.c                |   2 +-
+ arch/loongarch/Kconfig                     |   2 +
+ arch/loongarch/configs/loongson3_defconfig |   2 +-
+ arch/loongarch/kernel/acpi.c               |   4 +-
+ arch/loongarch/kernel/topology.c           |  38 +----
+ arch/riscv/Kconfig                         |   1 +
+ arch/riscv/kernel/setup.c                  |  19 +--
+ arch/x86/Kconfig                           |   3 +
+ arch/x86/include/asm/cpu.h                 |   6 -
+ arch/x86/kernel/acpi/boot.c                |   4 +-
+ arch/x86/kernel/cpu/intel_epb.c            |   2 +-
+ arch/x86/kernel/topology.c                 |  25 +---
+ drivers/acpi/Kconfig                       |  14 +-
+ drivers/acpi/acpi_processor.c              | 160 ++++++++++++++++-----
+ drivers/acpi/bus.c                         |  16 +++
+ drivers/acpi/device_pm.c                   |   2 +-
+ drivers/acpi/device_sysfs.c                |   2 +-
+ drivers/acpi/internal.h                    |   1 -
+ drivers/acpi/processor_core.c              |   2 +-
+ drivers/acpi/property.c                    |   2 +-
+ drivers/acpi/scan.c                        | 147 ++++++++++++-------
+ drivers/base/arch_topology.c               |  38 +++--
+ drivers/base/cpu.c                         |  40 ++++--
+ drivers/base/init.c                        |   2 +-
+ drivers/firmware/psci/psci.c               |   2 +
+ drivers/irqchip/irq-gic-v3.c               |  38 ++---
+ include/acpi/acpi_bus.h                    |   1 +
+ include/acpi/actbl2.h                      |   1 +
+ include/acpi/processor.h                   |   2 +-
+ include/linux/acpi.h                       |  14 +-
+ include/linux/cpu.h                        |   6 +
+ include/linux/cpumask.h                    |  25 ++++
+ kernel/cpu.c                               |   3 +
+ 47 files changed, 516 insertions(+), 251 deletions(-)
+ create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
+
+-- 
+2.39.2
+
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre><a href="../20230913163823.7880-1-james.morse@arm.com/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20230913163841">~2023-09-13 16:38 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>456+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2023-09-13 16:37 <a id="r" href="#t">James Morse [this message]</a></b>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-1-james.morse@arm.com/">[RFC PATCH v2 00/35] ACPI/arm64: add support for virtual cpuhotplug</a> James Morse
+2023-09-13 16:37 ` <a href="../20230913163823.7880-1-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-2-james.morse@arm.com/">[RFC PATCH v2 01/35] ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64 and riscv</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-2-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-2-james.morse@arm.com/">James Morse</a>
+2023-09-14  8:54   ` <a href="../ZQLKYCmOT%2FHnAYL1@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:54     ` <a href="../ZQLKYCmOT%2FHnAYL1@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:54     ` <a href="../ZQLKYCmOT%2FHnAYL1@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-3-james.morse@arm.com/">[RFC PATCH v2 02/35] drivers: base: Use present CPUs in GENERIC_CPU_DEVICES</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-3-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-3-james.morse@arm.com/">James Morse</a>
+2023-09-14  8:20   ` <a href="../ZQLCZsw+ZGbTM8oK@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:20     ` <a href="../ZQLCZsw+ZGbTM8oK@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:20     ` <a href="../ZQLCZsw+ZGbTM8oK@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:56     ` <a href="../20230914115613.0000778e@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 10:56       ` <a href="../20230914115613.0000778e@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 10:56       ` <a href="../20230914115613.0000778e@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:11       ` <a href="../ZQLqRzSeOlBiKCuB@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 11:11         ` <a href="../ZQLqRzSeOlBiKCuB@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 11:11         ` <a href="../ZQLqRzSeOlBiKCuB@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:56   ` <a href="../20230914115644.00005182@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 10:56     ` <a href="../20230914115644.00005182@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 10:56     ` <a href="../20230914115644.00005182@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-4-james.morse@arm.com/">[RFC PATCH v2 03/35] drivers: base: Allow parts of GENERIC_CPU_DEVICES to be overridden</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-4-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-4-james.morse@arm.com/">James Morse</a>
+2023-09-14  8:33   ` <a href="../ZQLFRQActkL7ke+l@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:33     ` <a href="../ZQLFRQActkL7ke+l@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:33     ` <a href="../ZQLFRQActkL7ke+l@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 11:00   ` <a href="../20230914120014.00002866@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:00     ` <a href="../20230914120014.00002866@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:00     ` <a href="../20230914120014.00002866@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:05   ` <a href="../20230914120519.0000247e@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:05     ` <a href="../20230914120519.0000247e@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:05     ` <a href="../20230914120519.0000247e@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-5-james.morse@arm.com/">[RFC PATCH v2 04/35] drivers: base: Move cpu_dev_init() after node_dev_init()</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-5-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-5-james.morse@arm.com/">James Morse</a>
+2023-09-14  9:40   ` <a href="../ZQLVKv6RgH%2FCM75O@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  9:40     ` <a href="../ZQLVKv6RgH%2FCM75O@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  9:40     ` <a href="../ZQLVKv6RgH%2FCM75O@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 11:16   ` <a href="../20230914121612.00006ac7@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:16     ` <a href="../20230914121612.00006ac7@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:16     ` <a href="../20230914121612.00006ac7@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-6-james.morse@arm.com/">[RFC PATCH v2 05/35] drivers: base: Print a warning instead of panic() when register_cpu() fails</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-6-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-6-james.morse@arm.com/">James Morse</a>
+2023-09-14  9:52   ` <a href="../ZQLX+XEe2gD%2FbtaQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  9:52     ` <a href="../ZQLX+XEe2gD%2FbtaQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  9:52     ` <a href="../ZQLX+XEe2gD%2FbtaQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-18  3:33   ` <a href="../2c23ab17-7516-e310-8b79-b8c5fc02984a@redhat.com/">Gavin Shan</a>
+2023-09-18  3:33     ` <a href="../2c23ab17-7516-e310-8b79-b8c5fc02984a@redhat.com/">Gavin Shan</a>
+2023-09-18  3:33     ` <a href="../2c23ab17-7516-e310-8b79-b8c5fc02984a@redhat.com/">Gavin Shan</a>
+2023-10-20 11:16     ` <a href="../ZTJhi6OVaTSEdvvf@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 11:16       ` <a href="../ZTJhi6OVaTSEdvvf@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 11:16       ` <a href="../ZTJhi6OVaTSEdvvf@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-7-james.morse@arm.com/">[RFC PATCH v2 06/35] arm64: setup: Switch over to GENERIC_CPU_DEVICES using arch_register_cpu()</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-7-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-7-james.morse@arm.com/">James Morse</a>
+2023-09-14  9:56   ` <a href="../ZQLYuo0J1WWunb5R@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  9:56     ` <a href="../ZQLYuo0J1WWunb5R@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  9:56     ` <a href="../ZQLYuo0J1WWunb5R@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 11:27   ` <a href="../20230914122715.000076be@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:27     ` <a href="../20230914122715.000076be@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:27     ` <a href="../20230914122715.000076be@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:07     ` <a href="../ZQMTmi7blj%2F4FpbI@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 14:07       ` <a href="../ZQMTmi7blj%2F4FpbI@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 14:07       ` <a href="../ZQMTmi7blj%2F4FpbI@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 14:56       ` <a href="../20230914155632.00003ca9@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:56         ` <a href="../20230914155632.00003ca9@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:56         ` <a href="../20230914155632.00003ca9@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-8-james.morse@arm.com/">[RFC PATCH v2 07/35] x86: intel_epb: Don't rely on link order</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-8-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-8-james.morse@arm.com/">James Morse</a>
+2023-09-14 10:02   ` <a href="../ZQLaJ83D3MA1SOAS@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:02     ` <a href="../ZQLaJ83D3MA1SOAS@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:02     ` <a href="../ZQLaJ83D3MA1SOAS@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-18  3:48   ` <a href="../4f368470-83c1-4140-9d0f-e64db3402865@redhat.com/">Gavin Shan</a>
+2023-09-18  3:48     ` <a href="../4f368470-83c1-4140-9d0f-e64db3402865@redhat.com/">Gavin Shan</a>
+2023-09-18  3:48     ` <a href="../4f368470-83c1-4140-9d0f-e64db3402865@redhat.com/">Gavin Shan</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-9-james.morse@arm.com/">[RFC PATCH v2 08/35] x86/topology: Switch over to GENERIC_CPU_DEVICES</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-9-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-9-james.morse@arm.com/">James Morse</a>
+2023-09-14 10:01   ` <a href="../ZQLZ8XcZrwiDfABm@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:01     ` <a href="../ZQLZ8XcZrwiDfABm@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:01     ` <a href="../ZQLZ8XcZrwiDfABm@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 11:40   ` <a href="../20230914124025.00006396@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:40     ` <a href="../20230914124025.00006396@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:40     ` <a href="../20230914124025.00006396@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-10-james.morse@arm.com/">[RFC PATCH v2 09/35] LoongArch:</a> " James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-10-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-10-james.morse@arm.com/">James Morse</a>
+2023-09-14 10:03   ` <a href="../ZQLah+HBx8TuDaJQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:03     ` <a href="../ZQLah+HBx8TuDaJQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:03     ` <a href="../ZQLah+HBx8TuDaJQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 11:47   ` <a href="../20230914124724.000027f3@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:47     ` <a href="../20230914124724.000027f3@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:47     ` <a href="../20230914124724.000027f3@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-11-james.morse@arm.com/">[RFC PATCH v2 10/35] riscv:</a> " James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-11-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-11-james.morse@arm.com/">James Morse</a>
+2023-09-14 10:04   ` <a href="../ZQLaq0%2FqyXdJWbLq@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:04     ` <a href="../ZQLaq0%2FqyXdJWbLq@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 10:04     ` <a href="../ZQLaq0%2FqyXdJWbLq@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 11:48     ` <a href="../20230914124825.0000209f@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:48       ` <a href="../20230914124825.0000209f@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 11:48       ` <a href="../20230914124825.0000209f@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:37 ` <a href="../20230913163823.7880-12-james.morse@arm.com/">[RFC PATCH v2 11/35] arch_topology: Make register_cpu_capacity_sysctl() tolerant to late CPUs</a> James Morse
+2023-09-13 16:37   ` <a href="../20230913163823.7880-12-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:37   ` <a href="../20230913163823.7880-12-james.morse@arm.com/">James Morse</a>
+2023-09-14 12:01   ` <a href="../20230914130126.000069db@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 12:01     ` <a href="../20230914130126.000069db@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 12:01     ` <a href="../20230914130126.000069db@Huawei.com/">Jonathan Cameron</a>
+2023-10-20 11:53     ` <a href="../ZTJqOTfDEnL9wgtY@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 11:53       ` <a href="../ZTJqOTfDEnL9wgtY@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 11:53       ` <a href="../ZTJqOTfDEnL9wgtY@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-21 10:56       ` <a href="../2023102128-banter-circular-85a2@gregkh/">Greg KH</a>
+2023-10-21 10:56         ` <a href="../2023102128-banter-circular-85a2@gregkh/">Greg KH</a>
+2023-10-21 10:56         ` <a href="../2023102128-banter-circular-85a2@gregkh/">Greg KH</a>
+2023-10-20 13:44     ` <a href="../ZTKEQz0DJuv%2FtqNH@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 13:44       ` <a href="../ZTKEQz0DJuv%2FtqNH@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 13:44       ` <a href="../ZTKEQz0DJuv%2FtqNH@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-14 10:04       ` <a href="../ZVNGJuUEkwei+CwY@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-14 10:04         ` <a href="../ZVNGJuUEkwei+CwY@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-14 10:04         ` <a href="../ZVNGJuUEkwei+CwY@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-30 16:46       ` <a href="../20231130164609.00000b4a@Huawei.com/">Jonathan Cameron</a>
+2023-11-30 16:46         ` <a href="../20231130164609.00000b4a@Huawei.com/">Jonathan Cameron</a>
+2023-11-30 16:46         ` <a href="../20231130164609.00000b4a@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-13-james.morse@arm.com/">[RFC PATCH v2 12/35] ACPI: Use the acpi_device_is_present() helper in more places</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-13-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-13-james.morse@arm.com/">James Morse</a>
+2023-09-14 12:04   ` <a href="../20230914130455.00004434@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 12:04     ` <a href="../20230914130455.00004434@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 12:04     ` <a href="../20230914130455.00004434@Huawei.com/">Jonathan Cameron</a>
+2023-09-18  4:06   ` <a href="../4e5aaed1-bf7d-18a8-0f77-8f29bb2e43bc@redhat.com/">Gavin Shan</a>
+2023-09-18  4:06     ` <a href="../4e5aaed1-bf7d-18a8-0f77-8f29bb2e43bc@redhat.com/">Gavin Shan</a>
+2023-09-18  4:06     ` <a href="../4e5aaed1-bf7d-18a8-0f77-8f29bb2e43bc@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-14-james.morse@arm.com/">[RFC PATCH v2 13/35] ACPI: Rename acpi_scan_device_not_present() to be about enumeration</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-14-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-14-james.morse@arm.com/">James Morse</a>
+2023-09-18  4:13   ` <a href="../e364c6e3-4900-404e-54e9-a634eca4384a@redhat.com/">Gavin Shan</a>
+2023-09-18  4:13     ` <a href="../e364c6e3-4900-404e-54e9-a634eca4384a@redhat.com/">Gavin Shan</a>
+2023-09-18  4:13     ` <a href="../e364c6e3-4900-404e-54e9-a634eca4384a@redhat.com/">Gavin Shan</a>
+2023-10-20 16:01   ` <a href="../ZTKkWozjprMYLjay@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 16:01     ` <a href="../ZTKkWozjprMYLjay@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 16:01     ` <a href="../ZTKkWozjprMYLjay@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 16:41     ` <a href="../20231020174115.0000045a@Huawei.com/">Jonathan Cameron</a>
+2023-10-20 16:41       ` <a href="../20231020174115.0000045a@Huawei.com/">Jonathan Cameron</a>
+2023-10-20 16:41       ` <a href="../20231020174115.0000045a@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-15-james.morse@arm.com/">[RFC PATCH v2 14/35] ACPI: Only enumerate enabled (or functional) devices</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-15-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-15-james.morse@arm.com/">James Morse</a>
+2023-09-14 12:27   ` <a href="../20230914132732.00006908@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 12:27     ` <a href="../20230914132732.00006908@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 12:27     ` <a href="../20230914132732.00006908@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 13:09     ` <a href="../20230914140940.00001417@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 13:09       ` <a href="../20230914140940.00001417@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 13:09       ` <a href="../20230914140940.00001417@Huawei.com/">Jonathan Cameron</a>
+2023-10-20 15:32       ` <a href="../ZTKdgUu%2FwubKfdef@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 15:32         ` <a href="../ZTKdgUu%2FwubKfdef@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 15:32         ` <a href="../ZTKdgUu%2FwubKfdef@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 16:43         ` <a href="../20231020174320.0000503c@Huawei.com/">Jonathan Cameron</a>
+2023-10-20 16:43           ` <a href="../20231020174320.0000503c@Huawei.com/">Jonathan Cameron</a>
+2023-10-20 16:43           ` <a href="../20231020174320.0000503c@Huawei.com/">Jonathan Cameron</a>
+2023-09-18  4:38     ` <a href="../7b5f8dda-93c9-6338-15a5-acf76910c35b@redhat.com/">Gavin Shan</a>
+2023-09-18  4:38       ` <a href="../7b5f8dda-93c9-6338-15a5-acf76910c35b@redhat.com/">Gavin Shan</a>
+2023-09-18  4:38       ` <a href="../7b5f8dda-93c9-6338-15a5-acf76910c35b@redhat.com/">Gavin Shan</a>
+2023-09-18 23:43   ` <a href="../ebfa8b5c-c09f-a1e6-e6ec-f4f3cda9de03@redhat.com/">Gavin Shan</a>
+2023-09-18 23:43     ` <a href="../ebfa8b5c-c09f-a1e6-e6ec-f4f3cda9de03@redhat.com/">Gavin Shan</a>
+2023-09-18 23:43     ` <a href="../ebfa8b5c-c09f-a1e6-e6ec-f4f3cda9de03@redhat.com/">Gavin Shan</a>
+2023-10-20 15:45     ` <a href="../ZTKglklxz8PN9VmI@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 15:45       ` <a href="../ZTKglklxz8PN9VmI@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-20 15:45       ` <a href="../ZTKglklxz8PN9VmI@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-16-james.morse@arm.com/">[RFC PATCH v2 15/35] ACPI: processor: Add support for processors described as container packages</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-16-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-16-james.morse@arm.com/">James Morse</a>
+2023-09-14 13:53   ` <a href="../20230914145353.000072e2@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 13:53     ` <a href="../20230914145353.000072e2@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 13:53     ` <a href="../20230914145353.000072e2@Huawei.com/">Jonathan Cameron</a>
+2023-11-03 10:43     ` <a href="../ZUTOwuZVLvzptuuP@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 10:43       ` <a href="../ZUTOwuZVLvzptuuP@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 10:43       ` <a href="../ZUTOwuZVLvzptuuP@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 10:57       ` <a href="../ZUTSB14JgDzFSlHK@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 10:57         ` <a href="../ZUTSB14JgDzFSlHK@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 10:57         ` <a href="../ZUTSB14JgDzFSlHK@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 12:52       ` <a href="../20231103125228.00005c94@Huawei.com/">Jonathan Cameron</a>
+2023-11-03 12:52         ` <a href="../20231103125228.00005c94@Huawei.com/">Jonathan Cameron</a>
+2023-11-03 12:52         ` <a href="../20231103125228.00005c94@Huawei.com/">Jonathan Cameron</a>
+2023-09-18  5:02   ` <a href="../50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com/">Gavin Shan</a>
+2023-09-18  5:02     ` <a href="../50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com/">Gavin Shan</a>
+2023-09-18  5:02     ` <a href="../50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com/">Gavin Shan</a>
+2023-11-03 10:54     ` <a href="../ZUTRgNtpcVtcMFqJ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 10:54       ` <a href="../ZUTRgNtpcVtcMFqJ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 10:54       ` <a href="../ZUTRgNtpcVtcMFqJ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 11:37   ` <a href="../ZUTbiO2%2FSSFcTPAV@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 11:37     ` <a href="../ZUTbiO2%2FSSFcTPAV@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 11:37     ` <a href="../ZUTbiO2%2FSSFcTPAV@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-17-james.morse@arm.com/">[RFC PATCH v2 16/35] ACPI: processor: Register CPUs that are online, but not described in the DSDT</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-17-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-17-james.morse@arm.com/">James Morse</a>
+2023-09-14 13:56   ` <a href="../20230914145607.00006f9b@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 13:56     ` <a href="../20230914145607.00006f9b@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 13:56     ` <a href="../20230914145607.00006f9b@Huawei.com/">Jonathan Cameron</a>
+2023-09-18  5:12   ` <a href="../82ce8528-49ae-3937-4020-0666fe416c0a@redhat.com/">Gavin Shan</a>
+2023-09-18  5:12     ` <a href="../82ce8528-49ae-3937-4020-0666fe416c0a@redhat.com/">Gavin Shan</a>
+2023-09-18  5:12     ` <a href="../82ce8528-49ae-3937-4020-0666fe416c0a@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-18-james.morse@arm.com/">[RFC PATCH v2 17/35] ACPI: processor: Register all CPUs from acpi_processor_get_info()</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-18-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-18-james.morse@arm.com/">James Morse</a>
+2023-09-18  5:19   ` <a href="../2d0e2fd7-5a6e-04ef-578d-713d8e14c30c@redhat.com/">Gavin Shan</a>
+2023-09-18  5:19     ` <a href="../2d0e2fd7-5a6e-04ef-578d-713d8e14c30c@redhat.com/">Gavin Shan</a>
+2023-09-18  5:19     ` <a href="../2d0e2fd7-5a6e-04ef-578d-713d8e14c30c@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-19-james.morse@arm.com/">[RFC PATCH v2 18/35] ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-19-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-19-james.morse@arm.com/">James Morse</a>
+2023-09-18  5:22   ` <a href="../8cc0b616-a50d-c3aa-ebd5-2db1a8e1ed46@redhat.com/">Gavin Shan</a>
+2023-09-18  5:22     ` <a href="../8cc0b616-a50d-c3aa-ebd5-2db1a8e1ed46@redhat.com/">Gavin Shan</a>
+2023-09-18  5:22     ` <a href="../8cc0b616-a50d-c3aa-ebd5-2db1a8e1ed46@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-20-james.morse@arm.com/">[RFC PATCH v2 19/35] ACPI: Move acpi_bus_trim_one() before acpi_scan_hot_remove()</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-20-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-20-james.morse@arm.com/">James Morse</a>
+2023-09-14 14:10   ` <a href="../20230914151025.00003cef@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:10     ` <a href="../20230914151025.00003cef@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:10     ` <a href="../20230914151025.00003cef@Huawei.com/">Jonathan Cameron</a>
+2023-09-18  5:36   ` <a href="../add60819-1d36-9b96-7bfa-148907dc44ce@redhat.com/">Gavin Shan</a>
+2023-09-18  5:36     ` <a href="../add60819-1d36-9b96-7bfa-148907dc44ce@redhat.com/">Gavin Shan</a>
+2023-09-18  5:36     ` <a href="../add60819-1d36-9b96-7bfa-148907dc44ce@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-21-james.morse@arm.com/">[RFC PATCH v2 20/35] ACPI: Rename acpi_processor_hotadd_init and remove pre-processor guards</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-21-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-21-james.morse@arm.com/">James Morse</a>
+2023-09-14 14:17   ` <a href="../20230914151720.00007105@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:17     ` <a href="../20230914151720.00007105@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:17     ` <a href="../20230914151720.00007105@Huawei.com/">Jonathan Cameron</a>
+2023-09-18  5:50     ` <a href="../b8f430c1-c30f-191f-18c6-f750fa6ba476@redhat.com/">Gavin Shan</a>
+2023-09-18  5:50       ` <a href="../b8f430c1-c30f-191f-18c6-f750fa6ba476@redhat.com/">Gavin Shan</a>
+2023-09-18  5:50       ` <a href="../b8f430c1-c30f-191f-18c6-f750fa6ba476@redhat.com/">Gavin Shan</a>
+2023-10-23 20:01       ` <a href="../ZTbRKgxtiq9XQKBr@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23 20:01         ` <a href="../ZTbRKgxtiq9XQKBr@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23 20:01         ` <a href="../ZTbRKgxtiq9XQKBr@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-22-james.morse@arm.com/">[RFC PATCH v2 21/35] ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-22-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-22-james.morse@arm.com/">James Morse</a>
+2023-09-14 14:28   ` <a href="../20230914152809.00003152@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:28     ` <a href="../20230914152809.00003152@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:28     ` <a href="../20230914152809.00003152@Huawei.com/">Jonathan Cameron</a>
+2023-09-19  0:31   ` <a href="../c3ef8123-1fcc-7289-c475-c753de44d564@redhat.com/">Gavin Shan</a>
+2023-09-19  0:31     ` <a href="../c3ef8123-1fcc-7289-c475-c753de44d564@redhat.com/">Gavin Shan</a>
+2023-09-19  0:31     ` <a href="../c3ef8123-1fcc-7289-c475-c753de44d564@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-23-james.morse@arm.com/">[RFC PATCH v2 22/35] ACPI: Check _STA present bit before making CPUs not present</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-23-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-23-james.morse@arm.com/">James Morse</a>
+2023-09-14 14:31   ` <a href="../20230914153110.00003e38@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:31     ` <a href="../20230914153110.00003e38@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:31     ` <a href="../20230914153110.00003e38@Huawei.com/">Jonathan Cameron</a>
+2023-11-03 14:09     ` <a href="../ZUT+%2FrpSrMMH12mu@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 14:09       ` <a href="../ZUT+%2FrpSrMMH12mu@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 14:09       ` <a href="../ZUT+%2FrpSrMMH12mu@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19  0:45   ` <a href="../518859b1-64a9-d723-963c-56c7f6fc2da1@redhat.com/">Gavin Shan</a>
+2023-09-19  0:45     ` <a href="../518859b1-64a9-d723-963c-56c7f6fc2da1@redhat.com/">Gavin Shan</a>
+2023-09-19  0:45     ` <a href="../518859b1-64a9-d723-963c-56c7f6fc2da1@redhat.com/">Gavin Shan</a>
+2023-11-03 14:37     ` <a href="../ZUUFovp4x9TkWBYn@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 14:37       ` <a href="../ZUUFovp4x9TkWBYn@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-11-03 14:37       ` <a href="../ZUUFovp4x9TkWBYn@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-24-james.morse@arm.com/">[RFC PATCH v2 23/35] ACPI: Warn when the present bit changes but the feature is not enabled</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-24-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-24-james.morse@arm.com/">James Morse</a>
+2023-09-14 14:32   ` <a href="../20230914153207.00006492@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:32     ` <a href="../20230914153207.00006492@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:32     ` <a href="../20230914153207.00006492@Huawei.com/">Jonathan Cameron</a>
+2023-09-19  0:49   ` <a href="../54c91de8-f0d2-787f-5710-2da1dfc80937@redhat.com/">Gavin Shan</a>
+2023-09-19  0:49     ` <a href="../54c91de8-f0d2-787f-5710-2da1dfc80937@redhat.com/">Gavin Shan</a>
+2023-09-19  0:49     ` <a href="../54c91de8-f0d2-787f-5710-2da1dfc80937@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-25-james.morse@arm.com/">[RFC PATCH v2 24/35] drivers: base: Implement weak arch_unregister_cpu()</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-25-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-25-james.morse@arm.com/">James Morse</a>
+2023-09-14 14:39   ` <a href="../20230914153918.00004c92@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:39     ` <a href="../20230914153918.00004c92@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:39     ` <a href="../20230914153918.00004c92@Huawei.com/">Jonathan Cameron</a>
+2023-09-19  0:59   ` <a href="../8be3a9dc-8f59-9ef9-3662-95814e177125@redhat.com/">Gavin Shan</a>
+2023-09-19  0:59     ` <a href="../8be3a9dc-8f59-9ef9-3662-95814e177125@redhat.com/">Gavin Shan</a>
+2023-09-19  0:59     ` <a href="../8be3a9dc-8f59-9ef9-3662-95814e177125@redhat.com/">Gavin Shan</a>
+2023-10-23  8:44     ` <a href="../ZTYygtKt4w9C0Oxw@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23  8:44       ` <a href="../ZTYygtKt4w9C0Oxw@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23  8:44       ` <a href="../ZTYygtKt4w9C0Oxw@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23  8:55       ` <a href="../ZTY07FlviAL1DlNz@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23  8:55         ` <a href="../ZTY07FlviAL1DlNz@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23  8:55         ` <a href="../ZTY07FlviAL1DlNz@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-26-james.morse@arm.com/">[RFC PATCH v2 25/35] LoongArch: Use the __weak version of arch_unregister_cpu()</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-26-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-26-james.morse@arm.com/">James Morse</a>
+2023-09-14 14:41   ` <a href="../20230914154111.0000189d@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:41     ` <a href="../20230914154111.0000189d@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:41     ` <a href="../20230914154111.0000189d@Huawei.com/">Jonathan Cameron</a>
+2023-10-23  8:48     ` <a href="../ZTYzSQw0iLlAKNCn@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23  8:48       ` <a href="../ZTYzSQw0iLlAKNCn@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23  8:48       ` <a href="../ZTYzSQw0iLlAKNCn@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19  1:09   ` <a href="../23ed10ee-b88f-8681-35a4-cefc2e3a7800@redhat.com/">Gavin Shan</a>
+2023-09-19  1:09     ` <a href="../23ed10ee-b88f-8681-35a4-cefc2e3a7800@redhat.com/">Gavin Shan</a>
+2023-09-19  1:09     ` <a href="../23ed10ee-b88f-8681-35a4-cefc2e3a7800@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-27-james.morse@arm.com/">[RFC PATCH v2 26/35] arm64: acpi: Move get_cpu_for_acpi_id() to a header</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-27-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-27-james.morse@arm.com/">James Morse</a>
+2023-09-14 14:43   ` <a href="../20230914154302.00001c11@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:43     ` <a href="../20230914154302.00001c11@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:43     ` <a href="../20230914154302.00001c11@Huawei.com/">Jonathan Cameron</a>
+2023-09-19  1:16   ` <a href="../9ef55959-66f3-0dc3-dec8-e2b673f965a4@redhat.com/">Gavin Shan</a>
+2023-09-19  1:16     ` <a href="../9ef55959-66f3-0dc3-dec8-e2b673f965a4@redhat.com/">Gavin Shan</a>
+2023-09-19  1:16     ` <a href="../9ef55959-66f3-0dc3-dec8-e2b673f965a4@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-28-james.morse@arm.com/">[RFC PATCH v2 27/35] ACPICA: Add new MADT GICC flags fields [code first?]</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-28-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-28-james.morse@arm.com/">James Morse</a>
+2023-09-14  7:57   ` <a href="../CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com/">Ard Biesheuvel</a>
+2023-09-14  7:57     ` <a href="../CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com/">Ard Biesheuvel</a>
+2023-09-14  7:57     ` <a href="../CAMj1kXHRAt7ecB9p_dm3MjDL5wZkAsVh30hMY2SV_XUe=bm6Vg@mail.gmail.com/">Ard Biesheuvel</a>
+2023-09-14 14:54     ` <a href="../20230914155459.00002dba@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:54       ` <a href="../20230914155459.00002dba@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:54       ` <a href="../20230914155459.00002dba@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 15:34       ` <a href="../CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com/">Ard Biesheuvel</a>
+2023-09-14 15:34         ` <a href="../CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com/">Ard Biesheuvel</a>
+2023-09-14 15:34         ` <a href="../CAMj1kXFquiLGCMow3iujHUU4GBZx2t9KfKy1R9iqjBFjY+acaA@mail.gmail.com/">Ard Biesheuvel</a>
+2023-09-14 15:49         ` <a href="../ZQMrg5he3OIsqKsD@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 15:49           ` <a href="../ZQMrg5he3OIsqKsD@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 15:49           ` <a href="../ZQMrg5he3OIsqKsD@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15  2:29         ` <a href="../f5d9beea95e149ab89364dcdb0f8bf69@huawei.com/">Salil Mehta</a>
+2023-09-15  2:29           ` <a href="../f5d9beea95e149ab89364dcdb0f8bf69@huawei.com/">Salil Mehta</a>
+2023-09-15  2:29           ` <a href="../f5d9beea95e149ab89364dcdb0f8bf69@huawei.com/">Salil Mehta</a>
+2023-09-15  7:09           ` <a href="../ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15  7:09             ` <a href="../ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15  7:09             ` <a href="../ZQQDJT6MOaIOPmq5@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15  8:45             ` <a href="../CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com/">Rafael J. Wysocki</a>
+2023-09-15  8:45               ` <a href="../CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com/">Rafael J. Wysocki</a>
+2023-09-15  8:45               ` <a href="../CAJZ5v0jUQ+4G5ArYAtu1gvYF4356CK_QVTO4oWn0ukwdOiZaHA@mail.gmail.com/">Rafael J. Wysocki</a>
+2023-09-15  9:34               ` <a href="../80e36ff513504a0382a1cbce83e42295@huawei.com/">Salil Mehta</a>
+2023-09-15  9:34                 ` <a href="../80e36ff513504a0382a1cbce83e42295@huawei.com/">Salil Mehta</a>
+2023-09-15  9:34                 ` <a href="../80e36ff513504a0382a1cbce83e42295@huawei.com/">Salil Mehta</a>
+2023-09-15 10:21                 ` <a href="../CAJZ5v0gou9Pdj_CPC=vLJ-6S-hz+0VY+GMgXcRJk=6t9mL1ykw@mail.gmail.com/">Rafael J. Wysocki</a>
+2023-09-15 10:21                   ` <a href="../CAJZ5v0gou9Pdj_CPC=vLJ-6S-hz+0VY+GMgXcRJk=6t9mL1ykw@mail.gmail.com/">Rafael J. Wysocki</a>
+2023-09-15 10:21                   ` <a href="../CAJZ5v0gou9Pdj_CPC=vLJ-6S-hz+0VY+GMgXcRJk=6t9mL1ykw@mail.gmail.com/">Rafael J. Wysocki</a>
+2023-09-15 14:49                   ` <a href="../cec8f4ad16434c2daa0b5db7f6d60a6b@huawei.com/">Salil Mehta</a>
+2023-09-15 14:49                     ` <a href="../cec8f4ad16434c2daa0b5db7f6d60a6b@huawei.com/">Salil Mehta</a>
+2023-09-15 14:49                     ` <a href="../cec8f4ad16434c2daa0b5db7f6d60a6b@huawei.com/">Salil Mehta</a>
+2023-09-15 15:16                     ` <a href="../ZQR1R+okAxfJrS0p@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 15:16                       ` <a href="../ZQR1R+okAxfJrS0p@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 15:16                       ` <a href="../ZQR1R+okAxfJrS0p@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 16:46                       ` <a href="../4ec689fa42474d0abc99a2f2055ddcff@huawei.com/">Salil Mehta</a>
+2023-09-15 16:46                         ` <a href="../4ec689fa42474d0abc99a2f2055ddcff@huawei.com/">Salil Mehta</a>
+2023-09-15 16:46                         ` <a href="../4ec689fa42474d0abc99a2f2055ddcff@huawei.com/">Salil Mehta</a>
+2023-09-15 13:43                 ` <a href="../ZQRfaYYwrYQEfICN@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 13:43                   ` <a href="../ZQRfaYYwrYQEfICN@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 13:43                   ` <a href="../ZQRfaYYwrYQEfICN@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 15:17                   ` <a href="../9e327ad1128045fa80eebf327abaa8f0@huawei.com/">Salil Mehta</a>
+2023-09-15 15:17                     ` <a href="../9e327ad1128045fa80eebf327abaa8f0@huawei.com/">Salil Mehta</a>
+2023-09-15 15:17                     ` <a href="../9e327ad1128045fa80eebf327abaa8f0@huawei.com/">Salil Mehta</a>
+2023-09-15 15:32                     ` <a href="../20230915163238.000054c8@Huawei.com/">Jonathan Cameron</a>
+2023-09-15 15:32                       ` <a href="../20230915163238.000054c8@Huawei.com/">Jonathan Cameron</a>
+2023-09-15 15:32                       ` <a href="../20230915163238.000054c8@Huawei.com/">Jonathan Cameron</a>
+2023-09-15 17:12                       ` <a href="../62c89f1c03f34f2796244ba83c08adbb@huawei.com/">Salil Mehta</a>
+2023-09-15 17:12                         ` <a href="../62c89f1c03f34f2796244ba83c08adbb@huawei.com/">Salil Mehta</a>
+2023-09-15 17:12                         ` <a href="../62c89f1c03f34f2796244ba83c08adbb@huawei.com/">Salil Mehta</a>
+2023-09-15 15:41                     ` <a href="../ZQR7GY1Z57wK8RaX@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 15:41                       ` <a href="../ZQR7GY1Z57wK8RaX@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 15:41                       ` <a href="../ZQR7GY1Z57wK8RaX@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-15 17:07                       ` <a href="../e13a455952964434a3f0a93bc472311a@huawei.com/">Salil Mehta</a>
+2023-09-15 17:07                         ` <a href="../e13a455952964434a3f0a93bc472311a@huawei.com/">Salil Mehta</a>
+2023-09-15 17:07                         ` <a href="../e13a455952964434a3f0a93bc472311a@huawei.com/">Salil Mehta</a>
+2023-09-15  9:21             ` <a href="../e91f1c42c6b643a4a8227d1bac895747@huawei.com/">Salil Mehta</a>
+2023-09-15  9:21               ` <a href="../e91f1c42c6b643a4a8227d1bac895747@huawei.com/">Salil Mehta</a>
+2023-09-15  9:21               ` <a href="../e91f1c42c6b643a4a8227d1bac895747@huawei.com/">Salil Mehta</a>
+2023-09-14 14:48   ` <a href="../20230914154807.0000710d@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:48     ` <a href="../20230914154807.0000710d@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:48     ` <a href="../20230914154807.0000710d@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-29-james.morse@arm.com/">[RFC PATCH v2 28/35] arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a helper</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-29-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-29-james.morse@arm.com/">James Morse</a>
+2023-09-14  8:09   ` <a href="../ZQK%2FrM%2F+1fGhM18m@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:09     ` <a href="../ZQK%2FrM%2F+1fGhM18m@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:09     ` <a href="../ZQK%2FrM%2F+1fGhM18m@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14 14:58   ` <a href="../20230914155840.0000393b@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:58     ` <a href="../20230914155840.0000393b@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 14:58     ` <a href="../20230914155840.0000393b@Huawei.com/">Jonathan Cameron</a>
+2023-09-19  1:23   ` <a href="../f45820cf-3ea5-6f5a-7702-bb4b14811e56@redhat.com/">Gavin Shan</a>
+2023-09-19  1:23     ` <a href="../f45820cf-3ea5-6f5a-7702-bb4b14811e56@redhat.com/">Gavin Shan</a>
+2023-09-19  1:23     ` <a href="../f45820cf-3ea5-6f5a-7702-bb4b14811e56@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-30-james.morse@arm.com/">[RFC PATCH v2 29/35] irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-30-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-30-james.morse@arm.com/">James Morse</a>
+2023-09-14 15:02   ` <a href="../20230914160223.0000782f@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 15:02     ` <a href="../20230914160223.0000782f@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 15:02     ` <a href="../20230914160223.0000782f@Huawei.com/">Jonathan Cameron</a>
+2023-10-23 18:58     ` <a href="../ZTbCX0n2SrhUBESf@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23 18:58       ` <a href="../ZTbCX0n2SrhUBESf@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-10-23 18:58       ` <a href="../ZTbCX0n2SrhUBESf@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19  3:39   ` <a href="../31fa3aa7-c12c-3eb7-e9d2-5967a735ac78@redhat.com/">Gavin Shan</a>
+2023-09-19  3:39     ` <a href="../31fa3aa7-c12c-3eb7-e9d2-5967a735ac78@redhat.com/">Gavin Shan</a>
+2023-09-19  3:39     ` <a href="../31fa3aa7-c12c-3eb7-e9d2-5967a735ac78@redhat.com/">Gavin Shan</a>
+2023-09-19  3:51     ` <a href="../0743752e-fd7a-c0b6-a193-196aef12b2a3@redhat.com/">Gavin Shan</a>
+2023-09-19  3:51       ` <a href="../0743752e-fd7a-c0b6-a193-196aef12b2a3@redhat.com/">Gavin Shan</a>
+2023-09-19  3:51       ` <a href="../0743752e-fd7a-c0b6-a193-196aef12b2a3@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-31-james.morse@arm.com/">[RFC PATCH v2 30/35] irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-31-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-31-james.morse@arm.com/">James Morse</a>
+2023-09-14  8:10   ` <a href="../ZQLADHCbOr5J8TpX@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:10     ` <a href="../ZQLADHCbOr5J8TpX@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-14  8:10     ` <a href="../ZQLADHCbOr5J8TpX@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19  3:53     ` <a href="../ea0a43be-4143-7efa-b1c6-550ece6965f6@redhat.com/">Gavin Shan</a>
+2023-09-19  3:53       ` <a href="../ea0a43be-4143-7efa-b1c6-550ece6965f6@redhat.com/">Gavin Shan</a>
+2023-09-19  3:53       ` <a href="../ea0a43be-4143-7efa-b1c6-550ece6965f6@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-32-james.morse@arm.com/">[RFC PATCH v2 31/35] arm64: psci: Ignore DENIED CPUs</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-32-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-32-james.morse@arm.com/">James Morse</a>
+2023-09-14 16:01   ` <a href="../20230914170155.000065cf@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:01     ` <a href="../20230914170155.000065cf@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:01     ` <a href="../20230914170155.000065cf@Huawei.com/">Jonathan Cameron</a>
+2023-09-19  4:31     ` <a href="../89a36ddc-5354-5ee0-2066-11a8d4ae1806@redhat.com/">Gavin Shan</a>
+2023-09-19  4:31       ` <a href="../89a36ddc-5354-5ee0-2066-11a8d4ae1806@redhat.com/">Gavin Shan</a>
+2023-09-19  4:31       ` <a href="../89a36ddc-5354-5ee0-2066-11a8d4ae1806@redhat.com/">Gavin Shan</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-33-james.morse@arm.com/">[RFC PATCH v2 32/35] ACPI: add support to register CPUs based on the _STA enabled bit</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-33-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-33-james.morse@arm.com/">James Morse</a>
+2023-09-14 16:13   ` <a href="../20230914171341.00006e51@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:13     ` <a href="../20230914171341.00006e51@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:13     ` <a href="../20230914171341.00006e51@Huawei.com/">Jonathan Cameron</a>
+2023-09-19 10:24     ` <a href="../ZQl26YlRnQaKwCg6@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19 10:24       ` <a href="../ZQl26YlRnQaKwCg6@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19 10:24       ` <a href="../ZQl26YlRnQaKwCg6@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19  4:46   ` <a href="../ad068df5-d5b1-030a-af25-723cd5c3b854@redhat.com/">Gavin Shan</a>
+2023-09-19  4:46     ` <a href="../ad068df5-d5b1-030a-af25-723cd5c3b854@redhat.com/">Gavin Shan</a>
+2023-09-19  4:46     ` <a href="../ad068df5-d5b1-030a-af25-723cd5c3b854@redhat.com/">Gavin Shan</a>
+2023-09-19  9:55     ` <a href="../ZQlwD50FEZeeAMBQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19  9:55       ` <a href="../ZQlwD50FEZeeAMBQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-19  9:55       ` <a href="../ZQlwD50FEZeeAMBQ@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-34-james.morse@arm.com/">[RFC PATCH v2 33/35] arm64: document virtual CPU hotplug's expectations</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-34-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-34-james.morse@arm.com/">James Morse</a>
+2023-09-14 16:41   ` <a href="../20230914174137.00000a62@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:41     ` <a href="../20230914174137.00000a62@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:41     ` <a href="../20230914174137.00000a62@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-35-james.morse@arm.com/">[RFC PATCH v2 34/35] ACPI: Add _OSC bits to advertise OS support for toggling CPU present/enabled</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-35-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-35-james.morse@arm.com/">James Morse</a>
+2023-09-14 16:50   ` <a href="../20230914175021.000018fd@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:50     ` <a href="../20230914175021.000018fd@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:50     ` <a href="../20230914175021.000018fd@Huawei.com/">Jonathan Cameron</a>
+2023-09-13 16:38 ` <a href="../20230913163823.7880-36-james.morse@arm.com/">[RFC PATCH v2 35/35] cpumask: Add enabled cpumask for present CPUs that can be brought online</a> James Morse
+2023-09-13 16:38   ` <a href="../20230913163823.7880-36-james.morse@arm.com/">James Morse</a>
+2023-09-13 16:38   ` <a href="../20230913163823.7880-36-james.morse@arm.com/">James Morse</a>
+2023-09-14 16:54   ` <a href="../20230914175443.000038f6@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:54     ` <a href="../20230914175443.000038f6@Huawei.com/">Jonathan Cameron</a>
+2023-09-14 16:54     ` <a href="../20230914175443.000038f6@Huawei.com/">Jonathan Cameron</a>
+2023-09-18 10:27 ` <a href="../ZQgmHtG10n+XyZYR@shell.armlinux.org.uk/">[RFC PATCH v2 00/35] ACPI/arm64: add support for virtual cpuhotplug</a> Russell King (Oracle)
+2023-09-18 10:27   ` <a href="../ZQgmHtG10n+XyZYR@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-18 10:27   ` <a href="../ZQgmHtG10n+XyZYR@shell.armlinux.org.uk/">Russell King (Oracle)</a>
+2023-09-26 13:16 ` <a href="../622a39bda12a4b75a6da84f4566b4238@huawei.com/">Salil Mehta</a>
+2023-09-26 13:16   ` <a href="../622a39bda12a4b75a6da84f4566b4238@huawei.com/">Salil Mehta</a>
+2023-09-26 13:16   ` <a href="../622a39bda12a4b75a6da84f4566b4238@huawei.com/">Salil Mehta</a>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20230913163823.7880-1-james.morse@arm.com \n    --to=james.morse@arm.com \n    --cc=jean-philippe@linaro.org \n    --cc=jianyong.wu@arm.com \n    --cc=justin.he@arm.com \n    --cc=kvmarm@lists.linux.dev \n    --cc=linux-acpi@vger.kernel.org \n    --cc=linux-arch@vger.kernel.org \n    --cc=linux-arm-kernel@lists.infradead.org \n    --cc=linux-kernel@vger.kernel.org \n    --cc=linux-pm@vger.kernel.org \n    --cc=linux-riscv@lists.infradead.org \n    --cc=linux@armlinux.org.uk \n    --cc=loongarch@lists.linux.dev \n    --cc=salil.mehta@huawei.com \n    --cc=x86@kernel.org \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:james.morse@arm.com?In-Reply-To=%3C20230913163823.7880-1-james.morse@arm.com%3E&amp;Cc=jean-philippe%40linaro.org%2Cjianyong.wu%40arm.com%2Cjustin.he%40arm.com%2Ckvmarm%40lists.linux.dev%2Clinux-acpi%40vger.kernel.org%2Clinux-arch%40vger.kernel.org%2Clinux-arm-kernel%40lists.infradead.org%2Clinux-kernel%40vger.kernel.org%2Clinux-pm%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Clinux%40armlinux.org.uk%2Cloongarch%40lists.linux.dev%2Csalil.mehta%40huawei.com%2Cx86%40kernel.org&amp;Subject=Re%3A%20%5BRFC%20PATCH%20v2%2000%2F35%5D%20ACPI%2Farm64%3A%20add%20support%20for%20virtual%20cpuhotplug">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is an external index of several public inboxes,
+see <a href="../_/text/mirror/">mirroring instructions</a> on how to clone and mirror
+all data and code used by this external index.</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
