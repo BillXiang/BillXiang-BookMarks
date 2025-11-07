@@ -1,0 +1,979 @@
+<!-- Filename: 书签工具栏/虚拟化/qemu/热插拔/virtual_cpu_hotplug - kernel_git_morse_linux.git - James Morse's fork of linux.git (2025-11-07 15：38：48).html
+ Page saved with X-Webpage-Conserve 
+ url: https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/log/?h=virtual_cpu_hotplug/rfc/v2
+ Summary: 
+-->
+<html lang="en"><head>
+<title>kernel/git/morse/linux.git - James Morse's fork of linux.git</title>
+<meta name="generator" content="cgit 1.2.3-korg">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" type="text/css" href="/cgit-data/cgit.css">
+<script type="text/javascript" src="/cgit-data/cgit.js"></script>
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="alternate" title="Atom feed" href="http://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/atom/?h=virtual_cpu_hotplug/rfc/v2" type="application/atom+xml">
+<link rel="vcs-git" href="git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git" title="kernel/git/morse/linux.git Git repository">
+<link rel="vcs-git" href="https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git" title="kernel/git/morse/linux.git Git repository">
+<link rel="vcs-git" href="https://kernel.googlesource.com/pub/scm/linux/kernel/git/morse/linux.git" title="kernel/git/morse/linux.git Git repository">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>@import url("source-code-pro/source-code-pro.css");div#cgit { margin: 0em; font-family: sans-serif; font-size: 10pt; color: rgb(51, 51, 51); background: white; padding: 4px; }div#cgit a { color: blue; text-decoration: none; }div#cgit a:hover { text-decoration: underline; }div#cgit table { border-collapse: collapse; }div#cgit table#header { width: 100%; margin-bottom: 1em; }div#cgit table#header td.logo { width: 96px; vertical-align: top; }div#cgit table#header td.main { font-size: 250%; padding-left: 10px; white-space: nowrap; }div#cgit table#header td.main a { color: rgb(0, 0, 0); }div#cgit table#header td.form { text-align: right; vertical-align: bottom; padding-right: 1em; padding-bottom: 2px; white-space: nowrap; }div#cgit table#header td.form form, div#cgit table#header td.form input, div#cgit table#header td.form select { font-size: 90%; }div#cgit table#header td.sub { color: rgb(119, 119, 119); border-top: 1px solid rgb(204, 204, 204); padding-left: 10px; }div#cgit table.tabs { border-bottom: 3px solid rgb(204, 204, 204); border-collapse: collapse; margin-top: 2em; margin-bottom: 0px; width: 100%; }div#cgit table.tabs td { padding: 0px 1em; vertical-align: bottom; }div#cgit table.tabs td a { padding: 2px 0.75em; color: rgb(119, 119, 119); font-size: 110%; }div#cgit table.tabs td a.active { color: rgb(0, 0, 0); background-color: rgb(204, 204, 204); }div#cgit table.tabs a[href^="http://"]::after, div#cgit table.tabs a[href^="https://"]::after { content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgAhcJDQY+gm2TAAAAHWlUWHRDb21tZW50AAAAAABDcmVhdGVkIHdpdGggR0lNUGQuZQcAAABbSURBVAhbY2BABs4MU4CwhYHBh2Erww4wrGFQZHjI8B8IgUIscJWyDHcggltQhI4zGDCcRwhChPggHIggP1QoAVmQkSETrGoHsiAEsACtBYN0oDAMbgU6EBcAAL2eHUt4XUU4AAAAAElFTkSuQmCC"); opacity: 0.5; margin: 0px 0px 0px 5px; }div#cgit table.tabs td.form { text-align: right; }div#cgit table.tabs td.form form { padding-bottom: 2px; font-size: 90%; white-space: nowrap; }div#cgit table.tabs td.form input, div#cgit table.tabs td.form select { font-size: 90%; }div#cgit div.path { margin: 0px; padding: 5px 2em 2px; color: rgb(0, 0, 0); background-color: rgb(238, 238, 238); }div#cgit div.content { margin: 0px; padding: 2em; border-bottom: 3px solid rgb(204, 204, 204); }div#cgit table.list { width: 100%; border: medium; border-collapse: collapse; }div#cgit table.list tr { background: white; }div#cgit table.list tr.logheader { background: rgb(238, 238, 238); }div#cgit table.list tr:nth-child(2n) { background: rgb(247, 247, 247); }div#cgit table.list tr:nth-child(2n+1) { background: white; }div#cgit table.list tr:hover { background: rgb(238, 238, 238); }div#cgit table.list tr.nohover { background: white; }div#cgit table.list tr.nohover:hover { background: white; }div#cgit table.list tr.nohover-highlight:hover:nth-child(2n) { background: rgb(247, 247, 247); }div#cgit table.list tr.nohover-highlight:hover:nth-child(2n+1) { background: white; }div#cgit table.list th { font-weight: bold; padding: 0.1em 0.5em 0.05em; vertical-align: baseline; }div#cgit table.list td { border: medium; padding: 0.1em 0.5em; }div#cgit table.list td.commitgraph { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; }div#cgit pre { font-family: "Source Code Pro", "Courier New", monospace; }div#cgit table.list td.commitgraph .column1 { color: rgb(170, 0, 0); }div#cgit table.list td.commitgraph .column2 { color: rgb(0, 170, 0); }div#cgit table.list td.commitgraph .column3 { color: rgb(170, 170, 0); }div#cgit table.list td.commitgraph .column4 { color: rgb(0, 0, 170); }div#cgit table.list td.commitgraph .column5 { color: rgb(170, 0, 170); }div#cgit table.list td.commitgraph .column6 { color: rgb(0, 170, 170); }div#cgit table.list td.logsubject { font-family: "Source Code Pro", "Courier New", monospace; font-weight: bold; }div#cgit table.list td.logmsg { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; padding: 0px 0.5em; }div#cgit table.list td a { color: black; }div#cgit table.list td a.ls-dir { font-weight: bold; color: rgb(0, 0, 255); }div#cgit table.list td a:hover { color: rgb(0, 0, 255); }div#cgit img { border: medium; }div#cgit input#switch-btn { margin: 2px 0px 0px; }div#cgit td#sidebar input.txt { width: 100%; margin: 2px 0px 0px; }div#cgit table#grid { margin: 0px; }div#cgit td#content { vertical-align: top; padding: 1em 2em 1em 1em; border: medium; }div#cgit div#summary { vertical-align: top; margin-bottom: 1em; }div#cgit table#downloads { float: right; border-collapse: collapse; border: 1px solid rgb(119, 119, 119); margin-left: 0.5em; margin-bottom: 0.5em; }div#cgit table#downloads th { background-color: rgb(204, 204, 204); }div#cgit div#blob { border: 1px solid black; }div#cgit div.error { color: red; font-weight: bold; margin: 1em 2em; }div#cgit a.ls-blob, div#cgit a.ls-dir, div#cgit .ls-mod { font-family: "Source Code Pro", "Courier New", monospace; }div#cgit td.ls-size { text-align: right; font-family: "Source Code Pro", "Courier New", monospace; width: 10em; }div#cgit td.ls-mode { font-family: "Source Code Pro", "Courier New", monospace; width: 10em; }div#cgit table.blob { margin-top: 0.5em; border-top: 1px solid black; }div#cgit table.blob td.hashes, div#cgit table.blob td.lines { margin: 0px; padding: 0px 0px 0px 0.5em; vertical-align: top; color: black; }div#cgit table.blob td.linenumbers { margin: 0px; padding: 0px 0.5em; vertical-align: top; text-align: right; border-right: 1px solid gray; }div#cgit table.blob pre { padding: 0px; margin: 0px; }div#cgit table.blob td.linenumbers a, div#cgit table.ssdiff td.lineno a { color: gray; text-align: right; text-decoration: none; }div#cgit table.blob td.linenumbers a:hover, div#cgit table.ssdiff td.lineno a:hover { color: black; }div#cgit table.blame td.hashes, div#cgit table.blame td.lines, div#cgit table.blame td.linenumbers { padding: 0px; }div#cgit table.blame td.hashes div.alt, div#cgit table.blame td.lines div.alt { padding: 0px 0.5em; }div#cgit table.blame td.linenumbers div.alt { padding: 0px 0.5em 0px 0px; }div#cgit table.blame div.alt:nth-child(2n) { background: rgb(238, 238, 238); }div#cgit table.blame div.alt:nth-child(2n+1) { background: white; }div#cgit table.blame td.lines > div { position: relative; }div#cgit table.blame td.lines > div > pre { padding: 0px 0px 0px 0.5em; position: absolute; top: 0px; }div#cgit table.blame .oid { font-size: 100%; }div#cgit table.bin-blob { margin-top: 0.5em; border: 1px solid black; }div#cgit table.bin-blob th { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; border: 1px solid rgb(119, 119, 119); padding: 0.5em 1em; }div#cgit table.bin-blob td { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; border-left: 1px solid rgb(119, 119, 119); padding: 0em 1em; }div#cgit table.nowrap td { white-space: nowrap; }div#cgit table.commit-info { border-collapse: collapse; margin-top: 1.5em; }div#cgit div.cgit-panel { float: right; margin-top: 1.5em; }div#cgit div.cgit-panel table { border-collapse: collapse; border: 1px solid rgb(170, 170, 170); background-color: rgb(238, 238, 238); }div#cgit div.cgit-panel th { text-align: center; }div#cgit div.cgit-panel td { padding: 0.25em 0.5em; }div#cgit div.cgit-panel td.label { padding-right: 0.5em; }div#cgit div.cgit-panel td.ctrl { padding-left: 0.5em; }div#cgit table.commit-info th { text-align: left; font-weight: normal; padding: 0.1em 1em 0.1em 0.1em; vertical-align: top; }div#cgit table.commit-info td { font-weight: normal; padding: 0.1em 1em 0.1em 0.1em; }div#cgit div.commit-subject { font-weight: bold; font-size: 125%; margin: 1.5em 0em 0.5em; padding: 0em; }div#cgit div.commit-msg { white-space: pre; font-family: "Source Code Pro", "Courier New", monospace; }div#cgit div.notes-header { font-weight: bold; padding-top: 1.5em; }div#cgit div.notes { white-space: pre; font-family: "Source Code Pro", "Courier New", monospace; border: 1px solid rgb(238, 238, 153); background-color: rgb(255, 255, 221); padding: 0.3em 2em 0.3em 1em; float: left; }div#cgit div.notes-footer { clear: left; }div#cgit div.diffstat-header { font-weight: bold; padding-top: 1.5em; }div#cgit table.diffstat { border-collapse: collapse; border: 1px solid rgb(170, 170, 170); background-color: rgb(238, 238, 238); }div#cgit table.diffstat th { font-weight: normal; text-align: left; text-decoration: underline; padding: 0.1em 1em 0.1em 0.1em; font-size: 100%; }div#cgit table.diffstat td { padding: 0.2em 0.2em 0.1em 0.1em; font-size: 100%; border: medium; }div#cgit table.diffstat td.mode { white-space: nowrap; }div#cgit table.diffstat td span.modechange { padding-left: 1em; color: red; }div#cgit table.diffstat td.add a { color: green; }div#cgit table.diffstat td.del a { color: red; }div#cgit table.diffstat td.upd a { color: blue; }div#cgit table.diffstat td.graph { width: 500px; vertical-align: middle; }div#cgit table.diffstat td.graph table { border: medium; }div#cgit table.diffstat td.graph td { padding: 0px; border: 0px; height: 7pt; }div#cgit table.diffstat td.graph td.add { background-color: rgb(85, 204, 85); }div#cgit table.diffstat td.graph td.rem { background-color: rgb(204, 85, 85); }div#cgit div.diffstat-summary { color: rgb(136, 136, 136); padding-top: 0.5em; }div#cgit table.diff { width: 100%; }div#cgit table.diff td { font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; }div#cgit table.diff td div.head { font-weight: bold; margin-top: 1em; color: black; }div#cgit table.diff td div.hunk { color: rgb(0, 0, 153); }div#cgit table.diff td div.add { color: green; }div#cgit table.diff td div.del { color: red; }div#cgit .oid { font-family: "Source Code Pro", "Courier New", monospace; font-size: 90%; }div#cgit .left { text-align: left; }div#cgit .right { text-align: right; }div#cgit table.list td.reposection { font-style: italic; color: rgb(136, 136, 136); }div#cgit a.button { font-size: 80%; padding: 0em 0.5em; }div#cgit a.primary { font-size: 100%; }div#cgit a.secondary { font-size: 90%; }div#cgit td.toplevel-repo { }div#cgit table.list td.sublevel-repo { padding-left: 1.5em; }div#cgit ul.pager { list-style-type: none; text-align: center; margin: 1em 0em 0em; padding: 0px; }div#cgit ul.pager li { display: inline-block; margin: 0.25em 0.5em; }div#cgit ul.pager a { color: rgb(119, 119, 119); }div#cgit ul.pager .current { font-weight: bold; }div#cgit span.age-mins { font-weight: bold; color: rgb(0, 136, 0); }div#cgit span.age-hours { color: rgb(0, 136, 0); }div#cgit span.age-days { color: rgb(0, 68, 0); }div#cgit span.age-weeks { color: rgb(68, 68, 68); }div#cgit span.age-months { color: rgb(136, 136, 136); }div#cgit span.age-years { color: rgb(187, 187, 187); }div#cgit span.insertions { color: rgb(0, 136, 0); }div#cgit span.deletions { color: rgb(136, 0, 0); }div#cgit div.footer { margin-top: 0.5em; text-align: center; font-size: 80%; color: rgb(204, 204, 204); }div#cgit div.footer a { color: rgb(204, 204, 204); text-decoration: none; }div#cgit div.footer a:hover { text-decoration: underline; }div#cgit a.branch-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(136, 255, 136); border: 1px solid rgb(0, 119, 0); }div#cgit a.tag-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 255, 136); border: 1px solid rgb(119, 119, 0); }div#cgit a.tag-annotated-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 204, 136); border: 1px solid rgb(119, 119, 0); }div#cgit a.remote-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(204, 204, 255); border: 1px solid rgb(0, 0, 119); }div#cgit a.deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 136, 136); border: 1px solid rgb(119, 0, 0); }div#cgit div.commit-subject a.branch-deco, div#cgit div.commit-subject a.tag-deco, div#cgit div.commit-subject a.tag-annotated-deco, div#cgit div.commit-subject a.remote-deco, div#cgit div.commit-subject a.deco { margin-left: 1em; font-size: 75%; }div#cgit table.stats { border: 1px solid black; border-collapse: collapse; }div#cgit table.stats th { text-align: left; padding: 1px 0.5em; background-color: rgb(238, 238, 238); border: 1px solid black; }div#cgit table.stats td { text-align: right; padding: 1px 0.5em; border: 1px solid black; }div#cgit table.stats td.total { font-weight: bold; text-align: left; }div#cgit table.stats td.sum { color: rgb(204, 0, 0); font-weight: bold; }div#cgit table.stats td.left { text-align: left; }div#cgit table.vgraph { border-collapse: separate; border: 1px solid black; height: 200px; }div#cgit table.vgraph th { background-color: rgb(238, 238, 238); font-weight: bold; border: 1px solid white; padding: 1px 0.5em; }div#cgit table.vgraph td { vertical-align: bottom; padding: 0px 10px; }div#cgit table.vgraph div.bar { background-color: rgb(238, 238, 238); }div#cgit table.hgraph { border: 1px solid black; width: 800px; }div#cgit table.hgraph th { background-color: rgb(238, 238, 238); font-weight: bold; border: 1px solid black; padding: 1px 0.5em; }div#cgit table.hgraph td { vertical-align: middle; padding: 2px; }div#cgit table.hgraph div.bar { background-color: rgb(238, 238, 238); height: 1em; }div#cgit table.ssdiff { width: 100%; }div#cgit table.ssdiff td { font-size: 75%; font-family: "Source Code Pro", "Courier New", monospace; white-space: pre; padding: 1px 4px; border-left: 1px solid rgb(170, 170, 170); border-right: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.add { color: black; background: rgb(204, 255, 204); min-width: 50%; }div#cgit table.ssdiff td.add_dark { color: black; background: rgb(170, 204, 170); min-width: 50%; }div#cgit table.ssdiff span.add { background: rgb(204, 255, 204); font-weight: bold; }div#cgit table.ssdiff td.del { color: black; background: rgb(255, 204, 204); min-width: 50%; }div#cgit table.ssdiff td.del_dark { color: black; background: rgb(204, 170, 170); min-width: 50%; }div#cgit table.ssdiff span.del { background: rgb(255, 204, 204); font-weight: bold; }div#cgit table.ssdiff td.changed { color: black; background: rgb(255, 255, 204); min-width: 50%; }div#cgit table.ssdiff td.changed_dark { color: black; background: rgb(204, 204, 170); min-width: 50%; }div#cgit table.ssdiff td.lineno { color: black; background: rgb(238, 238, 238); text-align: right; width: 3em; min-width: 3em; }div#cgit table.ssdiff td.hunk { color: black; background: rgb(204, 204, 255); border-top: 1px solid rgb(170, 170, 170); border-bottom: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.head { border-top: 1px solid rgb(170, 170, 170); border-bottom: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.head div.head { font-weight: bold; color: black; }div#cgit table.ssdiff td.foot { border-width: 1px medium medium; border-style: solid none none; border-color: rgb(170, 170, 170) currentcolor currentcolor; }div#cgit table.ssdiff td.space { border: medium; }div#cgit table.ssdiff td.space div { min-height: 3em; }div#cgit span.libravatar img.onhover { display: none; border: 1px solid gray; padding: 0px; border-radius: 4px; width: 128px; height: 128px; }div#cgit span.libravatar img.inline { border-radius: 3px; width: 13px; height: 13px; margin-right: 0.2em; opacity: 0.6; }div#cgit span.libravatar:hover > img.onhover { display: block; position: absolute; margin-left: 1.5em; background-color: rgb(238, 238, 238); box-shadow: rgba(100, 100, 100, 0.75) 2px 2px 7px; }:root { color-scheme: light dark; }@media only all and (prefers-color-scheme: dark) {
+  html, div#cgit { color: rgb(238, 238, 238); background: rgb(23, 23, 23); }
+  div#cgit a { color: rgb(51, 170, 255); }
+  div#cgit .diffstat-header a { color: rgb(34, 136, 221); }
+  div#cgit table#header td.main a { color: rgb(238, 238, 238); }
+  div#cgit table#header td.sub { color: rgb(153, 153, 153); }
+  div#cgit table.tabs { border-bottom-color: rgb(68, 68, 68); }
+  div#cgit table.tabs td a { color: rgb(136, 136, 136); }
+  div#cgit table.tabs td a.active { color: rgb(255, 255, 255); background-color: rgb(68, 68, 68); }
+  div#cgit div.path { color: rgb(238, 238, 238); background-color: rgb(51, 51, 51); }
+  div#cgit div.content { border-bottom-color: rgb(187, 187, 187); }
+  div#cgit table.list tr { background: rgb(23, 23, 23); }
+  div#cgit table.list tr.logheader { background: rgb(23, 23, 23); }
+  div#cgit table.list tr:nth-child(2n) { background: rgb(23, 23, 23); }
+  div#cgit table.list tr:nth-child(2n+1) { background: rgb(31, 31, 31); }
+  div#cgit table.list tr:hover { background: rgb(51, 51, 51); }
+  div#cgit table.list tr.nohover { background: rgb(23, 23, 23); }
+  div#cgit table.list tr.nohover:hover { background: rgb(23, 23, 23); }
+  div#cgit table.list tr.nohover-highlight:hover:nth-child(2n) { background: rgb(23, 23, 23); }
+  div#cgit table.list tr.nohover-highlight:hover:nth-child(2n+1) { background: rgb(31, 31, 31); }
+  div#cgit table.list td.commitgraph .column1 { color: rgb(255, 85, 85); }
+  div#cgit table.list td.commitgraph .column2 { color: rgb(85, 255, 85); }
+  div#cgit table.list td.commitgraph .column3 { color: rgb(255, 255, 85); }
+  div#cgit table.list td.commitgraph .column4 { color: rgb(85, 85, 255); }
+  div#cgit table.list td.commitgraph .column5 { color: rgb(255, 85, 255); }
+  div#cgit table.list td.commitgraph .column6 { color: rgb(85, 255, 255); }
+  div#cgit table.list td a { color: rgb(238, 238, 238); }
+  div#cgit table.list td a.ls-dir { color: rgb(34, 136, 221); }
+  div#cgit table.list td a:hover { color: rgb(51, 170, 255); }
+  div#cgit table#downloads { border-color: rgb(136, 136, 136); }
+  div#cgit table#downloads th { background-color: rgb(51, 51, 51); }
+  div#cgit div#blob { border-color: rgb(238, 238, 238); }
+  div#cgit table.blob { border-top-color: rgb(238, 238, 238); }
+  div#cgit table.blob td.hashes, div#cgit table.blob td.lines { color: rgb(238, 238, 238); }
+  div#cgit table.blob td.linenumbers { border-right-color: gray; }
+  div#cgit table.blob td.linenumbers a, div#cgit table.ssdiff td.lineno a { color: gray; }
+  div#cgit table.blob td.linenumbers a:hover, div#cgit table.ssdiff td.lineno a:hover { color: rgb(238, 238, 238); }
+  div#cgit table.blame div.alt:nth-child(2n) { background: rgb(23, 23, 23); }
+  div#cgit table.blame div.alt:nth-child(2n+1) { background: rgb(31, 31, 31); }
+  div#cgit table.bin-blob { border-color: rgb(238, 238, 238); }
+  div#cgit table.bin-blob th { border-color: rgb(136, 136, 136); }
+  div#cgit table.bin-blob td { border-left-color: rgb(136, 136, 136); }
+  div#cgit div.cgit-panel table { border-color: rgb(85, 85, 85); background-color: rgb(40, 40, 40); }
+  div#cgit div.notes { border-color: rgb(102, 102, 17); background-color: rgb(34, 34, 0); }
+  div#cgit table.diffstat { border-color: rgb(85, 85, 85); background-color: rgb(40, 40, 40); }
+  div#cgit table.diffstat td span.modechange { color: rgb(204, 102, 102); }
+  div#cgit table.diffstat td.add a { color: rgb(102, 204, 102); }
+  div#cgit table.diffstat td.del a { color: rgb(204, 102, 102); }
+  div#cgit table.diffstat td.upd a { color: rgb(51, 170, 255); }
+  div#cgit table.diffstat td.graph td.add { background-color: rgb(51, 170, 51); }
+  div#cgit table.diffstat td.graph td.rem { background-color: rgb(170, 51, 51); }
+  div#cgit div.diffstat-summary { color: rgb(119, 119, 119); }
+  div#cgit table.diff td div.head { color: rgb(238, 238, 238); }
+  div#cgit table.diff td div.hunk { color: rgb(34, 136, 221); }
+  div#cgit table.diff td div.add { color: rgb(102, 204, 102); }
+  div#cgit table.diff td div.del { color: rgb(204, 102, 102); }
+  div#cgit table.list td.reposection { color: rgb(119, 119, 119); }
+  div#cgit ul.pager a { color: rgb(136, 136, 136); }
+  div#cgit span.age-mins { color: rgb(119, 255, 119); }
+  div#cgit span.age-hours { color: rgb(119, 255, 119); }
+  div#cgit span.age-days { color: rgb(153, 221, 153); }
+  div#cgit span.age-weeks { color: rgb(187, 187, 187); }
+  div#cgit span.age-months { color: rgb(136, 136, 136); }
+  div#cgit span.age-years { color: rgb(102, 102, 102); }
+  div#cgit span.insertions { color: rgb(119, 255, 119); }
+  div#cgit span.deletions { color: rgb(238, 51, 51); }
+  div#cgit div.footer { color: rgb(85, 85, 85); }
+  div#cgit div.footer a { color: rgb(85, 85, 85); }
+  div#cgit a.branch-deco { color: rgb(255, 255, 255); background-color: rgb(51, 102, 17); border-color: rgb(51, 187, 34); }
+  div#cgit a.tag-deco { color: rgb(255, 255, 255); background-color: rgb(102, 85, 0); border-color: rgb(187, 170, 51); }
+  div#cgit a.tag-annotated-deco { color: rgb(255, 255, 255); background-color: rgb(136, 68, 0); border-color: rgb(187, 153, 102); }
+  div#cgit a.remote-deco { color: rgb(255, 255, 255); background-color: rgb(51, 68, 136); border-color: rgb(102, 119, 204); }
+  div#cgit a.deco { color: rgb(255, 255, 255); background-color: rgb(153, 34, 34); border-color: rgb(221, 85, 85); }
+  div#cgit a.branch-deco:hover, div#cgit table.list td a.branch-deco:hover, div#cgit a.tag-deco:hover, div#cgit table.list td a.tag-deco:hover, div#cgit a.tag-annotated-deco:hover, div#cgit table.list td a.tag-annotated-deco:hover, div#cgit a.remote-deco:hover, div#cgit table.list td a.remote-deco:hover, div#cgit a.deco:hover, div#cgit table.list td a.deco:hover { color: rgb(255, 255, 255); }
+  div#cgit table.stats { border-color: rgb(85, 85, 85); }
+  div#cgit table.stats th { background-color: rgb(51, 51, 51); border-color: rgb(85, 85, 85); }
+  div#cgit table.stats td { border-color: rgb(85, 85, 85); }
+  div#cgit table.stats td.sum { color: rgb(92, 126, 155); }
+  div#cgit table.vgraph { border-color: rgb(238, 238, 238); }
+  div#cgit table.vgraph th { background-color: rgb(31, 31, 31); border-color: black; }
+  div#cgit table.vgraph div.bar { background-color: rgb(31, 31, 31); }
+  div#cgit table.hgraph { border-color: rgb(238, 238, 238); }
+  div#cgit table.hgraph th { background-color: rgb(31, 31, 31); border-color: rgb(238, 238, 238); }
+  div#cgit table.hgraph div.bar { background-color: rgb(31, 31, 31); }
+  div#cgit table.ssdiff td { border-left-color: rgb(85, 85, 85); border-right-color: rgb(85, 85, 85); }
+  div#cgit table.ssdiff td.add { color: rgb(238, 238, 238); background: rgb(51, 85, 51); }
+  div#cgit table.ssdiff td.add_dark { color: rgb(238, 238, 238); background: rgb(0, 51, 0); }
+  div#cgit table.ssdiff span.add { background: rgb(0, 51, 0); }
+  div#cgit table.ssdiff td.del { color: rgb(238, 238, 238); background: rgb(85, 51, 51); }
+  div#cgit table.ssdiff td.del_dark { color: rgb(238, 238, 238); background: rgb(68, 17, 17); }
+  div#cgit table.ssdiff span.del { background: rgb(51, 0, 0); }
+  div#cgit table.ssdiff td.changed { color: rgb(238, 238, 238); background: rgb(85, 85, 51); }
+  div#cgit table.ssdiff td.changed_dark { color: rgb(238, 238, 238); background: rgb(51, 51, 0); }
+  div#cgit table.ssdiff td.lineno { color: rgb(238, 238, 238); background: rgb(31, 31, 31); }
+  div#cgit table.ssdiff td.hunk { color: rgb(238, 238, 238); background: rgb(13, 61, 100); border-top-color: rgb(85, 85, 85); border-bottom-color: rgb(85, 85, 85); }
+  div#cgit table.ssdiff td.head { border-top-color: rgb(85, 85, 85); border-bottom-color: rgb(85, 85, 85); }
+  div#cgit table.ssdiff td.head div.head { color: rgb(238, 238, 238); }
+  div#cgit table.ssdiff td.foot { border-top-color: rgb(85, 85, 85); }
+}body.hl { background-color: rgb(224, 234, 238); }pre.hl { color: rgb(0, 0, 0); background-color: rgb(224, 234, 238); font-size: 10pt; font-family: "Courier New", monospace; }.hl.num { color: rgb(176, 126, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(191, 3, 3); }.hl.pps { color: rgb(129, 129, 0); }.hl.slc { color: rgb(131, 129, 131); font-style: italic; }.hl.com { color: rgb(131, 129, 131); font-style: italic; }.hl.ppc { color: rgb(0, 130, 0); }.hl.opt { color: rgb(0, 0, 0); }.hl.ipl { color: rgb(0, 87, 174); }.hl.lin { color: rgb(85, 85, 85); }.hl.kwa { color: rgb(0, 0, 0); font-weight: bold; }.hl.kwb { color: rgb(0, 87, 174); }.hl.kwc { color: rgb(0, 0, 0); font-weight: bold; }.hl.kwd { color: rgb(1, 1, 129); }</style></head>
+<body>
+<div id="cgit"><table id="header">
+<tbody><tr>
+<td class="logo" rowspan="2"><a href="/"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABGCAMAAAAEs2EhAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAJcEhZcwAAEJwAABCcASbNOjQAAAMAUExURUdwTAMCCAwLCwAAAAAAAQICBLS0tAICBAAAAQICBPjt7AEBAwICBAAAAfnw77i4uAICBAICBAICBAICBAICBAICBLW1tfjr6gICBAICBAICBAICBN7e3gICBAICBLCwsAgICPjq6QICBAICBAICBAICBAICBAUDBPT09AICBAICBN/f3+Xk5AICBAICBAICBOro6Ovo6AICBAICBAICBMDAwAICBAICBKOjo97e3u/v797e3gICBPfw8JiYmOzo6OHh4efm5uLi4uPj4wICLwICBAICBPnq6cjIyAICBAICGwICBAICLwwMDAYEBAICBAwMDAICL8PDw/jOy/jT0ODg4O7u7tra2gwMDO/v7wwMDPjq6QICBPr6+vn5+QICBP7+/PBQMvT09L69vP///wwMDOzs7OTk5N3d3MTExBQUEwoGBBwcGywsLDQ0NCQkJMzMzNTU1Dw8PPazrkRERHR0dIODhFxcXOy0C+vEDKysrEpKTOu8C9icCLW0s/bVDfbaFKSkpO3MDvHUKmRkZPrZ1s+UB1ZWVNCkDWxsa/awqs6OCPHTEZycnPTVQ5SUlK94Cb+1pPOPhfJ9cPJ3afJ5a/zo58mOB8SLCcCFB/e7tvWhmv739vOEefzm5Hx8fP7087mDCadyCCYaBFBQUPJxYf3x8cOaDve2sPWmn/nNyfOMgvvh3/76+fJ6bfBYPvFeR/OIffJ1Z7ijeP3u7d+lCfFmU8mjC5pkBbZ+CtGbCayECTMkBerGIE42BI2NjPjBvfe4s/arpfve3PFpV/WclP/+/vbaSopsJLitlvLaLOWsCZ13TNqjCaRtBbebXPbWMJ5+RPK2DOK8DLaMCLCNPnxbCqJuJPPNDE86CdmzDeG0CohbBqR3CtesCfBTNvvc2vSTivFhS/KAc/KBdV5WRLSDIKabh7qDMP3t7MGcTteWDZVrMf3s69+sQioiBKNxP51qBzkmIJKCXGxFBV5ONGpLBo5qB8KTC72dBPbGLPPEC9KoUeuzFkEyB7aKIIi6vaIAAABfdFJOUwAEAQsNaxcxD/3MBqcJxxq6i5n173YV0HzWHN+OsckSEtQnzU8j+RipqtKWpEY2666yLj3hHlafPop0k7fADrWbqJ6hU2Gh2iKQWsJrbseB7Hdi/ft0hWfWh+/XZMzMkoMNTwAAB2lJREFUWMO1mHd8FEUUxxMIgYQoMYSmgkikNxVUrKgIgmDvdbbctrvd293LleTCXTwSU0gPJQktJkGQ3qUXRakKKmADe++915kt11vkeP/c7X7uft+Z9968mXlJSf/TklOSzph1mNg3MzOne2bmpEdGdUi8/MApY4HPrumUaMTEbBBo591yVgLlO2aBUMu8NHGAvkHaFM+bABh9U6L0ewQPnrcUWHj4eUti9M/tHgwQC2zFZiMA2Ynx0jkh7hdLbcVWERKmdk1EgqYF65vExQ6rgACgRwIAnUImYOLNAk9RSrYmn/4CviY0QymjSf9652kDuoKo1q/DGQaAwYkPAQyCyesi0DsRABNFibw/wWg2U4kEIElB0CMsLC4VKIv+OCwRALHcXmoUjOoic9hrPE4bJWhTOC8BAL7ZybnLjYoiX17jdJOS2wESCCiokliZLFf0HG6WJgha3q27qPu5cQpdd9WQq64LD9jN0CyByWjIlJPAaE8Vg9E2PeCd49Pvefb8NcuuvSAcgJIYq8VOEFaYniKHEQ6q3MFiUvsAqenrcByvD0OYBnjWAxwOEiuHmSRwmBsAq82O0WJ7AKnpC3Fk9WeHEC4HImsHfKkNK6d4QXBjdrQMrARR0A5A6qP1uGorQghdAS/vBiahlP1h165/dthoO1K1EPTi+AGpjxkWPeMl9AypRRwJdX4+WnbynXfK/q2rQqp2jDHHDUhNf2GJYa5OWBdEgIAqwmb6pbYxb/qxsu1Lp3/zmgkUMBipB/miWPrd0mfhcyDheS8hNQhQyjBfNb2Ulzd9ev7OnUUz8ste5whfmp4TS7/XLKg6e4nh80XL1VksTPcnJMOYOjc0bVP0ZxQdqn658I0///7rxJtxArr1Wq2ozl5gMBhW4qEEOIO2LS0lmyAgf0bly9XVj0MrrPzjt2/jAlym6eP4kxBgWKt+/8iPkDwWvFbb6Dqcl5cPJ7B//yEo/3jlWztPvhlPOb3swjmaPr4IAZ7SHj5M7+b9TUbbka0V2gSqq4ugfmH+78ddJTs0wKAucenj9chHX+uEWT5Cxo7WJtemvFdRBKqLCgsL3yhrKXG5Gtr0IEQ+ukx+2KeP47mGRUsMG72EXjohw7Tr122HkX5lERz9jGPHm7a5XF/Wwl3TbEGAnEj7/uSbZ+MBgCdmhyNkgLafTpWh8RdVVuaXbW9tcLlcFSc+RuvZ5kBVe0CE/AnURwB8/RLDqn171yvPq3v11AAm24+n3l5a9tbmzdtba5tKSkoavjhIOuFKNpbbmyEhKzzgwXo8BICv3wcj8Z764v37NADlcb/y/dtLNy9taKiA1vjZQU7iyGI4dmuzvZgCaeH3nCEfhAGsQbm0Sn2xZohysssBvIes+25L40uukpKKxpaWo3UkKclcDQwCVWxDYegXFnD/vDAAfCME7FVfzLwX/WwAQACy7sUttVu31rYe+WQDSZIy3DYlK9rhRFPEepQyYmYYwMK5hpVqbF4YjxK86zBUKiQo+umLBw68/soGOHwObqAYRnh8p6/bwk6hSyBBBXht/vj+6n4DgI1mOEgg3XVu9MGxNIbMu+XAk9mt4QkTciMC5l+i6A9+yAREGSNkUjdOZghMNZLyEu4IfxNJud5HWPGkYdV879MyVT/pAZ4CNVCQkDR9CZ5aNH24/fsOk1ckxSKgWrTgXV3/YkW/QxZQNhdoqpM42SePpuB3XI2w2lKG54apps9drBawkShP3OpoGVmSfN7BgqMA+iTHICz37Qe6/hh0vSzWNQmYmliQ1fhNISNCSUq5+mlFde2eucvVXXPmDap+lxx0quZ848VCzN9H4PZIfYKrnw1YD7p+0m3KWZTBohjrD0iLtP13PN+fMHOEpt8bXV9NNQwRUZ7wHY5iEeb56Wstp97qbaOK9caACIgBVGcY2k75EwaNjEnInaDpdx6t/MVcRbKKLpJjGEI1+J1lZZhWrDMAAPoMjkHIvTEloMFCFVQ5OVbxEsGwehoRrCxx0EhOYtFB0g/SN2JH6Mo9SP96Xb+z2j8wlnpIfenStJ9/aI0h03BbsFiM3jBEbI+cdeU9uXcP97b8tOs9b5cYXwyCIswgBssKqLUg6pV1UuQL97i7xvm6ZNlw9PAC4JD8hx2SRbTMSbQHOcmsH4VHx9d/gTWCgvM2umksqhGsJNNWJRvEOI+q3h6XYPYrE9EIjFO5qZuN0WtSoPUDJniV5yUMi02QGRHwgsjrThoYh/6ANGUCNiweI+ClSrRaeN1JQ+PzkJUCRhmLz0hKsAhGo0UFZHeJ3YOaCkQheAJRwsHyRtQGKND6JSNjAsbAtQNDxgXoR6mqhFXtYmhRyIoJyAJouqVEYM5H8VGzWlesWsmLpd8/G2W1yRmgQUcDOFVlDZA2KgZgCvQQDDETP4AMAIDLYzZ6KehNR6AGEw3AqcKW6EcY3YbCGgcBnnYA1J2T0pda9JUwKk3JB0pqB4BRS6/eQhobrVok90EJZwV80CpjmZgAs7dvGK2iTlO760AIEmSjzYBWQ0D5AP8Bn7Op382/PP4AAAAASUVORK5CYII=" alt="cgit logo"></a></td>
+<td class="main"><a href="/">index</a> : <a href="/pub/scm/linux/kernel/git/morse/linux.git/">kernel/git/morse/linux.git</a></td><td class="form"><form method="get">
+<select name="h" onchange="this.form.submit();">
+<option value="arm64/generated_sysreg/a32/rfc-v1">arm64/generated_sysreg/a32/rfc-v1</option>
+<option value="arm64/generated_sysreg/a32/v1">arm64/generated_sysreg/a32/v1</option>
+<option value="arm64/generated_sysreg/a32/v2">arm64/generated_sysreg/a32/v2</option>
+<option value="arm64/modules/exit_sections/v1">arm64/modules/exit_sections/v1</option>
+<option value="irqchip/ppi_partition/eppi_fixes/v1">irqchip/ppi_partition/eppi_fixes/v1</option>
+<option value="kvm-arm64/kill_target_table/v1">kvm-arm64/kill_target_table/v1</option>
+<option value="kvm/at/panic/v3">kvm/at/panic/v3</option>
+<option value="kvm/at/panic/v3_v4.14.193">kvm/at/panic/v3_v4.14.193</option>
+<option value="kvm/at/panic/v3_v4.19.140">kvm/at/panic/v3_v4.19.140</option>
+<option value="kvm/at/panic/v3_v4.9.232">kvm/at/panic/v3_v4.9.232</option>
+<option value="kvm/at/panic/v3_v5.4.59">kvm/at/panic/v3_v5.4.59</option>
+<option value="kvm/at/panic/v3_v5.7.16">kvm/at/panic/v3_v5.7.16</option>
+<option value="kvm/at/panic/v3_v5.8.2">kvm/at/panic/v3_v5.8.2</option>
+<option value="master">master</option>
+<option value="mpam/abmc/v11">mpam/abmc/v11</option>
+<option value="mpam/abmc/v6">mpam/abmc/v6</option>
+<option value="mpam/cacheinfo/v1">mpam/cacheinfo/v1</option>
+<option value="mpam/cacheinfo/v2">mpam/cacheinfo/v2</option>
+<option value="mpam/cacheinfo/v3">mpam/cacheinfo/v3</option>
+<option value="mpam/driver/rfc">mpam/driver/rfc</option>
+<option value="mpam/driver/v1">mpam/driver/v1</option>
+<option value="mpam/driver/v2">mpam/driver/v2</option>
+<option value="mpam/driver/v3">mpam/driver/v3</option>
+<option value="mpam/kvm_mpam_fix/v2">mpam/kvm_mpam_fix/v2</option>
+<option value="mpam/kvm_mpam_fix/v3">mpam/kvm_mpam_fix/v3</option>
+<option value="mpam/mon_group_migration/v0">mpam/mon_group_migration/v0</option>
+<option value="mpam/monitors_and_locking/v1">mpam/monitors_and_locking/v1</option>
+<option value="mpam/monitors_and_locking/v2">mpam/monitors_and_locking/v2</option>
+<option value="mpam/monitors_and_locking/v3">mpam/monitors_and_locking/v3</option>
+<option value="mpam/monitors_and_locking/v4">mpam/monitors_and_locking/v4</option>
+<option value="mpam/monitors_and_locking/v5">mpam/monitors_and_locking/v5</option>
+<option value="mpam/monitors_and_locking/v6">mpam/monitors_and_locking/v6</option>
+<option value="mpam/monitors_and_locking/v7">mpam/monitors_and_locking/v7</option>
+<option value="mpam/monitors_and_locking/v8">mpam/monitors_and_locking/v8</option>
+<option value="mpam/monitors_and_locking/v9">mpam/monitors_and_locking/v9</option>
+<option value="mpam/move_to_fs/v1">mpam/move_to_fs/v1</option>
+<option value="mpam/move_to_fs/v10">mpam/move_to_fs/v10</option>
+<option value="mpam/move_to_fs/v10_final">mpam/move_to_fs/v10_final</option>
+<option value="mpam/move_to_fs/v11">mpam/move_to_fs/v11</option>
+<option value="mpam/move_to_fs/v11_final">mpam/move_to_fs/v11_final</option>
+<option value="mpam/move_to_fs/v12_final">mpam/move_to_fs/v12_final</option>
+<option value="mpam/move_to_fs/v2">mpam/move_to_fs/v2</option>
+<option value="mpam/move_to_fs/v3">mpam/move_to_fs/v3</option>
+<option value="mpam/move_to_fs/v4">mpam/move_to_fs/v4</option>
+<option value="mpam/move_to_fs/v5">mpam/move_to_fs/v5</option>
+<option value="mpam/move_to_fs/v6">mpam/move_to_fs/v6</option>
+<option value="mpam/move_to_fs/v7">mpam/move_to_fs/v7</option>
+<option value="mpam/move_to_fs/v7_bare">mpam/move_to_fs/v7_bare</option>
+<option value="mpam/move_to_fs/v8">mpam/move_to_fs/v8</option>
+<option value="mpam/move_to_fs/v8_final">mpam/move_to_fs/v8_final</option>
+<option value="mpam/move_to_fs/v8_for-boris">mpam/move_to_fs/v8_for-boris</option>
+<option value="mpam/move_to_fs/v9">mpam/move_to_fs/v9</option>
+<option value="mpam/move_to_fs/v9_final">mpam/move_to_fs/v9_final</option>
+<option value="mpam/one_off_backport/v5.15">mpam/one_off_backport/v5.15</option>
+<option value="mpam/pptt/v1">mpam/pptt/v1</option>
+<option value="mpam/resctrl_merge_cdp/v1">mpam/resctrl_merge_cdp/v1</option>
+<option value="mpam/resctrl_merge_cdp/v2">mpam/resctrl_merge_cdp/v2</option>
+<option value="mpam/resctrl_merge_cdp/v3">mpam/resctrl_merge_cdp/v3</option>
+<option value="mpam/resctrl_merge_cdp/v4">mpam/resctrl_merge_cdp/v4</option>
+<option value="mpam/resctrl_merge_cdp/v5">mpam/resctrl_merge_cdp/v5</option>
+<option value="mpam/resctrl_merge_cdp/v6">mpam/resctrl_merge_cdp/v6</option>
+<option value="mpam/resctrl_merge_cdp/v7">mpam/resctrl_merge_cdp/v7</option>
+<option value="mpam/resctrl_monitors_in_bytes/v1">mpam/resctrl_monitors_in_bytes/v1</option>
+<option value="mpam/resctrl_monitors_in_bytes/v2">mpam/resctrl_monitors_in_bytes/v2</option>
+<option value="mpam/resctrl_monitors_in_bytes/v3">mpam/resctrl_monitors_in_bytes/v3</option>
+<option value="mpam/resctrl_monitors_in_bytes/v4">mpam/resctrl_monitors_in_bytes/v4</option>
+<option value="mpam/resctrl_monitors_in_bytes/v5">mpam/resctrl_monitors_in_bytes/v5</option>
+<option value="mpam/resctrl_monitors_in_bytes/v6">mpam/resctrl_monitors_in_bytes/v6</option>
+<option value="mpam/snapshot+extras/v6.10-rc1">mpam/snapshot+extras/v6.10-rc1</option>
+<option value="mpam/snapshot+extras/v6.11-rc1">mpam/snapshot+extras/v6.11-rc1</option>
+<option value="mpam/snapshot+extras/v6.12-rc1">mpam/snapshot+extras/v6.12-rc1</option>
+<option value="mpam/snapshot+extras/v6.13">mpam/snapshot+extras/v6.13</option>
+<option value="mpam/snapshot+extras/v6.14-rc1">mpam/snapshot+extras/v6.14-rc1</option>
+<option value="mpam/snapshot+extras/v6.15-rc1">mpam/snapshot+extras/v6.15-rc1</option>
+<option value="mpam/snapshot+extras/v6.15-rc3">mpam/snapshot+extras/v6.15-rc3</option>
+<option value="mpam/snapshot+extras/v6.16-rc1">mpam/snapshot+extras/v6.16-rc1</option>
+<option value="mpam/snapshot+extras/v6.16-rc4">mpam/snapshot+extras/v6.16-rc4</option>
+<option value="mpam/snapshot+extras/v6.16-rc5">mpam/snapshot+extras/v6.16-rc5</option>
+<option value="mpam/snapshot+extras/v6.17-rc2">mpam/snapshot+extras/v6.17-rc2</option>
+<option value="mpam/snapshot+extras/v6.18-rc1">mpam/snapshot+extras/v6.18-rc1</option>
+<option value="mpam/snapshot/feb">mpam/snapshot/feb</option>
+<option value="mpam/snapshot/v5.15">mpam/snapshot/v5.15</option>
+<option value="mpam/snapshot/v5.16">mpam/snapshot/v5.16</option>
+<option value="mpam/snapshot/v5.17">mpam/snapshot/v5.17</option>
+<option value="mpam/snapshot/v5.18">mpam/snapshot/v5.18</option>
+<option value="mpam/snapshot/v6.0">mpam/snapshot/v6.0</option>
+<option value="mpam/snapshot/v6.0-rc1">mpam/snapshot/v6.0-rc1</option>
+<option value="mpam/snapshot/v6.1">mpam/snapshot/v6.1</option>
+<option value="mpam/snapshot/v6.10-rc1">mpam/snapshot/v6.10-rc1</option>
+<option value="mpam/snapshot/v6.11-rc1">mpam/snapshot/v6.11-rc1</option>
+<option value="mpam/snapshot/v6.12-rc1">mpam/snapshot/v6.12-rc1</option>
+<option value="mpam/snapshot/v6.13">mpam/snapshot/v6.13</option>
+<option value="mpam/snapshot/v6.14-rc1">mpam/snapshot/v6.14-rc1</option>
+<option value="mpam/snapshot/v6.15-rc1">mpam/snapshot/v6.15-rc1</option>
+<option value="mpam/snapshot/v6.15-rc3">mpam/snapshot/v6.15-rc3</option>
+<option value="mpam/snapshot/v6.16-rc1">mpam/snapshot/v6.16-rc1</option>
+<option value="mpam/snapshot/v6.16-rc4">mpam/snapshot/v6.16-rc4</option>
+<option value="mpam/snapshot/v6.16-rc5">mpam/snapshot/v6.16-rc5</option>
+<option value="mpam/snapshot/v6.17-rc2">mpam/snapshot/v6.17-rc2</option>
+<option value="mpam/snapshot/v6.17-rc3">mpam/snapshot/v6.17-rc3</option>
+<option value="mpam/snapshot/v6.17-rc4">mpam/snapshot/v6.17-rc4</option>
+<option value="mpam/snapshot/v6.18-rc1">mpam/snapshot/v6.18-rc1</option>
+<option value="mpam/snapshot/v6.2">mpam/snapshot/v6.2</option>
+<option value="mpam/snapshot/v6.3">mpam/snapshot/v6.3</option>
+<option value="mpam/snapshot/v6.5-rc1">mpam/snapshot/v6.5-rc1</option>
+<option value="mpam/snapshot/v6.7-rc2">mpam/snapshot/v6.7-rc2</option>
+<option value="pbha/rfc/v1">pbha/rfc/v1</option>
+<option value="pptt/for_each_pptt_entry/v0">pptt/for_each_pptt_entry/v0</option>
+<option value="resctrl/snc/v14">resctrl/snc/v14</option>
+<option value="spectre-bhb/v5.17">spectre-bhb/v5.17</option>
+<option value="spectre_bse/backports/v1/v5.10.233">spectre_bse/backports/v1/v5.10.233</option>
+<option value="spectre_bse/backports/v1/v5.15.176">spectre_bse/backports/v1/v5.15.176</option>
+<option value="spectre_bse/backports/v1/v6.1.126">spectre_bse/backports/v1/v6.1.126</option>
+<option value="spectre_bse/backports/v1/v6.12.10">spectre_bse/backports/v1/v6.12.10</option>
+<option value="spectre_bse/backports/v1/v6.6.72">spectre_bse/backports/v1/v6.6.72</option>
+<option value="spectre_bse/v1">spectre_bse/v1</option>
+<option value="virtual_cpu_hotplug/rfc/v1">virtual_cpu_hotplug/rfc/v1</option>
+<option value="virtual_cpu_hotplug/rfc/v2" selected="selected">virtual_cpu_hotplug/rfc/v2</option>
+</select> <input type="submit" value="switch"></form></td></tr>
+<tr><td class="sub">James Morse's fork of linux.git</td><td class="sub right">James Morse</td></tr></tbody></table>
+<table class="tabs"><tbody><tr><td>
+<a href="/pub/scm/linux/kernel/git/morse/linux.git/about/?h=virtual_cpu_hotplug/rfc/v2">about</a><a href="/pub/scm/linux/kernel/git/morse/linux.git/?h=virtual_cpu_hotplug/rfc/v2">summary</a><a href="/pub/scm/linux/kernel/git/morse/linux.git/refs/?h=virtual_cpu_hotplug/rfc/v2">refs</a><a class="active" href="/pub/scm/linux/kernel/git/morse/linux.git/log/?h=virtual_cpu_hotplug/rfc/v2">log</a><a href="/pub/scm/linux/kernel/git/morse/linux.git/tree/?h=virtual_cpu_hotplug/rfc/v2">tree</a><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2">commit</a><a href="/pub/scm/linux/kernel/git/morse/linux.git/diff/?h=virtual_cpu_hotplug/rfc/v2">diff</a><a href="/pub/scm/linux/kernel/git/morse/linux.git/stats/?h=virtual_cpu_hotplug/rfc/v2">stats</a></td><td class="form"><form class="right" method="get" action="/pub/scm/linux/kernel/git/morse/linux.git/log/">
+<input type="hidden" name="h" value="virtual_cpu_hotplug/rfc/v2"><select name="qt">
+<option value="grep">log msg</option>
+<option value="author">author</option>
+<option value="committer">committer</option>
+<option value="range">range</option>
+</select>
+<input class="txt" type="search" size="10" name="q" value="">
+<input type="submit" value="search">
+</form>
+</td></tr></tbody></table>
+<div class="content"><table class="list nowrap"><tbody><tr class="nohover"><th class="left">Age</th><th class="left">Commit message (<a href="/pub/scm/linux/kernel/git/morse/linux.git/log/?h=virtual_cpu_hotplug/rfc/v2&amp;showmsg=1">Expand</a>)</th><th class="left">Author</th><th class="left">Files</th><th class="left">Lines</th></tr>
+<tr><td><span title="2023-09-14 15:08:05 +0100">2023-09-14</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=b738356e1f6c8aca4f3b4d3d6af7d2a2b512ed1d">ACPI: processor: Only call arch_unregister_cpu() if HOTPLUG_CPU is selected</a><span class="decoration"><a class="branch-deco" href="/pub/scm/linux/kernel/git/morse/linux.git/log/?h=virtual_cpu_hotplug/rfc/v2">virtual_cpu_hotplug/rfc/v2</a></span></td><td>James Morse</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:07 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f4bfd512821116bf949b7f1fd342ff8db1efbaf9">cpumask: Add enabled cpumask for present CPUs that can be brought online</a></td><td>James Morse</td><td>3</td><td><span class="deletions">-0</span>/<span class="insertions">+38</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:07 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8e8ed1be00f5902da4a0eb4dda6e3b1f76d63119">ACPI: Add _OSC bits to advertise OS support for toggling CPU present/enabled</a></td><td>James Morse</td><td>6</td><td><span class="deletions">-1</span>/<span class="insertions">+44</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:07 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=969efad11426de852b4df94c6cc9235dfd3a8dee">arm64: document virtual CPU hotplug's expectations</a></td><td>James Morse</td><td>2</td><td><span class="deletions">-0</span>/<span class="insertions">+80</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:07 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f38a8ad1d2a9df9255261e58d938089fdeff5ab5">ACPI: add support to register CPUs based on the _STA enabled bit</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+30</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:07 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=43d31a73a164d6f4e3e1cd290bb0b1780922d1d6">arm64: psci: Ignore DENIED CPUs</a></td><td>Jean-Philippe Brucker</td><td>3</td><td><span class="deletions">-2</span>/<span class="insertions">+5</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:07 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=4e169f7e695e2fa37c6c316c6f50689ba7a91468">irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs</a></td><td>James Morse</td><td>2</td><td><span class="deletions">-1</span>/<span class="insertions">+16</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:07 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a1747d48ea1e64a3c45e26634ca495ee9ba79309">irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-12</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:06 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8caee06526d28bbbb32d826bdbe550171a45d540">arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a helper</a></td><td>James Morse</td><td>4</td><td><span class="deletions">-8</span>/<span class="insertions">+11</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:06 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=5dd28bcc39cc155d2a7264a7f37dcf191072df24">ACPICA: Add new MADT GICC flags fields [code first?]</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:06 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f89f080e39f189492289b5bce5a0d7401be92fc2">arm64: acpi: Move get_cpu_for_acpi_id() to a header</a></td><td>James Morse</td><td>2</td><td><span class="deletions">-11</span>/<span class="insertions">+11</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:06 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=e810f07fa9c3cb709c6e4e79687571dbc4b242da">LoongArch: Use the __weak version of arch_unregister_cpu()</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-9</span>/<span class="insertions">+0</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:06 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=290c51de588d8a9c7678e4d932ba578d4efdaee0">drivers: base: Implement weak arch_unregister_cpu()</a></td><td>James Morse</td><td>4</td><td><span class="deletions">-12</span>/<span class="insertions">+8</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:06 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=77ca834bb5f44080a9655062e4cc22d0c9d83741">ACPI: Warn when the present bit changes but the feature is not enabled</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:05 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=4fe9c16fe3b4488a783ba159c9e6190271c3aa29">ACPI: Check _STA present bit before making CPUs not present</a></td><td>James Morse</td><td>2</td><td><span class="deletions">-6</span>/<span class="insertions">+26</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:05 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=742def4b3275090090169546fcda2b5b49e95904">ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug</a></td><td>James Morse</td><td>3</td><td><span class="deletions">-9</span>/<span class="insertions">+48</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:05 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=c36df3b550df3fd78c0942b8e342f184036a0856">ACPI: Rename acpi_processor_hotadd_init and remove pre-processor guards</a></td><td>James Morse</td><td>2</td><td><span class="deletions">-11</span>/<span class="insertions">+5</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:05 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=4aeb291dd7d0443d533a37bec4137d5919a0792f">ACPI: Move acpi_bus_trim_one() before acpi_scan_hot_remove()</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-38</span>/<span class="insertions">+38</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:05 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6563de2e814c44fbe0b46e60a7685d80d8ef190c">ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'</a></td><td>James Morse</td><td>12</td><td><span class="deletions">-23</span>/<span class="insertions">+23</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:05 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2e0b54baa3e7272a214a8b140d59869d961dbbf6">ACPI: processor: Register all CPUs from acpi_processor_get_info()</a></td><td>James Morse</td><td>2</td><td><span class="deletions">-1</span>/<span class="insertions">+14</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:05 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f92e4a7facf4daf377b5304e905139ef7ed18b93">ACPI: processor: Register CPUs that are online, but not described in the DSDT</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+19</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:04 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=40ad03224608a7d752c835e236df516425fa5ec5">ACPI: processor: Add support for processors described as container packages</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+22</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:04 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=3067c7f7d64279144bfd0add9bd3dfe5c6bc2aef">ACPI: Only enumerate enabled (or functional) devices</a></td><td>James Morse</td><td>5</td><td><span class="deletions">-14</span>/<span class="insertions">+16</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:04 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=96f744e3d5557314aa91f6582a9d4a3c1c9462a3">ACPI: Rename acpi_scan_device_not_present() to be about enumeration</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-4</span>/<span class="insertions">+4</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:04 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=5b4b9ef792fc5bfdb4402d5c4209bf9edb135f31">ACPI: Use the acpi_device_is_present() helper in more places</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:04 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=b4876a0f548f1b8633649335b2791423d69eaef0">arch_topology: Make register_cpu_capacity_sysctl() tolerant to late CPUs</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-12</span>/<span class="insertions">+26</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:04 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=840e78c6a755fec6d1290bb00735b9552a43171c">riscv: Switch over to GENERIC_CPU_DEVICES</a></td><td>James Morse</td><td>2</td><td><span class="deletions">-15</span>/<span class="insertions">+5</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:03 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=286b9a8a61b3917aefae99715b2d88fd7dc43c72">LoongArch: Switch over to GENERIC_CPU_DEVICES</a></td><td>James Morse</td><td>2</td><td><span class="deletions">-27</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:03 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=9843ba4fee491661e17c47710726ce64490f2cd4">x86/topology: Switch over to GENERIC_CPU_DEVICES</a></td><td>James Morse</td><td>3</td><td><span class="deletions">-23</span>/<span class="insertions">+7</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:03 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=61aac5c500f683a61461d6565c1dedfbbb9286e7">x86: intel_epb: Don't rely on link order</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:03 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=44047060a1bc4d6dd30f5fbd26f7d2e74f0d74be">arm64: setup: Switch over to GENERIC_CPU_DEVICES using arch_register_cpu()</a></td><td>James Morse</td><td>3</td><td><span class="deletions">-10</span>/<span class="insertions">+5</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:03 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=9d1786cf020943ddae90b8e14db223e2f487747a">drivers: base: Print a warning instead of panic() when register_cpu() fails</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+4</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:03 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=724e5d0fb249b2e18db9ca1b3dcc4556d0870fa9">drivers: base: Move cpu_dev_init() after node_dev_init()</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:03 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=7bb9f088e594a9bb6c97e9c958745042fb6eb2ef">drivers: base: Allow parts of GENERIC_CPU_DEVICES to be overridden</a></td><td>James Morse</td><td>7</td><td><span class="deletions">-9</span>/<span class="insertions">+17</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:02 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6f39bdc26c9b5025fdafd462a7e26ae72e5e5f37">drivers: base: Use present CPUs in GENERIC_CPU_DEVICES</a></td><td>James Morse</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-12 17:57:02 +0100">2023-09-12</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a14e456a350de6f3a8d3fb2d77b0f195a4cc4647">ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64 and riscv</a></td><td>James Morse</td><td>6</td><td><span class="deletions">-19</span>/<span class="insertions">+10</span></td></tr>
+<tr><td><span title="2023-09-10 16:28:41 -0700">2023-09-10</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=0bb80ecc33a8fb5a682236443c1e740d5c917d1d">Linux 6.6-rc1</a></td><td>Linus Torvalds</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-10 11:55:26 -0700">2023-09-10</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=1548b060d6f32a00a2f7e2c11328205fb66fc4fa">Merge tag 'topic/drm-ci-2023-08-31-1' of git://anongit.freedesktop.org/drm/drm</a></td><td>Linus Torvalds</td><td>68</td><td><span class="deletions">-0</span>/<span class="insertions">+5508</span></td></tr>
+<tr><td><span title="2023-09-10 10:39:31 -0700">2023-09-10</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=e56b2b6057996c5f48da518c79d6590f8bfaabf3">Merge tag 'x86-urgent-2023-09-10' of git://git.kernel.org/pub/scm/linux/kerne...</a></td><td>Linus Torvalds</td><td>6</td><td><span class="deletions">-11</span>/<span class="insertions">+20</span></td></tr>
+<tr><td><span title="2023-09-10 10:34:46 -0700">2023-09-10</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=e79dbf03d87b2d9978d76ddc1c06424b07b215ad">Merge tag 'perf-urgent-2023-09-10' of git://git.kernel.org/pub/scm/linux/kern...</a></td><td>Linus Torvalds</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+11</span></td></tr>
+<tr><td><span title="2023-09-09 20:06:17 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=535a265d7f0dd50d8c3a4f8b4f3a452d56bd160f">Merge tag 'perf-tools-for-v6.6-1-2023-09-05' of git://git.kernel.org/pub/scm/...</a></td><td>Linus Torvalds</td><td>284</td><td><span class="deletions">-9119</span>/<span class="insertions">+8011</span></td></tr>
+<tr><td><span title="2023-09-09 19:56:23 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fd3a5940e66d059d375bdb9e2d7d06c56f630d7e">Merge tag '6.6-rc-smb3-client-fixes-part2' of git://git.samba.org/sfrench/cif...</a></td><td>Linus Torvalds</td><td>14</td><td><span class="deletions">-19</span>/<span class="insertions">+43</span></td></tr>
+<tr><td><span title="2023-09-09 15:11:49 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a3c57ab79a06e333a869ae340420cb3c6f5921d3">iov_iter: Kunit tests for page extraction</a></td><td>David Howells</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+240</span></td></tr>
+<tr><td><span title="2023-09-09 15:11:49 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2d71340ff1d41a5b9fc1b30ded12d638b2e2ae96">iov_iter: Kunit tests for copying to/from an iterator</a></td><td>David Howells</td><td>3</td><td><span class="deletions">-0</span>/<span class="insertions">+549</span></td></tr>
+<tr><td><span title="2023-09-09 15:11:49 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f741bd7178c95abd7aeac5a9d933ee542f9a5509">iov_iter: Fix iov_iter_extract_pages() with zero-sized entries</a></td><td>David Howells</td><td>1</td><td><span class="deletions">-15</span>/<span class="insertions">+15</span></td></tr>
+<tr><td><span title="2023-09-09 14:46:57 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6b8bb5b8d9b35fb43f0dbf9fd91b7d35e6232e08">Merge tag 'sh-for-v6.6-tag1' of git://git.kernel.org/pub/scm/linux/kernel/git...</a></td><td>Linus Torvalds</td><td>6</td><td><span class="deletions">-12</span>/<span class="insertions">+8</span></td></tr>
+<tr><td><span title="2023-09-09 14:25:11 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=1b37a0a2d46f0c5fa5eee170ddeeb83342faa117">Merge tag 'riscv-for-linus-6.6-mw2-2' of git://git.kernel.org/pub/scm/linux/k...</a></td><td>Linus Torvalds</td><td>51</td><td><span class="deletions">-216</span>/<span class="insertions">+1440</span></td></tr>
+<tr><td><span title="2023-09-09 21:54:20 +0200">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=246f80a0b17f8f582b2c0996db02998239057c65">sh: push-switch: Reorder cleanup operations to avoid use-after-free bug</a></td><td>Duoming Zhou</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-09 21:54:20 +0200">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fb60211f377b69acffead3147578f86d0092a7a5">sh: boards: Fix CEU buffer size passed to dma_declare_coherent_memory()</a></td><td>Petr Tesarik</td><td>5</td><td><span class="deletions">-11</span>/<span class="insertions">+7</span></td></tr>
+<tr><td><span title="2023-09-09 12:01:33 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2a5a4326e58339a26cd1510259e7310b8c0980ff">Merge tag 'scsi-misc' of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi</a></td><td>Linus Torvalds</td><td>44</td><td><span class="deletions">-319</span>/<span class="insertions">+1433</span></td></tr>
+<tr><td><span title="2023-09-09 11:49:05 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6b41fb277ed41a73608328431f2e76e68c3bca37">Merge tag 'driver-core-6.6-rc1-2' of git://git.kernel.org/pub/scm/linux/kerne...</a></td><td>Linus Torvalds</td><td>106</td><td><span class="deletions">-113</span>/<span class="insertions">+113</span></td></tr>
+<tr><td><span title="2023-09-09 11:41:22 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=474197a4f7921a97aa1aabc6f759823a024ff25f">Merge tag 'dma-mapping-6.6-2023-09-09' of git://git.infradead.org/users/hch/d...</a></td><td>Linus Torvalds</td><td>4</td><td><span class="deletions">-13</span>/<span class="insertions">+18</span></td></tr>
+<tr><td><span title="2023-09-09 11:35:28 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=060249b5d3447a84c91f22276d3fec723363319d">Merge tag 'pci-v6.6-fixes-1' of git://git.kernel.org/pub/scm/linux/kernel/git...</a></td><td>Linus Torvalds</td><td>3</td><td><span class="deletions">-2</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-09 11:30:16 -0700">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fa9d4bf5b738a7fa852bbeabfd8889b127ca3193">Merge tag 'ntb-6.6' of https://github.com/jonmason/ntb</a></td><td>Linus Torvalds</td><td>4</td><td><span class="deletions">-25</span>/<span class="insertions">+24</span></td></tr>
+<tr><td><span title="2023-09-09 08:18:16 -0500">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=5d153cd128251aaedc8e9657f0a949ec94952055">spnego: add missing OID to oid registry</a></td><td>Steve French</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-09 08:15:11 +0100">2023-09-09</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=86495af1171e1feec79faa9b64c05c89f46e41d1">media: dvb: symbol fixup for dvb_attach()</a></td><td>Greg Kroah-Hartman</td><td>106</td><td><span class="deletions">-113</span>/<span class="insertions">+113</span></td></tr>
+<tr><td><span title="2023-09-08 22:01:55 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6099776f9f268e61fe5ecd721f994a8cfce5306f">Merge tag '6.6-rc-ksmbd' of git://git.samba.org/ksmbd</a></td><td>Linus Torvalds</td><td>2</td><td><span class="deletions">-3</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-08 21:46:26 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=3095dd99dd759a5cab8bb81674bc133b1365fb6b">Merge tag 'xarray-6.6' of git://git.infradead.org/users/willy/xarray</a></td><td>Linus Torvalds</td><td>4</td><td><span class="deletions">-4</span>/<span class="insertions">+92</span></td></tr>
+<tr><td><span title="2023-09-08 21:39:54 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=7402e635edb9b430125017d2489974c9a10b069c">Merge tag 'block-6.6-2023-09-08' of git://git.kernel.dk/linux</a></td><td>Linus Torvalds</td><td>10</td><td><span class="deletions">-79</span>/<span class="insertions">+84</span></td></tr>
+<tr><td><span title="2023-09-08 21:32:28 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=7ccc3ebf0c575728bff2d3cb4719ccd84aa186ab">Merge tag 'io_uring-6.6-2023-09-08' of git://git.kernel.dk/linux</a></td><td>Linus Torvalds</td><td>6</td><td><span class="deletions">-3</span>/<span class="insertions">+99</span></td></tr>
+<tr><td><span title="2023-09-08 19:01:16 -0500">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=702c390bc8cc84a486e677dfd76c3917cd244d30">smb3: fix minor typo in SMB2_GLOBAL_CAP_LARGE_MTU</a></td><td>Steve French</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-08 13:24:00 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=32bf43e4efdb87e0f7e90ba3883e07b8522322ad">Merge tag 'thermal-6.6-rc1-3' of git://git.kernel.org/pub/scm/linux/kernel/gi...</a></td><td>Linus Torvalds</td><td>8</td><td><span class="deletions">-38</span>/<span class="insertions">+56</span></td></tr>
+<tr><td><span title="2023-09-08 13:16:09 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fd88c59e7929ee1a155988e87df27686aa1de967">Merge tag 'pm-6.6-rc1-3' of git://git.kernel.org/pub/scm/linux/kernel/git/raf...</a></td><td>Linus Torvalds</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-08 13:12:59 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=d30c0d326b43614c4ca9d31b7e31e806160f1817">Merge tag 'gpio-fixes-for-v6.6-rc1' of git://git.kernel.org/pub/scm/linux/ker...</a></td><td>Linus Torvalds</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+24</span></td></tr>
+<tr><td><span title="2023-09-08 15:11:45 -0500">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=5260bd6d36c83c5b269c33baaaf8c78e520908b0">Revert "PCI: Mark NVIDIA T4 GPUs to avoid bus reset"</a></td><td>Bjorn Helgaas</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-08 13:07:50 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a3d231e44ab827345d24973a621e9364949423a4">Merge tag 'sound-fix-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/gi...</a></td><td>Linus Torvalds</td><td>25</td><td><span class="deletions">-66</span>/<span class="insertions">+160</span></td></tr>
+<tr><td><span title="2023-09-08 12:48:37 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ca9c7abf9502e108fae0e34181e01b1a20bc439f">Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm6...</a></td><td>Linus Torvalds</td><td>3</td><td><span class="deletions">-5</span>/<span class="insertions">+5</span></td></tr>
+<tr><td><span title="2023-09-08 12:16:52 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=12952b6bbd36b372345f179f1a85576c5924d425">Merge tag 'loongarch-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/ch...</a></td><td>Linus Torvalds</td><td>75</td><td><span class="deletions">-461</span>/<span class="insertions">+3862</span></td></tr>
+<tr><td><span title="2023-09-08 12:13:01 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=01a46efcd8f4af44691d7273edf0c5c07dc9b619">Merge tag 'printk-for-6.6-fixup' of git://git.kernel.org/pub/scm/linux/kernel...</a></td><td>Linus Torvalds</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+0</span></td></tr>
+<tr><td><span title="2023-09-08 12:06:51 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=d0a45eeb5806b4daab5811432e7dbae062035dbb">Merge tag 'landlock-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git...</a></td><td>Linus Torvalds</td><td>2</td><td><span class="deletions">-4</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-08 11:25:29 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=c6a906cce61a8015b622707f9c12003f90673399">soc: renesas: Kconfig: For ARCH_R9A07G043 select the required configs if depe...</a></td><td>Lad Prabhakar</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+4</span></td></tr>
+<tr><td><span title="2023-09-08 11:25:28 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2f73b35d79d06f5354c859c31e5946391efc45c8">riscv: Kconfig.errata: Add dependency for RISCV_SBI in ERRATA_ANDES config</a></td><td>Lad Prabhakar</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-08 11:25:27 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=54adc24c9a8f6e602f7e9d716107814d10281f8d">riscv: Kconfig.errata: Drop dependency for MMU in ERRATA_ANDES_CMO config</a></td><td>Lad Prabhakar</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-08 11:25:26 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=e7ddd00eb3752b109e24eee19cb6b7421059d4db">riscv: Kconfig: Select DMA_DIRECT_REMAP only if MMU is enabled</a></td><td>Lad Prabhakar</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-08 11:25:25 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=77eea559bae925e3cd3c5193efcd37675ec227df">Merge patch series "bpf, riscv: use BPF prog pack allocator in BPF JIT"</a></td><td>Palmer Dabbelt</td><td>6</td><td><span class="deletions">-37</span>/<span class="insertions">+255</span></td></tr>
+<tr><td><span title="2023-09-08 11:25:13 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f57805555834494e8cad729d01d86ba326d64959">Merge patch series "riscv: Introduce KASLR"</a></td><td>Palmer Dabbelt</td><td>15</td><td><span class="deletions">-126</span>/<span class="insertions">+328</span></td></tr>
+<tr><td><span title="2023-09-08 11:24:38 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f0936363547948e0c2b757aff52f6ee29396651d">Merge patch "RISC-V: Add ptrace support for vectors"</a></td><td>Palmer Dabbelt</td><td>3</td><td><span class="deletions">-4</span>/<span class="insertions">+90</span></td></tr>
+<tr><td><span title="2023-09-08 11:24:34 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=c23be918c5d0f860971cf824de772714b4c771ea">Merge patch series "Add non-coherent DMA support for AX45MP"</a></td><td>Palmer Dabbelt</td><td>20</td><td><span class="deletions">-0</span>/<span class="insertions">+516</span></td></tr>
+<tr><td><span title="2023-09-08 11:24:21 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=7f215d003f31d56b458c7c3c8c7185a1697f5076">Merge patch series "riscv: dma-mapping: unify support for cache flushes"</a></td><td>Palmer Dabbelt</td><td>1</td><td><span class="deletions">-9</span>/<span class="insertions">+51</span></td></tr>
+<tr><td><span title="2023-09-08 11:24:12 -0700">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=580253b518e6be80b1ecc5e418068388fd4dd4d5">Merge patch series "RISC-V: Probe for misaligned access speed"</a></td><td>Palmer Dabbelt</td><td>10</td><td><span class="deletions">-39</span>/<span class="insertions">+198</span></td></tr>
+<tr><td><span title="2023-09-08 05:58:32 -0300">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f875db4f20f4ec2e4fa3b3be0e5081976e0b5dad">Revert "dma-contiguous: check for memory region overlap"</a></td><td>Zhenhua Huang</td><td>1</td><td><span class="deletions">-5</span>/<span class="insertions">+0</span></td></tr>
+<tr><td><span title="2023-09-07 19:47:04 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a48fa7efaf1161c1c898931fe4c7f0070964233a">Merge tag 'drm-next-2023-09-08' of git://anongit.freedesktop.org/drm/drm</a></td><td>Linus Torvalds</td><td>62</td><td><span class="deletions">-227</span>/<span class="insertions">+684</span></td></tr>
+<tr><td><span title="2023-09-07 18:33:07 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=73be7fb14e83d24383f840a22f24d3ed222ca319">Merge tag 'net-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/netd...</a></td><td>Linus Torvalds</td><td>118</td><td><span class="deletions">-410</span>/<span class="insertions">+1405</span></td></tr>
+<tr><td><span title="2023-09-07 18:16:37 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2ab35ce202f8ba56d4b0930985426214341638a7">Merge tag 'devicetree-fixes-for-6.6-1' of git://git.kernel.org/pub/scm/linux/...</a></td><td>Linus Torvalds</td><td>9</td><td><span class="deletions">-132</span>/<span class="insertions">+202</span></td></tr>
+<tr><td><span title="2023-09-07 18:05:58 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8d844b351824d622fa28bb0cd7a8fecf9aae05ed">Merge tag 'pwm/for-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/...</a></td><td>Linus Torvalds</td><td>40</td><td><span class="deletions">-290</span>/<span class="insertions">+281</span></td></tr>
+<tr><td><span title="2023-09-08 10:44:07 +1000">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=43ffcd6fa1635f479ad73145dfbba59edc2b3b28">Merge tag 'amd-drm-fixes-6.6-2023-09-06' of https://gitlab.freedesktop.org/ag...</a></td><td>Dave Airlie</td><td>50</td><td><span class="deletions">-180</span>/<span class="insertions">+632</span></td></tr>
+<tr><td><span title="2023-09-08 10:35:57 +1000">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=51eed9d4ce21f969894b2bc89eb5444b76615f54">Merge tag 'drm-intel-next-fixes-2023-08-31' of git://anongit.freedesktop.org/...</a></td><td>Dave Airlie</td><td>3</td><td><span class="deletions">-5</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-07 16:07:35 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ff6e6ded54725cd01623b9a1a86b74a523198733">Merge tag 'rtc-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/abelloni...</a></td><td>Linus Torvalds</td><td>59</td><td><span class="deletions">-616</span>/<span class="insertions">+1334</span></td></tr>
+<tr><td><span title="2023-09-07 15:59:57 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=e59a698b2d89b95471769c901d12392134c56eab">Merge tag 'i3c/for-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/i3c/...</a></td><td>Linus Torvalds</td><td>6</td><td><span class="deletions">-12</span>/<span class="insertions">+32</span></td></tr>
+<tr><td><span title="2023-09-07 15:51:07 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=d9b9ea589b47ba603acf18bbbbb44b1a662c61f5">Merge tag 'regulator-fix-v6.6-merge-window' of git://git.kernel.org/pub/scm/l...</a></td><td>Linus Torvalds</td><td>2</td><td><span class="deletions">-17</span>/<span class="insertions">+16</span></td></tr>
+<tr><td><span title="2023-09-07 15:49:20 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=32904dec06adf350e04c2b2e6e6dbb321d852c6f">Merge tag 'spi-fix-v6.6-merge-window' of git://git.kernel.org/pub/scm/linux/k...</a></td><td>Linus Torvalds</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+29</span></td></tr>
+<tr><td><span title="2023-09-07 13:52:20 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=0c02183427b4d2002992f26d4917c1263c5d4a7f">Merge tag 'for-linus' of git://git.kernel.org/pub/scm/virt/kvm/kvm</a></td><td>Linus Torvalds</td><td>177</td><td><span class="deletions">-3127</span>/<span class="insertions">+8673</span></td></tr>
+<tr><td><span title="2023-09-08 06:36:36 +1000">2023-09-08</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=d9809d242ff501734e716634e0b3f3e0dce823ec">Merge tag 'drm-misc-next-fixes-2023-09-01' of git://anongit.freedesktop.org/d...</a></td><td>Dave Airlie</td><td>9</td><td><span class="deletions">-42</span>/<span class="insertions">+46</span></td></tr>
+<tr><td><span title="2023-09-07 11:19:42 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=1b36955cc048c8ff6ba448dbf4be0e52f59f2963">net: enetc: distinguish error from valid pointers in enetc_fixup_clear_rss_rfs()</a></td><td>Vladimir Oltean</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-07 11:19:36 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6afcf0fb92701487421aa73c692855aa70fbc796">Revert "net: team: do not use dynamic lockdep key"</a></td><td>Jakub Kicinski</td><td>3</td><td><span class="deletions">-85</span>/<span class="insertions">+60</span></td></tr>
+<tr><td><span title="2023-09-07 10:52:13 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=4a0fc73da97efd23a383ca839e6fe86410268f6b">Merge tag 's390-6.6-2' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/...</a></td><td>Linus Torvalds</td><td>21</td><td><span class="deletions">-223</span>/<span class="insertions">+98</span></td></tr>
+<tr><td><span title="2023-09-07 10:35:14 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ac2224a467b499730057525924f6be3f4fdb0da5">Merge tag 'mips_6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux</a></td><td>Linus Torvalds</td><td>44</td><td><span class="deletions">-252</span>/<span class="insertions">+149</span></td></tr>
+<tr><td><span title="2023-09-07 10:30:17 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=dd1386dd3c4f4bc55456c88180f9f39697bb95c0">Merge tag 'xtensa-20230905' of https://github.com/jcmvbkbc/linux-xtensa</a></td><td>Linus Torvalds</td><td>7</td><td><span class="deletions">-5</span>/<span class="insertions">+56</span></td></tr>
+<tr><td><span title="2023-09-07 10:23:37 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=78a06688a4d40d9bb6138e2b9ad3353d7bf0157a">ntfs3: drop inode references in ntfs_put_super()</a></td><td>Christian Brauner</td><td>1</td><td><span class="deletions">-6</span>/<span class="insertions">+12</span></td></tr>
+<tr><td><span title="2023-09-07 09:40:30 -0700">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=9013c51c630ac5a046aa2d51d67e966b6185f1cd">vfs: mostly undo glibc turning 'fstat()' into 'fstatat(AT_EMPTY_PATH)'</a></td><td>Linus Torvalds</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+17</span></td></tr>
+<tr><td><span title="2023-09-07 09:41:49 -0600">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=023464fe33a53d7e3fa0a1967a2adcb17e5e40e3">Revert "io_uring: fix IO hang in io_wq_put_and_exit from do_exit()"</a></td><td>Jens Axboe</td><td>1</td><td><span class="deletions">-32</span>/<span class="insertions">+0</span></td></tr>
+<tr><td><span title="2023-09-07 09:02:29 -0600">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=27122c079f5b4b4ecf1323b65700edc57e07bf6e">io_uring: fix unprotected iopoll overflow</a></td><td>Pavel Begunkov</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-07 09:02:27 -0600">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=45500dc4e01c167ee063f3dcc22f51ced5b2b1e9">io_uring: break out of iowq iopoll on teardown</a></td><td>Pavel Begunkov</td><td>3</td><td><span class="deletions">-0</span>/<span class="insertions">+13</span></td></tr>
+<tr><td><span title="2023-09-07 14:19:42 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=4952801fc6adb5b50b8ec2bcc5aeef92fcce8730">Revert "printk: export symbols for debug modules"</a></td><td>Christoph Hellwig</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+0</span></td></tr>
+<tr><td><span title="2023-09-07 14:10:36 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ecc8b4d0b6e19031733f28537971f8c5088dada2">Merge tag 'asoc-fix-v6.6-merge-window' of https://git.kernel.org/pub/scm/linu...</a></td><td>Takashi Iwai</td><td>11</td><td><span class="deletions">-31</span>/<span class="insertions">+96</span></td></tr>
+<tr><td><span title="2023-09-07 11:47:15 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=7153a404fb70d21097af3169354e1e5fda3fbb02">Merge tag 'nf-23-09-06' of https://git.kernel.org/pub/scm/linux/kernel/git/ne...</a></td><td>Paolo Abeni</td><td>6</td><td><span class="deletions">-15</span>/<span class="insertions">+36</span></td></tr>
+<tr><td><span title="2023-09-07 10:15:20 +0100">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8bd795fedb8450ecbef18eeadbd23ed8fc7630f5">arm64: csum: Fix OoB access in IP checksum code for negative lengths</a></td><td>Will Deacon</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-07 11:08:06 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=35494b0d61e44b517178aa1c6f5a69168b086940">Merge branch 'there-are-some-bugfix-for-the-hns3-ethernet-driver'</a></td><td>Paolo Abeni</td><td>8</td><td><span class="deletions">-37</span>/<span class="insertions">+39</span></td></tr>
+<tr><td><span title="2023-09-07 11:08:03 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=60326634f6c54528778de18bfef1e8a7a93b3771">net: hns3: remove GSO partial feature bit</a></td><td>Jie Wang</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+0</span></td></tr>
+<tr><td><span title="2023-09-07 11:08:03 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=674d9591a32d01df75d6b5fffed4ef942a294376">net: hns3: fix the port information display when sfp is absent</a></td><td>Yisen Zhuang</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-07 11:08:03 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fa5564945f7d15ae2390b00c08b6abaef0165cda">net: hns3: fix invalid mutex between tc qdisc and dcb ets command issue</a></td><td>Jijie Shao</td><td>4</td><td><span class="deletions">-19</span>/<span class="insertions">+9</span></td></tr>
+<tr><td><span title="2023-09-07 11:08:03 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=c295160b1d95e885f1af4586a221cb221d232d10">net: hns3: fix debugfs concurrency issue between kfree buffer and read</a></td><td>Hao Chen</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+4</span></td></tr>
+<tr><td><span title="2023-09-07 11:08:03 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=efccf655e99b6907ca07a466924e91805892e7d3">net: hns3: fix byte order conversion issue in hclge_dbg_fd_tcam_read()</a></td><td>Hao Chen</td><td>1</td><td><span class="deletions">-7</span>/<span class="insertions">+7</span></td></tr>
+<tr><td><span title="2023-09-07 11:08:03 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=dd2bbc2ef69a920d93801321b0b01ac6c4e5cacd">net: hns3: Support query tx timeout threshold by debugfs</a></td><td>Jijie Shao</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+4</span></td></tr>
+<tr><td><span title="2023-09-07 11:08:03 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=61a1deacc3d4fd3d57d7fda4d935f7f7503e8440">net: hns3: fix tx timeout issue</a></td><td>Jian Shen</td><td>1</td><td><span class="deletions">-5</span>/<span class="insertions">+12</span></td></tr>
+<tr><td><span title="2023-09-07 10:33:04 +0200">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=e43252db7e207a2e194e6a4883a43a31a776a968">ALSA: hda/realtek - ALC287 I2S speaker platform support</a></td><td>Kailang Yang</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+30</span></td></tr>
+<tr><td><span title="2023-09-07 00:06:04 -0500">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=30bded94dcef8d329eb2575665518aadf90ca344">cifs: update internal module version number for cifs.ko</a></td><td>Steve French</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-07 00:06:04 -0500">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6a50d71d0ffff6791737eb502b27f74fb87d0cae">smb3: allow controlling maximum number of cached directories</a></td><td>Steve French</td><td>7</td><td><span class="deletions">-6</span>/<span class="insertions">+22</span></td></tr>
+<tr><td><span title="2023-09-07 00:05:56 -0500">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=feeec636b6b1cf3e6129e645411751b205c44976">smb3: add trace point for queryfs (statfs)</a></td><td>Steve French</td><td>2</td><td><span class="deletions">-1</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-07 12:06:20 +0800">2023-09-07</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=671eae93ae2090d2df01d810d354cab05f6bed8b">LoongArch: Update Loongson-3 default config file</a></td><td>Huacai Chen</td><td>1</td><td><span class="deletions">-4</span>/<span class="insertions">+70</span></td></tr>
+<tr><td><span title="2023-09-06 20:49:04 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=08c6d8bae48c2c28f7017d7b61b5d5a1518ceb39">net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)</a></td><td>Lukasz Majewski</td><td>3</td><td><span class="deletions">-4</span>/<span class="insertions">+22</span></td></tr>
+<tr><td><span title="2023-09-06 22:11:51 -0400">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fbe1a9e0c78134db7e7f48322ab7d6a0530f2ee2">drm/amdgpu: Restrict bootloader wait to SMUv13.0.6</a></td><td>Lijo Lazar</td><td>1</td><td><span class="deletions">-4</span>/<span class="insertions">+14</span></td></tr>
+<tr><td><span title="2023-09-06 22:10:11 -0400">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=07e388aab042774f284a2ad75a70a194517cdad4">drm/amd/display: prevent potential division by zero errors</a></td><td>Hamza Mahfooz</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-06 22:09:33 -0400">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=57a943ebfcdb4a97fbb409640234bdb44bfa1953">drm/amd/display: enable cursor degamma for DCN3+ DRM legacy gamma</a></td><td>Melissa Wen</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+7</span></td></tr>
+<tr><td><span title="2023-09-06 22:08:26 -0400">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=47428f4b638d3b3264a2efa1a567b0bbddbb6107">drm/amd/display: limit the v_startup workaround to ASICs older than DCN3.1</a></td><td>Hamza Mahfooz</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-06 22:08:10 -0400">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a81de4a22bbe3183b7f0d6f13f592b8f5b5a3c18">Revert "drm/amd/display: Remove v_startup workaround for dcn3+"</a></td><td>Hamza Mahfooz</td><td>1</td><td><span class="deletions">-20</span>/<span class="insertions">+4</span></td></tr>
+<tr><td><span title="2023-09-06 18:43:05 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f16d411c290bd33b2a9d081406dffd124712483b">Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf...</a></td><td>Jakub Kicinski</td><td>12</td><td><span class="deletions">-44</span>/<span class="insertions">+189</span></td></tr>
+<tr><td><span title="2023-09-06 23:55:09 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=3d7d72a34e05b23e21bafc8bfb861e73c86b31f3">x86/sgx: Break up long non-preemptible delays in sgx_vepc_release()</a></td><td>Jack Wang</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-06 23:50:46 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=659df86a7b2fe98feb5f4ec880e694caaebd27ae">x86: Remove the arch_calc_vm_prot_bits() macro from the UAPI</a></td><td>Thomas Huth</td><td>3</td><td><span class="deletions">-9</span>/<span class="insertions">+15</span></td></tr>
+<tr><td><span title="2023-09-06 23:49:12 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=65e710899fd19f435f40268f3a92dfaa11f14470">x86/build: Fix linker fill bytes quirk/incompatibility for ld.lld</a></td><td>Song Liu</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-06 22:21:22 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=081690e941188acfad41b8dbde2112029a2aa206">powercap: intel_rapl: Fix invalid setting of Power Limit 4</a></td><td>Srinivas Pandruvada</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-06 12:10:15 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=7ba2090ca64ea1aa435744884124387db1fac70f">Merge tag 'ceph-for-6.6-rc1' of https://github.com/ceph/ceph-client</a></td><td>Linus Torvalds</td><td>28</td><td><span class="deletions">-528</span>/<span class="insertions">+4484</span></td></tr>
+<tr><td><span title="2023-09-06 20:06:36 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=cfff2a7794d23b03a3ddedd318bf1df1876c598f">ASoC: amd: yc: Fix a non-functional mic on Lenovo 82TL</a></td><td>Mario Limonciello</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+7</span></td></tr>
+<tr><td><span title="2023-09-06 19:22:54 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ab41a97474c00ceab1b8f44ac78a51079130466a">arm64/sysreg: Fix broken strncpy() -&gt; strscpy() conversion</a></td><td>Will Deacon</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-06 12:19:29 -0500">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8ec9c1d5d0a5a4744516adb483b97a238892f9d5">PCI: Free released resource after coalescing</a></td><td>Ross Lagerwall</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-06 09:24:25 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=744a759492b5c57ff24a6e8aabe47b17ad8ee964">Merge tag 'input-for-v6.6-rc0' of git://git.kernel.org/pub/scm/linux/kernel/g...</a></td><td>Linus Torvalds</td><td>80</td><td><span class="deletions">-1056</span>/<span class="insertions">+4644</span></td></tr>
+<tr><td><span title="2023-09-06 09:19:12 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=29057cc5bddc785ea0a11534d7ad2546fa0872d3">Merge tag 'linux-watchdog-6.6-rc1' of git://www.linux-watchdog.org/linux-watc...</a></td><td>Linus Torvalds</td><td>41</td><td><span class="deletions">-101</span>/<span class="insertions">+625</span></td></tr>
+<tr><td><span title="2023-09-06 18:09:12 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=9b5ba5c9c5109bf89dc64a3f4734bd125d1ce52e">netfilter: nf_tables: Unbreak audit log reset</a></td><td>Pablo Neira Ayuso</td><td>1</td><td><span class="deletions">-5</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-06 18:09:12 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=050d91c03b28ca479df13dfb02bcd2c60dd6a878">netfilter: ipset: add the missing IP_SET_HASH_WITH_NET0 macro for ip_set_hash...</a></td><td>Kyle Zeng</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-06 18:09:12 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2ee52ae94baabf7ee09cf2a8d854b990dac5d0e4">netfilter: nft_set_rbtree: skip sync GC for new elements in this transaction</a></td><td>Pablo Neira Ayuso</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-06 18:09:12 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fdc04cc2d5fd0bb9c17f36d0a895cf3e151109e6">netfilter: nf_tables: uapi: Describe NFTA_RULE_CHAIN_ID</a></td><td>Phil Sutter</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-06 18:07:49 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f4f8a7803119005e87b716874bec07c751efafec">netfilter: nfnetlink_osf: avoid OOB read</a></td><td>Wander Lairson Costa</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+8</span></td></tr>
+<tr><td><span title="2023-09-06 18:03:02 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fd94d9dadee58e09b49075240fe83423eb1dcd36">netfilter: nftables: exthdr: fix 4-byte stack OOB write</a></td><td>Florian Westphal</td><td>1</td><td><span class="deletions">-8</span>/<span class="insertions">+14</span></td></tr>
+<tr><td><span title="2023-09-06 09:00:37 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=57ac7ff8cb4d30fbb91d4ac1d44aa35c22bb8d52">Merge tag 'backlight-next-6.6' of git://git.kernel.org/pub/scm/linux/kernel/g...</a></td><td>Linus Torvalds</td><td>4</td><td><span class="deletions">-18</span>/<span class="insertions">+22</span></td></tr>
+<tr><td><span title="2023-09-06 17:08:51 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=180b10bd160b014448366e5bc86e0558f8acb74f">gpio: zynq: restore zynq_gpio_irq_reqres/zynq_gpio_irq_relres callbacks</a></td><td>Daniel Mack</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+24</span></td></tr>
+<tr><td><span title="2023-09-06 22:54:16 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=5aa4ac64e6add3e40d5049e31275b2822daf885d">LoongArch: Add KASAN (Kernel Address Sanitizer) support</a></td><td>Qing Zhang</td><td>17</td><td><span class="deletions">-13</span>/<span class="insertions">+455</span></td></tr>
+<tr><td><span title="2023-09-06 22:54:16 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=9fbcc076798ead2af28c854a265d9da83bec8429">LoongArch: Simplify the processing of jumping new kernel for KASLR</a></td><td>Qing Zhang</td><td>3</td><td><span class="deletions">-12</span>/<span class="insertions">+9</span></td></tr>
+<tr><td><span title="2023-09-06 22:54:16 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=fb6d5c1d99ab6958c5e284f7aa5f0cc553f0268c">kasan: Add (pmd|pud)_init for LoongArch zero_(pud|p4d)_populate process</a></td><td>Qing Zhang</td><td>1</td><td><span class="deletions">-4</span>/<span class="insertions">+14</span></td></tr>
+<tr><td><span title="2023-09-06 22:54:16 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=9b04c764af18a1dab6d48ca0671f70cdcccf90a2">kasan: Add __HAVE_ARCH_SHADOW_MAP to support arch specific mapping</a></td><td>Qing Zhang</td><td>2</td><td><span class="deletions">-0</span>/<span class="insertions">+8</span></td></tr>
+<tr><td><span title="2023-09-06 22:54:16 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6ad3df56bb199134800933df2afcd7df3b03ef33">LoongArch: Add KFENCE (Kernel Electric-Fence) support</a></td><td>Enze Li</td><td>4</td><td><span class="deletions">-9</span>/<span class="insertions">+86</span></td></tr>
+<tr><td><span title="2023-09-06 22:54:16 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=95bb5b617beec0275bcc47b68796b34852fe4ecb">LoongArch: Get partial stack information when providing regs parameter</a></td><td>Enze Li</td><td>1</td><td><span class="deletions">-8</span>/<span class="insertions">+10</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8b5cb1cbf33292372933e727805e68b506852234">LoongArch: mm: Add page table mapped mode support for virt_to_page()</a></td><td>Enze Li</td><td>3</td><td><span class="deletions">-1</span>/<span class="insertions">+21</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ec9fee79d48f2f05cb1b95dc901071aa3670f228">kfence: Defer the assignment of the local variable addr</a></td><td>Enze Li</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2363088eba2ecccfb643725e4864af73c4226a04">LoongArch: Allow building with kcov coverage</a></td><td>Feiyang Chen</td><td>3</td><td><span class="deletions">-1</span>/<span class="insertions">+5</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=b72961f847c0f0df113ae2d6ac9fd6b1e6bdeaf2">LoongArch: Provide kaslr_offset() to get kernel offset</a></td><td>Feiyang Chen</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=e14dd076964ef11e9d6e3b06a2f1c6bb7d034133">LoongArch: Add basic KGDB &amp; KDB support</a></td><td>Qing Zhang</td><td>8</td><td><span class="deletions">-1</span>/<span class="insertions">+845</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=bd3c5798484aa9a08302a844d7a75a2ee3b53d05">LoongArch: Add Loongson Binary Translation (LBT) extension support</a></td><td>Qi Hu</td><td>19</td><td><span class="deletions">-31</span>/<span class="insertions">+693</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f2091321044d9fbcadb93dfc1c9cf23e563ea40c">raid6: Add LoongArch SIMD recovery implementation</a></td><td>WANG Xuerui</td><td>5</td><td><span class="deletions">-2</span>/<span class="insertions">+525</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8f3f06dfd6873135068ccf1a0b386308e8c4da38">raid6: Add LoongArch SIMD syndrome calculation</a></td><td>WANG Xuerui</td><td>6</td><td><span class="deletions">-0</span>/<span class="insertions">+483</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=75ded18a5e8e51ca2d26d55f010d60ae9aab652c">LoongArch: Add SIMD-optimized XOR routines</a></td><td>WANG Xuerui</td><td>7</td><td><span class="deletions">-0</span>/<span class="insertions">+417</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:55 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2478e4b7593a2a55073a4a6bf23dc885c19befd8">LoongArch: Allow usage of LSX/LASX in the kernel</a></td><td>Huacai Chen</td><td>1</td><td><span class="deletions">-4</span>/<span class="insertions">+51</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:10 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8f58c571bf3095278ebda49ce95df5ead27ebb42">LoongArch: Define symbol 'fault' as a local label in fpu.S</a></td><td>Tiezhu Yang</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:10 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=937f65935950a0346292120acc5d98033f90e61c">LoongArch: Adjust {copy, clear}_user exception handler behavior</a></td><td>Weihao Li</td><td>2</td><td><span class="deletions">-121</span>/<span class="insertions">+127</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:10 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=0921af6ccfb37dc2d6aefcf744333c14e7ca739d">LoongArch: Use static defined zero page rather than allocated</a></td><td>Bibo Mao</td><td>4</td><td><span class="deletions">-35</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:09 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=2bb20d2926a8ea991386315aa8017990ef7beb6a">LoongArch: mm: Introduce unified function populate_kernel_pte()</a></td><td>Bibo Mao</td><td>3</td><td><span class="deletions">-57</span>/<span class="insertions">+23</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:09 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f33efa905ce4839d9d1f20b559db9c2e8a39e059">LoongArch: Code improvements in function pcpu_populate_pte()</a></td><td>Bibo Mao</td><td>1</td><td><span class="deletions">-13</span>/<span class="insertions">+15</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:09 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ad3ff105611b9b06e16ae57e97b48916ff93dd46">LoongArch: Remove shm_align_mask and use SHMLBA instead</a></td><td>Huacai Chen</td><td>2</td><td><span class="deletions">-8</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:09 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=303be4b33562a5b689261ced1616bf16ad49efa7">LoongArch: mm: Add p?d_leaf() definitions</a></td><td>Hongchen Zhang</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-06 22:53:09 +0800">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8ff81bb24f68f747ab2f738c3d493b9c2cad52bf">LoongArch: Drop unused parse_r and parse_v macros</a></td><td>Nathan Chancellor</td><td>2</td><td><span class="deletions">-150</span>/<span class="insertions">+0</span></td></tr>
+<tr><td><span title="2023-09-06 07:33:03 -0600">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=4b9c2edaf7282d60e069551b4b28abc2932cd3e3">drbd: swap bvec_set_page len and offset</a></td><td>Christoph Böhmwalder</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-06 07:32:27 -0600">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=5905afc2c7bb713d52c7c7585565feecbb686b44">block: fix pin count management when merging same-page segments</a></td><td>Christoph Hellwig</td><td>1</td><td><span class="deletions">-4</span>/<span class="insertions">+3</span></td></tr>
+<tr><td><span title="2023-09-06 06:26:07 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=48a8f78c50bd6f7f08fd40daa62252fd043f2f18">bpf, riscv: use prog pack allocator in the BPF JIT</a></td><td>Puranjay Mohan</td><td>3</td><td><span class="deletions">-28</span>/<span class="insertions">+141</span></td></tr>
+<tr><td><span title="2023-09-06 06:26:06 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=cad539baa48ff257b598000a90db2b7edd4b2dd5">riscv: implement a memset like function for text</a></td><td>Puranjay Mohan</td><td>2</td><td><span class="deletions">-0</span>/<span class="insertions">+78</span></td></tr>
+<tr><td><span title="2023-09-06 06:26:05 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=9721873c3c023254f04138bbb21d539b4f0f0ad6">riscv: extend patch_text_nosync() for multiple pages</a></td><td>Puranjay Mohan</td><td>1</td><td><span class="deletions">-5</span>/<span class="insertions">+32</span></td></tr>
+<tr><td><span title="2023-09-06 06:26:05 -0700">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=20e490adea279d49d57b800475938f5b67926d98">bpf: make bpf_prog_pack allocator portable</a></td><td>Puranjay Mohan</td><td>1</td><td><span class="deletions">-4</span>/<span class="insertions">+4</span></td></tr>
+<tr><td><span title="2023-09-06 11:08:47 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a96d1cfb2da040bdf692d22022371b249742abb2">selftests/bpf: Check bpf_sk_storage has uncharged sk_omem_alloc</a></td><td>Martin KaFai Lau</td><td>3</td><td><span class="deletions">-0</span>/<span class="insertions">+118</span></td></tr>
+<tr><td><span title="2023-09-06 11:08:14 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=55d49f750b1cb1f177fb1b00ae02cba4613bcfb7">bpf: bpf_sk_storage: Fix the missing uncharge in sk_omem_alloc</a></td><td>Martin KaFai Lau</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-06 11:07:54 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a96a44aba556c42b432929d37d60158aca21ad4c">bpf: bpf_sk_storage: Fix invalid wait context lockdep report</a></td><td>Martin KaFai Lau</td><td>1</td><td><span class="deletions">-33</span>/<span class="insertions">+14</span></td></tr>
+<tr><td><span title="2023-09-06 10:48:14 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a192103a11465e9d517975c50f9944dc80e44d61">s390/bpf: Pass through tail call counter in trampolines</a></td><td>Ilya Leoshkevich</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+10</span></td></tr>
+<tr><td><span title="2023-09-06 10:44:28 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6764e767f4af1e35f87f3497e1182d945de37f93">bpf: Assign bpf_tramp_run_ctx::saved_run_ctx before recursion check.</a></td><td>Sebastian Andrzej Siewior</td><td>2</td><td><span class="deletions">-4</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-06 10:39:31 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=7645629f7dc88cd777f98970134bf1a54c8d77e3">bpf: Invoke __bpf_prog_exit_sleepable_recur() on recursion in kern_sys_bpf().</a></td><td>Sebastian Andrzej Siewior</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-06 07:46:49 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=1a961e74d5abbea049588a3d74b759955b4ed9d5">net: phylink: fix sphinx complaint about invalid literal</a></td><td>Jakub Kicinski</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-06 06:23:05 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=f8fdd54ee6a135dbe3bb482d817ecf1ab65c53db">Merge branch 'sja1105-fixes'</a></td><td>David S. Miller</td><td>3</td><td><span class="deletions">-6</span>/<span class="insertions">+51</span></td></tr>
+<tr><td><span title="2023-09-06 06:23:05 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=180a7419fe4adc8d9c8e0ef0fd17bcdd0cf78acd">net: dsa: sja1105: complete tc-cbs offload support on SJA1110</a></td><td>Vladimir Oltean</td><td>3</td><td><span class="deletions">-0</span>/<span class="insertions">+19</span></td></tr>
+<tr><td><span title="2023-09-06 06:23:05 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=894cafc5c62ccced758077bd4e970dc714c42637">net: dsa: sja1105: fix -ENOSPC when replacing the same tc-cbs too many times</a></td><td>Vladimir Oltean</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+20</span></td></tr>
+<tr><td><span title="2023-09-06 06:23:04 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=954ad9bf13c4f95a4958b5f8433301f2ab99e1f5">net: dsa: sja1105: fix bandwidth discrepancy between tc-cbs software and offload</a></td><td>Vladimir Oltean</td><td>1</td><td><span class="deletions">-3</span>/<span class="insertions">+12</span></td></tr>
+<tr><td><span title="2023-09-06 06:20:33 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ca7cfd73d02397099e10bf4a76ad6f53b2c27f71">Merge branch '1GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/ne...</a></td><td>David S. Miller</td><td>3</td><td><span class="deletions">-6</span>/<span class="insertions">+6</span></td></tr>
+<tr><td><span title="2023-09-06 06:18:05 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=344134609a564f28b3cc81ca6650319ccd5d8961">mlx5/core: E-Switch, Create ACL FT for eswitch manager in switchdev mode</a></td><td>Bodong Wang</td><td>2</td><td><span class="deletions">-19</span>/<span class="insertions">+51</span></td></tr>
+<tr><td><span title="2023-09-06 06:18:05 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=b7558a77529fef60e7992f40fb5353fed8be0cf8">net/mlx5e: Clear mirred devices array if the rule is split</a></td><td>Jianbo Liu</td><td>7</td><td><span class="deletions">-3</span>/<span class="insertions">+13</span></td></tr>
+<tr><td><span title="2023-09-06 06:05:59 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=9b271ebaf9a2c5c566a54bc6cd915962e8241130">ip_tunnels: use DEV_STATS_INC()</a></td><td>Eric Dumazet</td><td>1</td><td><span class="deletions">-8</span>/<span class="insertions">+7</span></td></tr>
+<tr><td><span title="2023-09-06 06:04:13 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=39285e124edbc752331e98ace37cc141a6a3747a">net: team: do not use dynamic lockdep key</a></td><td>Taehee Yoo</td><td>3</td><td><span class="deletions">-60</span>/<span class="insertions">+85</span></td></tr>
+<tr><td><span title="2023-09-06 06:02:27 +0100">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=a5e2151ff9d5852d0ababbbcaeebd9646af9c8d9">net/ipv6: SKB symmetric hash should incorporate transport ports</a></td><td>Quan Tian</td><td>1</td><td><span class="deletions">-2</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-05 19:49:31 -0700">2023-09-05</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=b7ac4b8ee73d4fec0998664c9dd61f089d481044">riscv: libstub: Implement KASLR by using generic functions</a></td><td>Alexandre Ghiti</td><td>4</td><td><span class="deletions">-19</span>/<span class="insertions">+19</span></td></tr>
+<tr><td><span title="2023-09-05 19:49:30 -0700">2023-09-05</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=3c35d1a03c8b864f08088d51e121aa7c0067b146">libstub: Fix compilation warning for rv32</a></td><td>Alexandre Ghiti</td><td>1</td><td><span class="deletions">-1</span>/<span class="insertions">+1</span></td></tr>
+<tr><td><span title="2023-09-05 19:49:29 -0700">2023-09-05</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=6b56beb5f6940f0b77cb520263651328a8378efa">arm64: libstub: Move KASLR handling functions to kaslr.c</a></td><td>Alexandre Ghiti</td><td>5</td><td><span class="deletions">-105</span>/<span class="insertions">+183</span></td></tr>
+<tr><td><span title="2023-09-05 19:49:28 -0700">2023-09-05</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=54a519e6aff9a6bc8922149e94f89c4bf4e3e8fb">riscv: Dump out kernel offset information on panic</a></td><td>Alexandre Ghiti</td><td>1</td><td><span class="deletions">-0</span>/<span class="insertions">+25</span></td></tr>
+<tr><td><span title="2023-09-05 19:49:27 -0700">2023-09-05</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=84fe419dc7578b03e721b9bd6eb07947db70fd0e">riscv: Introduce virtual kernel mapping KASLR</a></td><td>Alexandre Ghiti</td><td>6</td><td><span class="deletions">-2</span>/<span class="insertions">+101</span></td></tr>
+<tr><td><span title="2023-09-06 01:28:24 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=ce413486c9a0d735d86cc7d88660abeac99c2501">dt-bindings: rtc: ds3231: Remove text binding</a></td><td>Fabio Estevam</td><td>1</td><td><span class="deletions">-38</span>/<span class="insertions">+0</span></td></tr>
+<tr><td><span title="2023-09-06 01:26:04 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=d844c64bbc86682f4ac3e92627b8e3b57ddfad6a">rtc: wm8350: remove unnecessary messages</a></td><td>Alexandre Belloni</td><td>1</td><td><span class="deletions">-7</span>/<span class="insertions">+2</span></td></tr>
+<tr><td><span title="2023-09-06 01:26:04 +0200">2023-09-06</span></td><td><a href="/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=virtual_cpu_hotplug/rfc/v2&amp;id=8805baceb0aa24757916300667940f12aa002dab">rtc: twl: remove unnecessary messages</a></td><td>Alexandre Belloni</td><td>1</td><td><span class="deletions">-5</span>/<span class="insertions">+1</span></td></tr>
+</tbody></table><ul class="pager"><li><a href="/pub/scm/linux/kernel/git/morse/linux.git/log/?h=virtual_cpu_hotplug/rfc/v2&amp;ofs=200">[next]</a></li></ul></div> <!-- class=content -->
+<div class="footer">generated by <a href="https://git.zx2c4.com/cgit/about/">cgit 1.2.3-korg</a> (<a href="https://git-scm.com/">git 2.43.0</a>) at 2025-11-07 07:37:15 +0000</div>
+</div> <!-- id=cgit -->
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
