@@ -1,0 +1,938 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/热插拔/内存/kernel [PATCH v4 00_11] riscv_ Memory Hot_Un_Plug support - Björn Töpel (2025-11-20 15：14：54).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/linux-riscv/20240605114100.315918-1-bjorn@kernel.org/
+ Summary: 
+-->
+<html><head><title>[PATCH v4 00/11] riscv: Memory Hot(Un)Plug support - Björn Töpel</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?67c636a2"><link type="text/css" rel="stylesheet" href="../216dark.css?67c636a2" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20240605114131"><b>linux-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: "Björn Töpel" &lt;bjorn@kernel.org&gt;
+To: Alexandre Ghiti &lt;alexghiti@rivosinc.com&gt;,
+	Albert Ou &lt;aou@eecs.berkeley.edu&gt;,
+	David Hildenbrand &lt;david@redhat.com&gt;,
+	Palmer Dabbelt &lt;palmer@dabbelt.com&gt;,
+	Paul Walmsley &lt;paul.walmsley@sifive.com&gt;,
+	<a href="../../linux-riscv/?t=20240605114131">linux-riscv@lists.infradead.org</a>,
+	Oscar Salvador &lt;osalvador@suse.de&gt;
+Cc: "Lorenzo Stoakes" &lt;lstoakes@gmail.com&gt;,
+	"Chethan Seshadri" &lt;Chethan.Seshadri@catalinasystems.io&gt;,
+	<a href="../../lkml/?t=20240605114131">linux-kernel@vger.kernel.org</a>,
+	"Andrew Bresticker" &lt;abrestic@rivosinc.com&gt;,
+	"Björn Töpel" &lt;bjorn@rivosinc.com&gt;,
+	"Santosh Mamila" &lt;santosh.mamila@catalinasystems.io&gt;,
+	<a href="../../linux-mm/?t=20240605114131">linux-mm@kvack.org</a>,
+	"Sivakumar Munnangi" &lt;siva.munnangi@catalinasystems.io&gt;,
+	<a href="../../virtualization/?t=20240605114131">virtualization@lists.linux-foundation.org</a>
+Subject: <a href="#r" id="t">[PATCH v4 00/11] riscv: Memory Hot(Un)Plug support</a>
+Date: Wed,  5 Jun 2024 13:40:43 +0200	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20240605114100.315918-1-bjorn@kernel.org&gt; (<a href="raw">raw</a>)
+
+From: Björn Töpel &lt;bjorn@rivosinc.com&gt;
+
+================================================================
+Memory Hot(Un)Plug support (and ZONE_DEVICE) for the RISC-V port
+================================================================
+
+(For the restless folks: change log in the bottom!)
+
+Introduction
+============
+
+To quote "Documentation/admin-guide/mm/memory-hotplug.rst": "Memory
+hot(un)plug allows for increasing and decreasing the size of physical
+memory available to a machine at runtime."
+
+This series adds memory hot(un)plugging, and ZONE_DEVICE support for
+the RISC-V Linux port.
+
+MM configuration
+================
+
+RISC-V MM has the following configuration:
+
+ * Memory blocks are 128M, analogous to x86-64. It uses PMD
+   ("hugepage") vmemmaps. From that follows that 2M (PMD) worth of
+   vmemmap spans 32768 pages á 4K which gets us 128M.
+
+ * The pageblock size is the minimum minimum virtio_mem size, and on
+   RISC-V it's 2M (2^9 * 4K).
+
+Implementation
+==============
+
+The PGD table on RISC-V is shared/copied between for all processes. To
+avoid doing page table synchronization, the first patch (patch 1)
+pre-allocated the PGD entries for vmemmap/direct map. By doing that
+the init_mm PGD will be fixed at kernel init, and synchronization can
+be avoided all together.
+
+The following two patches (patch 2-3) does some preparations, followed
+by the actual MHP implementation (patch 4-5). Then, MHP and virtio-mem
+are enabled (patch 6-7), and finally ZONE_DEVICE support is added
+(patch 8).
+
+MHP and locking
+===============
+
+TL;DR: The MHP does not step on any toes, except for ptdump.
+Additional locking is required for ptdump.
+
+Long version: For v2 I spent some time digging into init_mm
+synchronization/update. Here are my findings, and I'd love them to be
+corrected if incorrect.
+
+It's been a gnarly path...
+
+The `init_mm` structure is a special mm (perhaps not a "real" one).
+It's a "lazy context" that tracks kernel page table resources, e.g.,
+the kernel page table (swapper_pg_dir), a kernel page_table_lock (more
+about the usage below), mmap_lock, and such.
+
+`init_mm` does not track/contain any VMAs. Having the `init_mm` is
+convenient, so that the regular kernel page table walk/modify
+functions can be used.
+
+Now, `init_mm` being special means that the locking for kernel page
+tables are special as well.
+
+On RISC-V the PGD (top-level page table structure), similar to x86, is
+shared (copied) with user processes. If the kernel PGD is modified, it
+has to be synched to user-mode processes PGDs. This is avoided by
+pre-populating the PGD, so it'll be fixed from boot.
+
+The in-kernel pgd regions are documented in
+`Documentation/arch/riscv/vm-layout.rst`.
+
+The distinct regions are:
+ * vmemmap
+ * vmalloc/ioremap space
+ * direct mapping of all physical memory
+ * kasan
+ * modules, BPF
+ * kernel
+
+Memory hotplug is the process of adding/removing memory to/from the
+kernel.
+
+Adding is done in two phases:
+ 1. Add the memory to the kernel
+ 2. Online memory, making it available to the page allocator.
+
+Step 1 is partially architecture dependent, and updates the init_mm
+page table:
+ * Update the direct map page tables. The direct map is a linear map,
+   representing all physical memory: `virt = phys + PAGE_OFFSET`
+ * Add a `struct page` for each added page of memory. Update the
+   vmemmap (virtual mapping to the `struct page`, so we can easily
+   transform a kernel virtual address to a `struct page *` address.
+
+From an MHP perspective, there are two regions of the PGD that are
+updated:
+ * vmemmap
+ * direct mapping of all physical memory
+
+The `struct mm_struct` has a couple of locks in play:
+ * `spinlock_t page_table_lock` protects the page table, and some
+    counters
+ * `struct rw_semaphore mmap_lock` protect an mm's VMAs
+
+Note again that `init_mm` does not contain any VMAs, but still uses
+the mmap_lock in some places.
+
+The `page_table_lock` was originally used to to protect all pages
+tables, but more recently a split page table lock has been introduced.
+The split lock has a per-table lock for the PTE and PMD tables. If
+split lock is disabled, all tables are guarded by
+`mm-&gt;page_table_lock` (for user processes). Split page table locks are
+not used for init_mm.
+
+MHP operations is typically synchronized using
+`DEFINE_STATIC_PERCPU_RWSEM(mem_hotplug_lock)`.
+
+Actors
+------
+
+The following non-MHP actors in the kernel traverses (read), and/or
+modifies the kernel PGD.
+
+ * `ptdump`
+
+   Walks the entire `init_mm`, via `ptdump_walk_pgd()` with the
+   `mmap_write_lock(init_mm)` taken.
+
+   Observation: ptdump can race with MHP, and needs additional locking
+   to avoid crashes/races.
+
+ * `set_direct_*` / `arch/riscv/mm/pageattr.c`
+
+   The `set_direct_*` functionality is used to "synchronize" the
+   direct map to other kernel mappings, e.g. modules/kernel text. The
+   direct map is using "as large huge table mappings as possible",
+   which means that the `set_direct_*` might need to split the direct
+   map.
+
+  The `set_direct_*` functions operates with the
+  `mmap_write_lock(init_mm)` taken.
+
+  Observation: `set_direct_*` uses the direct map, but will never
+  modify the same entry as MHP. If there is a mapping, that entry will
+  never race with MHP. Further, MHP acts when memory is offline.
+
+ * HVO / `mm/hugetlb_vmemmap`
+
+   HVO optimizes the backing `struct page` for hugetlb pages, which
+   means changing the "vmemmap" region. HVO can split (merge?) a
+   vmemmap pmd. However, it will never race with MHP, since HVO only
+   operates at online memory. HVO cannot touch memory being MHP added
+   or removed.
+
+ * `apply_to_page_range`
+
+   Walks a range, creates pages and applies a callback (setting
+   permissions) for the page.
+
+   When creating a table, it might use `int __pte_alloc_kernel(pmd_t
+   *pmd)` which takes the `init_mm.page_table_lock` to synchronize pmd
+   populate.
+
+   Used by: `mm/vmalloc.c` and `mm/kasan/shadow.c`. The KASAN callback
+   takes the `init_mm.page_table_lock` to synchronize pte creation.
+
+   Observations: `apply_to_page_range` applies to the "vmalloc/ioremap
+   space" region, and "kasan" region. *Not* affected by MHP.
+
+ * `apply_to_existing_page_range`
+
+   Walks a range, applies a callback (setting permissions) for the
+   page (no page creation).
+
+   Used by: `kernel/bpf/arena.c` and `mm/kasan/shadow.c`. The KASAN
+   callback takes the `init_mm.page_table_lock` to synchronize pte
+   creation. *Not* affected by MHP regions.
+
+ * `apply_to_existing_page_range` applies to the "vmalloc/ioremap
+   space" region, and "kasan" region. *Not* affected by MHP regions.
+
+ *  `ioremap_page_range` and `vmap_page_range`
+
+    Uses the same internal function, and might create table entries at
+    the "vmalloc/ioremap space" region. Can call
+    `__pte_alloc_kernel()` which takes the `init_mm.page_table_lock`
+    synchronizing pmd populate in the region. *Not* affected by MHP
+    regions.
+
+Summary:
+  * MHP add will never modify the same page table entries, as any of
+    the other actors.
+  * MHP remove is done when memory is offlined, and will not clash
+    with any of the actors.
+  * Functions that walk the entire kernel page table need
+    synchronization
+
+  * It's sufficient to add the MHP lock ptdump.
+
+Testing
+=======
+
+This series adds basic DT supported hotplugging. There is a QEMU
+series enabling MHP for the RISC-V "virt" machine here: [1]
+
+ACPI/MSI support is still in the making for RISC-V, and prior proper
+(ACPI) PCI MSI support lands [2] and NUMA SRAT support [3], it hard to
+try it out.
+
+I've prepared a QEMU branch with proper ACPI GED/PC-DIMM support [4],
+and a this series with the required prerequisites [5] (AIA, ACPI AIA
+MADT, ACPI NUMA SRAT).
+
+
+To test with virtio-mem, e.g.:
+  | qemu-system-riscv64 \n  |     -machine virt,aia=aplic-imsic \n  |     -cpu rv64,v=true,vlen=256,elen=64,h=true,zbkb=on,zbkc=on,zbkx=on,zkr=on,zkt=on,svinval=on,svnapot=on,svpbmt=on \n  |     -nodefaults \n  |     -nographic -smp 8 -kernel rv64-u-boot.bin \n  |     -drive file=rootfs.img,format=raw,if=virtio \n  |     -device virtio-rng-pci \n  |     -m 16G,slots=3,maxmem=32G \n  |     -object memory-backend-ram,id=mem0,size=16G \n  |     -numa node,nodeid=0,memdev=mem0 \n  |     -serial chardev:char0 \n  |     -mon chardev=char0,mode=readline \n  |     -chardev stdio,mux=on,id=char0 \n  |     -device pci-serial,id=serial0,chardev=char0 \n  |     -object memory-backend-ram,id=vmem0,size=2G \n  |     -device virtio-mem-pci,id=vm0,memdev=vmem0,node=0
+
+where "rv64-u-boot.bin" is U-boot with EFI/ACPI-support (use [6] if
+you're lazy).
+
+In the QEMU monitor:
+  | (qemu) info memory-devices
+  | (qemu) qom-set vm0 requested-size 1G
+
+...to test DAX/KMEM, use the follow QEMU parameters:
+  |  -object memory-backend-file,id=mem1,share=on,mem-path=virtio_pmem.img,size=4G \n  |  -device virtio-pmem-pci,memdev=mem1,id=nv1
+
+and the regular ndctl/daxctl dance.
+
+If you're brave to try the ACPI branch, add "acpi=on" to "-machine
+virt", and test PC-DIMM MHP (in addition to virtio-{p},mem):
+
+In the QEMU monitor:
+  | (qemu) object_add memory-backend-ram,id=mem1,size=1G
+  | (qemu) device_add pc-dimm,id=dimm1,memdev=mem1
+
+You can also try hot-remove with some QEMU options, say:
+  | -object memory-backend-file,id=mem-1,size=256M,mem-path=/pagesize-2MB
+  | -device pc-dimm,id=mem1,memdev=mem-1
+  | -object memory-backend-file,id=mem-2,size=1G,mem-path=/pagesize-1GB
+  | -device pc-dimm,id=mem2,memdev=mem-2
+  | -object memory-backend-file,id=mem-3,size=256M,mem-path=/pagesize-2MB
+  | -device pc-dimm,id=mem3,memdev=mem-3
+
+Remove "acpi=on" to run with DT.
+
+Thanks to Alex, Andrew, David, and Oscar for all
+comments/tests/fixups.
+
+Changelog
+=========
+
+v3-&gt;v4:
+  Collect tags
+  0002-riscv-mm-Pre-allocate-vmemmap-direct-map-kasan-PG
+    * Pre-allocate KASAN PGD entries as well (Alex)
+  0005-riscv-mm-Add-pfn_to_kaddr-implementation
+    * New patch, add missing function for KASAN
+  0006-riscv-mm-Add-memory-hotplugging-support
+    * Use pXXX_get() instead of READ_ONCE (Alex)
+    * Separated vmemmap storage and pgtable allocation. Use matching
+      alloc/dealloc functions (e.g. ptdesc alloc/delloc) with also
+      avoids WARNs ;-)
+    * Cleaned up the reserved page freeing (Alex)
+  0008-riscv-Enable-memory-hotplugging-for-RISC-V
+    * Simplified the dependencies (Alex)
+    * Added ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+  0011-riscv-Enable-DAX-VMEMMAP-optimization
+    * New patch, added ARCH_WANT_OPTIMIZE_DAX_VMEMMAP
+
+v2-&gt;v3:
+  Collect tags
+  0001-riscv-mm-Properly-forward-vmemmap_populate-altmap
+    * New patch, split from attribute change (Alex, Oscar)
+  0005-riscv-mm-Add-memory-hotplugging-support
+    * Fix page table free to take PG_reserved into consideration (David,
+      Oscar)
+    * Depend on SPARSE_VMEMMAP (Alex, David, Oscar)
+    * Proper TLB flushing (Alex)
+  0009-riscv-mm-Add-support-for-ZONE_DEVICE
+    * Fixed 32b build
+
+v1-&gt;v2:
+  Reviewed a lot of MHP locking scenarios
+  Various config build issues (e.g. build !CONFIG_MEMORY_HOTPLUG) (Andrew)
+  Added arch_get_mappable_range() implementation
+  Acquire MHP lock for ptdump, analogous to arm64
+  ACPI MHP tests
+  Add ZONE_DEVICE patch
+
+References
+==========
+
+[1] <a href="https://lore.kernel.org/qemu-devel/20240521105635.795211-1-bjorn@kernel.org/">https://lore.kernel.org/qemu-devel/20240521105635.795211-1-bjorn@kernel.org/</a>
+[2] <a href="https://lore.kernel.org/linux-riscv/20240501121742.1215792-1-sunilvl@ventanamicro.com/">https://lore.kernel.org/linux-riscv/20240501121742.1215792-1-sunilvl@ventanamicro.com/</a>
+[3] <a href="https://lore.kernel.org/linux-riscv/cover.1713778236.git.haibo1.xu@intel.com/">https://lore.kernel.org/linux-riscv/cover.1713778236.git.haibo1.xu@intel.com/</a>
+[4] <a href="https://github.com/bjoto/qemu/commits/virtio-mem-pc-dimm-mhp-acpi-v2/">https://github.com/bjoto/qemu/commits/virtio-mem-pc-dimm-mhp-acpi-v2/</a>
+[5] <a href="https://github.com/bjoto/linux/commits/mhp-v4-acpi">https://github.com/bjoto/linux/commits/mhp-v4-acpi</a>
+[6] <a href="https://github.com/bjoto/riscv-rootfs-utils/tree/acpi">https://github.com/bjoto/riscv-rootfs-utils/tree/acpi</a>
+
+
+Thanks,
+Björn
+
+
+Björn Töpel (11):
+  riscv: mm: Properly forward vmemmap_populate() altmap parameter
+  riscv: mm: Pre-allocate vmemmap/direct map/kasan PGD entries
+  riscv: mm: Change attribute from __init to __meminit for page
+    functions
+  riscv: mm: Refactor create_linear_mapping_range() for memory hot add
+  riscv: mm: Add pfn_to_kaddr() implementation
+  riscv: mm: Add memory hotplugging support
+  riscv: mm: Take memory hotplug read-lock during kernel page table dump
+  riscv: Enable memory hotplugging for RISC-V
+  virtio-mem: Enable virtio-mem for RISC-V
+  riscv: mm: Add support for ZONE_DEVICE
+  riscv: Enable DAX VMEMMAP optimization
+
+ arch/riscv/Kconfig                    |   5 +
+ arch/riscv/include/asm/kasan.h        |   4 +-
+ arch/riscv/include/asm/mmu.h          |   4 +-
+ arch/riscv/include/asm/page.h         |   5 +
+ arch/riscv/include/asm/pgtable-64.h   |  20 ++
+ arch/riscv/include/asm/pgtable-bits.h |   1 +
+ arch/riscv/include/asm/pgtable.h      |  19 +-
+ arch/riscv/mm/init.c                  | 347 +++++++++++++++++++++++---
+ arch/riscv/mm/ptdump.c                |   3 +
+ drivers/virtio/Kconfig                |   2 +-
+ 10 files changed, 364 insertions(+), 46 deletions(-)
+
+
+base-commit: e2c79b4c5c4d83520abb570ca633ded09621c0a6
+-- 
+2.43.0
+
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre><a href="../20240605114100.315918-2-bjorn@kernel.org/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20240605114131">~2024-06-05 11:41 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>16+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2024-06-05 11:40 <a id="r" href="#t">Björn Töpel [this message]</a></b>
+2024-06-05 11:40 ` <a href="../20240605114100.315918-2-bjorn@kernel.org/">[PATCH v4 01/11] riscv: mm: Properly forward vmemmap_populate() altmap parameter</a> Björn Töpel
+2024-06-05 11:40 ` <a href="../20240605114100.315918-3-bjorn@kernel.org/">[PATCH v4 02/11] riscv: mm: Pre-allocate vmemmap/direct map/kasan PGD entries</a> Björn Töpel
+2024-06-05 11:40 ` <a href="../20240605114100.315918-4-bjorn@kernel.org/">[PATCH v4 03/11] riscv: mm: Change attribute from __init to __meminit for page functions</a> Björn Töpel
+2024-06-05 11:40 ` <a href="../20240605114100.315918-5-bjorn@kernel.org/">[PATCH v4 04/11] riscv: mm: Refactor create_linear_mapping_range() for memory hot add</a> Björn Töpel
+2024-06-05 11:40 ` <a href="../20240605114100.315918-6-bjorn@kernel.org/">[PATCH v4 05/11] riscv: mm: Add pfn_to_kaddr() implementation</a> Björn Töpel
+2024-06-24  9:31   ` <a href="../CAHVXubhx6VxB3JCXQo_eo-6J27i620ALTBHCnnVif6RG7hpXww@mail.gmail.com/">Alexandre Ghiti</a>
+2024-06-05 11:40 ` <a href="../20240605114100.315918-7-bjorn@kernel.org/">[PATCH v4 06/11] riscv: mm: Add memory hotplugging support</a> Björn Töpel
+2024-06-24  9:32   ` <a href="../CAHVXubhO+Ew7dsykW63RcpCe6er2DohwUt51ZGxamdCc=EVi7w@mail.gmail.com/">Alexandre Ghiti</a>
+2024-06-05 11:40 ` <a href="../20240605114100.315918-8-bjorn@kernel.org/">[PATCH v4 07/11] riscv: mm: Take memory hotplug read-lock during kernel page table dump</a> Björn Töpel
+2024-06-05 11:40 ` <a href="../20240605114100.315918-9-bjorn@kernel.org/">[PATCH v4 08/11] riscv: Enable memory hotplugging for RISC-V</a> Björn Töpel
+2024-06-05 11:40 ` <a href="../20240605114100.315918-10-bjorn@kernel.org/">[PATCH v4 09/11] virtio-mem: Enable virtio-mem</a> " Björn Töpel
+2024-06-05 11:40 ` <a href="../20240605114100.315918-11-bjorn@kernel.org/">[PATCH v4 10/11] riscv: mm: Add support for ZONE_DEVICE</a> Björn Töpel
+2024-06-05 11:40 ` <a href="../20240605114100.315918-12-bjorn@kernel.org/">[PATCH v4 11/11] riscv: Enable DAX VMEMMAP optimization</a> Björn Töpel
+2024-06-24  9:32   ` <a href="../CAHVXubgBKxOh0UjbSw2J_76MvZuiwSLL7d5=wAfiRZvgiUD=Ag@mail.gmail.com/">Alexandre Ghiti</a>
+2024-06-27 17:50 ` <a href="../171951065622.6762.1200021343450740838.git-patchwork-notify@kernel.org/">[PATCH v4 00/11] riscv: Memory Hot(Un)Plug support</a> patchwork-bot+linux-riscv
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20240605114100.315918-1-bjorn@kernel.org \n    --to=bjorn@kernel.org \n    --cc=Chethan.Seshadri@catalinasystems.io \n    --cc=abrestic@rivosinc.com \n    --cc=alexghiti@rivosinc.com \n    --cc=aou@eecs.berkeley.edu \n    --cc=bjorn@rivosinc.com \n    --cc=david@redhat.com \n    --cc=linux-kernel@vger.kernel.org \n    --cc=linux-mm@kvack.org \n    --cc=linux-riscv@lists.infradead.org \n    --cc=lstoakes@gmail.com \n    --cc=osalvador@suse.de \n    --cc=palmer@dabbelt.com \n    --cc=paul.walmsley@sifive.com \n    --cc=santosh.mamila@catalinasystems.io \n    --cc=siva.munnangi@catalinasystems.io \n    --cc=virtualization@lists.linux-foundation.org \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:bjorn@kernel.org?In-Reply-To=%3C20240605114100.315918-1-bjorn@kernel.org%3E&amp;Cc=Chethan.Seshadri%40catalinasystems.io%2Cabrestic%40rivosinc.com%2Calexghiti%40rivosinc.com%2Caou%40eecs.berkeley.edu%2Cbjorn%40rivosinc.com%2Cdavid%40redhat.com%2Clinux-kernel%40vger.kernel.org%2Clinux-mm%40kvack.org%2Clinux-riscv%40lists.infradead.org%2Clstoakes%40gmail.com%2Cosalvador%40suse.de%2Cpalmer%40dabbelt.com%2Cpaul.walmsley%40sifive.com%2Csantosh.mamila%40catalinasystems.io%2Csiva.munnangi%40catalinasystems.io%2Cvirtualization%40lists.linux-foundation.org&amp;Subject=Re%3A%20%5BPATCH%20v4%2000%2F11%5D%20riscv%3A%20Memory%20Hot%28Un%29Plug%20support">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
