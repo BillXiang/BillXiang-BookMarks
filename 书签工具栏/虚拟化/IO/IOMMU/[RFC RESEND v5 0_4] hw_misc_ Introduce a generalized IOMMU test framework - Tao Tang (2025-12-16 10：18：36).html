@@ -1,0 +1,764 @@
+<!-- Filename: 书签工具栏/虚拟化/IO/IOMMU/[RFC RESEND v5 0_4] hw_misc_ Introduce a generalized IOMMU test framework - Tao Tang (2025-12-16 10：18：36).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-devel/20251126154547.1300748-1-tangtao1634@phytium.com.cn/
+ Summary: 
+-->
+<html><head><title>[RFC RESEND v5 0/4] hw/misc: Introduce a generalized IOMMU test framework - Tao Tang</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?6914e0a5"><link type="text/css" rel="stylesheet" href="../216dark.css?6914e0a5" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20251126154639"><b>qemu-devel.nongnu.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Tao Tang &lt;tangtao1634@phytium.com.cn&gt;
+To: "Paolo Bonzini" &lt;pbonzini@redhat.com&gt;,
+	"Fabiano Rosas" &lt;farosas@suse.de&gt;,
+	"Laurent Vivier" &lt;lvivier@redhat.com&gt;,
+	"Eric Auger" &lt;eric.auger@redhat.com&gt;,
+	"Peter Maydell" &lt;peter.maydell@linaro.org&gt;,
+	"Alex Bennée" &lt;alex.bennee@linaro.org&gt;
+Cc: <a href="../../qemu-devel/?t=20251126154639">qemu-devel@nongnu.org</a>, <a href="../../qemu-arm/?t=20251126154639">qemu-arm@nongnu.org</a>,
+	"Chen Baozi" &lt;chenbaozi@phytium.com.cn&gt;,
+	"Pierrick Bouvier" &lt;pierrick.bouvier@linaro.org&gt;,
+	"Philippe Mathieu-Daudé" &lt;philmd@linaro.org&gt;,
+	"Jean-Philippe Brucker" &lt;jean-philippe@linaro.org&gt;,
+	"Mostafa Saleh" &lt;smostafa@google.com&gt;,
+	"CLEMENT MATHIEU--DRIF" &lt;clement.mathieu--drif@eviden.com&gt;,
+	"Tao Tang" &lt;tangtao1634@phytium.com.cn&gt;
+Subject: <a href="#r" id="t">[RFC RESEND v5 0/4] hw/misc: Introduce a generalized IOMMU test framework</a>
+Date: Wed, 26 Nov 2025 23:45:43 +0800	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20251126154547.1300748-1-tangtao1634@phytium.com.cn&gt; (<a href="raw">raw</a>)
+
+This is v5 of the IOMMU test framework. This series builds upon v3 by adding a
+shared smmuv3-common.h so the model and libqos consume the same STE/CD and
+register definitions. V5 also removes redundant iommu-testdev registers,
+introduces the DMA doorbell helper / “not armed” status, optimizes code style
+and refreshes the libqos/qtest stack so it uses the shared header and the
+simplified device API.
+
+Motivation
+----------
+
+Currently, thoroughly testing IOMMU emulation (e.g., ARM SMMUv3) requires
+a significant software stack. We need to boot a full guest operating
+system (like Linux) with the appropriate drivers (e.g., IOMMUFD) and rely
+on firmware (e.g., ACPI with IORT tables or Hafnium) to correctly
+configure the IOMMU and orchestrate DMA from a peripheral device.
+
+This dependency on a complex software stack presents several challenges:
+
+* High Barrier to Entry: Writing targeted tests for specific IOMMU
+    features (like fault handling, specific translation regimes, etc.)
+    becomes cumbersome.
+
+* Difficult to Debug: It's hard to distinguish whether a bug originates
+    from the IOMMU emulation itself, the guest driver, the firmware
+    tables, or the guest kernel's configuration.
+
+* Slow Iteration: The need to boot a full guest OS slows down the
+    development and testing cycle.
+
+The primary goal of this work is to create a lightweight, self-contained
+testing environment that allows us to exercise the IOMMU's core logic
+directly at the qtest level, removing the need for any guest-side software.
+
+Our Approach: A Dedicated Test Framework
+-----------------------------------------
+
+To achieve this, we introduce three main components:
+
+* A minimal hardware device: iommu-testdev
+* A reusable IOMMU helper library: libqos/qos-smmuv3
+* A comprehensive qtest suite: iommu-smmuv3-test
+
+The iommu-testdev is intentionally not a conformant, general-purpose PCIe
+or platform device. It is a purpose-built, highly simplified "DMA engine"
+designed to be analogous to a minimal PCIe Root Complex that bypasses the
+full, realistic topology (Host Bridges, Switches, Endpoints) to provide a
+direct, programmable path for a DMA request to reach the IOMMU. Its sole
+purpose is to trigger a DMA transaction when its registers are written to,
+making it perfectly suited for direct control from a test environment like
+qtest.
+
+The Qtest Framework
+-------------------
+
+The new qtest (iommu-smmuv3-test.c) serves as the "bare-metal driver"
+for both the IOMMU and the iommu-testdev. It leverages the libqos helper
+library to manually perform all the setup that would typically be handled
+by the guest kernel and firmware, but in a completely controlled and
+predictable manner:
+
+1.  IOMMU Configuration: It directly initializes the SMMU's registers to a
+    known state using helper functions from qos-smmuv3.
+
+2.  Translation Structure Setup: It uses the libqos library to construct
+    the necessary translation structures in memory, including Stream Table
+    Entries (STEs), Context Descriptors (CDs), and Page Tables (PTEs).
+
+3.  DMA Trigger: It programs the iommu-testdev to initiate a DMA operation
+    targeting a specific IOVA with configurable attributes.
+
+4.  Verification: It waits for the transaction to complete and verifies
+    that the memory was accessed correctly after address translation by
+    the IOMMU.
+
+This framework provides a solid and extensible foundation for validating
+the IOMMU's core translation paths. The current test suite covers:
+
+- Stage 1 only translation (VA -&gt; PA via CD page tables)
+- Stage 2 only translation (IPA -&gt; PA via STE S2 tables)
+- Nested translation (VA -&gt; IPA -&gt; PA, Stage 1 + Stage 2)
+
+The infrastructure is designed to be easily extended to support multiple
+security spaces (Non-Secure, Secure, Root, Realm) and additional IOMMU
+features.
+
+
+Testing:
+--------
+QTEST_QEMU_BINARY=qemu-system-aarch64 tests/qtest/iommu-smmuv3-test --tap -k
+
+
+Major Changes from v4 to v5:
+-----------------------------
+ - Remove a duplicated patch that was accidentally included in v4.
+
+
+Major Changes from v3 to v4:
+-----------------------------
+
+1. Added shared smmuv3-common.h so both the device and libqos consume the same
+   STE/CD/register definitions as Alex suggested [1]
+2. Slimmed iommu-testdev down to a pure DMA trigger with a tighter MMIO
+   contract (new doorbell helper, simplified attributes/errors).
+3. Updated `qos-smmuv3` and the qtest so they include the common header,
+   honor per-test expected results, and rely solely on the streamlined device
+   interface.
+4. Compacted changes of v2 to v3.
+
+[1] <a href="https://lore.kernel.org/qemu-devel/87zf8jk244.fsf@draig.linaro.org/">https://lore.kernel.org/qemu-devel/87zf8jk244.fsf@draig.linaro.org/</a>
+
+
+Major Changes from v2 to v3:
+-----------------------------
+
+1. Generalization/Renaming: rebranded `smmu-testdev` → `iommu-testdev` (code,
+   headers, docs) to reflect the broadened scope.
+2. Separation of concerns: iommu-testdev is now a pure DMA trigger; all
+   SMMUv3-specific setup (STE/CD/page tables, multi-mode support, space offsets)
+   lives in `qos-smmuv3.{c,h}` and is consumed by the new qtest.
+3. Improved modularity &amp; coverage: the stacked design (device + helper + qtest)
+   made it straightforward to add S1/S2/Nested tests, a cleaner config system,
+   and clearer validation logic.
+4. Code/documentation quality: added tracepoints, better error handling/naming,
+   and refreshed `docs/specs/iommu-testdev.rst` with the new layout.
+
+Future Work
+-----------
+
+The current implementation focuses on basic translation path validation
+in the Non-Secure address space. Future extensions could include:
+
+* Multi-space testing (Secure, Root, Realm) for SMMUv3
+* Support for other IOMMU types (Intel VT-d, AMD-Vi, RISC-V IOMMU)
+
+Tao Tang (4):
+  hw/arm/smmuv3: Extract common definitions to smmuv3-common.h
+  hw/misc: Introduce iommu-testdev for bare-metal IOMMU testing
+  tests/qtest/libqos: Add SMMUv3 helper library
+  tests/qtest: Add SMMUv3 bare-metal test using iommu-testdev
+
+ docs/specs/index.rst            |   1 +
+ docs/specs/iommu-testdev.rst    | 109 +++++
+ hw/arm/smmuv3-internal.h        | 255 +----------
+ hw/misc/Kconfig                 |   5 +
+ hw/misc/iommu-testdev.c         | 278 ++++++++++++
+ hw/misc/meson.build             |   1 +
+ hw/misc/trace-events            |  10 +
+ include/hw/arm/smmuv3-common.h  | 461 ++++++++++++++++++++
+ include/hw/misc/iommu-testdev.h |  70 +++
+ tests/qtest/iommu-smmuv3-test.c | 114 +++++
+ tests/qtest/libqos/meson.build  |   3 +
+ tests/qtest/libqos/qos-smmuv3.c | 731 ++++++++++++++++++++++++++++++++
+ tests/qtest/libqos/qos-smmuv3.h | 267 ++++++++++++
+ tests/qtest/meson.build         |   1 +
+ 14 files changed, 2052 insertions(+), 254 deletions(-)
+ create mode 100644 docs/specs/iommu-testdev.rst
+ create mode 100644 hw/misc/iommu-testdev.c
+ create mode 100644 include/hw/arm/smmuv3-common.h
+ create mode 100644 include/hw/misc/iommu-testdev.h
+ create mode 100644 tests/qtest/iommu-smmuv3-test.c
+ create mode 100644 tests/qtest/libqos/qos-smmuv3.c
+ create mode 100644 tests/qtest/libqos/qos-smmuv3.h
+
+-- 
+2.34.1
+
+
+</pre><hr><pre><a href="../20251126154547.1300748-2-tangtao1634@phytium.com.cn/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20251126154639">~2025-11-26 15:46 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>23+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2025-11-26 15:45 <a id="r" href="#t">Tao Tang [this message]</a></b>
+2025-11-26 15:45 ` <a href="../20251126154547.1300748-2-tangtao1634@phytium.com.cn/">[RFC RESEND v5 1/4] hw/arm/smmuv3: Extract common definitions to smmuv3-common.h</a> Tao Tang
+2025-12-04 18:19   ` <a href="../59eb723b-e34f-4a5e-a2c5-2e3242cba8df@linaro.org/">Pierrick Bouvier</a>
+2025-11-26 15:45 ` <a href="../20251126154547.1300748-3-tangtao1634@phytium.com.cn/">[RFC RESEND v5 2/4] hw/misc: Introduce iommu-testdev for bare-metal IOMMU testing</a> Tao Tang
+2025-12-04 18:36   ` <a href="../e52db78c-15ca-4c09-a5f2-e149b6c5cb5d@linaro.org/">Pierrick Bouvier</a>
+2025-12-10 18:35   ` <a href="../829b3e14-92e8-4d22-bb02-c6e7322d9856@redhat.com/">Eric Auger</a>
+2025-12-11  7:27     ` <a href="../85e5dc36-8cdf-4ee9-b482-882dc7a31aca@phytium.com.cn/">Tao Tang</a>
+2025-11-26 15:45 ` <a href="../20251126154547.1300748-4-tangtao1634@phytium.com.cn/">[RFC RESEND v5 3/4] tests/qtest/libqos: Add SMMUv3 helper library</a> Tao Tang
+2025-12-04 23:53   ` <a href="../9b2c0429-a8bb-4df4-ad95-492f463cf29f@linaro.org/">Pierrick Bouvier</a>
+2025-12-05 15:03     ` <a href="../b184c907-e073-43d0-87b9-cf8c6c23dbed@phytium.com.cn/">Tao Tang</a>
+2025-12-05 17:19       ` <a href="../a361b46f-2173-4c98-a5d3-6b4d2ac004af@linaro.org/">Pierrick Bouvier</a>
+2025-12-06  5:27         ` <a href="../41c33694-008e-4ee1-bbe2-1498e9b6c9c7@phytium.com.cn/">Tao Tang</a>
+2025-12-10 18:40           ` <a href="../5af3335d-632b-432a-80d8-80ca4d20d06a@redhat.com/">Eric Auger</a>
+2025-12-11  8:53             ` <a href="../82e4571c-8511-44da-bc30-a8f0055a660f@phytium.com.cn/">Tao Tang</a>
+2025-12-10 18:43     ` <a href="../e95d82af-540f-43b0-9f0c-2e5928192049@redhat.com/">Eric Auger</a>
+2025-12-11  9:39       ` <a href="../2e54cc59-1c76-482f-834d-f75e309ed7db@phytium.com.cn/">Tao Tang</a>
+2025-11-26 15:45 ` <a href="../20251126154547.1300748-5-tangtao1634@phytium.com.cn/">[RFC RESEND v5 4/4] tests/qtest: Add SMMUv3 bare-metal test using iommu-testdev</a> Tao Tang
+2025-12-04 18:42   ` <a href="../5d37349b-fbc4-4964-a3e8-d937a64ae232@linaro.org/">Pierrick Bouvier</a>
+2025-12-05 14:19     ` <a href="../7370070a-c569-4b77-bd1e-6fc749ba9c90@phytium.com.cn/">Tao Tang</a>
+2025-12-05 17:06       ` <a href="../8f5d0074-3fb9-4d44-99b7-e79b5dda9039@linaro.org/">Pierrick Bouvier</a>
+2025-12-06  4:54         ` <a href="../e5d2f62d-07d5-4f02-a84c-0f51ab53268c@phytium.com.cn/">Tao Tang</a>
+2025-12-10 18:45   ` <a href="../629e6b11-069e-45c9-9119-b310db85a82d@redhat.com/">Eric Auger</a>
+2025-12-11  8:06     ` <a href="../e7ccf5cc-0411-4c89-871f-c1087095a1aa@phytium.com.cn/">Tao Tang</a>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20251126154547.1300748-1-tangtao1634@phytium.com.cn \n    --to=tangtao1634@phytium.com.cn \n    --cc=alex.bennee@linaro.org \n    --cc=chenbaozi@phytium.com.cn \n    --cc=clement.mathieu--drif@eviden.com \n    --cc=eric.auger@redhat.com \n    --cc=farosas@suse.de \n    --cc=jean-philippe@linaro.org \n    --cc=lvivier@redhat.com \n    --cc=pbonzini@redhat.com \n    --cc=peter.maydell@linaro.org \n    --cc=philmd@linaro.org \n    --cc=pierrick.bouvier@linaro.org \n    --cc=qemu-arm@nongnu.org \n    --cc=qemu-devel@nongnu.org \n    --cc=smostafa@google.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:tangtao1634@phytium.com.cn?In-Reply-To=%3C20251126154547.1300748-1-tangtao1634@phytium.com.cn%3E&amp;Cc=alex.bennee%40linaro.org%2Cchenbaozi%40phytium.com.cn%2Cclement.mathieu--drif%40eviden.com%2Ceric.auger%40redhat.com%2Cfarosas%40suse.de%2Cjean-philippe%40linaro.org%2Clvivier%40redhat.com%2Cpbonzini%40redhat.com%2Cpeter.maydell%40linaro.org%2Cphilmd%40linaro.org%2Cpierrick.bouvier%40linaro.org%2Cqemu-arm%40nongnu.org%2Cqemu-devel%40nongnu.org%2Csmostafa%40google.com&amp;Subject=Re%3A%20%5BRFC%20RESEND%20v5%200%2F4%5D%20hw%2Fmisc%3A%20Introduce%20a%20generalized%20IOMMU%20test%20framework">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
