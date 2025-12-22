@@ -1,0 +1,674 @@
+<!-- Filename: 书签工具栏/虚拟化/ARM/热插拔/CHP/linux-arm.git - Russell King's ARM Linux kernel tree (2025-12-22 16：21：41).html
+ Page saved with X-Webpage-Conserve 
+ url: http://git.armlinux.org.uk/cgit/linux-arm.git/log/?h=aarch64/hotplug-vcpu/v6.8-rc2
+ Summary: 
+-->
+<html lang="en"><head>
+<title>linux-arm.git - Russell King's ARM Linux kernel tree</title>
+<meta name="generator" content="cgit ">
+<meta name="robots" content="index, nofollow">
+<link rel="stylesheet" type="text/css" href="/cgit-data/cgit.css">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="alternate" title="Atom feed" href="http://git.armlinux.org.uk/cgit/linux-arm.git/atom/?h=aarch64/hotplug-vcpu/v6.8-rc2" type="application/atom+xml">
+<link rel="vcs-git" href="git://git.armlinux.org.uk/~rmk/linux-arm.git" title="linux-arm.git Git repository">
+<style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>div#cgit { margin: 0em; font-family: sans-serif; font-size: 10pt; color: rgb(51, 51, 51); background: white; padding: 4px; }div#cgit a { color: blue; text-decoration: none; }div#cgit a:hover { text-decoration: underline; }div#cgit table { border-collapse: collapse; }div#cgit table#header { width: 100%; margin-bottom: 1em; }div#cgit table#header td.logo { width: 96px; vertical-align: top; }div#cgit table#header td.main { font-size: 250%; padding-left: 10px; white-space: nowrap; }div#cgit table#header td.main a { color: rgb(0, 0, 0); }div#cgit table#header td.form { text-align: right; vertical-align: bottom; padding-right: 1em; padding-bottom: 2px; white-space: nowrap; }div#cgit table#header td.form form, div#cgit table#header td.form input, div#cgit table#header td.form select { font-size: 90%; }div#cgit table#header td.sub { color: rgb(119, 119, 119); border-top: 1px solid rgb(204, 204, 204); padding-left: 10px; }div#cgit table.tabs { border-bottom: 3px solid rgb(204, 204, 204); border-collapse: collapse; margin-top: 2em; margin-bottom: 0px; width: 100%; }div#cgit table.tabs td { padding: 0px 1em; vertical-align: bottom; }div#cgit table.tabs td a { padding: 2px 0.75em; color: rgb(119, 119, 119); font-size: 110%; }div#cgit table.tabs td a.active { color: rgb(0, 0, 0); background-color: rgb(204, 204, 204); }div#cgit table.tabs a[href^="http://"]::after, div#cgit table.tabs a[href^="https://"]::after { content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfgAhcJDQY+gm2TAAAAHWlUWHRDb21tZW50AAAAAABDcmVhdGVkIHdpdGggR0lNUGQuZQcAAABbSURBVAhbY2BABs4MU4CwhYHBh2Erww4wrGFQZHjI8B8IgUIscJWyDHcggltQhI4zGDCcRwhChPggHIggP1QoAVmQkSETrGoHsiAEsACtBYN0oDAMbgU6EBcAAL2eHUt4XUU4AAAAAElFTkSuQmCC"); opacity: 0.5; margin: 0px 0px 0px 5px; }div#cgit table.tabs td.form { text-align: right; }div#cgit table.tabs td.form form { padding-bottom: 2px; font-size: 90%; white-space: nowrap; }div#cgit table.tabs td.form input, div#cgit table.tabs td.form select { font-size: 90%; }div#cgit div.path { margin: 0px; padding: 5px 2em 2px; color: rgb(0, 0, 0); background-color: rgb(238, 238, 238); }div#cgit div.content { margin: 0px; padding: 2em; border-bottom: 3px solid rgb(204, 204, 204); }div#cgit table.list { width: 100%; border: medium; border-collapse: collapse; }div#cgit table.list tr { background: white; }div#cgit table.list tr.logheader { background: rgb(238, 238, 238); }div#cgit table.list tr:nth-child(2n) { background: rgb(247, 247, 247); }div#cgit table.list tr:nth-child(2n+1) { background: white; }div#cgit table.list tr:hover { background: rgb(238, 238, 238); }div#cgit table.list tr.nohover { background: white; }div#cgit table.list tr.nohover:hover { background: white; }div#cgit table.list tr.nohover-highlight:hover:nth-child(2n) { background: rgb(247, 247, 247); }div#cgit table.list tr.nohover-highlight:hover:nth-child(2n+1) { background: white; }div#cgit table.list th { font-weight: bold; padding: 0.1em 0.5em 0.05em; vertical-align: baseline; }div#cgit table.list td { border: medium; padding: 0.1em 0.5em; }div#cgit table.list td.commitgraph { font-family: monospace; white-space: pre; }div#cgit table.list td.commitgraph .column1 { color: rgb(170, 0, 0); }div#cgit table.list td.commitgraph .column2 { color: rgb(0, 170, 0); }div#cgit table.list td.commitgraph .column3 { color: rgb(170, 170, 0); }div#cgit table.list td.commitgraph .column4 { color: rgb(0, 0, 170); }div#cgit table.list td.commitgraph .column5 { color: rgb(170, 0, 170); }div#cgit table.list td.commitgraph .column6 { color: rgb(0, 170, 170); }div#cgit table.list td.logsubject { font-family: monospace; font-weight: bold; }div#cgit table.list td.logmsg { font-family: monospace; white-space: pre; padding: 0px 0.5em; }div#cgit table.list td a { color: black; }div#cgit table.list td a.ls-dir { font-weight: bold; color: rgb(0, 0, 255); }div#cgit table.list td a:hover { color: rgb(0, 0, 255); }div#cgit img { border: medium; }div#cgit input#switch-btn { margin: 2px 0px 0px; }div#cgit td#sidebar input.txt { width: 100%; margin: 2px 0px 0px; }div#cgit table#grid { margin: 0px; }div#cgit td#content { vertical-align: top; padding: 1em 2em 1em 1em; border: medium; }div#cgit div#summary { vertical-align: top; margin-bottom: 1em; }div#cgit table#downloads { float: right; border-collapse: collapse; border: 1px solid rgb(119, 119, 119); margin-left: 0.5em; margin-bottom: 0.5em; }div#cgit table#downloads th { background-color: rgb(204, 204, 204); }div#cgit div#blob { border: 1px solid black; }div#cgit div.error { color: red; font-weight: bold; margin: 1em 2em; }div#cgit a.ls-blob, div#cgit a.ls-dir, div#cgit .ls-mod { font-family: monospace; }div#cgit td.ls-size { text-align: right; font-family: monospace; width: 10em; }div#cgit td.ls-mode { font-family: monospace; width: 10em; }div#cgit table.blob { margin-top: 0.5em; border-top: 1px solid black; }div#cgit table.blob td.hashes, div#cgit table.blob td.lines { margin: 0px; padding: 0px 0px 0px 0.5em; vertical-align: top; color: black; }div#cgit table.blob td.linenumbers { margin: 0px; padding: 0px 0.5em; vertical-align: top; text-align: right; border-right: 1px solid gray; }div#cgit table.blob pre { padding: 0px; margin: 0px; }div#cgit table.blob td.linenumbers a, div#cgit table.ssdiff td.lineno a { color: gray; text-align: right; text-decoration: none; }div#cgit table.blob td.linenumbers a:hover, div#cgit table.ssdiff td.lineno a:hover { color: black; }div#cgit table.blame td.hashes, div#cgit table.blame td.lines, div#cgit table.blame td.linenumbers { padding: 0px; }div#cgit table.blame td.hashes div.alt, div#cgit table.blame td.lines div.alt { padding: 0px 0.5em; }div#cgit table.blame td.linenumbers div.alt { padding: 0px 0.5em 0px 0px; }div#cgit table.blame div.alt:nth-child(2n) { background: rgb(238, 238, 238); }div#cgit table.blame div.alt:nth-child(2n+1) { background: white; }div#cgit table.blame td.lines > div { position: relative; }div#cgit table.blame td.lines > div > pre { padding: 0px 0px 0px 0.5em; position: absolute; top: 0px; }div#cgit table.bin-blob { margin-top: 0.5em; border: 1px solid black; }div#cgit table.bin-blob th { font-family: monospace; white-space: pre; border: 1px solid rgb(119, 119, 119); padding: 0.5em 1em; }div#cgit table.bin-blob td { font-family: monospace; white-space: pre; border-left: 1px solid rgb(119, 119, 119); padding: 0em 1em; }div#cgit table.nowrap td { white-space: nowrap; }div#cgit table.commit-info { border-collapse: collapse; margin-top: 1.5em; }div#cgit div.cgit-panel { float: right; margin-top: 1.5em; }div#cgit div.cgit-panel table { border-collapse: collapse; border: 1px solid rgb(170, 170, 170); background-color: rgb(238, 238, 238); }div#cgit div.cgit-panel th { text-align: center; }div#cgit div.cgit-panel td { padding: 0.25em 0.5em; }div#cgit div.cgit-panel td.label { padding-right: 0.5em; }div#cgit div.cgit-panel td.ctrl { padding-left: 0.5em; }div#cgit table.commit-info th { text-align: left; font-weight: normal; padding: 0.1em 1em 0.1em 0.1em; vertical-align: top; }div#cgit table.commit-info td { font-weight: normal; padding: 0.1em 1em 0.1em 0.1em; }div#cgit div.commit-subject { font-weight: bold; font-size: 125%; margin: 1.5em 0em 0.5em; padding: 0em; }div#cgit div.commit-msg { white-space: pre; font-family: monospace; }div#cgit div.notes-header { font-weight: bold; padding-top: 1.5em; }div#cgit div.notes { white-space: pre; font-family: monospace; border: 1px solid rgb(238, 238, 153); background-color: rgb(255, 255, 221); padding: 0.3em 2em 0.3em 1em; float: left; }div#cgit div.notes-footer { clear: left; }div#cgit div.diffstat-header { font-weight: bold; padding-top: 1.5em; }div#cgit table.diffstat { border-collapse: collapse; border: 1px solid rgb(170, 170, 170); background-color: rgb(238, 238, 238); }div#cgit table.diffstat th { font-weight: normal; text-align: left; text-decoration: underline; padding: 0.1em 1em 0.1em 0.1em; font-size: 100%; }div#cgit table.diffstat td { padding: 0.2em 0.2em 0.1em 0.1em; font-size: 100%; border: medium; }div#cgit table.diffstat td.mode { white-space: nowrap; }div#cgit table.diffstat td span.modechange { padding-left: 1em; color: red; }div#cgit table.diffstat td.add a { color: green; }div#cgit table.diffstat td.del a { color: red; }div#cgit table.diffstat td.upd a { color: blue; }div#cgit table.diffstat td.graph { width: 500px; vertical-align: middle; }div#cgit table.diffstat td.graph table { border: medium; }div#cgit table.diffstat td.graph td { padding: 0px; border: 0px; height: 7pt; }div#cgit table.diffstat td.graph td.add { background-color: rgb(85, 204, 85); }div#cgit table.diffstat td.graph td.rem { background-color: rgb(204, 85, 85); }div#cgit div.diffstat-summary { color: rgb(136, 136, 136); padding-top: 0.5em; }div#cgit table.diff { width: 100%; }div#cgit table.diff td { font-family: monospace; white-space: pre; }div#cgit table.diff td div.head { font-weight: bold; margin-top: 1em; color: black; }div#cgit table.diff td div.hunk { color: rgb(0, 0, 153); }div#cgit table.diff td div.add { color: green; }div#cgit table.diff td div.del { color: red; }div#cgit .sha1 { font-family: monospace; font-size: 90%; }div#cgit .left { text-align: left; }div#cgit .right { text-align: right; }div#cgit table.list td.reposection { font-style: italic; color: rgb(136, 136, 136); }div#cgit a.button { font-size: 80%; padding: 0em 0.5em; }div#cgit a.primary { font-size: 100%; }div#cgit a.secondary { font-size: 90%; }div#cgit td.toplevel-repo { }div#cgit table.list td.sublevel-repo { padding-left: 1.5em; }div#cgit ul.pager { list-style-type: none; text-align: center; margin: 1em 0em 0em; padding: 0px; }div#cgit ul.pager li { display: inline-block; margin: 0.25em 0.5em; }div#cgit ul.pager a { color: rgb(119, 119, 119); }div#cgit ul.pager .current { font-weight: bold; }div#cgit span.age-mins { font-weight: bold; color: rgb(0, 136, 0); }div#cgit span.age-hours { color: rgb(0, 136, 0); }div#cgit span.age-days { color: rgb(0, 68, 0); }div#cgit span.age-weeks { color: rgb(68, 68, 68); }div#cgit span.age-months { color: rgb(136, 136, 136); }div#cgit span.age-years { color: rgb(187, 187, 187); }div#cgit span.insertions { color: rgb(0, 136, 0); }div#cgit span.deletions { color: rgb(136, 0, 0); }div#cgit div.footer { margin-top: 0.5em; text-align: center; font-size: 80%; color: rgb(204, 204, 204); }div#cgit div.footer a { color: rgb(204, 204, 204); text-decoration: none; }div#cgit div.footer a:hover { text-decoration: underline; }div#cgit a.branch-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(136, 255, 136); border: 1px solid rgb(0, 119, 0); }div#cgit a.tag-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 255, 136); border: 1px solid rgb(119, 119, 0); }div#cgit a.tag-annotated-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 204, 136); border: 1px solid rgb(119, 119, 0); }div#cgit a.remote-deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(204, 204, 255); border: 1px solid rgb(0, 0, 119); }div#cgit a.deco { color: rgb(0, 0, 0); margin: 0px 0.5em; padding: 0px 0.25em; background-color: rgb(255, 136, 136); border: 1px solid rgb(119, 0, 0); }div#cgit div.commit-subject a.branch-deco, div#cgit div.commit-subject a.tag-deco, div#cgit div.commit-subject a.tag-annotated-deco, div#cgit div.commit-subject a.remote-deco, div#cgit div.commit-subject a.deco { margin-left: 1em; font-size: 75%; }div#cgit table.stats { border: 1px solid black; border-collapse: collapse; }div#cgit table.stats th { text-align: left; padding: 1px 0.5em; background-color: rgb(238, 238, 238); border: 1px solid black; }div#cgit table.stats td { text-align: right; padding: 1px 0.5em; border: 1px solid black; }div#cgit table.stats td.total { font-weight: bold; text-align: left; }div#cgit table.stats td.sum { color: rgb(204, 0, 0); font-weight: bold; }div#cgit table.stats td.left { text-align: left; }div#cgit table.vgraph { border-collapse: separate; border: 1px solid black; height: 200px; }div#cgit table.vgraph th { background-color: rgb(238, 238, 238); font-weight: bold; border: 1px solid white; padding: 1px 0.5em; }div#cgit table.vgraph td { vertical-align: bottom; padding: 0px 10px; }div#cgit table.vgraph div.bar { background-color: rgb(238, 238, 238); }div#cgit table.hgraph { border: 1px solid black; width: 800px; }div#cgit table.hgraph th { background-color: rgb(238, 238, 238); font-weight: bold; border: 1px solid black; padding: 1px 0.5em; }div#cgit table.hgraph td { vertical-align: middle; padding: 2px; }div#cgit table.hgraph div.bar { background-color: rgb(238, 238, 238); height: 1em; }div#cgit table.ssdiff { width: 100%; }div#cgit table.ssdiff td { font-size: 75%; font-family: monospace; white-space: pre; padding: 1px 4px; border-left: 1px solid rgb(170, 170, 170); border-right: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.add { color: black; background: rgb(204, 255, 204); min-width: 50%; }div#cgit table.ssdiff td.add_dark { color: black; background: rgb(170, 204, 170); min-width: 50%; }div#cgit table.ssdiff span.add { background: rgb(204, 255, 204); font-weight: bold; }div#cgit table.ssdiff td.del { color: black; background: rgb(255, 204, 204); min-width: 50%; }div#cgit table.ssdiff td.del_dark { color: black; background: rgb(204, 170, 170); min-width: 50%; }div#cgit table.ssdiff span.del { background: rgb(255, 204, 204); font-weight: bold; }div#cgit table.ssdiff td.changed { color: black; background: rgb(255, 255, 204); min-width: 50%; }div#cgit table.ssdiff td.changed_dark { color: black; background: rgb(204, 204, 170); min-width: 50%; }div#cgit table.ssdiff td.lineno { color: black; background: rgb(238, 238, 238); text-align: right; width: 3em; min-width: 3em; }div#cgit table.ssdiff td.hunk { color: black; background: rgb(204, 204, 255); border-top: 1px solid rgb(170, 170, 170); border-bottom: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.head { border-top: 1px solid rgb(170, 170, 170); border-bottom: 1px solid rgb(170, 170, 170); }div#cgit table.ssdiff td.head div.head { font-weight: bold; color: black; }div#cgit table.ssdiff td.foot { border-width: 1px medium medium; border-style: solid none none; border-color: rgb(170, 170, 170) currentcolor currentcolor; }div#cgit table.ssdiff td.space { border: medium; }div#cgit table.ssdiff td.space div { min-height: 3em; }body.hl { background-color: rgb(224, 234, 238); }pre.hl { color: rgb(0, 0, 0); background-color: rgb(224, 234, 238); font-size: 10pt; font-family: "Courier New", monospace; white-space: pre-wrap; }.hl.num { color: rgb(176, 126, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.sng { color: rgb(191, 3, 3); }.hl.pps { color: rgb(129, 129, 0); }.hl.slc { color: rgb(131, 129, 131); font-style: italic; }.hl.com { color: rgb(131, 129, 131); font-style: italic; }.hl.ppc { color: rgb(0, 130, 0); }.hl.opt { color: rgb(0, 0, 0); }.hl.ipl { color: rgb(0, 87, 174); }.hl.lin { color: rgb(85, 85, 85); user-select: none; }.hl.hvr { cursor: help; }.hl.erm { color: rgb(255, 0, 0); font-weight: bold; border: 1px solid red; margin-left: 3em; }.hl.err { color: rgb(255, 0, 0); font-weight: bold; }.hl.kwa { color: rgb(0, 0, 0); font-weight: bold; }.hl.kwb { color: rgb(0, 87, 174); }.hl.kwc { color: rgb(0, 0, 0); }.hl.kwd { color: rgb(1, 1, 129); }.hl.kwe { color: rgb(13, 91, 195); }.hl.kwf { color: rgb(117, 13, 195); }</style></head>
+<body>
+<div id="cgit"><table id="header">
+<tbody><tr>
+<td class="logo" rowspan="2"><a href="/cgit/"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABACAMAAADS6oI8AAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAcJQTFRF////AAAAgAAAgAAAqgAAnwAAqgAAmQAAogAApAAAnwAApgAAqgAApgAAowAApAAAqgAApQAApQAApgAApgAAqAAApwAAqgAApwAAqAAAqgAAqAAAqgAAqQAAqgAAqQAAqAAAqQAAqAAAqQAAqAAAqQAAqQAAqgAAqAAAqgAAqAAAqQAAqgAAqAAAqQAAqgAAqAAAqgAAqAAAqQAAqgAAqAAAqgAAqAAAqgAAqAAAqQAAqgAAqQAAqgAAqQAAqgAAqQAAqQAAqgAAqQAAqgAAqQAAqgAAqQAAqQAAqQAAqQAAqQAAqQAAqQAAqgAAqQAAqgAAqQAAqQAAqgAAqQAAqQAAqgAAqQAAqgAAqQAAqQAAqgAAqgAAqQAAqgAAqgAAqQAAqgAAqgAAqgAAqQAAqgAAqgAAqgAAqgAAqgAAqQAAqgAAqQAAqgAAqgAAqgAAqQAAqgAAqgAAqQAAqgAAqQAAqgAAqgAAqgAAqQAAqQAAqgAAqQAAqgAAqgAAqQAAqgAAqQAAqgAAqgAAqQAAqgAAqgAAqQAAqgAAqgAAqQAAqgAAqgAAqQAAqgAAqgAAqQAAqgAAqgAAqQAAqgAAqgAA/mK4PQAAAJV0Uk5TAAECBAYICQoLDhAUFRcZHB4fJSguLzEzNDU2ODk7QkRGR0lKT1NWV1haW1xdXl9gYWNkZWZqbG1vcHFyc3V3eHl6e3x+gIGCg4WLjI6PkJKTlZeZmp6foaKmp6iqrK6xsrO0t7i6vcLGycrLzc/R0tPU1dbY2drb3t/i4+Xm5+jq6+zt7u/w8fLz9PX29/j5+vv8/f7VobMtAAAAAWJLR0QAiAUdSAAAAn9JREFUWMPtl+lbElEUh6FMwcqy1NL2xbYxxIoWM22zPW3TFktpo0WCSMM0zQUdBAkC5v1/+4BPMZcZiJ5LH4zz7f7mzHnnmef87j3XYimHzABQy4CVDSh3VRnwPwDqOp54J5dSkJyfeN/fsTlfQczCvPxBv5jra5YIqBo0yn6xRhpgyDj9VYUkQEvm6ezza2eciuJwXeofyyjtJgBFURSAJUUIE8BngAVn9vduHwEI2c27poguagRINujFmhDAASmACwCPRbUb4IEUwCCAU1SbALxSAH6ABlGtBJiQApgBWJcjx4GYFEACwFrs3lMEQAPilhICAMKlBqhlwMoHlLSLNCBRSoCJk8OAZl5QE9ZvA4GAP89etF5UrWlg0RwQAyJZ66j5f/gIsEVU16J/QwTMAemsdRqYz3MeHBPVPcIpLgKCADW/T0CAMWPARYBnonq/AOAlwL5fy90AHmNAE0B6m16s/14A0KM/aPsAevNNFeG2rKliVfM3CgD2A2inlruvNSXMCLo4ujwXua+cdipKq6t7YDp3khIBtggAoz0nHa4bPgCidjMnuP9gVMsx1tWc5JumVqty/wWg0iPkDtvyuPnQiFj6U6wAwFJ5J5GVH7tty79h1J8f8E7F0pBUp32PztVZVL2TjPae2nZ3cC6VWhx/c+9IddFXGFU/tsiPMDAlp9RMNBpVKwRxtQZ8kAP4ajQ7bgJ4KgcwDHBdEDsBOuUAbgGoG3TaxgWArXIAuwAIZv+kvZMAo5L6xfpu2Yq9Z9sUpeVEV994RnDI6sjGuPEt0yqt53dGDOq/tkt0Ve3DH0L5L8etco1bffiuZzyUAC0xGxi6vMNqKcc/iJ9QP3rNhXCnfQAAAABJRU5ErkJggg==" alt="cgit logo"></a></td>
+<td class="main"><a href="/cgit/">index</a> : <a title="linux-arm.git" href="/cgit/linux-arm.git/">linux-arm.git</a></td><td class="form"><form method="get">
+<select name="h" onchange="this.form.submit();">
+<option value="aarch64/hotplug-vcpu/head">aarch64/hotplug-vcpu/head</option>
+<option value="aarch64/hotplug-vcpu/v6.5">aarch64/hotplug-vcpu/v6.5</option>
+<option value="aarch64/hotplug-vcpu/v6.6">aarch64/hotplug-vcpu/v6.6</option>
+<option value="aarch64/hotplug-vcpu/v6.6-rc1">aarch64/hotplug-vcpu/v6.6-rc1</option>
+<option value="aarch64/hotplug-vcpu/v6.6-rc5">aarch64/hotplug-vcpu/v6.6-rc5</option>
+<option value="aarch64/hotplug-vcpu/v6.6-rc6">aarch64/hotplug-vcpu/v6.6-rc6</option>
+<option value="aarch64/hotplug-vcpu/v6.6-rc7">aarch64/hotplug-vcpu/v6.6-rc7</option>
+<option value="aarch64/hotplug-vcpu/v6.7">aarch64/hotplug-vcpu/v6.7</option>
+<option value="aarch64/hotplug-vcpu/v6.7-rc1">aarch64/hotplug-vcpu/v6.7-rc1</option>
+<option value="aarch64/hotplug-vcpu/v6.7-rc2">aarch64/hotplug-vcpu/v6.7-rc2</option>
+<option value="aarch64/hotplug-vcpu/v6.7-rc3">aarch64/hotplug-vcpu/v6.7-rc3</option>
+<option value="aarch64/hotplug-vcpu/v6.7-rc4">aarch64/hotplug-vcpu/v6.7-rc4</option>
+<option value="aarch64/hotplug-vcpu/v6.7-rc5">aarch64/hotplug-vcpu/v6.7-rc5</option>
+<option value="aarch64/hotplug-vcpu/v6.8-rc2" selected="selected">aarch64/hotplug-vcpu/v6.8-rc2</option>
+<option value="aarch64/ktext/head">aarch64/ktext/head</option>
+<option value="aarch64/ktext/v6.5">aarch64/ktext/v6.5</option>
+<option value="aarch64/ktext/v6.6-rc5">aarch64/ktext/v6.6-rc5</option>
+<option value="aarch64/ktext/v6.7">aarch64/ktext/v6.7</option>
+<option value="adfs">adfs</option>
+<option value="cex7">cex7</option>
+<option value="clearfog">clearfog</option>
+<option value="clearfog-4.10">clearfog-4.10</option>
+<option value="clearfog-4.11">clearfog-4.11</option>
+<option value="clearfog-4.12">clearfog-4.12</option>
+<option value="clearfog-4.13">clearfog-4.13</option>
+<option value="clearfog-4.9">clearfog-4.9</option>
+<option value="clkdev">clkdev</option>
+<option value="csi-v6">csi-v6</option>
+<option value="devel-stable">devel-stable</option>
+<option value="drm-armada-devel">drm-armada-devel</option>
+<option value="drm-armada-devel-4.15">drm-armada-devel-4.15</option>
+<option value="drm-armada-fixes">drm-armada-fixes</option>
+<option value="drm-armada-fixes-4.15">drm-armada-fixes-4.15</option>
+<option value="drm-dwhdmi-devel">drm-dwhdmi-devel</option>
+<option value="drm-etnaviv-devel">drm-etnaviv-devel</option>
+<option value="drm-tda9950-fixes">drm-tda9950-fixes</option>
+<option value="drm-tda998x-devel">drm-tda998x-devel</option>
+<option value="drm-tda998x-fixes">drm-tda998x-fixes</option>
+<option value="fec-testing">fec-testing</option>
+<option value="fiq">fiq</option>
+<option value="fixes">fixes</option>
+<option value="fixes-sa1111">fixes-sa1111</option>
+<option value="for-arm-soc">for-arm-soc</option>
+<option value="for-next">for-next</option>
+<option value="hb2">hb2</option>
+<option value="ktext">ktext</option>
+<option value="ktext-current">ktext-current</option>
+<option value="master">master</option>
+<option value="mcbin">mcbin</option>
+<option value="mvneta">mvneta</option>
+<option value="mvpp2">mvpp2</option>
+<option value="net-merged">net-merged</option>
+<option value="net-next">net-next</option>
+<option value="net-queue">net-queue</option>
+<option value="nmi">nmi</option>
+<option value="phy">phy</option>
+<option value="rtc">rtc</option>
+<option value="sa1100">sa1100</option>
+<option value="spectre">spectre</option>
+<option value="to-build">to-build</option>
+<option value="uaccess">uaccess</option>
+<option value="vcpu-rmk">vcpu-rmk</option>
+<option value="wl18xx">wl18xx</option>
+<option value="zii">zii</option>
+</select> <input type="submit" value="switch"></form></td></tr>
+<tr><td class="sub">Russell King's ARM Linux kernel tree</td><td class="sub right">Russell King</td></tr></tbody></table>
+<table class="tabs"><tbody><tr><td>
+<a href="/cgit/linux-arm.git/?h=aarch64/hotplug-vcpu/v6.8-rc2">summary</a><a href="/cgit/linux-arm.git/refs/?h=aarch64/hotplug-vcpu/v6.8-rc2">refs</a><a class="active" href="/cgit/linux-arm.git/log/?h=aarch64/hotplug-vcpu/v6.8-rc2">log</a><a href="/cgit/linux-arm.git/tree/?h=aarch64/hotplug-vcpu/v6.8-rc2">tree</a><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2">commit</a><a href="/cgit/linux-arm.git/diff/?h=aarch64/hotplug-vcpu/v6.8-rc2">diff</a></td><td class="form"><form class="right" method="get" action="/cgit/linux-arm.git/log/">
+<input type="hidden" name="h" value="aarch64/hotplug-vcpu/v6.8-rc2"><select name="qt">
+<option value="grep">log msg</option>
+<option value="author">author</option>
+<option value="committer">committer</option>
+<option value="range">range</option>
+</select>
+<input class="txt" type="search" size="10" name="q" value="">
+<input type="submit" value="search">
+</form>
+</td></tr></tbody></table>
+<div class="content"><table class="list nowrap"><tbody><tr class="nohover"><th class="left">Age</th><th class="left">Commit message (<a href="/cgit/linux-arm.git/log/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;showmsg=1">Expand</a>)</th><th class="left">Author</th></tr>
+<tr><td><span title="2024-01-30 10:57:31 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=60ea1a699afa35d4dfa3db54aac9b57e8f01a771">ACPI: Add _OSC bits to advertise OS support for toggling CPU present/enabled</a><span class="decoration"><a class="branch-deco" href="/cgit/linux-arm.git/log/?h=aarch64/hotplug-vcpu/v6.8-rc2">aarch64/hotplug-vcpu/v6.8-rc2</a></span></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:30 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=1b8d0750edc89233ff5b53c8066aa9b273f3ed69">ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:30 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=790ead0882c93afb8c364731e2e36b5f4480bfc4">arm64: document virtual CPU hotplug's expectations</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:29 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=6ffc734c39fa748676507b521322535bd7ece861">ACPI: add support to (un)register CPUs based on the _STA enabled bit</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:29 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=22adb366f43a2f6f18bf942013be646346b7fbdf">arm64: psci: Ignore DENIED CPUs</a></td><td>Jean-Philippe Brucker</td></tr>
+<tr><td><span title="2024-01-30 10:57:29 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=06508ce9a29cf6a9aaffbffaa4043bbf383be648">irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:28 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=661531355a57eefa0a1c89c3487d229fdb9d94a0">irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:28 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=99379cfcca23409358339e47b66d50be028c6373">arm64: acpi: Move get_cpu_for_acpi_id() to a header</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:27 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=a70f9123454ee5f046b5364106bdc63906437fce">ACPI: Warn when the present bit changes but the feature is not enabled</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:27 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=96f46409f00ed5c47a6dc9acd6684bae77294f0f">ACPI: Check _STA present bit before making CPUs not present</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:26 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=87a6fc4860c85256efb73defef466bce067f178b">ACPI: convert acpi_processor_post_eject() to use IS_ENABLED()</a></td><td>Russell King (Oracle)</td></tr>
+<tr><td><span title="2024-01-30 10:57:26 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=05bcd811627940b79639faec017139cc2c3f01e0">ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:25 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=b7f29d3f1082eaabe5dd5a9e586832dc74b3ddef">ACPI: Rename acpi_processor_hotadd_init and remove pre-processor guards</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:25 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=87da949372bccaa4426c1f2772bca0af888d523e">ACPI: Move acpi_bus_trim_one() before acpi_scan_hot_remove()</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:24 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=1ba44f2de47061297af8fbab1feea91242fb5e5e">ACPI: processor: Register all CPUs from acpi_processor_get_info()</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-30 10:57:24 +0000">2024-01-30</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=597601f6707377a796d4a6304d15b2dead28c93e">ACPI: Only enumerate enabled (or functional) processor devices</a></td><td>James Morse</td></tr>
+<tr><td><span title="2024-01-28 17:01:12 -0800">2024-01-28</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=41bccc98fb7931d63d03f326a746ac4d429c1dd3">Linux 6.8-rc2</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-28 13:55:56 -0800">2024-01-28</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=3eb5ca857d38ae7a694de6e59a3de7990af87919">Merge tag 'cxl-fixes-6.8-rc2' of git://git.kernel.org/pub/scm/linux/kernel/gi...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-28 10:43:06 -0800">2024-01-28</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=4854cf9c61d060209d2b431f4a787f6952967022">Merge tag 'mips-fixes_6.8_1' of git://git.kernel.org/pub/scm/linux/kernel/git...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-28 10:38:16 -0800">2024-01-28</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=648f575d5e626f8d45ef0989db60ea60a9067560">Merge tag 'locking_urgent_for_v6.8_rc2' of git://git.kernel.org/pub/scm/linux...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-28 10:34:55 -0800">2024-01-28</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=0e4363ac1a21268c0c02ff65e16b3d33dde3bee8">Merge tag 'irq_urgent_for_v6.8_rc2' of git://git.kernel.org/pub/scm/linux/ker...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-28 10:33:14 -0800">2024-01-28</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=90db544ebaf4325044402cdfecf1cf9247ca3ae6">Merge tag 'timers_urgent_for_v6.8_rc2' of git://git.kernel.org/pub/scm/linux/...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-28 09:45:11 -0800">2024-01-28</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=9d451912dbef72b4b4dcaa99229f98b309338b39">Merge tag 'x86_urgent_for_v6.8_rc2' of git://git.kernel.org/pub/scm/linux/ker...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-28 09:41:39 -0800">2024-01-28</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=a08ebda97e2a32b8f1de2c8240337f726c2e1ba7">Merge tag 'fixes-2024-01-28' of git://git.kernel.org/pub/scm/linux/kernel/git...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-27 09:48:55 -0800">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=8a696a29c6905594e4abf78eaafcb62165ac61f1">Merge tag 'platform-drivers-x86-v6.8-2' of git://git.kernel.org/pub/scm/linux...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-27 09:44:40 -0800">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=955340433a7926ab80838e904814461598adcd8c">Merge tag 'loongarch-fixes-6.8-1' of git://git.kernel.org/pub/scm/linux/kerne...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-27 09:17:01 -0800">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=cd2286fc577526f0a6798f68977a95eb85fe3d52">Merge tag 'xfs-6.8-fixes-1' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-27 09:11:52 -0800">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=064a4a5bfac8bb24af08ec8a4c2664ff61a06f16">Merge tag 'bcachefs-2024-01-26' of https://evilpiepirate.org/git/bcachefs</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-27 09:06:56 -0800">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=8c6f6a76465a4c001770992867b0a4985d20f927">Merge tag '6.8-rc2-smb3-server-fixes' of git://git.samba.org/ksmbd</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-27 09:02:42 -0800">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=d1bba17e20d513e09d0977afc82cd85b91d0fef8">Merge tag '6.8-rc1-smb3-client-fixes' of git://git.samba.org/sfrench/cifs-2.6</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-27 11:08:04 +0100">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=59be5c35850171e307ca5d3d703ee9ff4096b948">mips: Call lose_fpu(0) before initializing fcr31 in mips_set_personality_nan</a></td><td>Xi Ruoyao</td></tr>
+<tr><td><span title="2024-01-27 11:07:57 +0100">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=822df315cc7c85c3c10afcc6408b254a6fa0f166">MIPS: loongson64: set nid for reserved memblock region</a></td><td>Huang Pei</td></tr>
+<tr><td><span title="2024-01-27 11:07:49 +0100">2024-01-27</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=c91c6b2f08afb7be111678ceade563158c9a31ba">Revert "MIPS: loongson64: set nid for reserved memblock region"</a></td><td>Thomas Bogendoerfer</td></tr>
+<tr><td><span title="2024-01-26 15:24:00 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=3a5879d495b226d0404098e3564462d5f1daa33b">Merge tag 'ata-6.8-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/liba...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 15:19:43 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=914e17088e91a96ea4ce5af2504588678f96edb8">Merge tag 'block-6.8-2024-01-26' of git://git.kernel.dk/linux</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 15:17:42 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=cced1c5e72b7466e6c9091370eaf5d55a4ddeecb">Merge tag 'io_uring-6.8-2024-01-26' of git://git.kernel.dk/linux</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 15:06:23 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=667c889308a171748dd19d496a9714b77c688a86">Merge tag 'thermal-6.8-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 14:53:28 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=0c879d88138cab3477eb71dda962cb13b3dd8973">Merge tag 'pm-6.8-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/rafae...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 14:51:41 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=70da22eb63f73a1ce41c7d106a5a417c352089f8">Merge tag 'docs-6.8-fixes' of git://git.lwn.net/linux</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 13:52:18 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=168174d78157bba1315d5f8e1c66548b92c84ae9">Merge tag 'drm-fixes-2024-01-27' of git://anongit.freedesktop.org/drm/drm</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 13:22:59 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=2047b0b2750855a8a5b489915b203b4a8b5ec56e">Merge tag 'asm-generic-6.8-2' of git://git.kernel.org/pub/scm/linux/kernel/gi...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 13:09:38 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=ae971859f810d90c2e844cb2eb3daa5e061dd446">Merge tag 'arm-fixes-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 12:29:04 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=48fa8ec61569efe122ac92694ce6ff4324b61bd8">Merge tag 'spi-fix-v6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 12:26:02 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=5f91b9ba5acada5e56c874af82660d29a7f84e25">Merge tag 'gpio-fixes-for-v6.8-rc2' of git://git.kernel.org/pub/scm/linux/ker...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 12:11:49 -0800">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=4aeb083707d6a2535bfea5d16140b72a81efb62b">Merge tag 'media/v6.8-3' of git://git.kernel.org/pub/scm/linux/kernel/git/mch...</a></td><td>Linus Torvalds</td></tr>
+<tr><td><span title="2024-01-26 20:21:47 +0100">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=1abdf288b0ef5606f76b6e191fa6df05330e3d7e">platform/x86: touchscreen_dmi: Add info for the TECLAST X16 Plus tablet</a></td><td>Phoenix Chen</td></tr>
+<tr><td><span title="2024-01-26 20:12:16 +0100">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=8c898ec07a2fc1d4694e81097a48e94a3816308d">platform/x86/intel/ifs: Call release_firmware() when handling errors.</a></td><td>Jithu Joseph</td></tr>
+<tr><td><span title="2024-01-26 20:12:16 +0100">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=a692a86efe97fe0aba7cb15f38cbce866c080689">platform/x86/amd/pmf: Fix memory leak in amd_pmf_get_pb_data()</a></td><td>Cong Liu</td></tr>
+<tr><td><span title="2024-01-26 20:12:05 +0100">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=cedecdba60f4a42a8562574119f317ed0c674b5a">platform/x86/amd/pmf: Get ambient light information from AMD SFH driver</a></td><td>Shyam Sundar S K</td></tr>
+<tr><td><span title="2024-01-26 20:09:41 +0100">2024-01-26</span></td><td><a href="/cgit/linux-arm.git/commit/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;id=118063f3803324411be0e601d560ed7d1c9824b0">platform/x86/amd/pmf: Get Human presence information from AMD SFH driver</a></td><td>Shyam Sundar S K</td></tr>
+</tbody></table><ul class="pager"><li><a href="/cgit/linux-arm.git/log/?h=aarch64/hotplug-vcpu/v6.8-rc2&amp;ofs=50">[next]</a></li></ul></div> <!-- class=content -->
+<div class="footer">generated by <a href="https://git.zx2c4.com/cgit/about/">cgit </a> (<a href="https://git-scm.com/">git 2.34.1</a>) at 2025-12-22 08:22:19 +0000</div>
+</div> <!-- id=cgit -->
+
+
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
