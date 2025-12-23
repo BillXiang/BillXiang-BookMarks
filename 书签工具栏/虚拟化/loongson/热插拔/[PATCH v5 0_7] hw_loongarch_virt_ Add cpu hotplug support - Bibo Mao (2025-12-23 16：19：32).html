@@ -1,0 +1,123 @@
+<!-- Filename: 书签工具栏/虚拟化/loongson/热插拔/[PATCH v5 0_7] hw_loongarch_virt_ Add cpu hotplug support - Bibo Mao (2025-12-23 16：19：32).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/all/20250211030834.3276732-1-maobibo@loongson.cn/
+ Summary: 
+-->
+<html><head><title>[PATCH v5 0/7] hw/loongarch/virt: Add cpu hotplug support - Bibo Mao</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?6914a1da"><link type="text/css" rel="stylesheet" media="screen and (prefers-color-scheme:dark)" href="../216dark.css?6914a1da"><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20250211030908"><b>All of lore.kernel.org</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Bibo Mao &lt;maobibo@loongson.cn&gt;
+To: "Song Gao" &lt;gaosong@loongson.cn&gt;,
+	"Paolo Bonzini" &lt;pbonzini@redhat.com&gt;,
+	"Zhao Liu" &lt;zhao1.liu@intel.com&gt;,
+	"Igor Mammedov" &lt;imammedo@redhat.com&gt;,
+	"Philippe Mathieu-Daudé" &lt;philmd@linaro.org&gt;
+Cc: Jiaxun Yang &lt;jiaxun.yang@flygoat.com&gt;,
+	Xianglai Li &lt;lixianglai@loongson.cn&gt;,
+	<a href="../../qemu-devel/?t=20250211030908">qemu-devel@nongnu.org</a>
+Subject: <a href="#r" id="t">[PATCH v5 0/7] hw/loongarch/virt: Add cpu hotplug support</a>
+Date: Tue, 11 Feb 2025 11:08:27 +0800	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20250211030834.3276732-1-maobibo@loongson.cn&gt; (<a href="raw">raw</a>)
+
+LoongArch cpu hotplug is based on ACPI GED device, it depends on
+patchset where TYPE_HOTPLUG_HANDLER interface is added in ipi and extioi
+interrupt controller class for cpu hotplug event notification.
+  <a href="https://lore.kernel.org/qemu-devel/0d920309-c7ba-48d8-b46d-04ac1e38efc7@linaro.org/T/#t">https://lore.kernel.org/qemu-devel/0d920309-c7ba-48d8-b46d-04ac1e38efc7@linaro.org/T/#t</a>
+
+It can be verified with qemu command:
+  qemu-system-loongarch64 -smp 2,maxcpus=16,sockets=4,cores=4,threads=1
+and vcpu can be added or remove with hmp command:
+  device_add la464-loongarch-cpu,socket-id=0,core-id=2,thread-id=0,id=cpu-2
+  device_del cpu-2
+
+---
+v4 ... v5:
+  1. Use new calculation logic about physical cpu id, the max core-id and
+     thread-id is aligned up with power of 2.
+  2. Remove num-cpu property with ipi and extioi interrupt controller,
+     TYPE_HOTPLUG_HANDLER interface is added with the interrupt
+     controllers for cpu hotplug event notification.
+ 
+v3 ... v4:
+  1. For cold-plug CPUs, move socket-id/core-id/thread-id property
+     setting from preplug function to CPU object creating loop, since
+     there is topo information calculation already in CPU object creating
+     loop.
+  2. Init interrupt pin of CPU object in cpu plug interface for both
+     cold-plug CPUs and hot-plug CPUs.
+  3. Apply the patch based on latest qemu version.
+
+v2 ... v3:
+  1. Use qdev_realize_and_unref() with qdev_realize() and object_unref().
+  2. Set vcpus_count with 1 since vcpu object is created for every thread.
+  3. Remove property hw-id, use internal variable hw_id to differentiate
+     cold-plug cpus and hot-plug cpus.
+  4. Add generic function virt_init_cpu_irq() to init interrupt pin
+     of CPU object, used by both cold-plug and hot-plug CPUs
+
+v1 ... v2:
+  1. Add new property hw-id, property hw-id is set for cold-added CPUs,
+     and property socket-id/core-id/thread-id is set for hot-added CPUs.
+     The two properties can be generated from each other.
+  2. Use general hotplug api such as hotplug_handler_pre_plug etc
+  3. Reorganize the patch order, split the patch set into 4 small
+     patches.
+---
+Bibo Mao (7):
+  hw/loongarch/virt: Add CPU topology support
+  hw/loongarch/virt: Add topo properties on CPU object
+  hw/loongarch/virt: Add basic cpu plug interface framework
+  hw/loongarch/virt: Implement cpu unplug interface
+  hw/loongarch/virt: Implement cpu plug interface
+  hw/loongarch/virt: Update the ACPI table for hotplug cpu
+  hw/loongarch/virt: Enable cpu hotplug feature on virt machine
+
+ hw/loongarch/Kconfig           |   1 +
+ hw/loongarch/virt-acpi-build.c |  35 +++-
+ hw/loongarch/virt.c            | 284 ++++++++++++++++++++++++++++++---
+ include/hw/loongarch/virt.h    |   1 +
+ target/loongarch/cpu.c         |  23 +++
+ target/loongarch/cpu.h         |  11 ++
+ 6 files changed, 333 insertions(+), 22 deletions(-)
+
+-- 
+2.39.3
+
+
+</pre><hr><pre><a href="../20250211030834.3276732-2-maobibo@loongson.cn/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20250211030908">~2025-02-11  3:09 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>9+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2025-02-11  3:08 <a id="r" href="#t">Bibo Mao [this message]</a></b>
+2025-02-11  3:08 ` <a href="../20250211030834.3276732-2-maobibo@loongson.cn/">[PATCH v5 1/7] hw/loongarch/virt: Add CPU topology support</a> Bibo Mao
+2025-02-11  3:08 ` <a href="../20250211030834.3276732-3-maobibo@loongson.cn/">[PATCH v5 2/7] hw/loongarch/virt: Add topo properties on CPU object</a> Bibo Mao
+2025-02-11  3:08 ` <a href="../20250211030834.3276732-4-maobibo@loongson.cn/">[PATCH v5 3/7] hw/loongarch/virt: Add basic cpu plug interface framework</a> Bibo Mao
+2025-02-11  3:08 ` <a href="../20250211030834.3276732-5-maobibo@loongson.cn/">[PATCH v5 4/7] hw/loongarch/virt: Implement cpu unplug interface</a> Bibo Mao
+2025-02-11  3:08 ` <a href="../20250211030834.3276732-6-maobibo@loongson.cn/">[PATCH v5 5/7] hw/loongarch/virt: Implement cpu plug interface</a> Bibo Mao
+2025-02-11  3:08 ` <a href="../20250211030834.3276732-7-maobibo@loongson.cn/">[PATCH v5 6/7] hw/loongarch/virt: Update the ACPI table for hotplug cpu</a> Bibo Mao
+2025-02-11  6:53 ` <a href="../20250211065358.3277168-1-maobibo@loongson.cn/">[PATCH v5 7/7] hw/loongarch/virt: Enable cpu hotplug feature on virt machine</a> Bibo Mao
+2025-02-20  9:54 ` <a href="../1ef6ae3a-2513-8eb8-b97e-707faf2c7bd4@loongson.cn/">[PATCH v5 0/7] hw/loongarch/virt: Add cpu hotplug support</a> bibo mao
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20250211030834.3276732-1-maobibo@loongson.cn \n    --to=maobibo@loongson.cn \n    --cc=gaosong@loongson.cn \n    --cc=imammedo@redhat.com \n    --cc=jiaxun.yang@flygoat.com \n    --cc=lixianglai@loongson.cn \n    --cc=pbonzini@redhat.com \n    --cc=philmd@linaro.org \n    --cc=qemu-devel@nongnu.org \n    --cc=zhao1.liu@intel.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:maobibo@loongson.cn?In-Reply-To=%3C20250211030834.3276732-1-maobibo@loongson.cn%3E&amp;Cc=gaosong%40loongson.cn%2Cimammedo%40redhat.com%2Cjiaxun.yang%40flygoat.com%2Clixianglai%40loongson.cn%2Cpbonzini%40redhat.com%2Cphilmd%40linaro.org%2Cqemu-devel%40nongnu.org%2Czhao1.liu%40intel.com&amp;Subject=Re%3A%20%5BPATCH%20v5%200%2F7%5D%20hw%2Floongarch%2Fvirt%3A%20Add%20cpu%20hotplug%20support">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is an external index of several public inboxes,
+see <a href="../_/text/mirror/">mirroring instructions</a> on how to clone and mirror
+all data and code used by this external index.</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div></html>
