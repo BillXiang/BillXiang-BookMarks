@@ -1,0 +1,171 @@
+<!-- Filename: 书签工具栏/虚拟化/ARM/热插拔/CHP/Applied to arm64 【for-next_vcpu-hotplug】, thanks! If nothing falls apart, it should end up in mainline for 6.11. - Re_ [PATCH  (2025-12-23 11：29：10).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/all/171959723432.44645.7883276197359651212.b4-ty@arm.com/
+ Summary: 
+-->
+<html><head><title>Re: [PATCH v10 00/19] ACPI/arm64: add support for virtual cpu hotplug - Catalin Marinas</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?6914a1da"><link type="text/css" rel="stylesheet" media="screen and (prefers-color-scheme:dark)" href="../216dark.css?6914a1da"><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20240628175638"><b>All of lore.kernel.org</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Catalin Marinas &lt;catalin.marinas@arm.com&gt;
+To: Marc Zyngier &lt;maz@kernel.org&gt;, Will Deacon &lt;will@kernel.org&gt;,
+	<a href="../../linux-acpi/?t=20240628175638">linux-acpi@vger.kernel.org</a>, <a href="../../linux-arch/?t=20240628175638">linux-arch@vger.kernel.org</a>,
+	<a href="../../lkml/?t=20240628175638">linux-kernel@vger.kernel.org</a>,
+	<a href="../../linux-arm-kernel/?t=20240628175638">linux-arm-kernel@lists.infradead.org</a>, <a href="../../linux-pm/?t=20240628175638">linux-pm@vger.kernel.org</a>,
+	Jonathan Cameron &lt;Jonathan.Cameron@huawei.com&gt;
+Cc: Mark Rutland &lt;mark.rutland@arm.com&gt;,
+	Thomas Gleixner &lt;tglx@linutronix.de&gt;,
+	Peter Zijlstra &lt;peterz@infradead.org&gt;,
+	<a href="../../loongarch/?t=20240628175638">loongarch@lists.linux.dev</a>, x86@kernel.org,
+	Russell King &lt;linux@armlinux.org.uk&gt;,
+	"Rafael J . Wysocki" &lt;rafael@kernel.org&gt;,
+	Miguel Luis &lt;miguel.luis@oracle.com&gt;,
+	James Morse &lt;james.morse@arm.com&gt;,
+	Salil Mehta &lt;salil.mehta@huawei.com&gt;,
+	Jean-Philippe Brucker &lt;jean-philippe@linaro.org&gt;,
+	Hanjun Guo &lt;guohanjun@huawei.com&gt;, Gavin Shan &lt;gshan@redhat.com&gt;,
+	Ingo Molnar &lt;mingo@redhat.com&gt;, Borislav Petkov &lt;bp@alien8.de&gt;,
+	Dave Hansen &lt;dave.hansen@linux.intel.com&gt;,
+	linuxarm@huawei.com, justin.he@arm.com, jianyong.wu@arm.com
+Subject: <a href="#r" id="t">Re: [PATCH v10 00/19] ACPI/arm64: add support for virtual cpu hotplug</a>
+Date: Fri, 28 Jun 2024 18:56:31 +0100	<a href="#r">[thread overview]</a>
+Message-ID: &lt;171959723432.44645.7883276197359651212.b4-ty@arm.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20240529133446.28446-1-Jonathan.Cameron@huawei.com/">20240529133446.28446-1-Jonathan.Cameron@huawei.com</a>&gt;
+
+On Wed, 29 May 2024 14:34:27 +0100, Jonathan Cameron wrote:
+<span class="q">&gt; v10:
+&gt; - Make acpi_processor_set_per_cpu() return 0 / error rather than bool
+&gt;   to simplify error handling at the call sites.
+&gt;   (Thanks to both Rafael and Gavin who commented on this)
+&gt; - Gather tags.
+&gt; - Rebase on v6.10-rc1
+&gt; 
+&gt; [...]
+</span>
+Applied to arm64 (for-next/vcpu-hotplug), thanks! If nothing falls
+apart, it should end up in mainline for 6.11.
+
+Thomas, the GICv3 patches have been acked by Marc but they are missing
+your ack. If you want it added, I can refresh the series in the next day
+or so, otherwise the branch should remain stable. Thanks.
+
+[01/19] ACPI: processor: Simplify initial onlining to use same path for cold and hotplug
+        <a href="https://git.kernel.org/arm64/c/c1385c1f0ba3">https://git.kernel.org/arm64/c/c1385c1f0ba3</a>
+[02/19] cpu: Do not warn on arch_register_cpu() returning -EPROBE_DEFER
+        <a href="https://git.kernel.org/arm64/c/d830ef3ac569">https://git.kernel.org/arm64/c/d830ef3ac569</a>
+[03/19] ACPI: processor: Drop duplicated check on _STA (enabled + present)
+        <a href="https://git.kernel.org/arm64/c/157080f03c7a">https://git.kernel.org/arm64/c/157080f03c7a</a>
+[04/19] ACPI: processor: Return an error if acpi_processor_get_info() fails in processor_add()
+        <a href="https://git.kernel.org/arm64/c/fadf231f0a06">https://git.kernel.org/arm64/c/fadf231f0a06</a>
+[05/19] ACPI: processor: Fix memory leaks in error paths of processor_add()
+        <a href="https://git.kernel.org/arm64/c/47ec9b417ed9">https://git.kernel.org/arm64/c/47ec9b417ed9</a>
+[06/19] ACPI: processor: Move checks and availability of acpi_processor earlier
+        <a href="https://git.kernel.org/arm64/c/cd9239660b8c">https://git.kernel.org/arm64/c/cd9239660b8c</a>
+[07/19] ACPI: processor: Add acpi_get_processor_handle() helper
+        <a href="https://git.kernel.org/arm64/c/36b921637e90">https://git.kernel.org/arm64/c/36b921637e90</a>
+[08/19] ACPI: processor: Register deferred CPUs from acpi_processor_get_info()
+        <a href="https://git.kernel.org/arm64/c/b398a91decd9">https://git.kernel.org/arm64/c/b398a91decd9</a>
+[09/19] ACPI: scan: switch to flags for acpi_scan_check_and_detach()
+        <a href="https://git.kernel.org/arm64/c/1859a671bdb9">https://git.kernel.org/arm64/c/1859a671bdb9</a>
+[10/19] ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+        <a href="https://git.kernel.org/arm64/c/3b9d0a78aeda">https://git.kernel.org/arm64/c/3b9d0a78aeda</a>
+[11/19] arm64: acpi: Move get_cpu_for_acpi_id() to a header
+        <a href="https://git.kernel.org/arm64/c/8d34b6f17b9a">https://git.kernel.org/arm64/c/8d34b6f17b9a</a>
+[12/19] arm64: acpi: Harden get_cpu_for_acpi_id() against missing CPU entry
+        <a href="https://git.kernel.org/arm64/c/2488444274c7">https://git.kernel.org/arm64/c/2488444274c7</a>
+[13/19] irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
+        <a href="https://git.kernel.org/arm64/c/fa2dabe57220">https://git.kernel.org/arm64/c/fa2dabe57220</a>
+[14/19] irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs
+        <a href="https://git.kernel.org/arm64/c/d633da5d3ab1">https://git.kernel.org/arm64/c/d633da5d3ab1</a>
+[15/19] arm64: psci: Ignore DENIED CPUs
+        <a href="https://git.kernel.org/arm64/c/643e12da4a49">https://git.kernel.org/arm64/c/643e12da4a49</a>
+[16/19] arm64: arch_register_cpu() variant to check if an ACPI handle is now available.
+        <a href="https://git.kernel.org/arm64/c/eba4675008a6">https://git.kernel.org/arm64/c/eba4675008a6</a>
+[17/19] arm64: Kconfig: Enable hotplug CPU on arm64 if ACPI_PROCESSOR is enabled.
+        <a href="https://git.kernel.org/arm64/c/9d0873892f4d">https://git.kernel.org/arm64/c/9d0873892f4d</a>
+[18/19] arm64: document virtual CPU hotplug's expectations
+        <a href="https://git.kernel.org/arm64/c/828ce929d1c3">https://git.kernel.org/arm64/c/828ce929d1c3</a>
+[19/19] cpumask: Add enabled cpumask for present CPUs that can be brought online
+        <a href="https://git.kernel.org/arm64/c/4e1a7df45480">https://git.kernel.org/arm64/c/4e1a7df45480</a>
+
+-- 
+Catalin
+
+</pre><hr><pre>     <a href="../20240628154909.000044d9@Huawei.com/" rel="prev">prev</a> <a href="../20240529133446.28446-1-Jonathan.Cameron@huawei.com/">parent</a> <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20240628175638">~2024-06-28 17:56 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>51+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2024-05-29 13:34 <a href="../20240529133446.28446-1-Jonathan.Cameron@huawei.com/">[PATCH v10 00/19] ACPI/arm64: add support for virtual cpu hotplug</a> Jonathan Cameron
+2024-05-29 13:34 ` <a href="../20240529133446.28446-1-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-2-Jonathan.Cameron@huawei.com/">[PATCH v10 01/19] ACPI: processor: Simplify initial onlining to use same path for cold and hotplug</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-2-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-3-Jonathan.Cameron@huawei.com/">[PATCH v10 02/19] cpu: Do not warn on arch_register_cpu() returning -EPROBE_DEFER</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-3-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-4-Jonathan.Cameron@huawei.com/">[PATCH v10 03/19] ACPI: processor: Drop duplicated check on _STA (enabled + present)</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-4-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-5-Jonathan.Cameron@huawei.com/">[PATCH v10 04/19] ACPI: processor: Return an error if acpi_processor_get_info() fails in processor_add()</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-5-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-6-Jonathan.Cameron@huawei.com/">[PATCH v10 05/19] ACPI: processor: Fix memory leaks in error paths of processor_add()</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-6-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-7-Jonathan.Cameron@huawei.com/">[PATCH v10 06/19] ACPI: processor: Move checks and availability of acpi_processor earlier</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-7-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-8-Jonathan.Cameron@huawei.com/">[PATCH v10 07/19] ACPI: processor: Add acpi_get_processor_handle() helper</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-8-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-9-Jonathan.Cameron@huawei.com/">[PATCH v10 08/19] ACPI: processor: Register deferred CPUs from acpi_processor_get_info()</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-9-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-10-Jonathan.Cameron@huawei.com/">[PATCH v10 09/19] ACPI: scan: switch to flags for acpi_scan_check_and_detach()</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-10-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-11-Jonathan.Cameron@huawei.com/">[PATCH v10 10/19] ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-11-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-12-Jonathan.Cameron@huawei.com/">[PATCH v10 11/19] arm64: acpi: Move get_cpu_for_acpi_id() to a header</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-12-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-13-Jonathan.Cameron@huawei.com/">[PATCH v10 12/19] arm64: acpi: Harden get_cpu_for_acpi_id() against missing CPU entry</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-13-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-14-Jonathan.Cameron@huawei.com/">[PATCH v10 13/19] irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-14-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-06-19  8:11   ` <a href="../20240619091122.00003a9e@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-15-Jonathan.Cameron@huawei.com/">[PATCH v10 14/19] irqchip/gic-v3: Add support for ACPI's disabled but 'online capable' CPUs</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-15-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-06-19 12:10   ` <a href="../868qz1jfpf.wl-maz@kernel.org/">Marc Zyngier</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-16-Jonathan.Cameron@huawei.com/">[PATCH v10 15/19] arm64: psci: Ignore DENIED CPUs</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-16-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-17-Jonathan.Cameron@huawei.com/">[PATCH v10 16/19] arm64: arch_register_cpu() variant to check if an ACPI handle is now available</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-17-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-18-Jonathan.Cameron@huawei.com/">[PATCH v10 17/19] arm64: Kconfig: Enable hotplug CPU on arm64 if ACPI_PROCESSOR is enabled</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-18-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-06-30  0:39   ` <a href="../47a261e0-006d-4c64-9c9b-bc73797b8d6b@redhat.com/">Gavin Shan</a>
+2024-06-30  9:26     ` <a href="../ZoEk2mfQkIhLuh-8@arm.com/">Catalin Marinas</a>
+2024-07-01  0:17       ` <a href="../fb6ec18c-143f-4fb2-8ca6-c3e425864e63@redhat.com/">Gavin Shan</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-19-Jonathan.Cameron@huawei.com/">[PATCH v10 18/19] arm64: document virtual CPU hotplug's expectations</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-19-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-06-30 12:53   ` <a href="../CAAhV-H6Ghfj74hcOQCn6yz4t-_p=WkYdmWRrw=v8FK6t+f_EkA@mail.gmail.com/">Huacai Chen</a>
+2024-07-10  8:23     ` <a href="../20240710092347.00005b99@Huawei.com/">Jonathan Cameron</a>
+2024-05-29 13:34 ` <a href="../20240529133446.28446-20-Jonathan.Cameron@huawei.com/">[PATCH v10 19/19] cpumask: Add enabled cpumask for present CPUs that can be brought online</a> Jonathan Cameron
+2024-05-29 13:34   ` <a href="../20240529133446.28446-20-Jonathan.Cameron@huawei.com/">Jonathan Cameron</a>
+2024-06-13 10:25 ` <a href="../20240613112511.00006331@huawei.com/">[PATCH v10 00/19] ACPI/arm64: add support for virtual cpu hotplug</a> Jonathan Cameron
+2024-06-19 12:11   ` <a href="../867celjfng.wl-maz@kernel.org/">Marc Zyngier</a>
+2024-06-28 14:49     ` <a href="../20240628154909.000044d9@Huawei.com/">Jonathan Cameron</a>
+<b>2024-06-28 17:56 ` <a id="r" href="#t">Catalin Marinas [this message]</a></b>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=171959723432.44645.7883276197359651212.b4-ty@arm.com \n    --to=catalin.marinas@arm.com \n    --cc=Jonathan.Cameron@huawei.com \n    --cc=bp@alien8.de \n    --cc=dave.hansen@linux.intel.com \n    --cc=gshan@redhat.com \n    --cc=guohanjun@huawei.com \n    --cc=james.morse@arm.com \n    --cc=jean-philippe@linaro.org \n    --cc=jianyong.wu@arm.com \n    --cc=justin.he@arm.com \n    --cc=linux-acpi@vger.kernel.org \n    --cc=linux-arch@vger.kernel.org \n    --cc=linux-arm-kernel@lists.infradead.org \n    --cc=linux-kernel@vger.kernel.org \n    --cc=linux-pm@vger.kernel.org \n    --cc=linux@armlinux.org.uk \n    --cc=linuxarm@huawei.com \n    --cc=loongarch@lists.linux.dev \n    --cc=mark.rutland@arm.com \n    --cc=maz@kernel.org \n    --cc=miguel.luis@oracle.com \n    --cc=mingo@redhat.com \n    --cc=peterz@infradead.org \n    --cc=rafael@kernel.org \n    --cc=salil.mehta@huawei.com \n    --cc=tglx@linutronix.de \n    --cc=will@kernel.org \n    --cc=x86@kernel.org \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:catalin.marinas@arm.com?In-Reply-To=%3C171959723432.44645.7883276197359651212.b4-ty@arm.com%3E&amp;Cc=Jonathan.Cameron%40huawei.com%2Cbp%40alien8.de%2Cdave.hansen%40linux.intel.com%2Cgshan%40redhat.com%2Cguohanjun%40huawei.com%2Cjames.morse%40arm.com%2Cjean-philippe%40linaro.org%2Cjianyong.wu%40arm.com%2Cjustin.he%40arm.com%2Clinux-acpi%40vger.kernel.org%2Clinux-arch%40vger.kernel.org%2Clinux-arm-kernel%40lists.infradead.org%2Clinux-kernel%40vger.kernel.org%2Clinux-pm%40vger.kernel.org%2Clinux%40armlinux.org.uk%2Clinuxarm%40huawei.com%2Cloongarch%40lists.linux.dev%2Cmark.rutland%40arm.com%2Cmaz%40kernel.org%2Cmiguel.luis%40oracle.com%2Cmingo%40redhat.com%2Cpeterz%40infradead.org%2Crafael%40kernel.org%2Csalil.mehta%40huawei.com%2Ctglx%40linutronix.de%2Cwill%40kernel.org%2Cx86%40kernel.org&amp;Subject=Re%3A%20%5BPATCH%20v10%2000%2F19%5D%20ACPI%2Farm64%3A%20add%20support%20for%20virtual%20cpu%20hotplug">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is an external index of several public inboxes,
+see <a href="../_/text/mirror/">mirroring instructions</a> on how to clone and mirror
+all data and code used by this external index.</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div></html>
