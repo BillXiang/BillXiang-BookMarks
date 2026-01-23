@@ -1,0 +1,611 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/虚拟化/热迁移/Applied to riscv-to-apply.next - Re_ [PATCH v9 0_2] target_riscv：Fix riscv64 kvm migration - Alistair Francis (2026-01-23 17：51：16).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-riscv/CAKmqyKOnJcFbZCCfssQYpBS5VwPZJ3_28TxLvkMWD8nukFD6uw@mail.gmail.com/
+ Summary: 
+-->
+<html><head><title>Re: [PATCH v9 0/2] target/riscv：Fix riscv64 kvm migration - Alistair Francis</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?6914e0a5" media="screen,print"><link type="text/css" rel="stylesheet" href="../216dark.css?6914e0a5" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20250929014452"><b>qemu-riscv.nongnu.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Alistair Francis &lt;alistair23@gmail.com&gt;
+To: Xie Bo &lt;xb@ultrarisc.com&gt;
+Cc: <a href="../../qemu-devel/?t=20250929014452">qemu-devel@nongnu.org</a>, ajones@ventanamicro.com,
+	<a href="../../qemu-riscv/?t=20250929014452">qemu-riscv@nongnu.org</a>,  pbonzini@redhat.com, anup@brainfault.org,
+	alistair.francis@wdc.com,  rkrcmar@ventanamicro.com,
+	palmer@dabbelt.com, xiamy@ultrarisc.com
+Subject: <a href="#r" id="t">Re: [PATCH v9 0/2] target/riscv：Fix riscv64 kvm migration</a>
+Date: Mon, 29 Sep 2025 11:43:18 +1000	<a href="#r">[thread overview]</a>
+Message-ID: &lt;CAKmqyKOnJcFbZCCfssQYpBS5VwPZJ3_28TxLvkMWD8nukFD6uw@mail.gmail.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20250915070811.3422578-1-xb@ultrarisc.com/">20250915070811.3422578-1-xb@ultrarisc.com</a>&gt;
+
+On Mon, Sep 15, 2025 at 5:08 PM Xie Bo &lt;xb@ultrarisc.com&gt; wrote:
+<span class="q">&gt;
+&gt; This is v9 of the series. Compared to v8, the patches are now based on
+&gt; the 'riscv-to-apply.next' branch from Alistair's repository:
+&gt;
+&gt; <a href="https://github.com/alistair23/qemu/tree/riscv-to-apply.next">https://github.com/alistair23/qemu/tree/riscv-to-apply.next</a>
+&gt;
+&gt; Changes since v8:
+&gt; - Rebased the series onto [alistair/riscv-to-apply.next]
+&gt; - Removed the previous 'Reviewed-by' tags due to the rebase
+&gt;   * The changes are purely mechanical; no code logic was altered *
+&gt; - Added 'Cc: qemu-stable@nongnu.org'
+&gt;
+&gt; Xie Bo (2):
+&gt;   Set KVM initial privilege mode and mp_state
+&gt;   Fix VM resume after QEMU+KVM migration
+</span>
+Thanks!
+
+Applied to riscv-to-apply.next
+
+Alistair
+
+<span class="q">&gt;
+&gt;  target/riscv/cpu.c           | 17 +++++++++-
+&gt;  target/riscv/cpu.h           |  2 ++
+&gt;  target/riscv/kvm/kvm-cpu.c   | 60 ++++++++++++++++++++++++++++--------
+&gt;  target/riscv/kvm/kvm_riscv.h |  3 +-
+&gt;  target/riscv/machine.c       |  5 +--
+&gt;  5 files changed, 70 insertions(+), 17 deletions(-)
+&gt;
+&gt; --
+&gt; 2.43.0
+&gt;
+</span>
+</pre><hr><pre>     <a href="../20250915-da26ba5c012a2d49fb07f4fa@orel/" rel="prev">prev</a> <a href="../20250915070811.3422578-1-xb@ultrarisc.com/">parent</a> <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20250929014452">~2025-09-29  1:44 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>10+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2025-09-15  7:08 <a href="../20250915070811.3422578-1-xb@ultrarisc.com/">[PATCH v9 0/2] target/riscv：Fix riscv64 kvm migration</a> Xie Bo
+2025-09-15  7:08 ` <a href="../20250915070811.3422578-2-xb@ultrarisc.com/">[PATCH v9 1/2] Set KVM initial privilege mode and mp_state</a> Xie Bo
+2025-09-16  8:00   ` <a href="../DCU2ER2UIJDS.3CTYAJAJP8NSX@ventanamicro.com/">Radim Krčmář</a>
+2025-09-29  1:48   ` <a href="../CAKmqyKMMo0XfaEsTYqpsV8UfXkhM5YHZsCdptFVR5pSYM1KRxQ@mail.gmail.com/">Alistair Francis</a>
+2025-09-29 17:36     ` <a href="../DD5GSZ9KWEIJ.2GLJ40HGEWWM1@ventanamicro.com/">Radim Krčmář</a>
+2025-10-22 11:47   ` <a href="../1c891573-794e-4650-9fa5-129824f96497@ventanamicro.com/">Daniel Henrique Barboza</a>
+2025-09-15  7:08 ` <a href="../20250915070811.3422578-3-xb@ultrarisc.com/">[PATCH v9 2/2] Fix VM resume after QEMU+KVM migration</a> Xie Bo
+2025-09-16  8:03   ` <a href="../DCU2H0SG4WG0.10TIXQISFI07A@ventanamicro.com/">Radim Krčmář</a>
+2025-09-15 15:31 ` <a href="../20250915-da26ba5c012a2d49fb07f4fa@orel/">[PATCH v9 0/2] target/riscv：Fix riscv64 kvm migration</a> Andrew Jones
+<b>2025-09-29  1:43 ` <a id="r" href="#t">Alistair Francis [this message]</a></b>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=CAKmqyKOnJcFbZCCfssQYpBS5VwPZJ3_28TxLvkMWD8nukFD6uw@mail.gmail.com \n    --to=alistair23@gmail.com \n    --cc=ajones@ventanamicro.com \n    --cc=alistair.francis@wdc.com \n    --cc=anup@brainfault.org \n    --cc=palmer@dabbelt.com \n    --cc=pbonzini@redhat.com \n    --cc=qemu-devel@nongnu.org \n    --cc=qemu-riscv@nongnu.org \n    --cc=rkrcmar@ventanamicro.com \n    --cc=xb@ultrarisc.com \n    --cc=xiamy@ultrarisc.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:alistair23@gmail.com?In-Reply-To=%3CCAKmqyKOnJcFbZCCfssQYpBS5VwPZJ3_28TxLvkMWD8nukFD6uw@mail.gmail.com%3E&amp;Cc=ajones%40ventanamicro.com%2Calistair.francis%40wdc.com%2Canup%40brainfault.org%2Cpalmer%40dabbelt.com%2Cpbonzini%40redhat.com%2Cqemu-devel%40nongnu.org%2Cqemu-riscv%40nongnu.org%2Crkrcmar%40ventanamicro.com%2Cxb%40ultrarisc.com%2Cxiamy%40ultrarisc.com&amp;Subject=Re%3A%20%5BPATCH%20v9%200%2F2%5D%20target%2Friscv%EF%BC%9AFix%20riscv64%20kvm%20migration">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
