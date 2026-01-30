@@ -94,13 +94,15 @@ read_dir(){
                 echo $file | awk -F'[/()]' '{print $(NF-1), $(NF-2)}' | while read a b c
                 do
                     #echo $a,$b,$c
+                    #<tr style='font-size: 15px;'><td><a onclick=\"clickBackup(this)\" href=\"./web_deploy/html_preview.html?rawUrl=https://raw.githubusercontent.com/BillXiang/BillXiang-BookMarks/refs/heads/main/$file\" target=\"_blank\">原文链接失效了?试试备份</a></td></tr> \
+                    #<tr style='font-size: 25px;'><td><a href=\"$ori_url?source=https://billxiang.github.io/BillXiang-BookMarks\" target=\"_blank\"><b>$c</b></a></td></tr> \
                     tags=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="contribute") {$i="Contribute"}; if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf $i;if(i!=NF-1){printf " "}else{printf "\n"}}}}')
                     tags_url=$(echo $file|awk -F'[/]' '{for (i=1;i<NF;i++) {if ($i=="contribute") {$i="Contribute"}; if ($i=="书签工具栏"||$i=="study"||$i==".") {$i=""} else {printf "<a href=./tags/"$i">"$i"</a>";if(i!=NF-1){printf " "}else{printf "\n"}}}}')
                     cd tags
                     echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
                     <tr><td style='display: none;'>_${a}_${b}_</td><td>${a} ${b}</td></tr> \
-                    <tr style='font-size: 25px;'><td><a href=\"$ori_url?source=https://billxiang.github.io/BillXiang-BookMarks\" target=\"_blank\"><b>$c</b></a></td></tr> \
-                    <tr style='font-size: 15px;'><td><a onclick=\"clickBackup(this)\" href=\"./web_deploy/html_preview.html?rawUrl=https://raw.githubusercontent.com/BillXiang/BillXiang-BookMarks/refs/heads/main/$file\" target=\"_blank\">原文链接失效了?试试备份</a></td></tr> \
+                    <tr style='font-size: 25px;'><td><a href=\"$ori_url\" target=\"_blank\"><b>$c</b></a></td></tr> \
+                    <tr style='font-size: 15px;'><td><a onclick=\"clickBackup(this)\" href=\"#gitalk-container\" target=\"_blank\">原文链接失效了?给我留言</a></td></tr> \
                     <tr><td>TAGs:$tags_url</td></tr> \
                     <tr><td>$summary</td></tr> \
                     </tbody></table></td></tr>" | tee -a ../url.tmp $tags
