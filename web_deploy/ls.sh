@@ -102,7 +102,7 @@ read_dir(){
                     echo "<tr><td><table style='margin-top: 20px;margin-bottom: 20px;width:80%;'><tbody> \
                     <tr><td style='display: none;'>_${a}_${b}_</td><td>${a} ${b}</td></tr> \
                     <tr style='font-size: 25px;'><td><a href=\"$ori_url\" target=\"_blank\"><b>$c</b></a></td></tr> \
-                    <tr style='font-size: 15px;'><td><a onclick=\"clickBackup(this)\" href=\"#gitalk-container\" target=\"_blank\">原文链接失效了?给我留言</a></td></tr> \
+                    <tr style='font-size: 15px;'><td><a href=\"#gitalk-container\">原文链接失效了?给我留言</a></td></tr> \
                     <tr><td>TAGs:$tags_url</td></tr> \
                     <tr><td>$summary</td></tr> \
                     </tbody></table></td></tr>" | tee -a ../url.tmp $tags
