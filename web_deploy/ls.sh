@@ -48,7 +48,6 @@ html_head="<!DOCTYPE html>
               <tr><td>"
               
     html_mid="</td></tr>
-              <tr style='font-size: 15px;'><td><a href=\"./index.html#gitalk-container\">原文链接失效了?给我留言</a></td></tr>
               <tr>
                  <td>
                    <h3><a href=\"https://github.akams.cn/\">Github Proxy:</a></h3>
