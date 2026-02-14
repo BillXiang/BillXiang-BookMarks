@@ -1,0 +1,924 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/IOMMU/Contribute/瓜/Re_ [PATCH v3 3_8] iommu_riscv_ Add HPM support for performance monitoring - Lv Zheng (2026-02-14 11：23：20).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/linux-riscv/752514AD54FA2A1B+513d6894-b3bf-44f3-bcc1-7d30f2642cc2@linux.spacemit.com/
+ Summary: 
+-->
+<html><head><title>Re: [PATCH v3 3/8] iommu/riscv: Add HPM support for performance monitoring - Lv Zheng</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?6914e0a5" media="screen,print"><link type="text/css" rel="stylesheet" href="../216dark.css?6914e0a5" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260206034327"><b>linux-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Lv Zheng &lt;lv.zheng@linux.spacemit.com&gt;
+To: Andrew Jones &lt;andrew.jones@oss.qualcomm.com&gt;
+Cc: Zong Li &lt;zong.li@sifive.com&gt;,
+	Tomasz Jeznach &lt;tjeznach@rivosinc.com&gt;,
+	Joerg Roedel &lt;joro@8bytes.org&gt;, Will Deacon &lt;will@kernel.org&gt;,
+	Robin Murphy &lt;robin.murphy@arm.com&gt;,
+	Rob Herring &lt;robh@kernel.org&gt;,
+	Krzysztof Kozlowski &lt;krzk+dt@kernel.org&gt;,
+	Conor Dooley &lt;conor+dt@kernel.org&gt;,
+	Paul Walmsley &lt;pjw@kernel.org&gt;,
+	Palmer Dabbelt &lt;palmer@dabbelt.com&gt;,
+	Albert Ou &lt;aou@eecs.berkeley.edu&gt;,
+	Alexandre Ghiti &lt;alex@ghiti.fr&gt;, Jingyu Li &lt;joey.li@spacemit.com&gt;,
+	iommu@lists.linux.dev, <a href="../../linux-perf-users/?t=20260206034327">linux-perf-users@vger.kernel.org</a>,
+	<a href="../../linux-riscv/?t=20260206034327">linux-riscv@lists.infradead.org</a>, <a href="../../spacemit/?t=20260206034327">spacemit@lists.linux.dev</a>,
+	<a href="../../linux-devicetree/?t=20260206034327">devicetree@vger.kernel.org</a>
+Subject: <a href="#r" id="t">Re: [PATCH v3 3/8] iommu/riscv: Add HPM support for performance monitoring</a>
+Date: Fri, 6 Feb 2026 11:42:39 +0800	<a href="#r">[thread overview]</a>
+Message-ID: &lt;752514AD54FA2A1B+513d6894-b3bf-44f3-bcc1-7d30f2642cc2@linux.spacemit.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../zzbwkazzgeovgmbvg4qnibipzsldqcjnw4axnxlamhgvcld4hs@4m4cc2ctuuvf/">zzbwkazzgeovgmbvg4qnibipzsldqcjnw4axnxlamhgvcld4hs@4m4cc2ctuuvf</a>&gt;
+
+On 2/5/2026 11:23 PM, Andrew Jones wrote:
+<span class="q">&gt; On Thu, Feb 05, 2026 at 02:11:48PM +0800, Lv Zheng wrote:
+&gt;&gt; On 2/5/2026 11:47 AM, Zong Li wrote:
+&gt;&gt;&gt; On Thu, Feb 5, 2026 at 11:35 AM Lv Zheng &lt;lv.zheng@linux.spacemit.com&gt; wrote:
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; On 2/5/2026 2:39 AM, Andrew Jones wrote:
+&gt;&gt;&gt;&gt;&gt; How does this relate to
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt; <a href="https://lore.kernel.org/all/20250115030306.29735-1-zong.li@sifive.com/">https://lore.kernel.org/all/20250115030306.29735-1-zong.li@sifive.com/</a>
+&gt;&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt;&gt;    From a quick skim it looks like there's plenty of overlap.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; We developed the driver in 2024 and demonstrated it in China summit. We
+&gt;&gt;&gt;&gt; didn't notice that a patch is on-going now in the community.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; Now it looks our approach solved more issues, and we'll check and update
+&gt;&gt;&gt;&gt; if there are any community concerns still not addressed in this patchset.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; We can add Reviewed-by/Tested-by and Signed-off-by of Zong Li to this
+&gt;&gt;&gt;&gt; patch if he wishes.
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;&gt; Thanks,
+&gt;&gt;&gt;&gt; Lv
+&gt;&gt;&gt;&gt;
+&gt;&gt;&gt;
+&gt;&gt;&gt; Perhaps I can first post my next revision to the mailing list (hope it
+&gt;&gt;&gt; won't waste the community resource), so that you could have a chance
+&gt;&gt;&gt; to review it and see whether that version is architecturally closer to
+&gt;&gt;&gt; what the community is looking for, while also addressing your issue.
+&gt;&gt;&gt; If you also feel that my next revision meets your needs, perhaps you
+&gt;&gt;&gt; could append your additional implementations on top of it.
+&gt;&gt;&gt;
+&gt;&gt;
+&gt;&gt; It seems we all composed the RISC-V iommu HPM support by referencing
+&gt;&gt; drivers/perf/arm_smmuv3_pmu.
+&gt;&gt;
+&gt;&gt; Robin's comments should all be addressed IMHO.
+&gt;&gt;
+&gt;&gt;&gt; Of course, if the community would prefer to go your version, I’m
+&gt;&gt;&gt; perfectly fine with that as well.
+&gt;&gt;
+&gt;&gt; OK. If we send a next version, we will add your SOB and please help to
+&gt;&gt; review and test.
+&gt; 
+&gt; Zong Li's SOB should only be on the patches he authored. Don't put
+&gt; anybody's SOB on patches they haven't been involved in. See
+&gt; Documentation/process/submitting-patches.rst
+&gt; """
+&gt; The Signed-off-by: tag indicates that the signer was involved in the
+&gt; development of the patch, or that he/she was in the patch's delivery path.
+&gt; """
+&gt; 
+</span> &gt; Since Zong Li's patches were already on the list then your 
+serieswould&gt; at least discuss them in the cover letter, explaining why 
+you've opted
+<span class="q">&gt; not to adopt them. But, most likely some of the patches can be adopted,
+&gt; so those should be extracted from Zong Li's work (with authorship
+&gt; preserved) and based upon in order to respect that prior work.
+&gt; 
+</span>
+You can see we have contacted each other in community, and decided to
+cooperate in this way to honor his contribution. But final decision is
+left for the community to decide:
+
+ From Zong Li:
+ &gt;&gt; Of course, if the community would prefer to go your version, I’m
+ &gt;&gt; perfectly fine with that as well.
+
+We respect all contributions, We'll add the link in cover letter to the
+follow-up revisions, let me know if anything else should be done to the
+new revisions.
+
+--------------------------------------------------------------------
+
+And let me describe in details to compare the functionalities and
+addressed comments between what is provided by Joey and by Zong:
+
+<a href="https://lore.kernel.org/all/20250115030306.29735-1-zong.li@sifive.com/">https://lore.kernel.org/all/20250115030306.29735-1-zong.li@sifive.com/</a>
+
+There is no missing functionalities between the two approaches, I also
+checked the original Robin's comments, let me describe them in details:
+
+1. The following comments require a split CYCLES implementation:
+
+comment 1:
+ &gt;&gt; Why not use an extra config bit to encode cycles events completely
+ &gt;&gt; independently of the regular eventID space? Or even just use 0 since
+ &gt;&gt; by definition that cannot overlap a valid eventID?
+
+comment 2:
+ &gt;&gt; It's also horribly confusing to use GENMASK for something which is
+ &gt;&gt; not actually a mask at all.
+
+comment 3:
+ &gt;&gt; Hmm, from experience I would expect these variables to be
+ &gt;&gt; number-of-counters related, but I guess there must be some special
+ &gt;&gt; cleverness going on since that number-of-counters looking
+ &gt;&gt; RISCV_IOMMU_HPM_COUNTER_NUM definition is conspicuously not used,
+ &gt;&gt; so it must be significant that these are instead related to the
+ &gt;&gt; number of...
+ &gt;&gt;
+ &gt;&gt; [ goes off to search code... ]
+ &gt;&gt;
+ &gt;&gt; ...event selectors? But with a magic +1 for reasons so obvious they
+ &gt;&gt; clearly don't need explaining.
+
+comment 4:
+ &gt;&gt; One of those conditions is literally impossible, the other should
+ &gt;&gt; already be avoided by construction.
+
+comment 5:
+ &gt;&gt; I don't think you need this - as best I can tell, you never
+ &gt;&gt; initialise a counter without also (re)enabling the interrupt (which
+ &gt;&gt; is logical), so since "value" for the cycle counter should always
+ &gt;&gt; implicitly have OF=0 anyway, it should work to just write it like the
+ &gt;&gt; other counters.
+
+comment 6:
+ &gt;&gt; Is RISCV_IOMMU_IOHPMCTR_COUNTER honestly useful? Or is it actively
+ &gt;&gt; hurting readability by obfuscating that we are in fact just using the
+ &gt;&gt; full 64-bit value in all those places?
+
+comment 7:
+ &gt;&gt; And that's a very creative way to spell "if (idx == 0)".
+
+comment 8:
+ &gt;&gt; (and as above, I think you can make this a no-op for the cycle
+ &gt;&gt; counter)
+
+These comments require a software architecture change to handle CYCLES
+in a neat way. CYCLES is split and handled in the clean way in
+iommu-hpm.
+
+2. The following comments require an uncore non-sampling mechanism:
+
+comment 1:
+ &gt;&gt; You also need a "cpumask" attribute to tell userspace this is a
+ &gt;&gt; system/uncore PMU.
+
+comment 2:
+ &gt;&gt; None of this is relevant or necessary. This is not a CPU PMU, so it
+ &gt;&gt; can't support sampling because it doesn't have a meaningful context
+ &gt;&gt; to sample.
+
+comment 3:
+ &gt;&gt; You first need to validate that the event is for this PMU at all,
+ &gt;&gt; and return -ENOENT if not.
+
+comment 4:
+ &gt;&gt; As above, you can't support sampling events anyway, so you should
+ &gt;&gt; reject them with -EINVAL.
+ &gt;&gt;
+ &gt;&gt; You also need to validate event groups to ensure they don't contain
+ &gt;&gt; more events than could ever be scheduled at once.
+
+comment 5:
+ &gt;&gt; This will never do anything, since even if we could ever get here,
+ &gt;&gt; it would not be at a time when there are any active events.
+ &gt;&gt; Unregistering an in-use PMU does not end well (hence why standalone
+ &gt;&gt; PMU drivers need to use suppress_bind_attrs)...
+
+Here, Joey does check PMU type, does not include sampling event stuffs,
+and cpuhp is handled in a fine grained locking way. And since locking is
+handled correctly, it's safe to keep iommu-hpm as tristate.
+The new approach requires more system software architecture techniques.
+
+3. The following comments require a IRQ handling improvement:
+
+comment 1:
+ &gt;&gt; TBH I'd be inclined to just leave out all the dead cleanup code if
+ &gt;&gt; the  PMU driver is tied to the IOMMU driver and can never
+ &gt;&gt; realistically be removed.
+
+comment 2:
+ &gt;&gt; Surely this should only touch the counter(s) that overflowed and
+ &gt;&gt; have been handled? It might be cleaner to keep that within the IRQ
+ &gt;&gt; handler itself.
+
+comment 3:
+ &gt;&gt; This needs to start all active counters together, not one-by-one.
+
+comment 4:
+ &gt;&gt; This does nothing, since set_event has just implicitly written
+ &gt;&gt; OF=0.
+ &gt;&gt;
+ &gt;&gt; ...unless, that is, the user was mischievous and also set bit 63
+ &gt;&gt; in event-&gt;attr.config, since you never sanitised the input ;)
+
+comment 5:
+ &gt;&gt; What do these regs represent? If you look at the perf_event_open
+ &gt;&gt; ABI, you'll see that events can target various combinations of CPU
+ &gt;&gt; and/or pid, but there is no encoding for "whichever CPU takes the
+ &gt;&gt; IOMMU PMU interrupt". Thus whatever you get here is more than likely
+ &gt;&gt; not what the user asked for, and this is why non-CPU PMUs cannot
+ &gt;&gt; reasonably support sampling ;)
+
+comment 6:
+ &gt;&gt; You still need to handle counter rollover for all events, otherwise
+ &gt;&gt; they can start losing counts and rapidly turn to nonsense. Admittedly
+ &gt;&gt; it's largely theoretical with full 64-bit counters, but still...
+
+comment 7:
+ &gt;&gt; Hmm, shared interrupts are tricky for PMUs, since perf requires any
+ &gt;&gt; IRQ handler touching a PMU is running on pmu-&gt;cpu, so you have to be
+ &gt;&gt; very careful about maintaining affinity and not letting anyone else
+ &gt;&gt; change it behind your back.
+ &gt;&gt;
+ &gt;&gt; The other thing is that if it really is shared, at this point you
+ &gt;&gt; could now be in riscv_iommu_pmu_handle_irq() dereferencing NULL.
+
+comment 8:
+ &gt;&gt; In general it's not a great idea to register an IRQ handler before
+ &gt;&gt; the data passed to that handler is initialised. What is pointed to by
+ &gt;&gt; (&amp;iommu-&gt;pmu)-&gt;reg + RISCV_IOMMU_REG_IOCOUNTOVF if the IRQ fires
+ &gt;&gt; right now (and/or if CONFIG_DEBUG_SHIRQ ever gets fixed)? ;)
+ &gt;&gt;
+ &gt;&gt; (OK, it's not *literally* NULL, but hey...)
+
+Here OVF interrupt is handled as a standalone threaded per-cpu shared
+IRQ in iommu-hpm.c and iocountinh register is not used as OVF interrupt
+is always enabled and overflows is stored to software counters. The new
+approach passed testings.
+
+4. Other programming style fixes, they are all not in this patch.
+
+comment 1:
+ &gt;&gt; sysfs_emit()
+
+No such problem here.
+
+comment 2:
+ &gt;&gt; Might be worth leaving a comment just in case anyone does try to
+ &gt;&gt; enable this for 32-bit that the io-64-nonatomic readq() isn't enough
+ &gt;&gt; to work properly here.
+
+Not addressed in v3 and v4. And probably not necessary.
+
+comment 3:
+ &gt;&gt; That's a wonderfully expensive way to spell
+ &gt;&gt; "pmu-&gt;events[idx]-&gt;hw.config"...
+
+No such problem here, get_event() is used.
+
+comment 4:
+ &gt;&gt; Initially this looks weird - why bother storing constants in memory
+ &gt;&gt; if they're constant? - but I see the spec implies they are not
+ &gt;&gt; necessarily fixed, and we can only actually assume at least one
+ &gt;&gt; counter at least 32 bits wide, so I guess this is really more of
+ &gt;&gt; a placeholder? Is there a well-defined way we're supposed to be able
+ &gt;&gt; to discover these, like some more ID register fields somewhere, or
+ &gt;&gt; writing all 1s to various registers to see what sticks, or is it
+ &gt;&gt; liable to be a mess of just having to know what each implementation
+ &gt;&gt; has by matching DT compatibles and/or PCI IDs?
+
+Here WARL registers are handled in RISC-V programming style.
+
+comment 5:
+ &gt;&gt; The new thing is that you can now set pmu.parent to the IOMMU device
+ &gt;&gt; so their relationship is clear in sysfs, rather than having to play
+ &gt;&gt; tricks with the PMU name.
+
+Not addressed here but addressed in v4.
+
+IMO, the Joey's approach addressed issue 1, 2 and 3, which does require
+more software architecture changes. Her contribution and authorship
+might also be honored.
+
+--------------------------------------------------------------------
+
+Am I missing something in the above list? Robin might help to confirm if
+the new approach has addressed all his comments.
+
+Thanks and best regards,
+Lv
+
+<span class="q">&gt; Thanks,
+&gt; drew
+&gt; 
+</span>
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre><a href="../xukccsqgwmagqq5egx7i4op6nfot3t3lusnaso4pfzcq5h6bfz@adsm5nusnocx/" rel="next">next</a> <a href="../zzbwkazzgeovgmbvg4qnibipzsldqcjnw4axnxlamhgvcld4hs@4m4cc2ctuuvf/" rel="prev">prev parent</a> <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20260206034327">~2026-02-06  3:43 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>61+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+     [not found] &lt;<a href="../cover.1769562575.git.lv.zheng@spacemit.com/">cover.1769562575.git.lv.zheng@spacemit.com</a>&gt;
+2026-01-29  6:08 ` <a href="../cover.1769666438.git.lv.zheng@spacemit.com/">[PATCH v1.1 0/7] iommu/riscv: Add HPM support for RISC-V IOMMU</a> Lv Zheng
+2026-01-29  6:08   ` <a href="../e90a063f03c08eed61cd1dbeb90e650799d1880c.1769666438.git.lv.zheng@spacemit.com/">[PATCH v1.1 1/7] iommu/riscv: Enable IOMMU DMA mapping support</a> Lv Zheng
+2026-01-29  6:08   ` <a href="../a618207b8347945218c33a7f0300a28949c28693.1769666438.git.lv.zheng@spacemit.com/">[PATCH v1.1 2/7] iommu/riscv: Fix WSI mode IRQ number handling</a> Lv Zheng
+2026-01-29  6:08   ` <a href="../2016355f67708d6117d7fc830113b13fd1165430.1769666438.git.lv.zheng@spacemit.com/">[PATCH v1.1 3/7] iommu/riscv: Add HPM support for performance monitoring</a> Lv Zheng
+2026-01-29  6:09   ` <a href="../15209d7b8c5a5055f8944ab7261e440d70a18a03.1769666438.git.lv.zheng@spacemit.com/">[PATCH v1.1 4/7] dt-bindings: iommu: Add spacemit/t100 features</a> Lv Zheng
+2026-01-29 10:08     ` <a href="../20260129-evolution-femur-84eb5668f4a7@spud/">Conor Dooley</a>
+2026-01-29 10:43       ` <a href="../a4684b7f094a6a5ee87d9db722b75594f851b9fb.d4fb292a.1570.47af.8025.bf9af089dc8a@feishu.cn/">郑律</a>
+2026-01-29 16:41         ` <a href="../20260129-grandly-compare-e8e3a105f690@spud/">Conor Dooley</a>
+2026-01-29 17:06           ` <a href="../2f1f48c6-ad75-4e7d-89a2-c93bb1c1d067@arm.com/">Robin Murphy</a>
+2026-01-30  1:30             ` <a href="../a4684b7f094a6a5ee87d9db722b75594f851b9fb.75577c8a.52dc.41c3.80a1.ca94d4edcb4c@feishu.cn/">郑律</a>
+2026-01-30  1:39           ` <a href="../a4684b7f094a6a5ee87d9db722b75594f851b9fb.f8d0aa16.da0e.4b42.9f4d.e17634051da8@feishu.cn/">郑律</a>
+2026-01-29  6:09   ` <a href="../c6451de644e47fe37200aa7b945b5b2c29c863e4.1769666438.git.lv.zheng@spacemit.com/">[PATCH v1.1 5/7] spacemit/t100: Add vendor event support for RISC-V IOMMU HPM</a> Lv Zheng
+2026-01-29  6:09   ` <a href="../5e4244a43486394349c23bcde9f3a0364a42cff6.1769666438.git.lv.zheng@spacemit.com/">[PATCH v1.1 6/7] spacemit/t100: Add global filter</a> " Lv Zheng
+2026-01-29  6:09   ` <a href="../f8112a0e017dc5dde2053303dfeecf756177b48b.1769666438.git.lv.zheng@spacemit.com/">[PATCH v1.1 7/7] spacemit/t100: Add SpacemiT T100 IOATC HPM support</a> Lv Zheng
+2026-02-06 10:44   ` <a href="../6c251cb2-4b13-4837-9a06-883726007bd9@kernel.org/">[PATCH v1.1 0/7] iommu/riscv: Add HPM support for RISC-V IOMMU</a> Krzysztof Kozlowski
+2026-02-04  9:08 ` <a href="../F9748E3984D2A6F9+cover.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 0/8]</a> " Lv Zheng
+2026-02-06 10:44   ` <a href="../a9d9f43a-edf3-419b-bdf7-dbd6bf9e978f@kernel.org/">Krzysztof Kozlowski</a>
+2026-02-07  3:41     ` <a href="../605D8D5AE96AEF8F+31d65ad3-3956-49ae-8d9f-589747a5086c@linux.spacemit.com/">Lv Zheng</a>
+2026-02-13 22:21       ` <a href="../20260213222135-GYB164498@gentoo.org/">Yixun Lan</a>
+     [not found] ` &lt;<a href="../cover.1770195980.git.lv.zheng@linux.spacemit.com/">cover.1770195980.git.lv.zheng@linux.spacemit.com</a>&gt;
+2026-02-04  9:08   ` <a href="../4AA614655D11897F+a7061670f43ddedffb83b88fab0dbeb9123f2940.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 1/8] iommu/riscv: Enable IOMMU DMA mapping support</a> Lv Zheng
+2026-02-04  9:08   ` <a href="../F77F878EF7C59BD3+a9078997d97dacd05d1271a5390dfd08a402b325.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 2/8] iommu/riscv: Fix WSI mode IRQ number handling</a> Lv Zheng
+2026-02-04 17:20     ` <a href="../2ueryrki7uzpjn6rbqz7scy46sjhw76jjilddz2naslz3eyfdp@ycwf42eaw5yy/">Andrew Jones</a>
+2026-02-05  3:52       ` <a href="../927D288E956D61AD+d1488c72-afff-49d2-bb6b-5ef5ea08b627@linux.spacemit.com/">Lv Zheng</a>
+2026-02-05 15:04         ` <a href="../qlnntgtoaatvdpyvusjhe2y3hickopigwf3sobtnsfwpfhwjiu@zi4auf65eepa/">Andrew Jones</a>
+2026-02-06  1:36           ` <a href="../6139284F36497822+1b579565-0f44-46b8-aa46-00258b40e0e4@linux.spacemit.com/">Lv Zheng</a>
+2026-02-04  9:09   ` <a href="../9C0A2AD4850D179B+524146e74e808db90d5f28fcb6ee791cf1d1bfaa.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 3/8] iommu/riscv: Add HPM support for performance monitoring</a> Lv Zheng
+2026-02-04 18:39     ` <a href="../p74snip7yykhogvzqld4gyjlygmd2z4kqnat7w3qj63fwebnmm@dlz6tloevgbs/">Andrew Jones</a>
+2026-02-05  2:11       ` <a href="../CANXhq0oi9nE7ffLGsz5j8GnC1UDTD-4bE4cantRjW2fXHYrjHA@mail.gmail.com/">Zong Li</a>
+2026-02-05  3:35       ` <a href="../4D87481E9AABE2C6+72d18f72-9407-4d68-8195-edc6c171df14@linux.spacemit.com/">Lv Zheng</a>
+2026-02-05  3:47         ` <a href="../CANXhq0q8N5eHx9ytabZR97Y7AULKwgS2-uEGhcaOOGp9mvbtRQ@mail.gmail.com/">Zong Li</a>
+2026-02-05  6:11           ` <a href="../6C65A3873186B07C+29da5dbd-ed27-4ace-a5ca-355b3983d60c@linux.spacemit.com/">Lv Zheng</a>
+2026-02-05 15:23             ` <a href="../zzbwkazzgeovgmbvg4qnibipzsldqcjnw4axnxlamhgvcld4hs@4m4cc2ctuuvf/">Andrew Jones</a>
+<b>2026-02-06  3:42               ` <a id="r" href="#t">Lv Zheng [this message]</a></b>
+2026-02-06 15:09                 ` <a href="../xukccsqgwmagqq5egx7i4op6nfot3t3lusnaso4pfzcq5h6bfz@adsm5nusnocx/">Andrew Jones</a>
+2026-02-07  2:11                   ` <a href="../CANXhq0rFuvfcYRew3ZDWfNOrrAYo01OqPzJ5rbRZN6eS1t72jA@mail.gmail.com/">Zong Li</a>
+2026-02-04  9:09   ` <a href="../A0E91F323138E92F+a27d73b00f3324f0d3885128f5596230b3f1370b.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 4/8] dt-bindings: iommu: Add spacemit/t100 features</a> Lv Zheng
+2026-02-04 17:37     ` <a href="../20260204-primer-wrought-6f64b14bf152@spud/">Conor Dooley</a>
+2026-02-05  3:11       ` <a href="../53171BEB06F43599+7c1f54bc-e72d-4cbd-9d10-194ae6b13744@linux.spacemit.com/">Lv Zheng</a>
+2026-02-05 18:24         ` <a href="../20260205-attitude-customer-129fe2bd5dc7@spud/">Conor Dooley</a>
+2026-02-06  1:33           ` <a href="../B8005DB6301AACB4+374512e1-f561-4d2f-afd6-7a4b51012501@linux.spacemit.com/">Lv Zheng</a>
+2026-02-06 10:24             ` <a href="../20260206-buffed-scrubbed-36fc49ada496@spud/">Conor Dooley</a>
+2026-02-07  4:24               ` <a href="../7433DA16B96EE987+9b6398e6-edad-4a2e-814d-921483e5f1da@linux.spacemit.com/">Lv Zheng</a>
+2026-02-07 14:55                 ` <a href="../20260207-gap-taekwondo-40c0661eaa08@spud/">Conor Dooley</a>
+2026-02-04  9:09   ` <a href="../66EE5293179955C2+b36c442fcfc891d472e9465a83b6521ef747faac.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 5/8] riscv/iommu: Add vendor event support for RISC-V IOMMU HPM</a> Lv Zheng
+2026-02-04  9:09   ` <a href="../F398E8A96DC9FD91+fbe3e9426509fc888b82d076eb061f9186f25f2a.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 6/8] spacemit/t100: Add global filter awareness</a> " Lv Zheng
+2026-02-04  9:09   ` <a href="../0F510697F46C0563+ebb78dc4d13da9784d17f79c13580c177d187885.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 7/8] spacemit/t100: Add SpacemiT T100 IOATC HPM support</a> Lv Zheng
+2026-02-04  9:09   ` <a href="../5242DDF0A783AF08+e141f1898581018f8dd0723cb5c870c23ec679d6.1770195980.git.lv.zheng@linux.spacemit.com/">[PATCH v3 8/8] perf vendor events riscv:: Add support for spacemit,riscv-iommu HPM aliasing</a> Lv Zheng
+2026-02-04 17:38     ` <a href="../20260204-suds-shush-d85872589cb3@spud/">Conor Dooley</a>
+2026-02-05  3:22       ` <a href="../80DCD2AE8E6A9007+7def6e64-dbfc-4867-9e21-edbc441a057c@linux.spacemit.com/">Lv Zheng</a>
+2026-02-05  9:09 ` <a href="../DACC013F46A47459+cover.1770281596.git.lv.zheng@linux.spacemit.com/">[PATCH v4 0/7] iommu/riscv: Add HPM support for RISC-V IOMMU</a> Lv Zheng
+2026-02-06 10:46   ` <a href="../2ca4a5c1-9267-4177-b339-e1ac28812c46@kernel.org/">Krzysztof Kozlowski</a>
+2026-02-07  3:54     ` <a href="../30C7AD351DB55276+a8b03dac-c5af-4034-8631-ac1c352a469f@linux.spacemit.com/">Lv Zheng</a>
+     [not found] ` &lt;<a href="../cover.1770281596.git.lv.zheng@linux.spacemit.com/">cover.1770281596.git.lv.zheng@linux.spacemit.com</a>&gt;
+2026-02-05  9:10   ` <a href="../F59F70CFAEDA41DE+ae78dbc5590f872a36eb4359bd451b99fc8553ff.1770281596.git.lv.zheng@linux.spacemit.com/">[PATCH v4 1/7] iommu/riscv: Enable IOMMU DMA mapping support</a> Lv Zheng
+2026-02-05  9:10   ` <a href="../99ADEE3B3A72941E+544701d4b8e94725cf4080cd7a99e4d42420ebce.1770281596.git.lv.zheng@linux.spacemit.com/">[PATCH v4 2/7] iommu/riscv: Add HPM support for performance monitoring</a> Lv Zheng
+2026-02-05  9:10   ` <a href="../B1AEE717CF03B1BB+22fe4be0d3c8d2c6b4c5d3c19736c937cbed3c0d.1770281596.git.lv.zheng@linux.spacemit.com/">[PATCH v4 3/7] dt-bindings: iommu: Add spacemit/t100 features</a> Lv Zheng
+2026-02-05 18:26     ` <a href="../20260205-presoak-reshape-9465d18bca4a@spud/">Conor Dooley</a>
+2026-02-06  3:44       ` <a href="../049320517C0CBAC7+22eb4b3a-821c-4ae0-8bf8-be7455289929@linux.spacemit.com/">Lv Zheng</a>
+2026-02-05  9:10   ` <a href="../17ADCFC5ACF772A6+7c69dba6df8eb79aa3eb11781518a47143033b1e.1770281596.git.lv.zheng@linux.spacemit.com/">[PATCH v4 4/7] iommu/riscv: Add vendor event support for RISC-V IOMMU HPM</a> Lv Zheng
+2026-02-05  9:11   ` <a href="../9D810C651A88F92D+84147936abc03bb70cc1990dd7157cc02fcebd52.1770281596.git.lv.zheng@linux.spacemit.com/">[PATCH v4 5/7] spacemit/t100: Add global filter awareness</a> " Lv Zheng
+2026-02-05  9:11   ` <a href="../F99A0287EE9E1D75+845d79919af65974934a096fbf005adeccddc79b.1770281596.git.lv.zheng@linux.spacemit.com/">[PATCH v4 6/7] spacemit/t100: Add SpacemiT T100 IOATC HPM support</a> Lv Zheng
+2026-02-05  9:11   ` <a href="../762890DF43A3CF05+a58564f568dbbf8ccac8224e33f5e7513e48309e.1770281596.git.lv.zheng@linux.spacemit.com/">[PATCH v4 7/7] perf vendor events riscv:: Add support for spacemit,riscv-iommu HPM aliasing</a> Lv Zheng
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=752514AD54FA2A1B+513d6894-b3bf-44f3-bcc1-7d30f2642cc2@linux.spacemit.com \n    --to=lv.zheng@linux.spacemit.com \n    --cc=alex@ghiti.fr \n    --cc=andrew.jones@oss.qualcomm.com \n    --cc=aou@eecs.berkeley.edu \n    --cc=conor+dt@kernel.org \n    --cc=devicetree@vger.kernel.org \n    --cc=iommu@lists.linux.dev \n    --cc=joey.li@spacemit.com \n    --cc=joro@8bytes.org \n    --cc=krzk+dt@kernel.org \n    --cc=linux-perf-users@vger.kernel.org \n    --cc=linux-riscv@lists.infradead.org \n    --cc=palmer@dabbelt.com \n    --cc=pjw@kernel.org \n    --cc=robh@kernel.org \n    --cc=robin.murphy@arm.com \n    --cc=spacemit@lists.linux.dev \n    --cc=tjeznach@rivosinc.com \n    --cc=will@kernel.org \n    --cc=zong.li@sifive.com \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:lv.zheng@linux.spacemit.com?In-Reply-To=%3C752514AD54FA2A1B+513d6894-b3bf-44f3-bcc1-7d30f2642cc2@linux.spacemit.com%3E&amp;Cc=alex%40ghiti.fr%2Candrew.jones%40oss.qualcomm.com%2Caou%40eecs.berkeley.edu%2Cconor%2Bdt%40kernel.org%2Cdevicetree%40vger.kernel.org%2Ciommu%40lists.linux.dev%2Cjoey.li%40spacemit.com%2Cjoro%408bytes.org%2Ckrzk%2Bdt%40kernel.org%2Clinux-perf-users%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cpalmer%40dabbelt.com%2Cpjw%40kernel.org%2Crobh%40kernel.org%2Crobin.murphy%40arm.com%2Cspacemit%40lists.linux.dev%2Ctjeznach%40rivosinc.com%2Cwill%40kernel.org%2Czong.li%40sifive.com&amp;Subject=Re%3A%20%5BPATCH%20v3%203%2F8%5D%20iommu%2Friscv%3A%20Add%20HPM%20support%20for%20performance%20monitoring">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
