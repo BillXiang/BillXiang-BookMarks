@@ -1,0 +1,909 @@
+<!-- Filename: 书签工具栏/study/处理器/risc-v/中断/[PATCH v6 09_10] irqchip_riscv-imsic_ Replace hwirq with irq in the IMSIC vector - Anup Patel (2026-03-04 17：11：28).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/all/20250217085657.789309-10-apatel@ventanamicro.com/
+ Summary: 
+-->
+<html><head><title>[PATCH v6 09/10] irqchip/riscv-imsic: Replace hwirq with irq in the IMSIC vector - Anup Patel</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?6914e0a5" media="screen,print"><link type="text/css" rel="stylesheet" href="../216dark.css?6914e0a5" media="screen and (prefers-color-scheme:dark)"><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-toast {
+  display: flex;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  right: 0;
+  top: 1%;
+  width: fit-content;
+  padding: 12px 20px;
+  margin: auto;
+  overflow: auto;
+  background: #fef6f9;
+  box-shadow: 0px 4px 10px 0px rgba(0, 10, 30, 0.06);
+  font-size: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.immersive-translate-toast-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.immersive-translate-toast-hidden {
+  margin: 0 20px 0 72px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.immersive-translate-toast-close {
+  color: #666666;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-toast {
+    top: 0;
+    padding: 12px 0px 0 10px;
+  }
+  .immersive-translate-toast-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .immersive-translate-toast-hidden {
+    margin: 10px auto;
+  }
+}
+
+.immersive-translate-dialog {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+.immersive-translate-modal {
+  display: none;
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+  word-break: break-all;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20250217085902"><b>All of lore.kernel.org</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Anup Patel &lt;apatel@ventanamicro.com&gt;
+To: Thomas Gleixner &lt;tglx@linutronix.de&gt;,
+	Ingo Molnar &lt;mingo@redhat.com&gt;, Borislav Petkov &lt;bp@alien8.de&gt;,
+	Dave Hansen &lt;dave.hansen@linux.intel.com&gt;,
+	x86@kernel.org
+Cc: hpa@zytor.com, Marc Zyngier &lt;maz@kernel.org&gt;,
+	Shawn Guo &lt;shawnguo@kernel.org&gt;,
+	Sascha Hauer &lt;s.hauer@pengutronix.de&gt;,
+	Pengutronix Kernel Team &lt;kernel@pengutronix.de&gt;,
+	Andrew Lunn &lt;andrew@lunn.ch&gt;,
+	Gregory Clement &lt;gregory.clement@bootlin.com&gt;,
+	Sebastian Hesselbarth &lt;sebastian.hesselbarth@gmail.com&gt;,
+	Palmer Dabbelt &lt;palmer@dabbelt.com&gt;,
+	Paul Walmsley &lt;paul.walmsley@sifive.com&gt;,
+	Atish Patra &lt;atishp@atishpatra.org&gt;,
+	Andrew Jones &lt;ajones@ventanamicro.com&gt;,
+	Sunil V L &lt;sunilvl@ventanamicro.com&gt;,
+	Anup Patel &lt;anup@brainfault.org&gt;,
+	<a href="../../linux-riscv/?t=20250217085902">linux-riscv@lists.infradead.org</a>,
+	<a href="../../linux-arm-kernel/?t=20250217085902">linux-arm-kernel@lists.infradead.org</a>,
+	<a href="../../lkml/?t=20250217085902">linux-kernel@vger.kernel.org</a>, <a href="../../imx/?t=20250217085902">imx@lists.linux.dev</a>,
+	Anup Patel &lt;apatel@ventanamicro.com&gt;
+Subject: <a href="#r" id="t">[PATCH v6 09/10] irqchip/riscv-imsic: Replace hwirq with irq in the IMSIC vector</a>
+Date: Mon, 17 Feb 2025 14:26:55 +0530	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20250217085657.789309-10-apatel@ventanamicro.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20250217085657.789309-1-apatel@ventanamicro.com/">20250217085657.789309-1-apatel@ventanamicro.com</a>&gt;
+
+Currently, the imsic_handle_irq() uses generic_handle_domain_irq() to
+handle the irq which internally has an extra step of resolving hwirq
+using domain. This extra step can be avoided by replacing hwirq with
+irq in the IMSIC vector and directly calling generic_handle_irq().
+
+Signed-off-by: Anup Patel &lt;apatel@ventanamicro.com&gt;
+---
+ <a id="iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-early.c" href="#Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-early.c">drivers/irqchip/irq-riscv-imsic-early.c</a>    | 6 ++----
+ <a id="iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-platform.c" href="#Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-platform.c">drivers/irqchip/irq-riscv-imsic-platform.c</a> | 2 +-
+ <a id="iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.c" href="#Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.c">drivers/irqchip/irq-riscv-imsic-state.c</a>    | 8 ++++----
+ <a id="iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.h" href="#Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.h">drivers/irqchip/irq-riscv-imsic-state.h</a>    | 4 ++--
+ 4 files <a href="#related">changed</a>, 9 insertions(+), 11 deletions(-)
+
+<span class="head"><a href="#iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-early.c" id="Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-early.c">diff</a> --git a/drivers/irqchip/irq-riscv-imsic-early.c b/drivers/irqchip/irq-riscv-imsic-early.c
+index 553650932c75..d9ae87808651 100644
+--- a/drivers/irqchip/irq-riscv-imsic-early.c
++++ b/drivers/irqchip/irq-riscv-imsic-early.c
+</span><span class="hunk">@@ -73,7 +73,7 @@ static int __init imsic_ipi_domain_init(void) { return 0; }
+</span> static void imsic_handle_irq(struct irq_desc *desc)
+ {
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+<span class="del">-	int err, cpu = smp_processor_id();
+</span><span class="add">+	int cpu = smp_processor_id();
+</span> 	struct imsic_vector *vec;
+ 	unsigned long local_id;
+ 
+<span class="hunk">@@ -103,9 +103,7 @@ static void imsic_handle_irq(struct irq_desc *desc)
+</span> 			continue;
+ 		}
+ 
+<span class="del">-		err = generic_handle_domain_irq(imsic-&gt;base_domain, vec-&gt;hwirq);
+-		if (unlikely(err))
+-			pr_warn_ratelimited("hwirq 0x%x mapping not found
+", vec-&gt;hwirq);
+</span><span class="add">+		generic_handle_irq(vec-&gt;irq);
+</span> 	}
+ 
+ 	chained_irq_exit(chip, desc);
+<span class="head"><a href="#iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-platform.c" id="Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-platform.c">diff</a> --git a/drivers/irqchip/irq-riscv-imsic-platform.c b/drivers/irqchip/irq-riscv-imsic-platform.c
+index b9e3f9030bdf..6bf5d63f614e 100644
+--- a/drivers/irqchip/irq-riscv-imsic-platform.c
++++ b/drivers/irqchip/irq-riscv-imsic-platform.c
+</span><span class="hunk">@@ -111,7 +111,7 @@ static int imsic_irq_set_affinity(struct irq_data *d, const struct cpumask *mask
+</span> 		return -EBUSY;
+ 
+ 	/* Get a new vector on the desired set of CPUs */
+<span class="del">-	new_vec = imsic_vector_alloc(old_vec-&gt;hwirq, mask_val);
+</span><span class="add">+	new_vec = imsic_vector_alloc(old_vec-&gt;irq, mask_val);
+</span> 	if (!new_vec)
+ 		return -ENOSPC;
+ 
+<span class="head"><a href="#iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.c" id="Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.c">diff</a> --git a/drivers/irqchip/irq-riscv-imsic-state.c b/drivers/irqchip/irq-riscv-imsic-state.c
+index 5ec2b6bdffb2..d0148e48ab05 100644
+--- a/drivers/irqchip/irq-riscv-imsic-state.c
++++ b/drivers/irqchip/irq-riscv-imsic-state.c
+</span><span class="hunk">@@ -422,7 +422,7 @@ struct imsic_vector *imsic_vector_from_local_id(unsigned int cpu, unsigned int l
+</span> 	return &amp;lpriv-&gt;vectors[local_id];
+ }
+ 
+<span class="del">-struct imsic_vector *imsic_vector_alloc(unsigned int hwirq, const struct cpumask *mask)
+</span><span class="add">+struct imsic_vector *imsic_vector_alloc(unsigned int irq, const struct cpumask *mask)
+</span> {
+ 	struct imsic_vector *vec = NULL;
+ 	struct imsic_local_priv *lpriv;
+<span class="hunk">@@ -438,7 +438,7 @@ struct imsic_vector *imsic_vector_alloc(unsigned int hwirq, const struct cpumask
+</span> 
+ 	lpriv = per_cpu_ptr(imsic-&gt;lpriv, cpu);
+ 	vec = &amp;lpriv-&gt;vectors[local_id];
+<span class="del">-	vec-&gt;hwirq = hwirq;
+</span><span class="add">+	vec-&gt;irq = irq;
+</span> 	vec-&gt;enable = false;
+ 	vec-&gt;move_next = NULL;
+ 	vec-&gt;move_prev = NULL;
+<span class="hunk">@@ -451,7 +451,7 @@ void imsic_vector_free(struct imsic_vector *vec)
+</span> 	unsigned long flags;
+ 
+ 	raw_spin_lock_irqsave(&amp;imsic-&gt;matrix_lock, flags);
+<span class="del">-	vec-&gt;hwirq = UINT_MAX;
+</span><span class="add">+	vec-&gt;irq = 0;
+</span> 	irq_matrix_free(imsic-&gt;matrix, vec-&gt;cpu, vec-&gt;local_id, false);
+ 	raw_spin_unlock_irqrestore(&amp;imsic-&gt;matrix_lock, flags);
+ }
+<span class="hunk">@@ -510,7 +510,7 @@ static int __init imsic_local_init(void)
+</span> 			vec = &amp;lpriv-&gt;vectors[i];
+ 			vec-&gt;cpu = cpu;
+ 			vec-&gt;local_id = i;
+<span class="del">-			vec-&gt;hwirq = UINT_MAX;
+</span><span class="add">+			vec-&gt;irq = 0;
+</span> 		}
+ 	}
+ 
+<span class="head"><a href="#iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.h" id="Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.h">diff</a> --git a/drivers/irqchip/irq-riscv-imsic-state.h b/drivers/irqchip/irq-riscv-imsic-state.h
+index 19dea0c77738..3202ffa4e849 100644
+--- a/drivers/irqchip/irq-riscv-imsic-state.h
++++ b/drivers/irqchip/irq-riscv-imsic-state.h
+</span><span class="hunk">@@ -20,7 +20,7 @@ struct imsic_vector {
+</span> 	unsigned int				cpu;
+ 	unsigned int				local_id;
+ 	/* Details saved by driver in the vector */
+<span class="del">-	unsigned int				hwirq;
+</span><span class="add">+	unsigned int				irq;
+</span> 	/* Details accessed using local lock held */
+ 	bool					enable;
+ 	struct imsic_vector			*move_next;
+<span class="hunk">@@ -96,7 +96,7 @@ void imsic_vector_move(struct imsic_vector *old_vec, struct imsic_vector *new_ve
+</span> 
+ struct imsic_vector *imsic_vector_from_local_id(unsigned int cpu, unsigned int local_id);
+ 
+<span class="del">-struct imsic_vector *imsic_vector_alloc(unsigned int hwirq, const struct cpumask *mask);
+</span><span class="add">+struct imsic_vector *imsic_vector_alloc(unsigned int irq, const struct cpumask *mask);
+</span> void imsic_vector_free(struct imsic_vector *vector);
+ 
+ void imsic_vector_debug_show(struct seq_file *m, struct imsic_vector *vec, int ind);
+-- 
+2.43.0
+
+</pre><hr><pre>WARNING: multiple messages have this Message-ID (<a href="d/">diff</a>)</pre><pre>From: Anup Patel &lt;apatel@ventanamicro.com&gt;
+To: Thomas Gleixner &lt;tglx@linutronix.de&gt;,
+	Ingo Molnar &lt;mingo@redhat.com&gt;, Borislav Petkov &lt;bp@alien8.de&gt;,
+	Dave Hansen &lt;dave.hansen@linux.intel.com&gt;,
+	x86@kernel.org
+Cc: Anup Patel &lt;apatel@ventanamicro.com&gt;,
+	Andrew Lunn &lt;andrew@lunn.ch&gt;, Atish Patra &lt;atishp@atishpatra.org&gt;,
+	<a href="../../imx/?t=20250217091255">imx@lists.linux.dev</a>, Marc Zyngier &lt;maz@kernel.org&gt;,
+	Sascha Hauer &lt;s.hauer@pengutronix.de&gt;,
+	Paul Walmsley &lt;paul.walmsley@sifive.com&gt;,
+	<a href="../../lkml/?t=20250217091255">linux-kernel@vger.kernel.org</a>, <a href="../../linux-riscv/?t=20250217091255">linux-riscv@lists.infradead.org</a>,
+	Palmer Dabbelt &lt;palmer@dabbelt.com&gt;,
+	Pengutronix Kernel Team &lt;kernel@pengutronix.de&gt;,
+	hpa@zytor.com, Anup Patel &lt;anup@brainfault.org&gt;,
+	Andrew Jones &lt;ajones@ventanamicro.com&gt;,
+	Shawn Guo &lt;shawnguo@kernel.org&gt;,
+	Gregory Clement &lt;gregory.clement@bootlin.com&gt;,
+	<a href="../../linux-arm-kernel/?t=20250217091255">linux-arm-kernel@lists.infradead.org</a>,
+	Sebastian Hesselbarth &lt;sebastian.hesselbarth@gmail.com&gt;
+Subject: <a href="#r" id="t">[PATCH v6 09/10] irqchip/riscv-imsic: Replace hwirq with irq in the IMSIC vector</a>
+Date: Mon, 17 Feb 2025 14:26:55 +0530	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20250217085657.789309-10-apatel@ventanamicro.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20250217085657.789309-1-apatel@ventanamicro.com/">20250217085657.789309-1-apatel@ventanamicro.com</a>&gt;
+
+Currently, the imsic_handle_irq() uses generic_handle_domain_irq() to
+handle the irq which internally has an extra step of resolving hwirq
+using domain. This extra step can be avoided by replacing hwirq with
+irq in the IMSIC vector and directly calling generic_handle_irq().
+
+Signed-off-by: Anup Patel &lt;apatel@ventanamicro.com&gt;
+---
+ <a id="iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-early.c" href="#Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-early.c">drivers/irqchip/irq-riscv-imsic-early.c</a>    | 6 ++----
+ <a id="iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-platform.c" href="#Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-platform.c">drivers/irqchip/irq-riscv-imsic-platform.c</a> | 2 +-
+ <a id="iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.c" href="#Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.c">drivers/irqchip/irq-riscv-imsic-state.c</a>    | 8 ++++----
+ <a id="iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.h" href="#Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.h">drivers/irqchip/irq-riscv-imsic-state.h</a>    | 4 ++--
+ 4 files <a href="#related">changed</a>, 9 insertions(+), 11 deletions(-)
+
+<span class="head"><a href="#iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-early.c" id="Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-early.c">diff</a> --git a/drivers/irqchip/irq-riscv-imsic-early.c b/drivers/irqchip/irq-riscv-imsic-early.c
+index 553650932c75..d9ae87808651 100644
+--- a/drivers/irqchip/irq-riscv-imsic-early.c
++++ b/drivers/irqchip/irq-riscv-imsic-early.c
+</span><span class="hunk">@@ -73,7 +73,7 @@ static int __init imsic_ipi_domain_init(void) { return 0; }
+</span> static void imsic_handle_irq(struct irq_desc *desc)
+ {
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+<span class="del">-	int err, cpu = smp_processor_id();
+</span><span class="add">+	int cpu = smp_processor_id();
+</span> 	struct imsic_vector *vec;
+ 	unsigned long local_id;
+ 
+<span class="hunk">@@ -103,9 +103,7 @@ static void imsic_handle_irq(struct irq_desc *desc)
+</span> 			continue;
+ 		}
+ 
+<span class="del">-		err = generic_handle_domain_irq(imsic-&gt;base_domain, vec-&gt;hwirq);
+-		if (unlikely(err))
+-			pr_warn_ratelimited("hwirq 0x%x mapping not found
+", vec-&gt;hwirq);
+</span><span class="add">+		generic_handle_irq(vec-&gt;irq);
+</span> 	}
+ 
+ 	chained_irq_exit(chip, desc);
+<span class="head"><a href="#iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-platform.c" id="Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-platform.c">diff</a> --git a/drivers/irqchip/irq-riscv-imsic-platform.c b/drivers/irqchip/irq-riscv-imsic-platform.c
+index b9e3f9030bdf..6bf5d63f614e 100644
+--- a/drivers/irqchip/irq-riscv-imsic-platform.c
++++ b/drivers/irqchip/irq-riscv-imsic-platform.c
+</span><span class="hunk">@@ -111,7 +111,7 @@ static int imsic_irq_set_affinity(struct irq_data *d, const struct cpumask *mask
+</span> 		return -EBUSY;
+ 
+ 	/* Get a new vector on the desired set of CPUs */
+<span class="del">-	new_vec = imsic_vector_alloc(old_vec-&gt;hwirq, mask_val);
+</span><span class="add">+	new_vec = imsic_vector_alloc(old_vec-&gt;irq, mask_val);
+</span> 	if (!new_vec)
+ 		return -ENOSPC;
+ 
+<span class="head"><a href="#iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.c" id="Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.c">diff</a> --git a/drivers/irqchip/irq-riscv-imsic-state.c b/drivers/irqchip/irq-riscv-imsic-state.c
+index 5ec2b6bdffb2..d0148e48ab05 100644
+--- a/drivers/irqchip/irq-riscv-imsic-state.c
++++ b/drivers/irqchip/irq-riscv-imsic-state.c
+</span><span class="hunk">@@ -422,7 +422,7 @@ struct imsic_vector *imsic_vector_from_local_id(unsigned int cpu, unsigned int l
+</span> 	return &amp;lpriv-&gt;vectors[local_id];
+ }
+ 
+<span class="del">-struct imsic_vector *imsic_vector_alloc(unsigned int hwirq, const struct cpumask *mask)
+</span><span class="add">+struct imsic_vector *imsic_vector_alloc(unsigned int irq, const struct cpumask *mask)
+</span> {
+ 	struct imsic_vector *vec = NULL;
+ 	struct imsic_local_priv *lpriv;
+<span class="hunk">@@ -438,7 +438,7 @@ struct imsic_vector *imsic_vector_alloc(unsigned int hwirq, const struct cpumask
+</span> 
+ 	lpriv = per_cpu_ptr(imsic-&gt;lpriv, cpu);
+ 	vec = &amp;lpriv-&gt;vectors[local_id];
+<span class="del">-	vec-&gt;hwirq = hwirq;
+</span><span class="add">+	vec-&gt;irq = irq;
+</span> 	vec-&gt;enable = false;
+ 	vec-&gt;move_next = NULL;
+ 	vec-&gt;move_prev = NULL;
+<span class="hunk">@@ -451,7 +451,7 @@ void imsic_vector_free(struct imsic_vector *vec)
+</span> 	unsigned long flags;
+ 
+ 	raw_spin_lock_irqsave(&amp;imsic-&gt;matrix_lock, flags);
+<span class="del">-	vec-&gt;hwirq = UINT_MAX;
+</span><span class="add">+	vec-&gt;irq = 0;
+</span> 	irq_matrix_free(imsic-&gt;matrix, vec-&gt;cpu, vec-&gt;local_id, false);
+ 	raw_spin_unlock_irqrestore(&amp;imsic-&gt;matrix_lock, flags);
+ }
+<span class="hunk">@@ -510,7 +510,7 @@ static int __init imsic_local_init(void)
+</span> 			vec = &amp;lpriv-&gt;vectors[i];
+ 			vec-&gt;cpu = cpu;
+ 			vec-&gt;local_id = i;
+<span class="del">-			vec-&gt;hwirq = UINT_MAX;
+</span><span class="add">+			vec-&gt;irq = 0;
+</span> 		}
+ 	}
+ 
+<span class="head"><a href="#iZ2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.h" id="Z2e.:20250217085657.789309-10-apatel::40ventanamicro.com:1drivers:irqchip:irq-riscv-imsic-state.h">diff</a> --git a/drivers/irqchip/irq-riscv-imsic-state.h b/drivers/irqchip/irq-riscv-imsic-state.h
+index 19dea0c77738..3202ffa4e849 100644
+--- a/drivers/irqchip/irq-riscv-imsic-state.h
++++ b/drivers/irqchip/irq-riscv-imsic-state.h
+</span><span class="hunk">@@ -20,7 +20,7 @@ struct imsic_vector {
+</span> 	unsigned int				cpu;
+ 	unsigned int				local_id;
+ 	/* Details saved by driver in the vector */
+<span class="del">-	unsigned int				hwirq;
+</span><span class="add">+	unsigned int				irq;
+</span> 	/* Details accessed using local lock held */
+ 	bool					enable;
+ 	struct imsic_vector			*move_next;
+<span class="hunk">@@ -96,7 +96,7 @@ void imsic_vector_move(struct imsic_vector *old_vec, struct imsic_vector *new_ve
+</span> 
+ struct imsic_vector *imsic_vector_from_local_id(unsigned int cpu, unsigned int local_id);
+ 
+<span class="del">-struct imsic_vector *imsic_vector_alloc(unsigned int hwirq, const struct cpumask *mask);
+</span><span class="add">+struct imsic_vector *imsic_vector_alloc(unsigned int irq, const struct cpumask *mask);
+</span> void imsic_vector_free(struct imsic_vector *vector);
+ 
+ void imsic_vector_debug_show(struct seq_file *m, struct imsic_vector *vec, int ind);
+-- 
+2.43.0
+
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre><a href="../20250217085657.789309-10-apatel@ventanamicro.com/" rel="next">next</a> <a href="../174006159771.10177.9977379903349807136.tip-bot2@tip-bot2/" rel="prev">prev</a> <a href="../20250217085657.789309-1-apatel@ventanamicro.com/">parent</a> <a href="#R">reply</a>	other threads:[<a href="../?t=20250217085902">~2025-02-17  8:59 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>56+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2025-02-17  8:56 <a href="../20250217085657.789309-1-apatel@ventanamicro.com/">[PATCH v6 00/10] RISC-V IMSIC driver improvements</a> Anup Patel
+2025-02-17  8:56 ` <a href="../20250217085657.789309-1-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-17  8:56 ` <a href="../20250217085657.789309-2-apatel@ventanamicro.com/">[PATCH v6 01/10] irqchip/riscv-imsic: Set irq_set_affinity for IMSIC base</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-2-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986943710.10177.15336602288384686290.tip-bot2@tip-bot2/">[tip: irq/drivers] irqchip/riscv-imsic: Set irq_set_affinity()</a> " tip-bot2 for Andrew Jones
+2025-02-17  8:56 ` <a href="../20250217085657.789309-3-apatel@ventanamicro.com/">[PATCH v6 02/10] irqchip/irq-msi-lib: Optionally set default irq_eoi/irq_ack</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-3-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986943664.10177.1984687217940906597.tip-bot2@tip-bot2/">[tip: irq/drivers] irqchip/irq-msi-lib: Optionally set default irq_eoi()/irq_ack()</a> tip-bot2 for Thomas Gleixner
+2025-02-19 14:41   ` <a href="../Z7Xto0WZ-Crxunik@finisterre.sirena.org.uk/">[PATCH v6 02/10] irqchip/irq-msi-lib: Optionally set default irq_eoi/irq_ack</a> Mark Brown
+2025-02-19 14:41     ` <a href="../Z7Xto0WZ-Crxunik@finisterre.sirena.org.uk/">Mark Brown</a>
+2025-02-20 13:54     ` <a href="../87jz9kiuvu.ffs@tglx/">Thomas Gleixner</a>
+2025-02-20 13:54       ` <a href="../87jz9kiuvu.ffs@tglx/">Thomas Gleixner</a>
+2025-02-20 14:21       ` <a href="../878qq0itnl.ffs@tglx/">Thomas Gleixner</a>
+2025-02-20 14:21         ` <a href="../878qq0itnl.ffs@tglx/">Thomas Gleixner</a>
+2025-02-20 14:26   ` <a href="../174006160108.10177.7948261751204617490.tip-bot2@tip-bot2/">[tip: irq/drivers] irqchip/irq-msi-lib: Optionally set default irq_eoi()/irq_ack()</a> tip-bot2 for Thomas Gleixner
+2025-02-17  8:56 ` <a href="../20250217085657.789309-4-apatel@ventanamicro.com/">[PATCH v6 03/10] irqchip/riscv-imsic: Move to common MSI lib</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-4-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986943618.10177.2061746986578949171.tip-bot2@tip-bot2/">[tip: irq/drivers] irqchip/riscv-imsic: Move to common MSI library</a> tip-bot2 for Thomas Gleixner
+2025-02-20 14:26   ` <a href="../174006160061.10177.6884394612873814383.tip-bot2@tip-bot2/">tip-bot2 for Thomas Gleixner</a>
+2025-02-17  8:56 ` <a href="../20250217085657.789309-5-apatel@ventanamicro.com/">[PATCH v6 04/10] genirq: Introduce common irq_force_complete_move() implementation</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-5-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986943573.10177.17982068636514414567.tip-bot2@tip-bot2/">[tip: irq/drivers]</a> " tip-bot2 for Thomas Gleixner
+2025-02-20 14:26   ` <a href="../174006160011.10177.4380660981340509896.tip-bot2@tip-bot2/">tip-bot2 for Thomas Gleixner</a>
+2025-04-03 13:13   ` <a href="../667d272f-2b51-49d6-84ea-1156027e00a7@web.de/">[PATCH v6 04/10]</a> " Frank Scheiner
+2025-04-03 13:13     ` <a href="../667d272f-2b51-49d6-84ea-1156027e00a7@web.de/">Frank Scheiner</a>
+2025-04-03 15:03     ` <a href="../87plhtuw18.ffs@tglx/">Thomas Gleixner</a>
+2025-04-03 15:03       ` <a href="../87plhtuw18.ffs@tglx/">Thomas Gleixner</a>
+2025-04-03 17:46       ` <a href="../703d6f83-f054-48ec-a6da-6d0bbb9e65d4@web.de/">Frank Scheiner</a>
+2025-04-03 17:46         ` <a href="../703d6f83-f054-48ec-a6da-6d0bbb9e65d4@web.de/">Frank Scheiner</a>
+2025-04-04 14:51         ` <a href="../87h634ugig.ffs@tglx/">[PATCH] genirq/migration: Use irqd_get_parent_data() in irq_force_complete_move()</a> Thomas Gleixner
+2025-04-04 14:51           ` <a href="../87h634ugig.ffs@tglx/">Thomas Gleixner</a>
+2025-04-04 15:14           ` <a href="../174377965732.31282.158574464632397701.tip-bot2@tip-bot2/">[tip: irq/urgent]</a> " tip-bot2 for Thomas Gleixner
+2025-02-17  8:56 ` <a href="../20250217085657.789309-6-apatel@ventanamicro.com/">[PATCH v6 05/10] genirq: Introduce irq_can_move_in_process_context()</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-6-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986943528.10177.13292434775859832792.tip-bot2@tip-bot2/">[tip: irq/drivers]</a> " tip-bot2 for Anup Patel
+2025-02-20 14:26   ` <a href="../174006159951.10177.14927239047948181862.tip-bot2@tip-bot2/">tip-bot2 for Anup Patel</a>
+2025-02-17  8:56 ` <a href="../20250217085657.789309-7-apatel@ventanamicro.com/">[PATCH v6 06/10] RISC-V: Select GENERIC_PENDING_IRQ</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-7-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986943482.10177.16197758003555178082.tip-bot2@tip-bot2/">[tip: irq/drivers] RISC-V: Select CONFIG_GENERIC_PENDING_IRQ</a> tip-bot2 for Anup Patel
+2025-02-20 14:26   ` <a href="../174006159898.10177.17952950927506614084.tip-bot2@tip-bot2/">tip-bot2 for Anup Patel</a>
+2025-02-17  8:56 ` <a href="../20250217085657.789309-8-apatel@ventanamicro.com/">[PATCH v6 07/10] irqchip/riscv-imsic: Separate next and previous pointers in IMSIC vector</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-8-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986942609.10177.4836478239443953090.tip-bot2@tip-bot2/">[tip: irq/drivers]</a> " tip-bot2 for Anup Patel
+2025-02-20 14:26   ` <a href="../174006159848.10177.152687308645350933.tip-bot2@tip-bot2/">tip-bot2 for Anup Patel</a>
+2025-02-17  8:56 ` <a href="../20250217085657.789309-9-apatel@ventanamicro.com/">[PATCH v6 08/10] irqchip/riscv-imsic: Implement irq_force_complete_move() for IMSIC</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-9-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986942530.10177.15146218685799232683.tip-bot2@tip-bot2/">[tip: irq/drivers]</a> " tip-bot2 for Anup Patel
+2025-02-20 14:26   ` <a href="../174006159771.10177.9977379903349807136.tip-bot2@tip-bot2/">tip-bot2 for Anup Patel</a>
+<b>2025-02-17  8:56 ` <a id="r" href="#t">Anup Patel [this message]</a></b>
+2025-02-17  8:56   ` <a href="../20250217085657.789309-10-apatel@ventanamicro.com/">[PATCH v6 09/10] irqchip/riscv-imsic: Replace hwirq with irq in the IMSIC vector</a> Anup Patel
+2025-02-18  9:03   ` <a href="../173986942465.10177.13366223673672964567.tip-bot2@tip-bot2/">[tip: irq/drivers] irqchip/riscv-imsic: Avoid interrupt translation in interrupt handler</a> tip-bot2 for Anup Patel
+2025-02-20 14:26   ` <a href="../174006159714.10177.3287098668958747550.tip-bot2@tip-bot2/">tip-bot2 for Anup Patel</a>
+2025-02-17  8:56 ` <a href="../20250217085657.789309-11-apatel@ventanamicro.com/">[PATCH v6 10/10] irqchip/riscv-imsic: Special handling for non-atomic device MSI update</a> Anup Patel
+2025-02-17  8:56   ` <a href="../20250217085657.789309-11-apatel@ventanamicro.com/">Anup Patel</a>
+2025-02-18  9:03   ` <a href="../173986942354.10177.15967997754963748971.tip-bot2@tip-bot2/">[tip: irq/drivers]</a> " tip-bot2 for Anup Patel
+2025-02-20 14:26   ` <a href="../174006159337.10177.16850272820515463762.tip-bot2@tip-bot2/">tip-bot2 for Anup Patel</a>
+</pre><form id="related" action="../"><pre>find likely ancestor, descendant, or conflicting patches for <a href="#t">this message</a>:
+<textarea name="q" cols="72" rows="8">( dfblob:553650932c7 dfblob:d9ae8780865 dfblob:b9e3f9030bd
+dfblob:6bf5d63f614 dfblob:5ec2b6bdffb dfblob:d0148e48ab0
+dfblob:19dea0c7773 dfblob:3202ffa4e84 dfblob:553650932c7
+dfblob:d9ae8780865 dfblob:b9e3f9030bd dfblob:6bf5d63f614
+dfblob:5ec2b6bdffb dfblob:d0148e48ab0 dfblob:19dea0c7773
+dfblob:3202ffa4e84 )
+ OR (
+bs:"[PATCH v6 09/10] irqchip/riscv-imsic: Replace hwirq with irq in the IMSIC vector" )</textarea>
+<input type="submit" value="search">	(<a href="../_/text/help/#search">help</a>)</pre></form>
+<hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \n    --in-reply-to=20250217085657.789309-10-apatel@ventanamicro.com \n    --to=apatel@ventanamicro.com \n    --cc=ajones@ventanamicro.com \n    --cc=andrew@lunn.ch \n    --cc=anup@brainfault.org \n    --cc=atishp@atishpatra.org \n    --cc=bp@alien8.de \n    --cc=dave.hansen@linux.intel.com \n    --cc=gregory.clement@bootlin.com \n    --cc=hpa@zytor.com \n    --cc=imx@lists.linux.dev \n    --cc=kernel@pengutronix.de \n    --cc=linux-arm-kernel@lists.infradead.org \n    --cc=linux-kernel@vger.kernel.org \n    --cc=linux-riscv@lists.infradead.org \n    --cc=maz@kernel.org \n    --cc=mingo@redhat.com \n    --cc=palmer@dabbelt.com \n    --cc=paul.walmsley@sifive.com \n    --cc=s.hauer@pengutronix.de \n    --cc=sebastian.hesselbarth@gmail.com \n    --cc=shawnguo@kernel.org \n    --cc=sunilvl@ventanamicro.com \n    --cc=tglx@linutronix.de \n    --cc=x86@kernel.org \n    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:apatel@ventanamicro.com?In-Reply-To=%3C20250217085657.789309-10-apatel@ventanamicro.com%3E&amp;Cc=ajones%40ventanamicro.com%2Candrew%40lunn.ch%2Canup%40brainfault.org%2Catishp%40atishpatra.org%2Cbp%40alien8.de%2Cdave.hansen%40linux.intel.com%2Cgregory.clement%40bootlin.com%2Chpa%40zytor.com%2Cimx%40lists.linux.dev%2Ckernel%40pengutronix.de%2Clinux-arm-kernel%40lists.infradead.org%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cmaz%40kernel.org%2Cmingo%40redhat.com%2Cpalmer%40dabbelt.com%2Cpaul.walmsley%40sifive.com%2Cs.hauer%40pengutronix.de%2Csebastian.hesselbarth%40gmail.com%2Cshawnguo%40kernel.org%2Csunilvl%40ventanamicro.com%2Ctglx%40linutronix.de%2Cx86%40kernel.org&amp;Subject=Re%3A%20%5BPATCH%20v6%2009%2F10%5D%20irqchip%2Friscv-imsic%3A%20Replace%20hwirq%20with%20irq%20in%20the%20IMSIC%20vector">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is an external index of several public inboxes,
+see <a href="../_/text/mirror/">mirroring instructions</a> on how to clone and mirror
+all data and code used by this external index.</pre></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
