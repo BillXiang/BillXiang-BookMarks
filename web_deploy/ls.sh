@@ -234,3 +234,5 @@ echo "        </tbody>
     </body>
 </html>" >> docs.html
 rm -f *.tmp
+
+node generate-rss.js
