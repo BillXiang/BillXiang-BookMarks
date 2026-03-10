@@ -235,4 +235,4 @@ echo "        </tbody>
 </html>" >> docs.html
 rm -f *.tmp
 
-node ./web_deploy/generate-rss.js
+TZ='Asia/Shanghai' node ./web_deploy/generate-rss.js
