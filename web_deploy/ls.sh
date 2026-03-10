@@ -235,4 +235,4 @@ echo "        </tbody>
 </html>" >> docs.html
 rm -f *.tmp
 
-node generate-rss.js
+node ./web_deploy/generate-rss.js

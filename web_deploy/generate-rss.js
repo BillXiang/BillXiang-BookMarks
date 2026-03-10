@@ -3,8 +3,8 @@ const path = require('path');
 
 // 配置
 const CONFIG = {
-    inputFile: '../index_content.html',  // 输入文件路径
-    outputFile: './feed.xml',           // 输出RSS文件路径
+    inputFile: './index_content.html',  // 输入文件路径
+    outputFile: './web_deploy/feed.xml',           // 输出RSS文件路径
     siteTitle: 'BillXiang BookMarks',   // RSS标题
     siteLink: 'https://billxiang.github.io/BillXiang-BookMarks/',  // 网站链接
     siteDescription: 'BillXiang的书签收藏 - 技术文章聚合',  // 网站描述
