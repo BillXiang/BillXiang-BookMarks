@@ -1,0 +1,716 @@
+<!-- Filename: 导航栏/虚拟化/性能/SPEC virt_sc 2013 (2026-03-10 10：24：19).html
+ Page saved with X-Webpage-Conserve 
+ url: https://www.spec.org/virt_sc2013/
+ Summary: SPEC VIRT_SC 2013是用于测量虚拟化平台性能的基准测试套件，针对硬件厂商、虚拟化软件厂商、数据中心管理者和学术研究人员设计。该基准测试评估数据中心服务器在虚拟化服务器整合场景中的性能表现，支持硬件虚拟化、操作系统虚拟化和硬件。它整合了多个SPEC工作负载，包括SPECweb 2005、SPECjAppServer 2004、SPECmail 2008和SPECint 2006的修改版本，通过运行称为'tiles'的虚拟机集合实现扩展，所有虚拟机必须满足服务质量标准。基准测试还包括测量功耗和性能/功耗关系的选项，最新版本为V1.1，包含安全协议更新和错误修复。
+-->
+<html lang="en"><head>
+    <title>SPEC virt_sc 2013</title>
+    <link rel="canonical" href="https://www.spec.org/virt_sc2013/">
+<!-- minimus / partials / head-style - BEGIN -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600&amp;display=swap" rel="stylesheet"><link href="/css/Minimus.min.30addcc0d840ce3734d073e36c5ae780c4796c5242806f98ed470b2862eaf819.css" rel="stylesheet">
+<!-- minimus / partials / head-style - END -->
+
+<!-- minimus / partials / head-local - BEGIN -->
+<!-- minimus / partials / head-local - END -->
+
+<!-- minimus / partials / head-meta - BEGIN -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The SPEC virt_sc 2013 benchmark suites are used to measure performance of virtualized platforms.  The SPEC virt_sc 2013 benchmark addresses performance evaluation of datacenter servers used in virtualized server consolidation.">
+    <meta name="generator" content="Hugo 0.127.0">
+<!-- minimus / partials / head-meta - END -->
+
+<!-- minimus / partials / head-social - BEGIN -->
+    <meta property="og:title" content="SPEC virt_sc 2013">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.spec.org//img/SPEClogo.svg">
+    <meta property="og:url" content="https://www.spec.org/virt_sc2013/">
+    <meta property="og:description" content="The SPEC virt_sc 2013 benchmark suites are used to measure performance of virtualized platforms.  The SPEC virt_sc 2013 benchmark addresses performance evaluation of datacenter servers used in virtualized server consolidation.">
+    <meta property="og:site_name" content="SPEC.org">
+    <meta property="og:locale" content="en">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@spec_perf">
+    <meta name="twitter:title" content="SPEC virt_sc 2013">
+    <meta name="twitter:description" content="The SPEC virt_sc 2013 benchmark suites are used to measure performance of virtualized platforms.  The SPEC virt_sc 2013 benchmark addresses performance evaluation of datacenter servers used in virtualized server consolidation.">
+    <meta name="twitter:image" content="https://www.spec.org//img/SPEClogo.svg">
+<!-- minimus / partials / head-social - END -->
+
+  <style>:root { --minimus-foreground-color: #111111; --minimus-background-color: #EFEFEF; --minimus-backlight-color: #FEFEFE; --minimus-attention-color: #C50005; --minimus-primary-full-color: #07223E; --minimus-primary-lite-color: #506276; --minimus-primary-fade-color: #e4f0fb; --minimus-secondary-full-color: #334D62; --minimus-secondary-fade-color: #596E7E; --minimus-secondary-lite-color: #fafafa; --minimus-tertiary-full-color: #cccccc; --minimus-tertiary-lite-color: #e4e4e4; --minimus-other-lite-color: #f4f4f4; --minimus-linktext-color: #000099; --minimus-linkdark-color: #000066; --minimus-linklite-color: #0000BB; --minimus-base-back-color: var(--minimus-background-color); --minimus-base-fore-color: var(--minimus-foreground-color); --minimus-base-link-color: var(--minimus-linktext-color); --minimus-base-high-color: var(--minimus-attention-color); --minimus-base-rich-color: var(--minimus-primary-full-color); --minimus-fade-back-color: var(--minimus-backlight-color); --minimus-fade-fore-color: var(--minimus-foreground-color); --minimus-fade-link-color: var(--minimus-linktext-color); --minimus-fade-high-color: var(--minimus-attention-color); --minimus-fade-rich-color: var(--minimus-primary-full-color); --minimus-soft-back-color: var(--minimus-secondary-full-color); --minimus-soft-fore-color: var(--minimus-tertiary-full-color); --minimus-soft-link-color: var(--minimus-background-color); --minimus-soft-high-color: var(--minimus-attention-color); --minimus-soft-rich-color: var(--minimus-attention-color); --minimus-hard-back-color: var(--minimus-primary-full-color); --minimus-hard-fore-color: var(--minimus-background-color); --minimus-hard-link-color: var(--minimus-tertiary-full-color); --minimus-hard-high-color: var(--minimus-attention-color); --minimus-hard-rich-color: var(--minimus-attention-color); --minimus-gray-back-color: var(--minimus-tertiary-full-color); --minimus-gray-fore-color: var(--minimus-foreground-color); --minimus-gray-link-color: var(--minimus-secondary-full-color); --minimus-gray-high-color: var(--minimus-backlight-color); --minimus-gray-rich-color: var(--minimus-other-lite-color); --minimus-pale-back-color: var(--minimus-other-lite-color); --minimus-pale-fore-color: var(--minimus-secondary-fade-color); --minimus-pale-link-color: var(--minimus-secondary-full-color); --minimus-pale-high-color: var(--minimus-foreground-color); --minimus-pale-rich-color: var(--minimus-secondary-lite-color); --minimus-line-main-color: var(--minimus-attention-color); --minimus-transparent-lite: rgba( 64, 64, 64, .75); --minimus-transparent-high: rgba(197,  0,  5, .75); --minimus-highlight-color: #fbe54e; --minimus-debug-line-color: #ff0000; --minimus-debug-text-color: #f2f2a6; }body { font-family: roboto, Ariel, Helvetica, sans-serif; background-color: var(--minimus-base-back-color); color: var(--minimus-base-fore-color); margin: 0px; }header.minimus-header { height: 4em; top: 0px; transition: height 0.3s ease-in; border-bottom: 1px solid var(--minimus-hard-fore-color); background-color: var(--minimus-hard-back-color); }div.minimus-topbar { height: 4em; position: sticky; top: 0px; box-sizing: border-box; margin-top: 0px; margin-bottom: 0px; border-bottom: 1px solid var(--minimus-hard-fore-color); background-color: var(--minimus-hard-back-color); width: 100%; display: flex; flex-flow: wrap; align-items: center; }div.minimus-topbar-badge { flex: 1 1 0%; padding-left: 0.5rem; }div.minimus-topbar-badge img { width: auto; height: 2em; }nav.minimus-topbar-linkbar { flex: 6 1 0%; display: flex; flex-flow: wrap; justify-content: center; background-color: var(--minimus-hard-back-color); }div.minimus-topbar-menu, div.minimus-topbar-dropdown, div.minimus-topbar-dropside { list-style-type: none; padding: 0px; margin: 0px; }div.minimus-topbar-menu::after { content: ""; display: block; clear: both; }div.minimus-topbar-item, div.minimus-topbar-dropitem { color: var(--minimus-hard-fore-color); }div.minimus-topbar-item { float: left; margin-left: 1rem; padding-right: 1rem; line-height: normal; }off_a.minimus-topbar-itemtext::after { content: "  "; }div.minimus-topbar-item.minimus-haschildren::after { content: "▼"; font-size: 0.5em; }div.minimus-topbar-dropitem.minimus-haschildren::after { content: "▶"; font-size: 0.5em; }span.minimus-topbar-itemtext { color: var(--minimus-hard-link-color); }a.minimus-topbar-itemtext { color: var(--minimus-hard-fore-color); text-decoration: none; padding-right: 0px; }a.minimus-topbar-itemtext:hover, a.minimus-topbar-itemtext:focus { color: var(--minimus-hard-high-color); transition: color 0.3s; }div.minimus-topbar-dropitem a.minimus-topbar-itemtext, div.minimus-topbar-dropitem span.minimus-topbar-itemtext { line-height: 1.2em; font-size: 0.75em; }div.minimus-topbar-dropitem { padding: 0.2em 0px; position: relative; }div.minimus-topbar-item:hover > div.minimus-topbar-dropdown, div.minimus-topbar-item:focus > div.minimus-topbar-dropdown, div.minimus-topbar-dropitem:hover > div.minimus-topbar-dropdown, div.minimus-topbar-dropitem:focus > div.minimus-topbar-dropdown, div.minimus-topbar-dropitem:hover > div.minimus-topbar-dropside, div.minimus-topbar-dropitem:focus > div.minimus-topbar-dropside { display: inherit; }div.minimus-topbar-dropdown, div.minimus-topbar-dropside { display: none; width: max-content; position: absolute; background-color: var(--minimus-hard-back-color); }div.minimus-topbar-dropdown { padding: 0.5em 0.5rem 0px; }div.minimus-topbar-dropside { padding: 0px 0.5rem; left: 100%; top: 0px; }div.minimus-topbar-search { flex: 1 2 0%; }form.minimus-topbar-search-form { display: flex; justify-content: right; padding-right: 0.5rem; }input.minimus-topbar-search-input { flex: 0 1 1em; width: 6em; font-family: roboto, serif; }button.minimus-topbar-search-submit { flex: 0 1 1em; width: min-content; font-family: roboto, serif; }div.minimus-midbar-notice { display: flex; flex-flow: row; justify-content: center; }div.minimus-midbar-textbox { }nav.minimus-midbar-linkbar { box-sizing: border-box; border-top: 1px solid var(--minimus-hard-fore-color); border-bottom: 1px solid var(--minimus-hard-fore-color); background-color: var(--minimus-hard-back-color); color: var(--minimus-hard-fore-color); width: 100%; font-size: 0.75em; }ul.minimus-midbar-menu { margin: 0px; padding: 0px; list-style-type: none; }ul.minimus-midbar-menu::after { content: ""; display: block; clear: both; }li.minimus-midbar-item { float: left; margin-left: 1rem; padding-right: 0px; }li.minimus-midbar-item:hover ul.minimus-midbar-dropdown, li.minimus-midbar-item:focus ul.minimus-midbar-dropdown { display: block; }ul.minimus-midbar-dropdown { display: none; padding: 0.25rem 1em 0.5rem; position: absolute; z-index: 2; background-color: var(--minimus-hard-back-color); list-style-type: none; }.minimus-midbar-itemtext { color: var(--minimus-hard-link-color); }nav.minimus-midbar-linkbar a.minimus-midbar-linktext { text-decoration: none; color: var(--minimus-hard-fore-color); }nav.minimus-midbar-linkbar a.minimus-midbar-linktext:hover, nav.minimus-midbar-linkbar a.minimus-midbar-linktext:focus { color: var(--minimus-hard-high-color); transition: color 0.3s; }li.minimus-link-item { list-style-type: none; }li.minimus-link-item.bold { font-weight: 700; }li.minimus-link-item.small { font-size: 0.75em; }li.minimus-link-item.bullet { list-style-type: disc; }li.minimus-link-item.circle { list-style-type: circle; }li.minimus-link-item.square { list-style-type: square; }li.minimus-link-item.indent { margin-left: 1rem; }nav.minimus-footer-linkbar { clear: both; background-color: var(--minimus-soft-back-color); color: var(--minimus-soft-fore-color); display: flex; flex-flow: wrap; justify-content: center; font-size: 0.75em; }nav.minimus-footer-linkbar::after { content: ""; display: block; clear: both; }ul.minimus-footer-linkcol { list-style-type: none; width: fit-content; padding: 1em 1rem; margin: 0px; }ul.minimus-footer-linkcol a, ul.minimus-footer-linkcol a:visited { color: var(--minimus-soft-link-color); text-decoration: none; }ul.minimus-footer-linkcol a:hover, ul.minimus-footer-linkcol a:focus { color: var(--minimus-soft-high-color); }div.minimus-footer-base { background-color: var(--minimus-hard-back-color); display: flex; flex-flow: row; align-items: center; justify-content: space-between; font-size: 0.5em; }p.minimus-footer-base-text { padding: 1em 0px; color: var(--minimus-hard-link-color); }a.minimus-footer-base-link { text-decoration: none; color: var(--minimus-hard-fore-color); }a.minimus-footer-base-link:hover, a.minimus-footer-base-link:focus { color: var(--minimus-hard-high-color); transition: color 0.3s; }div.minimus-footer-base-copy { flex: 1 1 0%; display: flex; flex-flow: row; align-items: center; justify-content: flex-start; column-gap: 1em; margin: 0px 1rem; }div.minimus-footer-base-copy p { flex: 1 1 0%; }div.minimus-footer-base-copy img { flex: 0 1 0%; height: 3em; }div.minimus-footer-base-legal { flex: 1 1 0%; text-align: center; }div.minimus-footer-base-icons { flex: 1 1 0%; margin: 0px 1rem; display: flex; flex-flow: row; justify-content: flex-end; }div.minimus-footer-base-icon { flex: 0 1 0%; margin: 0px 10px; }div.minimus-hero-area { background-size: cover; background-position: 50% center; background-repeat: no-repeat; }div.minimus-hero-space { display: flex; flex-flow: column wrap; }div.minimus-hero-title { flex: 3 1 0%; padding: 2em 0px; }div.minimus-hero-title-text { font-size: 3em; margin: 0.5em 0px; color: var(--minimus-hard-fore-color); text-shadow: rgba(0, 0, 0, 0.6) 3px 3px 3px; }div.minimus-hero-blurb { flex: 1 1 0%; padding: 0px 0px 3em; }div.minimus-hero-blurb-text { padding: 1em 0px; color: var(--minimus-hard-fore-color); text-shadow: rgba(0, 0, 0, 0.6) 2px 2px 2px; }div.minimus-hero-action { display: flex; flex-flow: wrap; place-content: center flex-start; column-gap: 1em; margin: 0px 3rem 0px 0px; }a.minimus-hero-button { flex: 0 1 20%; text-decoration: none; text-align: center; padding: 1em 1rem; border-width: 1px; border-style: solid; border-color: var(--minimus-hard-fore-color); border-radius: 5px; margin-bottom: 1em; background-color: var(--minimus-transparent-lite); }a.minimus-hero-button:hover, a.minimus-hero-button:focus { background-color: var(--minimus-transparent-high); }span.minimus-hero-button-text { color: var(--minimus-hard-fore-color); text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 1px; }div.minimus-page { width: 100%; }div.minimus-spread { width: 95%; margin: 0px auto; }div.minimus-colspace, div.minimus-column { width: 95%; margin: 0px auto; }article.minimus-article { padding: 0px; }div.minimus-box-list { display: flex; background-color: var(--minimus-base-back-color); }div.minimus-box-item { display: flex; flex-flow: row; background-color: var(--minimus-base-back-color); margin: 1em 1rem; }div.minimus-box-item div.minimus-icon-sized { flex: 0 0 auto; }div.minimus-box-image { flex: 1 1 0%; display: flex; flex-wrap: wrap; place-content: center; font-size: 0px; padding: 2%; }img.minimus-box-graphic { width: 100%; }div.minimus-box-words { flex: 3 1 0%; padding: 0px; display: flex; flex-flow: column; }div.minimus-box-label { flex: 0 0 1em; padding: 1em 2rem; }div.minimus-box-blurb { flex: 2 1 2em; padding: 1em 1rem; font-size: 0.75em; }div.minimus-listdir-faq { flex-flow: column; }div.minimus-listdir-faq div.minimus-box-item { margin: 1em 0px; }div.minimus-listdir-faq div.minimus-box-image { display: none; }div.minimus-listdir-faq div.minimus-box-label { padding: 0px; }div.minimus-listdir-faq div.minimus-box-blurb { padding: 0px; }div.minimus-listdir-faq div.minimus-box-label div.minimus-box-inner::before { content: "Q: "; font-size: 1.5rem; font-weight: 700; font-style: italic; }div.minimus-listdir-faq div.minimus-box-blurb div.minimus-box-text::before { content: "A: "; font-size: 1.5rem; font-weight: 700; font-style: italic; }div.minimus-listdir-text { flex-flow: column; }div.minimus-listdir-text div.minimus-box-item { margin: 1em 0px; }div.minimus-listdir-text div.minimus-box-image { display: none; }div.minimus-listdir-text div.minimus-box-label { padding: 0px; }div.minimus-listdir-text div.minimus-box-blurb { padding: 0px; }div.minimus-listdir-topic { flex-flow: column; }div.minimus-listdir-topic div.minimus-box-item { border: 1px solid var(--minimus-base-rich-color); padding: 0.5em 0.5rem; margin: 1em 0px; }div.minimus-listdir-topic div.minimus-box-image { display: none; }div.minimus-listdir-topic div.minimus-box-label { color: var(--minimus-base-rich-color); margin-top: 1rem; font-family: roboto, serif; font-weight: 700; font-size: 1em; text-align: center; padding: 0px; }div.minimus-listdir-topic div.minimus-box-label a.minimus-link-decorationless:link, div.minimus-listdir-topic div.minimus-box-label a.minimus-link-decorationless:visited { text-decoration: none; color: var(--minimus-base-rich-color); }div.minimus-listdir-topic div.minimus-box-label a.minimus-link-decorationless:hover, div.minimus-listdir-topic div.minimus-box-label a.minimus-link-decorationless:focus { color: var(--minimus-base-rich-color); }div.minimus-listdir-topic div.minimus-box-blurb { padding: 0px; }div.minimus-listdir-head { flex-flow: column; }div.minimus-listdir-head div.minimus-box-item { margin: 1em 0px; }div.minimus-listdir-head div.minimus-box-image { display: none; }div.minimus-listdir-head div.minimus-box-label { background-color: transparent; background-image: url("/images/minimus-header-underline-only.png"), url("/images/minimus-header-underline-arrow.png"); background-size: 100% 17px, 17px 17px; background-repeat: no-repeat, no-repeat; background-position: left bottom, right bottom; padding-bottom: 18px; padding-top: 1em; font-family: roboto, serif; font-weight: 700; color: var(--minimus-base-rich-color); margin-top: 0px; font-size: 1rem; margin-left: 2rem; }div.minimus-listdir-head div.minimus-box-blurb { padding: 0px; }div.minimus-listdir-head div.minimus-box-label a.minimus-link-decorationless:link, div.minimus-listdir-head div.minimus-box-label a.minimus-link-decorationless:visited { text-decoration: none; color: var(--minimus-base-rich-color); }div.minimus-listdir-head div.minimus-box-label a.minimus-link-decorationless:hover, div.minimus-listdir-head div.minimus-box-label a.minimus-link-decorationless:focus { color: var(--minimus-base-rich-color); }div.minimus-listdir-tall { flex-flow: wrap; justify-content: center; }div.minimus-listdir-tall div.minimus-box-item { flex: 0 0 28%; flex-flow: column; }div.minimus-listdir-skinny { flex-flow: wrap; justify-content: center; }div.minimus-listdir-skinny div.minimus-box-item { flex: 0 0 16%; flex-flow: column; font-size: 0.75em; }div.minimus-listdir-tall div.minimus-box-image, div.minimus-listdir-skinny div.minimus-box-image { flex: 0 1 0%; align-content: flex-start; }div.minimus-listdir-tall div.minimus-box-image img, div.minimus-listdir-skinny div.minimus-box-image img { object-fit: cover; max-width: 100%; height: auto; }div.minimus-listdir-wideone, div.minimus-listdir-widetwo, div.minimus-listdir-widealt { flex-flow: column; }div.minimus-listdir-wideone div.minimus-box-item { flex-flow: row; justify-content: space-between; }div.minimus-listdir-widetwo div.minimus-box-item { flex-flow: row-reverse; justify-content: space-between; }div.minimus-listdir-widealt div.minimus-box-item:nth-child(2n+1) { flex-flow: row; justify-content: space-between; background-color: var(--minimus-fade-back-color); }div.minimus-listdir-widealt div.minimus-box-item:nth-child(2n) { flex-flow: row-reverse; justify-content: space-between; background-color: var(--minimus-base-back-color); }div.minimus-listfix-image1 div.minimus-box-image img { height: 5vw; }div.minimus-listfix-image2 div.minimus-box-image img { height: 10vw; }div.minimus-listfix-image3 div.minimus-box-image img { height: 15vw; }div.minimus-listfix-image4 div.minimus-box-image img { height: 20vw; }div.minimus-listfix-image5 div.minimus-box-image img { height: 25vw; }div.minimus-listfix-image6 div.minimus-box-image img { height: 30vw; }div.minimus-listfix-image7 div.minimus-box-image img { height: 35vw; }div.minimus-listfix-image8 div.minimus-box-image img { height: 40vw; }div.minimus-listfix-image9 div.minimus-box-image img { height: 45vw; }div.minimus-listfix-image10 div.minimus-box-image img { height: 50vw; }div.minimus-listfix-image11 div.minimus-box-image img { height: 55vw; }div.minimus-listfix-image12 div.minimus-box-image img { height: 60vw; }div.minimus-listfix-image13 div.minimus-box-image img { height: 65vw; }div.minimus-listfix-image14 div.minimus-box-image img { height: 70vw; }div.minimus-listfix-image15 div.minimus-box-image img { height: 75vw; }div.minimus-listfix-image16 div.minimus-box-image img { height: 80vw; }div.minimus-listfix-image17 div.minimus-box-image img { height: 85vw; }div.minimus-listfix-image18 div.minimus-box-image img { height: 90vw; }div.minimus-listfix-image19 div.minimus-box-image img { height: 95vw; }div.minimus-listfix-image20 div.minimus-box-image img { height: 100vw; }div.minimus-listfix-title1 div.minimus-box-label, div.minimus-listfix-title2 div.minimus-box-label, div.minimus-listfix-title3 div.minimus-box-label, div.minimus-listfix-title4 div.minimus-box-label, div.minimus-listfix-title5 div.minimus-box-label, div.minimus-listfix-title6 div.minimus-box-label, div.minimus-listfix-title7 div.minimus-box-label, div.minimus-listfix-title8 div.minimus-box-label, div.minimus-listfix-title9 div.minimus-box-label { display: flex; flex-flow: column wrap; justify-content: center; align-items: center; }div.minimus-listfix-title1 div.minimus-box-label a { flex: 1 1 1em; }div.minimus-listfix-title2 div.minimus-box-label a { flex: 1 1 2em; }div.minimus-listfix-title3 div.minimus-box-label a { flex: 1 1 3em; }div.minimus-listfix-title4 div.minimus-box-label a { flex: 1 1 4em; }div.minimus-listfix-title5 div.minimus-box-label a { flex: 1 1 5em; }div.minimus-listfix-title6 div.minimus-box-label a { flex: 1 1 6em; }div.minimus-listfix-title7 div.minimus-box-label a { flex: 1 1 7em; }div.minimus-listfix-title8 div.minimus-box-label a { flex: 1 1 8em; }div.minimus-listfix-title9 div.minimus-box-label a { flex: 1 1 9em; }div.minimus-listfix-blurb-large div.minimus-box-blurb { font-size: 1em; }div.minimus-listfix-blurb-small div.minimus-box-blurb { font-size: 0.75em; }div.minimus-listfix-blurb-tiny div.minimus-box-blurb { font-size: 0.5em; }div.minimus-listfix-imagecrisp div.minimus-box-image { padding: 0px; }div.minimus-listfix-imagecrisp div.minimus-box-image a { width: 100%; }div.minimus-listfix-imagetop div.minimus-box-image { align-content: start; }div.minimus-listfix-imageshadow img.minimus-box-graphic { box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px; border-radius: 3px; }div.minimus-listfix-shadowbox div.minimus-box-item { box-shadow: rgba(0, 0, 0, 0.34) 3px 3px 33px 3px; margin: 16px; }div.minimus-listfix-paddedbox div.minimus-box-item { margin: 16px; }div.minimus-listfix-crispbox div.minimus-box-item { margin: 0px 0px 0.5rem; }div.minimus-listopt-unset div.minimus-box-label { background-color: var(--minimus-soft-back-color); color: var(--minimus-soft-fore-color); }div.minimus-listopt-unset div.minimus-box-blurb, div.minimus-listopt-unset div.minimus-box-image { background-color: var(--minimus-fade-back-color); color: var(--minimus-fade-fore-color); }div.minimus-listopt-unset div.minimus-box-label a, div.minimus-listopt-unset div.minimus-box-label a:visited { color: var(--minimus-soft-link-color); text-decoration: none; }div.minimus-listopt-unset div.minimus-box-blurb a, div.minimus-listopt-unset div.minimus-box-blurb a:visited { color: var(--minimus-fade-link-color); text-decoration: none; }div.minimus-listopt-unset div.minimus-box-label a:hover, div.minimus-listopt-unset div.minimus-box-label a:focus { color: var(--minimus-soft-high-color); }div.minimus-listopt-unset div.minimus-box-blurb a:hover, div.minimus-listopt-unset div.minimus-box-blurb a:focus { color: var(--minimus-fade-high-color); }div.minimus-listopt-quiet div.minimus-box-label, div.minimus-listopt-quiet div.minimus-box-blurb, div.minimus-listopt-quiet div.minimus-box-image { background-color: var(--minimus-fade-back-color); color: var(--minimus-fade-fore-color); }div.minimus-listopt-quiet div.minimus-box-label a, div.minimus-listopt-quiet div.minimus-box-label a:visited, div.minimus-listopt-quiet div.minimus-box-blurb a, div.minimus-listopt-quiet div.minimus-box-blurb a:visited { color: var(--minimus-fade-link-color); text-decoration: none; }div.minimus-listopt-quiet div.minimus-box-label a:hover, div.minimus-listopt-quiet div.minimus-box-label a:focus, div.minimus-listopt-quiet div.minimus-box-blurb a:hover, div.minimus-listopt-quiet div.minimus-box-blurb a:focus { color: var(--minimus-fade-high-color); }div.minimus-listopt-zebra div.minimus-box-item:nth-child(2n+1) { background-color: var(--minimus-fade-back-color); color: var(--minimus-fade-fore-color); }div.minimus-listopt-zebra div.minimus-box-item:nth-child(2n) { background-color: var(--minimus-base-back-color); color: var(--minimus-fade-fore-color); }div.minimus-listopt-zebra div.minimus-box-label a, div.minimus-listopt-zebra div.minimus-box-label a:visited, div.minimus-listopt-zebra div.minimus-box-blurb a, div.minimus-listopt-zebra div.minimus-box-blurb a:visited { color: var(--minimus-fade-link-color); text-decoration: none; }div.minimus-listopt-zebra div.minimus-box-label a:hover, div.minimus-listopt-zebra div.minimus-box-label a:focus, div.minimus-listopt-zebra div.minimus-box-blurb a:hover, div.minimus-listopt-zebra div.minimus-box-blurb a:focus { color: var(--minimus-fade-high-color); }div.minimus-listopt-hilite div.minimus-box-label { color: var(--minimus-soft-fore-color); background-color: var(--minimus-soft-back-color); border-bottom: solid 3px var(--minimus-soft-rich-color); }div.minimus-listopt-hilite div.minimus-box-label a { color: var(--minimus-soft-link-color); }div.minimus-listopt-hilite div.minimus-box-label a:hover, div.minimus-listopt-hilite div.minimus-box-label a:focus { color: var(--minimus-soft-high-color); }div.minimus-listopt-hilite div.minimus-box-blurb { background-color: var(--minimus-fade-back-color); }div.minimus-listopt-hilite div.minimus-box-image { background-color: var(--minimus-fade-back-color); align-content: start; padding: 0px; }div.minimus-listfix-hard-label div.minimus-box-label, div.minimus-listfix-hard-blurb div.minimus-box-blurb, div.minimus-listfix-hard-image div.minimus-box-image { background-color: var(--minimus-hard-back-color); color: var(--minimus-hard-fore-color); }div.minimus-listfix-hard-label div.minimus-box-label a, div.minimus-listfix-hard-label div.minimus-box-label a:visited, div.minimus-listfix-hard-blurb div.minimus-box-blurb a, div.minimus-listfix-hard-blurb div.minimus-box-blurb a:visited { color: var(--minimus-hard-link-color); text-decoration: none; }div.minimus-listfix-hard-label div.minimus-box-label a:hover, div.minimus-listfix-hard-label div.minimus-box-label a:focus, div.minimus-listfix-hard-blurb div.minimus-box-blurb a:hover, div.minimus-listfix-hard-blurb div.minimus-box-blurb a:focus { color: var(--minimus-hard-high-color); }div.minimus-listfix-soft-label div.minimus-box-label, div.minimus-listfix-soft-blurb div.minimus-box-blurb, div.minimus-listfix-soft-image div.minimus-box-image { background-color: var(--minimus-soft-back-color); color: var(--minimus-soft-fore-color); }div.minimus-listfix-soft-label div.minimus-box-label a, div.minimus-listfix-soft-label div.minimus-box-label a:visited, div.minimus-listfix-soft-blurb div.minimus-box-blurb a, div.minimus-listfix-soft-blurb div.minimus-box-blurb a:visited { color: var(--minimus-soft-link-color); text-decoration: none; }div.minimus-listfix-soft-label div.minimus-box-label a:hover, div.minimus-listfix-soft-label div.minimus-box-label a:focus, div.minimus-listfix-soft-blurb div.minimus-box-blurb a:hover, div.minimus-listfix-soft-blurb div.minimus-box-blurb a:focus { color: var(--minimus-soft-high-color); }div.minimus-listfix-fade-label div.minimus-box-label, div.minimus-listfix-fade-blurb div.minimus-box-blurb, div.minimus-listfix-fade-image div.minimus-box-image { background-color: var(--minimus-fade-back-color); color: var(--minimus-fade-fore-color); }div.minimus-listfix-fade-label div.minimus-box-label a, div.minimus-listfix-fade-label div.minimus-box-label a:visited, div.minimus-listfix-fade-blurb div.minimus-box-blurb a, div.minimus-listfix-fade-blurb div.minimus-box-blurb a:visited { color: var(--minimus-fade-link-color); text-decoration: none; }div.minimus-listfix-fade-label div.minimus-box-label a:hover, div.minimus-listfix-fade-label div.minimus-box-label a:focus, div.minimus-listfix-fade-blurb div.minimus-box-blurb a:hover, div.minimus-listfix-fade-blurb div.minimus-box-blurb a:focus { color: var(--minimus-fade-high-color); }div.minimus-listfix-base-label div.minimus-box-label, div.minimus-listfix-base-blurb div.minimus-box-blurb, div.minimus-listfix-base-image div.minimus-box-image { background-color: var(--minimus-base-back-color); color: var(--minimus-base-fore-color); }div.minimus-listfix-base-label div.minimus-box-label a, div.minimus-listfix-base-label div.minimus-box-label a:visited, div.minimus-listfix-base-blurb div.minimus-box-blurb a, div.minimus-listfix-base-blurb div.minimus-box-blurb a:visited { color: var(--minimus-base-link-color); text-decoration: none; }div.minimus-listfix-base-label div.minimus-box-label a:hover, div.minimus-listfix-base-label div.minimus-box-label a:focus, div.minimus-listfix-base-blurb div.minimus-box-blurb a:hover, div.minimus-listfix-base-blurb div.minimus-box-blurb a:focus { color: var(--minimus-base-high-color); }div.minimus-listfix-gray-label div.minimus-box-label, div.minimus-listfix-gray-blurb div.minimus-box-blurb, div.minimus-listfix-gray-image div.minimus-box-image { background-color: var(--minimus-gray-back-color); color: var(--minimus-gray-fore-color); }div.minimus-listfix-gray-label div.minimus-box-label a, div.minimus-listfix-gray-label div.minimus-box-label a:visited, div.minimus-listfix-gray-blurb div.minimus-box-blurb a, div.minimus-listfix-gray-blurb div.minimus-box-blurb a:visited { color: var(--minimus-gray-link-color); text-decoration: none; }div.minimus-listfix-gray-label div.minimus-box-label a:hover, div.minimus-listfix-gray-label div.minimus-box-label a:focus, div.minimus-listfix-gray-blurb div.minimus-box-blurb a:hover, div.minimus-listfix-gray-blurb div.minimus-box-blurb a:focus { color: var(--minimus-gray-high-color); }div.minimus-listfix-pale-label div.minimus-box-label, div.minimus-listfix-pale-blurb div.minimus-box-blurb, div.minimus-listfix-pale-image div.minimus-box-image { background-color: var(--minimus-pale-back-color); color: var(--minimus-pale-fore-color); }div.minimus-listfix-pale-label div.minimus-box-label a, div.minimus-listfix-pale-label div.minimus-box-label a:visited, div.minimus-listfix-pale-blurb div.minimus-box-blurb a, div.minimus-listfix-pale-blurb div.minimus-box-blurb a:visited { color: var(--minimus-pale-link-color); text-decoration: none; }div.minimus-listfix-pale-label div.minimus-box-label a:hover, div.minimus-listfix-pale-label div.minimus-box-label a:focus, div.minimus-listfix-pale-blurb div.minimus-box-blurb a:hover, div.minimus-listfix-pale-blurb div.minimus-box-blurb a:focus { color: var(--minimus-pale-high-color); }div.minimus-column { padding: 1rem 1em; background-color: var(--minimus-base-back-color); }div.minimus-spread a, div.minimus-column a { text-decoration: none; color: var(--minimus-base-link-color); transition: color 0.3s; }div.minimus-spread a:hover, div.minimus-spread a:focus, div.minimus-column a:hover, div.minimus-column a:focus { color: var(--minimus-base-high-color); transition: color 0.3s; }article { padding-bottom: 1rem; }div.topic, div.legend, div.figure, div.sidebar { font-size: 0.75rem; line-height: 1.25; }div.figure { margin: 0.5em 0px; border: 1px solid var(--minimus-fade-rich-color); padding: 0.5em 0.5rem; background-color: var(--minimus-fade-back-color); }div.figure img { object-fit: contain; }div.topic { border: 1px solid var(--minimus-base-rich-color); padding: 0.5em 0.5rem; }p.topic-title { margin-top: 1rem; font-family: roboto, serif; font-weight: 700; font-size: 1.25em; text-align: center; }ul.auto-toc { list-style-type: none; }div.admonition { margin: 0.5em 0px; border: 1px solid var(--minimus-base-rich-color); padding: 0.5em 0.5rem; }div.admonition dt { font-weight: 700; }div.admonition dl { margin-bottom: 0px; }p.admonition-title { margin: 0px 1rem 0.5em 0px; font-family: roboto, serif; font-weight: 700; text-align: center; }div.danger p.admonition-title { color: rgb(240, 0, 0); text-transform: uppercase; }div.caution p.admonition-title { color: rgb(224, 0, 0); }div.attention p.admonition-title { color: rgb(208, 0, 0); }div.error p.admonition-title { color: rgb(192, 0, 0); }div.warning p.admonition-title { color: rgb(176, 0, 0); }div.important p.admonition-title { color: rgb(160, 0, 0); }div.note p.admonition-title { color: rgb(144, 0, 0); }div.hint p.admonition-title { color: maroon; }div.tip p.admonition-title { color: rgb(112, 0, 0); }p.admonition-title { color: var(--minimus-base-rich-color); }div.body p.centered { text-align: center; }.system-message { background-color: var(--minimus-debug-text-color); padding: 0.5em 0.5rem; border: 3px solid var(--minimus-debug-line-color); }.alert-message { background-color: var(--minimus-fade-back-color); padding: 0.5em 0.5rem; border: 3px solid var(--minimus-fade-rich-color); color: var(--minimus-fade-high-color); }.normal-message { background-color: var(--minimus-soft-back-color); padding: 0.5em 0.5rem; border: 3px solid var(--minimus-hard-back-color); }div.line-block { margin: 0.5em 0px; padding: 0.5em 0.5rem; display: block; }div.line-block div.line-block { margin: 0px 0px 0px 1rem; border: none; padding: 0px; }blockquote blockquote { border: none; margin-right: 0px; }div.document blockquote { margin-inline: 1rem 0px; }div.document blockquote.epigraph, div.document blockquote.highlights, div.document blockquote.pull-quote { margin-inline-end: 1rem; }blockquote > p:first-child { margin-top: 0px; }blockquote > p:last-child { margin-bottom: 0px; }blockquote.epigraph { font-family: roboto, serif; font-size: 1.25rem; font-style: oblique; color: var(--minimus-base-rich-color); }blockquote.epigraph p.attribution { font-size: 0.75rem; font-style: normal; }blockquote.highlights { font-size: 1.25rem; font-style: oblique; border: 1px solid var(--minimus-fade-rich-color); padding: 0.5em 0.5rem; color: var(--minimus-fade-rich-color); background: var(--minimus-fade-back-color); }blockquote.highlights p.attribution { font-size: 0.75rem; font-style: normal; }blockquote.pull-quote { font-family: roboto, serif; padding: 1em 1rem; border-top: 3px double var(--minimus-fade-high-color); border-bottom: 3px double var(--minimus-fade-high-color); font-size: 1.25rem; font-weight: 700; font-style: oblique; color: var(--minimus-fade-high-color); background-color: var(--minimus-fade-back-color); }blockquote.pull-quote p { display: block; font-weight: 700; font-style: oblique; font-size: 1.25rem; }blockquote.pull-quote p.attribution { font-size: 0.75rem; font-weight: 400; font-style: normal; color: var(--minimus-fade-high-color); }p.rubric { color: var(--minimus-base-high-color); margin-top: 2em; font-weight: 700; }pre { margin: 0.5em 0px; border: 1px solid var(--minimus-fade-rich-color); padding: 0.5em 0.5rem; background: var(--minimus-fade-back-color); overflow: auto hidden; font-family: "source code pro", monospace; }code, kbd, tt { font-family: "source code pro", monospace; }:not(pre) > code, :not(pre) > kbd, :not(pre) > tt { background-color: var(--minimus-pale-back-color); padding-right: 0.25em; padding-left: 0.25em; }td.option-group > kbd { border: none; }table.docinfo pre.address { margin: inherit; border: none; padding: inherit; background-color: inherit; overflow: inherit; font-family: inherit; }.footnote-ref, .footnote-reference { vertical-align: super; font-size: 0.75em; line-height: normal; }.citation-reference { font-size: 0.75em; line-height: normal; }section.footnotes, table.docutils.citation, table.docutils.footnote { font-size: 0.75em; margin: 0.5em 0px; border: none; padding: 0.5em 0px; background-color: var(--minimus-fade-back-color); width: 100%; }table.docutils.citation td, table.docutils.footnote td { border: none; }table { background: var(--minimus-fade-back-color); margin-top: 0.5em; margin-bottom: 0.5em; border: 0px; border-collapse: collapse; }table th { background: var(--minimus-gray-back-color); text-align: left; padding: 1px 0.5rem; border-left: 0px; border-right: 0px; border-top: 1px solid var(--minimus-gray-link-color); border-bottom: 1px solid var(--minimus-gray-link-color); }table td { padding: 1px 0.5rem; border-top: 0px; border-left: 0px; border-right: 0px; border-bottom: 1px solid var(--minimus-fade-back-color); }table.docutils thead { vertical-align: inherit; }table.field-list, table.field-list td, table.field-list th { border: none; }table.docutils th.head { background-color: var(--minimus-gray-back-color); }div.sidebar, blockquote.sidebar, table.docutils.footnote.sidebar { margin: 0.5em 0px 0.5em 1rem; border: 1px solid var(--minimus-fade-rich-color); background-color: var(--minimus-fade-back-color); width: 40%; float: right; }p.sidebar-title { padding-top: 0.5em; font-family: roboto, serif; font-weight: 700; }div.sidebar > p { padding: 0.5em 0.5rem; }div.lite { border: none; }div.lite p.topic-title, div.lite p.sidebar-title, div.lite p.admonition-title, div.titleless p.topic-title, div.titleless p.sidebar-title, div.titleless p.admonition-title { display: none; }div.lite.sidebar div.admonition p.admonition-title, div.lite.sidebar div.contents.topic p.topic-title { display: block; }div.admonition.sidebar { margin: 0.5em 1rem 0.5em 0px; }div.sidebar blockquote.pull-quote { margin: 0.5em 0.5rem; }img.align-left, div.align-left, object.align-left { clear: left; float: left; margin-right: 0.5rem; }img.align-right, div.align-right, object.align-right { clear: right; float: right; margin-left: 0.5rem; }img.align-center, div.align-center, object.align-center, div.align-center img { display: block; margin-left: auto; margin-right: auto; }blockquote.align-left, blockquote.align-right { width: 30%; }div.sidebar.align-left, blockquote.sidebar.align-left, table.docutils.footnote.sidebar.align-left { margin: 0.5em 1rem 0.5em 0px; float: left; }div.figure.align-left, div.figure.align-right, div.sidebar, blockquote.sidebar, table.docutils.footnote.sidebar { width: 40%; }div.figure.narrow, div.sidebar.narrow, blockquote.sidebar.narrow, table.docutils.footnote.sidebar.narrow { width: 20%; }div.figure.wide, div.sidebar.wide, blockquote.sidebar.wide, table.docutils.footnote.sidebar.wide { width: 60%; }h1, h2, h3, h4, h5, h6, h7, h8 { background-color: transparent; background-image: url("/images/minimus-header-underline-only.png"), url("/images/minimus-header-underline-arrow.png"); background-size: 100% 17px, 17px 17px; background-repeat: no-repeat, no-repeat; background-position: left bottom, right bottom; padding-bottom: 18px; padding-top: 1em; font-family: roboto, serif; font-weight: 700; color: var(--minimus-base-rich-color); margin-top: 0px; }h1 { font-size: 1.5rem; margin-left: 0px; }h2 { font-size: 1.25rem; margin-left: 0px; }h3 { font-size: 1rem; margin-left: 1rem; }h4 { font-size: 1rem; margin-left: 2rem; }h5 { font-size: 1rem; margin-left: 3rem; }h6 { font-size: 1rem; margin-left: 4rem; }h7 { font-size: 1rem; margin-left: 5rem; }h8 { font-size: 1rem; margin-left: 6rem; }div.body p.caption { text-align: inherit; }div.body td { text-align: left; }dd p { margin-top: 0px; }dd ul, dd table { margin-bottom: 1em; }dd { margin-top: 0.25em; margin-bottom: 1em; margin-left: 2rem; }dl { margin-bottom: 1em; }dl.docutils dt { }dt:target, div.minimus-column .highlighted { background-color: rgb(251, 229, 78); }dl.glossary dt { font-weight: 700; font-size: 1.125em; }.field-list ul { margin: 0px; padding-left: 1em; }.field-list p { margin: 0px; }.field-list ul { padding-left: 1rem; }.first { }ol.arabic { list-style: decimal; }ol.loweralpha { list-style: lower-alpha; }ol.upperalpha { list-style: upper-alpha; }ol.lowerroman { list-style: lower-roman; }ol.upperroman { list-style: upper-roman; }ul.bulletless { list-style-type: none; padding-left: 1em; }.optional { font-size: 1.25em; }.versionmodified { font-style: italic; }.accelerator { text-decoration: underline; }.classifier { font-style: oblique; }abbr, acronym { border-bottom: 1px dotted; cursor: help; }ul.minimus-pagination { margin: 0.5em 0px; padding: 0px; }ul.minimus-pagination li { display: inline-block; margin: 0.25em 0.125rem; font-size: 0.75rem; line-height: 2; }ul.minimus-pagination li a { padding: 0.25em 0.5rem; border: 1px solid var(--minimus-base-rich-color); border-radius: 3px; }ul.minimus-pagination li.disabled { display: none; }li.minimus-pagination-current a { color: var(--minimus-base-high-color); }ul.minimus-pagination a:hover, ul.minimus-pagination a:focus { background-color: var(--minimus-base-high-color); color: var(--minimus-base-back-color); transition: 0.3s; }hr { border-top: 0px; border-bottom: 1px solid var(--minimus-line-main-color); }h1 a:link, h2 a:link, h3 a:link, h4 a:link, h5 a:link, h6 a:link, h7 a:link, h8 a:link { text-decoration: none; color: var(--minimus-base-rich-color); }sup { top: -0.45em; }sub, sup { font-size: 65%; line-height: 0%; position: relative; vertical-align: baseline; }ul.minimus-packedlist li { display: inline; }ul.minimus-packedlist li a { white-space: nowrap; }ul.minimus-packedlist li::after { content: " "; letter-spacing: 1rem; background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=") 50% center no-repeat; }div.docutils.container.action { display: flex; justify-content: center; }div.docutils.container.action a::before { content: "\a "; white-space: pre; }div.docutils.container.action a::after { content: "\a \a "; white-space: pre; }div.docutils.container.action a { flex: 1 1 0%; font-size: 0.75em; font-weight: 700; border-radius: 13px; border-style: solid; text-decoration: none; text-align: center; display: inline-block; background-color: var(--minimus-hard-back-color); color: var(--minimus-hard-fore-color); padding: 0px 2em; margin: 0px 15%; transition: 0.3s; }div.docutils.container.action a:hover, div.docutils.container.action a:focus { background-color: var(--minimus-base-high-color); color: var(--minimus-base-back-color); transition: 0.3s; }div.minimus-resultstable table, table.results { font-size: 0.5em; }div.minimus-resultstable table th, table.results th { text-align: center; vertical-align: middle; font-weight: 700; border: solid 1px var(--minimus-fade-back-color); }div.minimus-resultstable table thead th, table.results thead th { background-color: var(--minimus-gray-back-color); }div.minimus-resultstable table tr.alt, div.minimus-resultstable table tbody tr.head th, table.results tr.alt, table.results tbody tr.head th { background-color: var(--minimus-gray-back-color); }div.minimus-resultstable table tr:nth-child(2n+1) { background-color: var(--minimus-pale-back-color); }div.minimus-resultstable table td.metric, table.results td.metric { font-family: "source code pro", monospace; text-align: right; }div.minimus-resultstable table td.value, table.results td.value { font-family: "source code pro", monospace; text-align: right; }div.minimus-resultstable table td.short, table.results td.short { text-align: center; }div.minimus-resultstable table td span, table.results td span { white-space: nowrap; font-size: 75%; float: right; }html { font-size: 12px; }@media (min-width: 500px) {
+  html { font-size: 14px; }
+}@media (min-width: 600px) {
+  html { font-size: 16px; }
+}@media (min-width: 700px) {
+  html { font-size: 18px; }
+}@media (min-width: 800px) {
+  html { font-size: 20px; }
+}@media (min-width: 900px) {
+  html { font-size: 22px; }
+}@media (min-width: 1000px) {
+  html { font-size: 24px; }
+}@media (min-width: 1070px) {
+  div.minimus-colspace, div.minimus-column { width: 1000px; }
+}.code { background: rgb(250, 250, 250); }.code .comment { color: rgb(136, 136, 136); font-style: italic; }.code .comment.hashbang { color: rgb(40, 112, 136); font-style: italic; }.code .comment.multiline { color: rgb(136, 136, 136); font-style: italic; }.code .comment.preproc { color: rgb(40, 152, 112); }.code .comment.preprocfile { color: rgb(136, 136, 136); font-style: italic; }.code .comment.single { color: rgb(136, 136, 136); font-style: italic; }.code .comment.special { color: rgb(136, 136, 136); font-style: italic; }.code .error { background-color: rgb(168, 72, 168); }.code .generic.deleted { color: rgb(192, 40, 40); }.code .generic.emph { font-style: italic; }.code .generic.error { color: rgb(192, 40, 40); }.code .generic.heading { color: rgb(102, 102, 102); }.code .generic.inserted { color: rgb(56, 128, 56); }.code .generic.output { color: rgb(102, 102, 102); }.code .generic.prompt { color: rgb(68, 68, 68); }.code .generic.strong { font-weight: 700; }.code .generic.subheading { color: rgb(68, 68, 68); }.code .generic.traceback { color: rgb(40, 56, 176); }.code .highlight { background-color: rgb(255, 255, 204); }.code .keyword { color: rgb(40, 56, 176); }.code .keyword.constant { color: rgb(68, 68, 68); font-style: italic; }.code .keyword.declaration { color: rgb(40, 56, 176); font-style: italic; }.code .keyword.namespace { color: rgb(40, 56, 176); }.code .keyword.pseudo { color: rgb(40, 56, 176); }.code .keyword.reserved { color: rgb(40, 56, 176); }.code .keyword.type { color: rgb(40, 56, 176); font-style: italic; }.code .literal.number.bin { color: rgb(68, 68, 68); }.code .literal.number { color: rgb(68, 68, 68); }.code .literal.number.float { color: rgb(68, 68, 68); }.code .literal.number.hex { color: rgb(68, 68, 68); }.code .literal.number.integer { color: rgb(68, 68, 68); }.code .literal.number.integer.long { color: rgb(68, 68, 68); }.code .literal.number.oct { color: rgb(68, 68, 68); }.code .literal.string.affix { color: rgb(68, 68, 68); }.code .literal.string.backtick { color: rgb(184, 56, 56); }.code .literal.string.char { color: rgb(168, 72, 168); }.code .literal.string { color: rgb(184, 56, 56); }.code .literal.string.delimiter { color: rgb(184, 88, 32); }.code .literal.string.doc { color: rgb(184, 88, 32); font-style: italic; }.code .literal.string.double { color: rgb(184, 56, 56); }.code .literal.string.escape { color: rgb(112, 144, 48); }.code .literal.string.heredoc { color: rgb(184, 56, 56); }.code .literal.string.interpol { color: rgb(184, 56, 56); text-decoration: underline; }.code .literal.string.other { color: rgb(168, 72, 168); }.code .literal.string.regex { color: rgb(168, 72, 168); }.code .literal.string.single { color: rgb(184, 56, 56); }.code .literal.string.symbol { color: rgb(184, 56, 56); }.code .name.attribute { color: rgb(56, 128, 56); }.code .name.builtin { color: rgb(56, 128, 56); }.code .name.builtin.pseudo { color: rgb(56, 128, 56); font-style: italic; }.code .name.class { color: rgb(40, 112, 136); }.code .name.constant { color: rgb(184, 88, 32); }.code .name.decorator { color: rgb(40, 112, 136); }.code .name.entity { color: rgb(112, 144, 48); }.code .name.exception { color: rgb(144, 136, 40); }.code .name.function { color: rgb(120, 88, 64); }.code .name.function.magic { color: rgb(184, 88, 32); }.code .name.label { color: rgb(40, 152, 112); }.code .name.namespace { color: rgb(40, 152, 112); }.code .name.tag { color: rgb(40, 56, 176); }.code .name.variable.class { color: rgb(176, 64, 64); }.code .name.variable { color: rgb(176, 64, 64); }.code .name.variable.global { color: rgb(144, 136, 40); }.code .name.variable.instance { color: rgb(176, 64, 64); }.code .name.variable.magic { color: rgb(184, 88, 32); }.code .operator { color: rgb(102, 102, 102); }.code .operator.word { color: rgb(168, 72, 168); }.code .punctuation { color: rgb(136, 136, 136); }.code .text.whitespace { color: rgb(168, 144, 40); }div.highlight code { background: rgb(255, 255, 255); }code .comment { color: rgb(136, 136, 136); font-style: italic; }code .comment.hashbang { color: rgb(40, 112, 136); font-style: italic; }code .comment.multiline { color: rgb(136, 136, 136); font-style: italic; }code .comment.preproc { color: rgb(40, 152, 112); }code .comment.preprocfile { color: rgb(136, 136, 136); font-style: italic; }code .comment.single { color: rgb(136, 136, 136); font-style: italic; }code .comment.special { color: rgb(136, 136, 136); font-style: italic; }code .error { background-color: rgb(168, 72, 168); }code .generic.deleted { color: rgb(192, 40, 40); }code .generic.emph { font-style: italic; }code .generic.error { color: rgb(192, 40, 40); }code .generic.heading { color: rgb(102, 102, 102); }code .generic.inserted { color: rgb(56, 128, 56); }code .generic.output { color: rgb(102, 102, 102); }code .generic.prompt { color: rgb(68, 68, 68); }code .generic.strong { font-weight: 700; }code .generic.subheading { color: rgb(68, 68, 68); }code .generic.traceback { color: rgb(40, 56, 176); }code .highlight { background-color: rgb(255, 255, 204); }code .keyword { color: rgb(40, 56, 176); }code .keyword.constant { color: rgb(68, 68, 68); font-style: italic; }code .keyword.declaration { color: rgb(40, 56, 176); font-style: italic; }code .keyword.namespace { color: rgb(40, 56, 176); }code .keyword.pseudo { color: rgb(40, 56, 176); }code .keyword.reserved { color: rgb(40, 56, 176); }code .keyword.type { color: rgb(40, 56, 176); font-style: italic; }code .literal.number.bin { color: rgb(68, 68, 68); }code .literal.number { color: rgb(68, 68, 68); }code .literal.number.float { color: rgb(68, 68, 68); }code .literal.number.hex { color: rgb(68, 68, 68); }code .literal.number.integer { color: rgb(68, 68, 68); }code .literal.number.integer.long { color: rgb(68, 68, 68); }code .literal.number.oct { color: rgb(68, 68, 68); }code .literal.string.affix { color: rgb(68, 68, 68); }code .literal.string.backtick { color: rgb(184, 56, 56); }code .literal.string.char { color: rgb(168, 72, 168); }code .literal.string { color: rgb(184, 56, 56); }code .literal.string.delimiter { color: rgb(184, 88, 32); }code .literal.string.doc { color: rgb(184, 88, 32); font-style: italic; }code .literal.string.double { color: rgb(184, 56, 56); }code .literal.string.escape { color: rgb(112, 144, 48); }code .literal.string.heredoc { color: rgb(184, 56, 56); }code .literal.string.interpol { color: rgb(184, 56, 56); text-decoration: underline; }code .literal.string.other { color: rgb(168, 72, 168); }code .literal.string.regex { color: rgb(168, 72, 168); }code .literal.string.single { color: rgb(184, 56, 56); }code .literal.string.symbol { color: rgb(184, 56, 56); }code .name.attribute { color: rgb(56, 128, 56); }code .name.builtin { color: rgb(56, 128, 56); }code .name.builtin.pseudo { color: rgb(56, 128, 56); font-style: italic; }code .name.class { color: rgb(40, 112, 136); }code .name.constant { color: rgb(184, 88, 32); }code .name.decorator { color: rgb(40, 112, 136); }code .name.entity { color: rgb(112, 144, 48); }code .name.exception { color: rgb(144, 136, 40); }code .name.function { color: rgb(120, 88, 64); }code .name.function.magic { color: rgb(184, 88, 32); }code .name.label { color: rgb(40, 152, 112); }code .name.namespace { color: rgb(40, 152, 112); }code .name.tag { color: rgb(40, 56, 176); }code .name.variable.class { color: rgb(176, 64, 64); }code .name.variable { color: rgb(176, 64, 64); }code .name.variable.global { color: rgb(144, 136, 40); }code .name.variable.instance { color: rgb(176, 64, 64); }code .name.variable.magic { color: rgb(184, 88, 32); }code .operator { color: rgb(102, 102, 102); }code .operator.word { color: rgb(168, 72, 168); }code .punctuation { color: rgb(136, 136, 136); }code .text.whitespace { color: rgb(168, 144, 40); }.formula { text-align: center; font-family: "droid serif", "dejavu serif", stix, serif; margin: 1.2em 0px; }span.formula { white-space: nowrap; }div.formula { padding: 0.5ex; margin-left: auto; margin-right: auto; }a.eqnumber { display: inline-block; float: right; clear: right; font-weight: 700; }span.unknown { color: maroon; }span.ignored, span.arraydef { display: none; }.formula i { letter-spacing: 0.1ex; }.formula .align-left, .align-l { text-align: left; }.formula .align-right, .align-r { text-align: right; }.formula .align-center, .align-c { text-align: center; }span.overline, span.bar { text-decoration: overline; }.fraction, .fullfraction { display: inline-block; vertical-align: middle; text-align: center; }.fraction .fraction { font-size: 80%; line-height: 100%; }span.numerator { display: block; }span.denominator { display: block; padding: 0px; border-top: thin solid; }sup.numerator, sup.unit { font-size: 70%; vertical-align: 80%; }sub.denominator, sub.unit { font-size: 70%; vertical-align: -20%; }span.sqrt { display: inline-block; vertical-align: middle; padding: 0.1ex; }sup.root { font-size: 70%; position: relative; left: 1.4ex; }span.radical { display: inline-block; padding: 0px; font-size: 150%; vertical-align: top; }span.root { display: inline-block; border-top: thin solid; padding: 0px; vertical-align: middle; }span.symbol { line-height: 125%; font-size: 125%; }span.bigsymbol { line-height: 150%; font-size: 150%; }span.largesymbol { font-size: 175%; }span.hugesymbol { font-size: 200%; }span.scripts { display: inline-table; vertical-align: middle; }.script { display: table-row; text-align: left; line-height: 150%; }span.limits { display: inline-table; vertical-align: middle; }.limit { display: table-row; line-height: 99%; }sup.limit, sub.limit { line-height: 100%; }span.symbolover { display: inline-block; text-align: center; position: relative; float: right; right: 100%; bottom: 0.5em; width: 0px; }span.withsymbol { display: inline-block; }span.symbolunder { display: inline-block; text-align: center; position: relative; float: right; right: 80%; top: 0.3em; width: 0px; }span.array, span.bracketcases, span.binomial, span.environment { display: inline-table; text-align: center; border-collapse: collapse; margin: 0px; vertical-align: middle; }span.arrayrow, span.binomrow { display: table-row; padding: 0px; border: 0px; }span.arraycell, span.bracket, span.case, span.binomcell, span.environmentcell { display: table-cell; padding: 0px 0.2ex; line-height: 99%; border: 0px; }span.binom { display: inline-block; vertical-align: middle; text-align: center; font-size: 80%; }span.binomstack { display: block; padding: 0px; }span.overbrace { border-top: 2pt solid; }span.underbrace { border-bottom: 2pt solid; }span.stackrel { display: inline-block; text-align: center; }span.upstackrel { display: block; padding: 0px; font-size: 80%; line-height: 64%; position: relative; top: 0.15em; }span.downstackrel { display: block; vertical-align: bottom; padding: 0px; }span.mathsf, span.textsf { font-style: normal; font-family: sans-serif; }span.mathrm, span.textrm { font-style: normal; font-family: serif; }span.text, span.textnormal { font-style: normal; }span.textipa { color: teal; }span.fraktur { font-family: "lucida blackletter", eufm10, blackletter; }span.blackboard { font-family: Blackboard, msbm10, serif; }span.scriptfont { font-family: "monotype corsiva", "apple chancery", "urw chancery l", cursive; font-style: italic; }span.colorbox { display: inline-block; padding: 5px; }span.fbox { display: inline-block; border: thin solid rgb(0, 0, 0); padding: 2px; }span.boxed, span.framebox { display: inline-block; border: thin solid rgb(0, 0, 0); padding: 5px; }</style></head>
+  <body>
+<!-- minimus / partials / body-header - BEGIN -->
+    <header class="minimus-header">
+      <div class="minimus-topbar">
+        <div class="minimus-topbar-badge">
+          <a href="https://www.spec.org/"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA0OTUgMTIyLjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ5NSAxMjIuNDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiNGRkZGRkY7fQoJLnN0MXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiNGRkZGRkY7fQoJLnN0MntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMwNzIyM0U7fQoJLnN0M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiNENTI3Mjk7fQo8L3N0eWxlPgo8Zz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xOTIuNSw4Ny43YzAtNC4zLTEuNi03LjctNC42LTEwcy04LjUtNC44LTE2LjUtNy40cy0xNC4yLTUuMS0xOC44LTcuN2MtMTIuNi02LjgtMTktMTUuOS0xOS0yNy41CgkJCWMwLTYuMSwxLjctMTEuNCw1LjEtMTYuMWMzLjMtNC44LDguMy04LjQsMTQuNi0xMWM2LjQtMi42LDEzLjUtMy45LDIxLjQtMy45YzgsMCwxNS4xLDEuNCwyMS4zLDQuM3MxMSw3LDE0LjUsMTIuMgoJCQlzNS4yLDExLjIsNS4yLDE4aC0yMi45YzAtNS4xLTEuNi05LjEtNC44LTExLjlzLTcuNy00LjItMTMuNS00LjJjLTUuNywwLTEwLDEuMi0xMywzLjZjLTMsMi4zLTQuNiw1LjUtNC42LDkuNAoJCQljMCwzLjYsMS45LDYuNyw1LjUsOS4xYzMuNiwyLjUsOSw0LjgsMTYuMSw3YzEzLDMuOSwyMi42LDguOCwyOC41LDE0LjZzOSwxMyw5LDIxLjdjMCw5LjctMy42LDE3LjItMTAuOSwyMi44CgkJCWMtNy4yLDUuNS0xNy4xLDguMy0yOS40LDguM2MtOC41LDAtMTYuNC0xLjYtMjMuNS00LjZjLTcuMS0zLjItMTIuNS03LjQtMTYuMS0xMi45Yy0zLjgtNS41LTUuNS0xMS43LTUuNS0xOWgyMwoJCQljMCwxMi4zLDcuNCwxOC40LDIyLDE4LjRjNS41LDAsOS43LTEuMiwxMi44LTMuM0MxOTEsOTQuNiwxOTIuNSw5MS42LDE5Mi41LDg3Ljd6Ii8+CgkJPHBhdGggY2xhc3M9InN0MCIgZD0iTTI0NC44LDc3LjV2MzkuM2gtMjIuOVY1LjVoNDMuNWM4LjQsMCwxNS43LDEuNiwyMiw0LjZzMTEuMyw3LjQsMTQuNiwxM2MzLjUsNS43LDUuMSwxMiw1LjEsMTkuMwoJCQljMCwxMC45LTMuOCwxOS42LTExLjIsMjUuOGMtNy41LDYuMi0xNy44LDkuNC0zMSw5LjRMMjQ0LjgsNzcuNUwyNDQuOCw3Ny41TDI0NC44LDc3LjV6IE0yNDQuOCw1OWgyMC42YzYuMSwwLDEwLjctMS40LDEzLjktNC4zCgkJCWMzLjItMi45LDQuOC03LDQuOC0xMi4yYzAtNS41LTEuNi05LjktNC44LTEzLjJzLTcuNy01LjEtMTMuMy01LjJoLTIxVjU5SDI0NC44eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0zODAuNyw2OC41aC00NC4xdjI5LjloNTEuN3YxOC40aC03NC42VjUuNWg3NC41VjI0aC01MS42djI2LjVoNDQuMVY2OC41eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00ODAsNzkuN2MtMC45LDEyLTUuNCwyMS40LTEzLjMsMjguM2MtOCw3LTE4LjUsMTAuMy0zMS42LDEwLjNjLTE0LjMsMC0yNS41LTQuOC0zMy44LTE0LjUKCQkJQzM5My4yLDk0LjIsMzg5LDgxLDM4OSw2NC4ydi02LjhjMC0xMC43LDEuOS0yMC4xLDUuNy0yOC4zczkuMS0xNC41LDE2LjItMTguOGM3LTQuMywxNS4yLTYuNSwyNC41LTYuNWMxMi45LDAsMjMuMiwzLjUsMzEsMTAuMwoJCQljNy44LDcsMTIuNSwxNi41LDEzLjYsMjloLTIyLjljLTAuNi03LjItMi42LTEyLjUtNS45LTE1LjdjLTMuNS0zLjItOC43LTQuOS0xNS43LTQuOWMtNy43LDAtMTMuMywyLjgtMTcuMiw4LjMKCQkJYy0zLjgsNS41LTUuOCwxNC4xLTUuOCwyNS41VjY1YzAsMTIsMS45LDIwLjksNS41LDI2LjRzOS40LDguNCwxNy4yLDguNGM3LjEsMCwxMi4zLTEuNiwxNS45LTQuOWMzLjUtMy4yLDUuNS04LjMsNS45LTE1LjEKCQkJTDQ4MCw3OS43eiIvPgoJPC9nPgoJPGc+CgkJPHBhdGggY2xhc3M9InN0MCIgZD0iTTQ4Mi40LDQuOWgtMi4ydjYuOEg0NzlWNC45aC0yLjJWMy44aDUuN3YxLjFINDgyLjR6IE00OTAsNS44bC0yLDUuOGgtMC43bC0yLTUuOHY1LjhINDg0VjMuOGgxLjZsMi4yLDUuOQoJCQlsMi4yLTUuOWgxLjZ2OGgtMS4zdi02SDQ5MHoiLz4KCTwvZz4KCTxnPgoJCTxnPgoJCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNOTguNiwyLjN2MC40YzAuNyw5LjMsMC41LDE3LjgtMC41LDI1LjZjLTAuMiwxLjUtMC40LDMuMS0wLjcsNC42Yy0wLjksNS40LTIuMiwxMC40LTMuOSwxNQoJCQkJYy0wLjUsMS41LTEuMSwzLTEuNyw0LjRjLTAuNiwxLjQtMS4yLDIuOC0xLjksNC4xYzAsMCwwLDAsMCwwYy0xLjEsMi4xLTIuMiw0LjEtMy41LDZjLTAuNSwwLjgtMSwxLjUtMS41LDIuMwoJCQkJYy0wLjMsMC40LTAuNSwwLjgtMC44LDEuMWMtMC40LDAuNi0wLjksMS4yLTEuMywxLjdjLTEuNiwyLTMuMiwzLjktNSw1LjdjLTExLjYsMTItMjcuMiwxOS4yLTQ0LjMsMjIuOQoJCQkJYy00LjMsMC45LTguNywxLjYtMTMuMSwyLjFjLTMuNiwwLjQtNy4xLDAuNy0xMC44LDAuOGMtMi40LDAuMS00LjgsMC4xLTcuMiwwLjFIMi4zdjE4LjNoMTE1LjJWMi4zSDk4LjZ6IE04OC42LDY0Ljl2MjIuNEg2NC43CgkJCQlDNzQuMiw4MS43LDgyLjMsNzQuNCw4OC42LDY0Ljl6IE0yOS43LDExNi4xSDMuNnYtMTQuM2M5LjMsMCwxNy4yLTAuNiwyNi4xLTIuMlYxMTYuMXogTTU5LjgsMTE2LjFIMzEuMVY5OS40CgkJCQlDNDEuMyw5Ny41LDUxLDk0LjQsNTkuOCw5MFYxMTYuMXogTTg4LjcsMTE2LjFINjEuMlY4OS4zYzAuNC0wLjIsMC43LTAuNCwxLjEtMC42aDI2LjRWMTE2LjF6IE0xMTYuMSwxMTYuMUg5MFY4OC43aDI2LjFWMTE2LjF6CgkJCQkgTTExNi4xLDg3LjNIOTBWNjIuN2MwLjYtMC45LDEuMS0xLjgsMS42LTIuOGgyNC41Vjg3LjN6IE0xMTYuMSw1OC41SDkyLjRjNC4xLTcuOCw3LjEtMTYuOSw4LjctMjcuNGgxNVY1OC41eiBNMTE2LjEsMjkuNwoJCQkJaC0xNC45YzEtOC41LDEuNC0xNi4zLDAuOC0yNi4xaDE0LjFWMjkuN3oiLz4KCQk8L2c+Cgk8L2c+Cgk8Zz4KCQk8cmVjdCB4PSI5MCIgeT0iODguNyIgY2xhc3M9InN0MiIgd2lkdGg9IjI2LjEiIGhlaWdodD0iMjcuNCIvPgoJCTxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik0zLjYsMTAxLjhjOS4zLDAsMTcuMi0wLjYsMjYuMS0yLjJ2MTYuNUgzLjZWMTAxLjh6Ii8+CgkJPHBhdGggY2xhc3M9InN0MiIgZD0iTTMxLjEsOTkuNEM0MS4zLDk3LjUsNTEsOTQuNCw1OS44LDkwdjI2LjFIMzEuMVY5OS40eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik04OC42LDg3LjNINjQuN2M5LjQtNS42LDE3LjYtMTIuOSwyMy45LTIyLjRWODcuM3oiLz4KCQk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNNjIuMyw4OC43aDI2LjR2MjcuNEg2MS4yVjg5LjNDNjEuNiw4OS4xLDYxLjksODguOSw2Mi4zLDg4Ljd6Ii8+CgkJPHBhdGggY2xhc3M9InN0MiIgZD0iTTExNi4xLDMuNnYyNi4xaC0xNC45YzEtOC41LDEuNC0xNi4zLDAuOC0yNi4xSDExNi4xeiIvPgoJCTxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik0xMDEuMSwzMS4xaDE1djI3LjRIOTIuNEM5Ni41LDUwLjcsOTkuNSw0MS42LDEwMS4xLDMxLjF6Ii8+CgkJPHBhdGggY2xhc3M9InN0MiIgZD0iTTkxLjYsNTkuOWgyNC41djI3LjRIOTBWNjIuN0M5MC42LDYxLjgsOTEuMSw2MC45LDkxLjYsNTkuOXoiLz4KCTwvZz4KCTxnPgoJCTxnPgoJCQk8Zz4KCQkJCTxyZWN0IHg9IjMxLjEiIHk9IjIuMyIgY2xhc3M9InN0MSIgd2lkdGg9IjI4LjciIGhlaWdodD0iMjcuNCIvPgoJCQkJPHJlY3QgeD0iNjEuMiIgeT0iMi4zIiBjbGFzcz0ic3QxIiB3aWR0aD0iMjcuNCIgaGVpZ2h0PSIyNy40Ii8+CgkJCQk8cmVjdCB4PSIyLjMiIHk9IjU5LjkiIGNsYXNzPSJzdDEiIHdpZHRoPSIyNy40IiBoZWlnaHQ9IjI3LjQiLz4KCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik05MCwyLjN2MjcuNGg3LjljMC4xLTAuNSwwLjEtMC45LDAuMi0xLjRjMS03LjgsMS4yLTE2LjIsMC41LTI1LjZWMi4zSDkweiIvPgoJCQkJPHJlY3QgeD0iMi4zIiB5PSIzMS4xIiBjbGFzcz0ic3QxIiB3aWR0aD0iMjcuNCIgaGVpZ2h0PSIyNy40Ii8+CgkJCQk8cmVjdCB4PSIzMS4xIiB5PSIzMS4xIiBjbGFzcz0ic3QxIiB3aWR0aD0iMjguOCIgaGVpZ2h0PSIyNy40Ii8+CgkJCQk8cmVjdCB4PSI2MS4yIiB5PSIzMS4xIiBjbGFzcz0ic3QxIiB3aWR0aD0iMjcuNCIgaGVpZ2h0PSIyNy40Ii8+CgkJCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNjEuMyw1OS45Vjg2YzguMy00LjcsMTUuNi0xMC43LDIxLjUtMTguNGMwLjQtMC42LDAuOS0xLjEsMS4zLTEuN2MxLjQtMS45LDIuNi0zLjksMy44LTUuOUg2MS4zeiIvPgoJCQkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTkwLjEsMzEuMVY1NmMwLjYtMS4yLDEuMi0yLjQsMS43LTMuN2MwLjYtMS40LDEuMi0yLjksMS43LTQuNGMxLjctNC42LDMtOS42LDMuOS0xNQoJCQkJCWMwLjEtMC42LDAuMi0xLjIsMC4zLTEuN0g5MC4xeiIvPgoJCQkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTI5LjcsODguN0gyLjN2MTAuNWgwLjJjMi40LDAsNC44LDAsNy4yLTAuMWM2LjgtMC4zLDEzLjUtMSwyMC0yLjFWODguN3oiLz4KCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMS4xLDk2LjdjOC44LTEuNywxNy4yLTQuMywyNC45LThIMzEuMVY5Ni43eiIvPgoJCQkJPHJlY3QgeD0iMi4zIiB5PSIyLjMiIGNsYXNzPSJzdDEiIHdpZHRoPSIyNy40IiBoZWlnaHQ9IjI3LjQiLz4KCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik01OS45LDg2LjdWNTkuOUgzMS4xdjI3LjRoMjcuN0M1OS4yLDg3LjEsNTkuNiw4Ni45LDU5LjksODYuN0w1OS45LDg2Ljd6Ii8+CgkJCTwvZz4KCQk8L2c+Cgk8L2c+Cgk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNOTAsMjkuN1YyLjNoLTEuNHYyNy40SDYxLjJWMi4zaC0xLjR2MjcuNEgzMS4xVjIuM2gtMS40djI3LjRIMi4zdjEuNGgyNy40djI3LjRIMi4zdjEuNGgyNy40djI3LjRIMi4zdjEuNAoJCWgyNy40Vjk3aDEuNHYtOC4zaDI4di0xLjRoLTI4VjU5LjloMjguOHYyNi44aDEuNFY1OS45aDI4LjNsMCwwbDAuNS0xVjMxLjFoOS4xdi0xLjRMOTAsMjkuN3ogTTU5LjksNTguNUgzMS4xVjMxLjFoMjguOFY1OC41egoJCSBNODguNyw1OC41SDYxLjJWMzEuMWgyNy40TDg4LjcsNTguNUw4OC43LDU4LjV6Ii8+Cgk8Zz4KCQk8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMi4zLDEwMC40YzUuNy0wLjEsMTEuNi0wLjIsMTcuMS0wLjdjNDYuMy00LjYsODUuOC0zMC4yLDgxLjMtOTdsMC0wLjRIOThsMCwwLjRjNS40LDc0LTQzLjksOTUuMy05NS43LDk1LjEKCQkJTDIuMywxMDAuNHoiLz4KCTwvZz4KPC9nPgo8L3N2Zz4K" title="SPEC" alt="SPEC"></a>
+        </div>
+
+        <nav class="minimus-topbar-linkbar">
+          <div class="minimus-topbar-menu">
+            <div class="minimus-topbar-item minimus-haschildren">
+              <a href="/products" class="minimus-topbar-itemtext">Products</a>
+              <div class="minimus-topbar-dropdown">
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/cloud/" class="minimus-topbar-itemtext">Cloud</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/cloud_iaas2018/" class="minimus-topbar-itemtext">SPEC Cloud IaaS 2018</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/cpu/" class="minimus-topbar-itemtext">CPU</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/cpu2017/" class="minimus-topbar-itemtext">SPEC CPU 2017</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/eg/" class="minimus-topbar-itemtext">Embedded</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/adasmark" class="minimus-topbar-itemtext">ADASMark</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/audiomark" class="minimus-topbar-itemtext">AudioMark</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/autobench" class="minimus-topbar-itemtext">AutoBench</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/browsingbench/" class="minimus-topbar-itemtext">BrowsingBench</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/coremark/" class="minimus-topbar-itemtext">CoreMark</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/coremark-pro/" class="minimus-topbar-itemtext">CoreMark-Pro</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/denbench/" class="minimus-topbar-itemtext">DENBench</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/fpmark/" class="minimus-topbar-itemtext">FPMark</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/iotmark/" class="minimus-topbar-itemtext">IoTMark</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/mlmark/" class="minimus-topbar-itemtext">MLMark</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/multibench/" class="minimus-topbar-itemtext">MultiBench</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/networking/" class="minimus-topbar-itemtext">Networking</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/oabench/" class="minimus-topbar-itemtext">OABench</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/securemark/" class="minimus-topbar-itemtext">SecureMark</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/telebench/" class="minimus-topbar-itemtext">TeleBench</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/ulpmark/" class="minimus-topbar-itemtext">ULPMark</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="https://gwpg.spec.org/" class="minimus-topbar-itemtext">Graphics/Workstation</a>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/hpg/" class="minimus-topbar-itemtext">High Performance (HPG)</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/accel2023/" class="minimus-topbar-itemtext">SPECaccel 2023</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/hpc2021/" class="minimus-topbar-itemtext">SPEChpc 2021</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/mpi2007/" class="minimus-topbar-itemtext">SPEC MPI 2007</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/omp2012/" class="minimus-topbar-itemtext">SPEC OMP 2012</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/java/" class="minimus-topbar-itemtext">Java Client/Server</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jbb2015/" class="minimus-topbar-itemtext">SPECjbb2015</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jenterprise2018web/" class="minimus-topbar-itemtext">SPECjEnterprise 2018 Web Profile</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jenterprise2010/" class="minimus-topbar-itemtext">SPECjEnterprise 2010</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jvm2008/" class="minimus-topbar-itemtext">SPECjvm 2008</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/power/" class="minimus-topbar-itemtext">Power</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/power_ssj2008/" class="minimus-topbar-itemtext">SPECpower_ssj2008</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/power/docs/specpower-device_list/" class="minimus-topbar-itemtext">SPEC PTDaemon Interface</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/chauffeur-wdk/" class="minimus-topbar-itemtext">SPEC Chauffeur WDK</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/sert" class="minimus-topbar-itemtext">SERT Suite</a>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/storage/" class="minimus-topbar-itemtext">Storage</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/storage2020/" class="minimus-topbar-itemtext">SPECstorage Solution 2020</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/virtualization/" class="minimus-topbar-itemtext">Virtualization</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/virt_datacenter2021/" class="minimus-topbar-itemtext">SPECvirt Datacenter 2021</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/virt_sc2013/" class="minimus-topbar-itemtext">SPEC virt_sc 2013</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/products/retired" class="minimus-topbar-itemtext">Retired Benchmarks</a>
+                </div>
+              </div>
+            </div>
+            <div class="minimus-topbar-item minimus-haschildren">
+              <a href="/results" class="minimus-topbar-itemtext">Results</a>
+              <div class="minimus-topbar-dropdown">
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Cloud</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/cloud_iaas2018/results/" class="minimus-topbar-itemtext">SPEC Cloud IaaS 2018</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/cloud_iaas2016/results/" class="minimus-topbar-itemtext">SPEC Cloud IaaS 2016</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">CPU</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/cpu2017/results/" class="minimus-topbar-itemtext">SPEC CPU 2017</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/cpu2006/results/" class="minimus-topbar-itemtext">SPEC CPU 2006</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/cpu2000/results/" class="minimus-topbar-itemtext">SPEC CPU 2000</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Embedded</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/andebench/" class="minimus-topbar-itemtext">AndEBench-Pro Results</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/audiomark/scores.php" class="minimus-topbar-itemtext">AudioMark Results</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/coremark/scores.php" class="minimus-topbar-itemtext">CoreMark Results</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/coremark-pro/scores.php" class="minimus-topbar-itemtext">CoreMark-Pro Results</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://www.eembc.org/mlmark/scores.php" class="minimus-topbar-itemtext">MLBench Results</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Graphics/Workstation</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://gwpg.spec.org/specapc-3dsmax-results/" class="minimus-topbar-itemtext">SPECapc for 3ds Max</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://gwpg.spec.org/specapc-creo-results/" class="minimus-topbar-itemtext">SPECapc for Creo</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://gwpg.spec.org/specapc-maya-results/" class="minimus-topbar-itemtext">SPECapc for Maya</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://gwpg.spec.org/benchmarks/benchmark/specapc-for-siemens-nx-2024/" class="minimus-topbar-itemtext">SPECapc for Siemens NX</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://gwpg.spec.org/specapc-solidworks-results/" class="minimus-topbar-itemtext">SPECapc for Solidworks</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://gwpg.spec.org/specviewperf-results/" class="minimus-topbar-itemtext">SPECviewperf</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://gwpg.spec.org/specworkstation-results/" class="minimus-topbar-itemtext">SPECworkstation</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">High Performance (HPG)</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/accel2023/results/" class="minimus-topbar-itemtext">SPECaccel 2023</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/accel/results/" class="minimus-topbar-itemtext">SPEC ACCEL</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/hpc2021/results/" class="minimus-topbar-itemtext">SPEChpc 2021</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/mpi2007/results/" class="minimus-topbar-itemtext">SPEC MPI 2007</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/omp2012/results/" class="minimus-topbar-itemtext">SPEC OMP 2012</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Java Client/Server</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jappserver2004/results/" class="minimus-topbar-itemtext">SPECjAppServer 2004</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jappserver2002/results/" class="minimus-topbar-itemtext">SPECjAppServer 2002</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jappserver2001/results/" class="minimus-topbar-itemtext">SPECjAppServer 2001</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jbb2015/results/" class="minimus-topbar-itemtext">SPECjbb 2015</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jbb2013/results/" class="minimus-topbar-itemtext">SPECjbb 2013</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jbb2005/results/" class="minimus-topbar-itemtext">SPECjbb 2005</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jbb2000/results/" class="minimus-topbar-itemtext">SPECjbb 2000</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jenterprise2018web/results/" class="minimus-topbar-itemtext">SPECjEnterprise 2018 Web Profile</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jenterprise2010/results/" class="minimus-topbar-itemtext">SPECjEnterprise 2010</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jms2007/results/" class="minimus-topbar-itemtext">SPEC JMS 2007</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jvm2008/results/" class="minimus-topbar-itemtext">SPECjvm 2008</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/jvm98/results/" class="minimus-topbar-itemtext">SPECjvm 98</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Mail Server</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/mail2009/results/" class="minimus-topbar-itemtext">SPECmail 2009</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/mail2008/results/" class="minimus-topbar-itemtext">SPECmail 2008</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/mail2001/results/" class="minimus-topbar-itemtext">SPECmail 2001</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Power</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/power_ssj2008/results/" class="minimus-topbar-itemtext">SPECpower_ssj 2008</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Storage</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/storage2020/results/" class="minimus-topbar-itemtext">SPECstorage Solution 2020</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/sfs2014/results/" class="minimus-topbar-itemtext">SPEC SFS 2014</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/sfs2008/results/" class="minimus-topbar-itemtext">SPEC SFS 2008</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/sfs97r1/results/" class="minimus-topbar-itemtext">SPEC SFS 97_R1</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/sfs97/results/" class="minimus-topbar-itemtext">SPEC SFS 97</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Virtualization</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/virt_datacenter2021/results/" class="minimus-topbar-itemtext">SPEC VIRT Datacenter 2021</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/virt_sc2013/results/" class="minimus-topbar-itemtext">SPEC VIRT_SC 2013</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/virt_sc2010/results/" class="minimus-topbar-itemtext">SPEC VIRT_SC 2010</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/results/" class="minimus-topbar-itemtext">Web Server</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/web2009/results/" class="minimus-topbar-itemtext">SPECweb 2009</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/web2005/results/" class="minimus-topbar-itemtext">SPECweb 2005</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/web99ssl/results/" class="minimus-topbar-itemtext">SPECweb 99_SSL</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/web99/results/" class="minimus-topbar-itemtext">SPECweb 99</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/web96/results/" class="minimus-topbar-itemtext">SPECweb 96</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/products/fairuse/" class="minimus-topbar-itemtext">Result Fair Use</a>
+                </div>
+              </div>
+            </div>
+            <div class="minimus-topbar-item minimus-haschildren">
+              <a href="/news" class="minimus-topbar-itemtext">News</a>
+              <div class="minimus-topbar-dropdown">
+                <div class="minimus-topbar-dropitem">
+                  <a href="/blog/" class="minimus-topbar-itemtext">SPEC Blog</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/letters/" class="minimus-topbar-itemtext">SPEC Newsletter</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/pressreleases/" class="minimus-topbar-itemtext">Press Releases</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/newsroom/" class="minimus-topbar-itemtext">Media Coverage</a>
+                </div>
+              </div>
+            </div>
+            <div class="minimus-topbar-item minimus-haschildren">
+              <a href="/spec" class="minimus-topbar-itemtext">Info</a>
+              <div class="minimus-topbar-dropdown">
+                <div class="minimus-topbar-dropitem">
+                  <a href="/spec/" class="minimus-topbar-itemtext">About SPEC</a>
+                </div>
+                <div class="minimus-topbar-dropitem minimus-haschildren">
+                  <a href="/spec/#specgroups" class="minimus-topbar-itemtext">SPEC Groups</a>
+                  <div class="minimus-topbar-dropside">
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/eg/" class="minimus-topbar-itemtext">Embedded Group</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://gwpg.spec.org/" class="minimus-topbar-itemtext">Graphics &amp; Workstation Performance Group</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/hpg/" class="minimus-topbar-itemtext">High Performance Computing Group</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/isg/" class="minimus-topbar-itemtext">International Standards Group</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="/osg/" class="minimus-topbar-itemtext">Open Systems Group</a>
+                    </div>
+                    <div class="minimus-topbar-dropitem">
+                      <a href="https://research.spec.org/" class="minimus-topbar-itemtext">Research Group</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/spec/contact/" class="minimus-topbar-itemtext">Contact SPEC</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/spec/membership/" class="minimus-topbar-itemtext">Joining SPEC</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/order/" class="minimus-topbar-itemtext">Order SPEC Benchmarks</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/spec/submitting_results/" class="minimus-topbar-itemtext">Submit Benchmark Results</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/products/fairuse/" class="minimus-topbar-itemtext">SPEC Fair Use Rules</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/spec/trademarks/" class="minimus-topbar-itemtext">SPEC Trademarks</a>
+                </div>
+                <div class="minimus-topbar-dropitem">
+                  <a href="/search/" class="minimus-topbar-itemtext">SPEC Website Search</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="minimus-topbar-search">
+          <form action="/search/#text-search-form" method="get" class="minimus-topbar-search-form" role="search">
+            <input type="text" name="q" alt="search" placeholder="Search..." class="minimus-topbar-search-input">
+            <input type="submit" value="Search">
+          </form>
+        </div>
+      </div> 
+    </header>
+<!-- minimus / partials / body-header - END -->
+
+<!-- minimus / partials / body-splash - BEGIN -->
+    <div class="minimus-page">
+      <section class="minimus-hero">
+        <div class="minimus-hero-area" style="background-image: url(/images/virtualizationdatacenter.jpg);">
+          <div class="minimus-colspace" style="">
+            <div class="minimus-hero-title">
+              <div class="minimus-hero-title-text"></div>
+            </div>
+            <div class="minimus-hero-blurb">
+              <div class="minimus-hero-blurb-text"></div>
+            </div>
+        </div>
+      </div></section>
+    </div>
+    <div class="minimus-page">
+      <nav class="minimus-midbar-linkbar">
+        <div class="minimus-colspace">
+          <ul class="minimus-midbar-menu">
+            <li class="minimus-midbar-item" title="">
+              <span class="minimus-midbar-itemtext">Published Results</span>
+              <ul class="minimus-midbar-dropdown">
+                <li class="minimus-link-item" title="Compare results from published systems">
+                  <a href="/virt_sc2013/results/" class="minimus-midbar-linktext">All SPECvirt_sc 2013 results</a>
+                </li>
+                <li class="minimus-link-item" title="How to make a proper comparison of results">
+                  <a href="/fairuse" class="minimus-midbar-linktext">Fair Use Policy</a>
+                </li>
+              </ul>
+            </li>
+            <li class="minimus-midbar-item" title="">
+              <a href="/virt_sc2013/index.html#documentation" class="minimus-midbar-linktext">Benchmark documentation</a>
+              <ul class="minimus-midbar-dropdown">
+                <li class="minimus-link-item" title="">
+                  <a href="/virt_sc2013/docs/SPECvirt_UserGuide.html" class="minimus-midbar-linktext">User's Guide</a>
+                </li>
+                <li class="minimus-link-item" title="">
+                  <a href="/virt_sc2013/docs/SPECvirt_RunRules.html" class="minimus-midbar-linktext">Run and Reporting Rules</a>
+                </li>
+                <li class="minimus-link-item" title="">
+                  <a href="/virt_sc2013/docs/SPECvirt_FAQ.html" class="minimus-midbar-linktext">FAQ</a>
+                </li>
+                <li class="minimus-link-item" title="">
+                  <a href="/virt_sc2013/index.html#techsupport" class="minimus-midbar-linktext">Technical support</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+<!-- minimus / partials / body-splash - END -->
+
+    <div class="minimus-page">
+      <main class="minimus-content">
+<!-- minimus / default / single - BEGIN -->
+        <div class="minimus-column">
+          <article>
+<div class="document">
+
+
+<div class="section" id="virt2013">
+<h2>SPEC VIRT_SC<sup>®</sup> 2013 benchmark</h2>
+<p>The SPEC VIRT_SC<sup>®</sup> 2013 benchmark suites are used to measure performance of virtualized platforms. This is the newest version of the SPEC VIRT<sup>®</sup> benchmarks which are targeted for use by hardware vendors, virtualization software vendors, application software vendors, datacenter managers, and academic researchers. The benchmark addresses performance evaluation of datacenter servers used in virtualized server consolidation (sc).</p>
+<p>The SPEC VIRT_SC<sup>®</sup> 2013 benchmark price is $3000 for new customers and $750 for qualified non profit organizations and accredited academic institutions. To find out if your organization has an existing license for a SPEC product please contact SPEC at <a class="reference external" href="mailto:info@spec.org">info@spec.org</a>.</p>
+<div class="action docutils container">
+<a class="reference external" href="/order">Purchase the SPEC virt_sc® 2013 benchmark</a></div>
+<div class="action docutils container">
+<a class="reference external" href="/order/nonprofitorder">Purchase SPEC virt_sc® 2013 benchmark with non-profit pricing</a></div>
+<div class="admonition admonition-patch-updates">
+<p class="first admonition-title">Patch updates</p>
+<ul class="last simple">
+<li>A <a class="reference external" href="docs/SPECvirt_Patches.html">patch for the SPEC virt_sc 2013 benchmark v1.1</a> was released on April 28, 2023. Patch P1a replaces Patch P1. It addresses an issue encountered when applying Patch P1, which used the Linux utility xdelta, and is no longer compatible with newer versions of the utility. Any submissions using TLSv1, TLSv1.1, or TLSv1.2 encryptions for the webserver workload must use this patch.</li>
+<li>A <a class="reference external" href="docs/SPECvirt_Patches.html">patch for SPEC virt_sc 2013 v1.1</a> was released on March 10, 2019. Patch P2 addresses an issue encountered when running the webserver workload with PHP versions 5.5 and newer which would prevent the workload from properly running and generating a valid result. Any submissions using PHP 5.5 or newer for the webserver workload may use this patch.</li>
+<li>A <a class="reference external" href="docs/SPECvirt_Patches.html">patch for SPEC virt_sc 2013 v1.1</a> was released on March 20, 2017. Patch P1 addresses an issue encountered when running the webserver workload with TLS encryptions which would cause any result to be marked as invalid. Any submissions using TLSv1, TLSv1.1, or TLSv1.2 encryptions for the webserver workload must use this patch.</li>
+</ul>
+</div>
+<p>The SPEC VIRT_SC<sup>®</sup> 2013 benchmark  measures the end-to-end performance of all system components including the hardware, virtualization platform, and the virtualized guest operating system and application software. The benchmark supports hardware virtualization, operating system virtualization, and hardware.</p>
+<p>The benchmark utilizes several SPEC workloads representing applications that are common targets of virtualization and server consolidation. We modified each of these standard workloads to match a typical server consolidation scenario of CPU resource requirements, memory, disk I/O, and network utilization for each workload. These workloads are modified versions of the SPECweb 2005, SPECjAppServer 2004, SPECmail 2008, and SPECint 2006 benchmarks. The client-side SPEC virt_sc benchmark harness controls the workloads. Scaling is achieved by running additional sets of virtual machines, called "tiles", until overall throughput reaches a peak. All VMs must continue to meet required quality of service (QoS) criteria.</p>
+<p>The benchmark also includes options for measuring power consumption and power/performance relationships. Based on SPEC Power methodology, power measurement requires the use one of the accepted power analyzers. The benchmarker has the option of running with power monitoring enabled and can submit results to any of three categories:</p>
+<ul class="simple">
+<li>Performance only (SPEC virt_sc 2013 benchmark metric)</li>
+<li>Performance/power for the System Under Test including storage (SPEC virt_sc 2013_PPW benchmark metric)</li>
+<li>Performance/power for the Server-only (SPEC virt_sc 2013_ServerPPW benchmark metric)</li>
+</ul>
+<p><strong>SPEC virt_sc 2013 Benchmark V1.1 available:</strong> The V1.1 update:</p>
+<p>1.  Incorporates all errata fixes since the initial release
+1.  Adds support for newer web security protocols (TLS) and ciphers
+1.  Updates the Power and Temperature Daemon (PTD) to its latest release</p>
+<p>Result submissions were accepted with the V1.0 or V1.1 version of the benchmark until December 21, 2016 (three months after release). Comparisons are allowed between V1.0 and V1.1 of the benchmark. After December 21, 2016, all result submissions must be made with the V1.1 version of the benchmark. Licensees of the previous version of the benchmark suite may contact the SPEC office to request a free update to V1.1.</p>
+</div>
+<div class="section" id="results">
+<h2>Results</h2>
+<dl class="docutils">
+<dt><a class="reference external" href="results/">Submitted Results</a></dt>
+<dd>Includes all of the results submitted to SPEC from the SPEC member companies and other licensees of the benchmark.</dd>
+</dl>
+<p><a class="reference external" href="https://www.spec.org/cgi-bin/osgresults?conf=virt_sc2013">Search the SPEC virt_sc 2013 benchmark results</a>
+in SPEC's online result database.</p>
+</div>
+<div class="section" id="information">
+<h2>Information</h2>
+<div class="section" id="press-releases">
+<h3>Press Releases</h3>
+<p>Press release material, documents, and announcements:</p>
+<ul class="simple">
+<li><a class="reference external" href="press/release">Benchmark release</a></li>
+<li><a class="reference external" href="press/releasev1.1">Version 1.1 release</a></li>
+</ul>
+</div>
+<div class="section" id="benchmark-documentation">
+<span id="documentation"></span><h3>Benchmark Documentation</h3>
+<ul class="simple">
+<li><a class="reference external" href="docs/SPECvirt_FAQ.html">FAQ</a></li>
+<li><a class="reference external" href="docs/SPECvirt_UserGuide.html">User's Guide</a></li>
+<li><a class="reference external" href="docs/SPECvirt_ClientHarnessUserGuide.html">Client Harness User's Guide</a></li>
+<li><a class="reference external" href="docs/SPECvirt_RunRules.html">Run and Reporting Rules</a></li>
+<li><a class="reference external" href="docs/SPECvirt_DesignOverview.html">Design Overview</a></li>
+<li><a class="reference external" href="docs/SPECvirt_Credits.html">Credits</a></li>
+</ul>
+</div>
+<div class="section" id="benchmark-technical-support">
+<span id="techsupport"></span><h3>Benchmark Technical Support</h3>
+<ul class="simple">
+<li><a class="reference external" href="docs/SPECvirt_TechnicalSupport.html">Technical Support FAQ</a></li>
+<li><a class="reference external" href="https://www.spec.org/forums/index.php?board=3.0">SPEC VIRT Forum</a> (Read-only archive)</li>
+<li><a class="reference external" href="https://www.spec.org/forums/index.php?topic=15.0">Example VM Guide and Setup Scripts</a></li>
+</ul>
+</div>
+</div>
+</div>
+          </article>
+        </div>
+<!-- minimus / default / single - END -->
+
+      </main>
+    </div>
+<!-- minimus / partials / body-footer - BEGIN --><footer>
+      <nav class="minimus-footer-linkbar">
+        <ul class="minimus-footer-linkcol">
+          <li class="minimus-link-item bold">
+            <span class="minimus-footer-link-text">Published Results</span>
+          </li>
+          <li class="minimus-link-item">
+            <a href="/virt_sc2013/results/" class="minimus-footer-link-item-link" title="Compare results from published systems">All SPECvirt_sc 2013 results</a>
+          </li>
+          <li class="minimus-link-item">
+            <a href="/fairuse" class="minimus-footer-link-item-link" title="How to make a proper comparison of results">Fair Use Policy</a>
+          </li>
+        </ul>
+        <ul class="minimus-footer-linkcol">
+          <li class="minimus-link-item">
+            <a href="/virt_sc2013/index.html#documentation" class="minimus-footer-link-item-link" title="">Benchmark documentation</a>
+          </li>
+          <li class="minimus-link-item">
+            <a href="/virt_sc2013/docs/SPECvirt_UserGuide.html" class="minimus-footer-link-item-link" title="">User's Guide</a>
+          </li>
+          <li class="minimus-link-item">
+            <a href="/virt_sc2013/docs/SPECvirt_RunRules.html" class="minimus-footer-link-item-link" title="">Run and Reporting Rules</a>
+          </li>
+          <li class="minimus-link-item">
+            <a href="/virt_sc2013/docs/SPECvirt_FAQ.html" class="minimus-footer-link-item-link" title="">FAQ</a>
+          </li>
+          <li class="minimus-link-item">
+            <a href="/virt_sc2013/index.html#techsupport" class="minimus-footer-link-item-link" title="">Technical support</a>
+          </li>
+        </ul>
+      </nav>
+      <div class="minimus-footer-base">
+        <div class="minimus-footer-base-copy">
+          <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxNTEuMiAyMDEuNiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTUxLjIgMjAxLjY7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojRkZGRkZGO30KCS5zdDF7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojRkZGRkZGO30KCS5zdDJ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojMDcyMjNFO30KCS5zdDN7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojRDUyNzI5O30KPC9zdHlsZT4KPGc+Cgk8Zz4KCQk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMjYuNCwxODcuMmMwLTEuOC0wLjctMy4xLTEuOS00LjFjLTEuMi0wLjktMy41LTItNi44LTNzLTUuOC0yLjEtNy43LTMuMWMtNS4yLTIuOC03LjgtNi41LTcuOC0xMS4zCgkJCWMwLTIuNSwwLjctNC43LDIuMS02LjZjMS40LTIsMy40LTMuNCw2LTQuNXM1LjUtMS42LDguOC0xLjZzNi4yLDAuNiw4LjcsMS44czQuNSwyLjgsNS45LDVjMS40LDIuMSwyLjEsNC42LDIuMSw3LjNoLTkuNAoJCQljMC0yLjEtMC43LTMuNy0yLTQuOWMtMS4zLTEuMS0zLjEtMS43LTUuNS0xLjdjLTIuMywwLTQuMSwwLjUtNS4zLDEuNWMtMS4yLDAuOS0xLjksMi4zLTEuOSwzLjhjMCwxLjUsMC44LDIuNywyLjMsMy43CgkJCXMzLjcsMiw2LjYsMi44YzUuMywxLjYsOS4yLDMuNiwxMS43LDZjMi40LDIuNCwzLjcsNS4zLDMuNyw4LjljMCw0LTEuNSw3LTQuNCw5LjNzLTcsMy40LTEyLDMuNGMtMy41LDAtNi43LTAuNy05LjYtMS45CgkJCWMtMi45LTEuMy01LjEtMy02LjYtNS4zYy0xLjUtMi4zLTIuMy00LjgtMi4zLTcuOGg5LjRjMCw1LDMsNy41LDksNy41YzIuMywwLDQtMC41LDUuMi0xLjRDMjUuOCwxOTAuMSwyNi40LDE4OC44LDI2LjQsMTg3LjJ6Ii8+CgkJPHBhdGggY2xhc3M9InN0MCIgZD0iTTQ3LjgsMTgzLjF2MTZoLTkuNHYtNDUuNWgxNy44YzMuNCwwLDYuNCwwLjcsOSwxLjljMi42LDEuMiw0LjYsMyw2LDUuM2MxLjQsMi4zLDIuMSw0LjksMi4xLDcuOQoJCQljMCw0LjQtMS41LDgtNC42LDEwLjVjLTMuMSwyLjUtNy4zLDMuOC0xMi43LDMuOEw0Ny44LDE4My4xTDQ3LjgsMTgzLjF6IE00Ny44LDE3NS41aDguNGMyLjUsMCw0LjQtMC42LDUuNy0xLjgKCQkJYzEuMy0xLjIsMi0yLjgsMi01YzAtMi4zLTAuNy00LTItNS40Yy0xLjMtMS40LTMuMS0yLjEtNS40LTIuMWgtOC42TDQ3LjgsMTc1LjVMNDcuOCwxNzUuNXoiLz4KCQk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTAzLjQsMTc5LjRoLTE4djEyLjJoMjEuMXY3LjVINzZ2LTQ1LjVoMzAuNHY3LjZIODUuNHYxMC44aDE4VjE3OS40eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNDMuOSwxODRjLTAuNCw0LjktMi4yLDguOC01LjQsMTEuNWMtMy4zLDIuOC03LjYsNC4yLTEyLjksNC4yYy01LjksMC0xMC40LTItMTMuOC01LjkKCQkJYy0zLjMtMy45LTUtOS4zLTUtMTYuMnYtMi44YzAtNC40LDAuOC04LjIsMi4zLTExLjVjMS41LTMuMywzLjctNS45LDYuNi03LjdjMi44LTEuOCw2LjItMi43LDEwLTIuN2M1LjMsMCw5LjUsMS40LDEyLjcsNC4yCgkJCWMzLjIsMi44LDUuMSw2LjgsNS42LDExLjhoLTkuNGMtMC4yLTMtMS4xLTUuMS0yLjQtNi40Yy0xLjQtMS4zLTMuNi0yLTYuNC0yYy0zLjEsMC01LjQsMS4xLTcsMy40Yy0xLjUsMi4zLTIuNCw1LjctMi40LDEwLjR2My42CgkJCWMwLDQuOSwwLjgsOC41LDIuMywxMC44YzEuNSwyLjMsMy44LDMuNCw3LDMuNGMyLjksMCw1LTAuNyw2LjUtMmMxLjQtMS4zLDIuMy0zLjQsMi40LTYuMkMxMzQuNiwxODQsMTQzLjksMTg0LDE0My45LDE4NHoiLz4KCTwvZz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xNDUuNywxNTQuN2gtMC45djIuOGgtMC41di0yLjhoLTAuOXYtMC41aDIuM1YxNTQuN3ogTTE0OC44LDE1NWwtMC44LDIuNGgtMC4zbC0wLjgtMi40djIuNGgtMC41di0zLjJoMC43CgkJCWwwLjksMi40bDAuOS0yLjRoMC43djMuM2gtMC41TDE0OC44LDE1NUwxNDguOCwxNTV6Ii8+Cgk8L2c+Cgk8Zz4KCQk8Zz4KCQkJPGc+CgkJCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTIwLjUsNHYwLjVjMC44LDExLjYsMC42LDIyLjEtMC42LDMxLjdjLTAuMiwxLjktMC41LDMuOC0wLjgsNS43Yy0xLjEsNi43LTIuOCwxMi45LTQuOCwxOC42CgkJCQkJYy0wLjcsMS45LTEuNCwzLjctMi4xLDUuNWMtMC43LDEuOC0xLjUsMy41LTIuNCw1LjFjMCwwLDAsMCwwLDBjLTEuMywyLjYtMi44LDUuMS00LjMsNy41Yy0wLjYsMS0xLjIsMS45LTEuOSwyLjgKCQkJCQljLTAuMywwLjUtMC42LDAuOS0xLDEuNGMtMC41LDAuNy0xLjEsMS40LTEuNiwyLjFjLTEuOSwyLjUtNCw0LjktNi4xLDcuMWMtMTQuNCwxNC45LTMzLjcsMjMuOC01NC45LDI4LjMKCQkJCQljLTUuMywxLjEtMTAuNywyLTE2LjIsMi42Yy00LjQsMC41LTguOSwwLjgtMTMuMywxYy0zLDAuMS01LjksMC4yLTguOSwwLjJIMS4xdjIyLjdoMTQyLjhWNEgxMjAuNXogTTEwOC4xLDgxLjZ2MjcuOEg3OC41CgkJCQkJQzkwLjIsMTAyLjQsMTAwLjMsOTMuMywxMDguMSw4MS42eiBNMzUuMSwxNDVIMi44di0xNy43YzExLjYsMCwyMS40LTAuOCwzMi4zLTIuN1YxNDV6IE03Mi40LDE0NUgzNi44di0yMC43CgkJCQkJYzEyLjctMi4zLDI0LjctNi4xLDM1LjYtMTEuNlYxNDV6IE0xMDguMiwxNDVINzQuMXYtMzMuM2MwLjQtMC4yLDAuOS0wLjUsMS4zLTAuN2gzMi44VjE0NXogTTE0Mi4yLDE0NWgtMzIuM3YtMzRoMzIuM1YxNDV6CgkJCQkJIE0xNDIuMiwxMDkuM2gtMzIuM1Y3OC44YzAuNy0xLjEsMS40LTIuMywyLTMuNWgzMC4zVjEwOS4zeiBNMTQyLjIsNzMuN2gtMjkuNGM1LjEtOS43LDguOC0yMSwxMC44LTM0aDE4LjZWNzMuN3ogTTE0Mi4yLDM4CgkJCQkJaC0xOC41YzEuMy0xMC41LDEuOC0yMC4yLDEtMzIuNGgxNy41VjM4eiIvPgoJCQk8L2c+CgkJPC9nPgoJCTxnPgoJCQk8cmVjdCB4PSIxMDkuOCIgeT0iMTExLjEiIGNsYXNzPSJzdDIiIHdpZHRoPSIzMi4zIiBoZWlnaHQ9IjM0Ii8+CgkJCTxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik0yLjgsMTI3LjNjMTEuNiwwLDIxLjQtMC44LDMyLjMtMi43VjE0NUgyLjhWMTI3LjN6Ii8+CgkJCTxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik0zNi44LDEyNC4zYzEyLjctMi4zLDI0LjctNi4xLDM1LjYtMTEuNlYxNDVIMzYuOFYxMjQuM3oiLz4KCQkJPHBhdGggY2xhc3M9InN0MiIgZD0iTTEwOC4xLDEwOS4zSDc4LjVjMTEuNy02LjksMjEuOC0xNiwyOS42LTI3LjhWMTA5LjN6Ii8+CgkJCTxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik03NS41LDExMS4xaDMyLjh2MzRINzQuMXYtMzMuM0M3NC42LDExMS42LDc1LDExMS4zLDc1LjUsMTExLjF6Ii8+CgkJCTxwYXRoIGNsYXNzPSJzdDIiIGQ9Ik0xNDIuMiw1LjZWMzhoLTE4LjVjMS4zLTEwLjUsMS44LTIwLjIsMS0zMi40SDE0Mi4yeiIvPgoJCQk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNMTIzLjYsMzkuN2gxOC42djM0aC0yOS40QzExNy45LDYzLjksMTIxLjYsNTIuNywxMjMuNiwzOS43eiIvPgoJCQk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNMTExLjgsNzUuNGgzMC4zdjM0aC0zMi4zVjc4LjhDMTEwLjUsNzcuNywxMTEuMiw3Ni42LDExMS44LDc1LjR6Ii8+CgkJPC9nPgoJCTxnPgoJCQk8Zz4KCQkJCTxnPgoJCQkJCTxyZWN0IHg9IjM2LjgiIHk9IjQiIGNsYXNzPSJzdDEiIHdpZHRoPSIzNS42IiBoZWlnaHQ9IjM0Ii8+CgkJCQkJPHJlY3QgeD0iMzYuOCIgeT0iMzkuNyIgY2xhc3M9InN0MSIgd2lkdGg9IjM1LjciIGhlaWdodD0iMzQiLz4KCQkJCQk8cmVjdCB4PSI3NC4xIiB5PSI0IiBjbGFzcz0ic3QxIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiLz4KCQkJCQk8cmVjdCB4PSIxLjIiIHk9Ijc1LjQiIGNsYXNzPSJzdDEiIHdpZHRoPSIzMy45IiBoZWlnaHQ9IjM0Ii8+CgkJCQkJPHJlY3QgeD0iMS4yIiB5PSIzOS43IiBjbGFzcz0ic3QxIiB3aWR0aD0iMzMuOSIgaGVpZ2h0PSIzNCIvPgoJCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik03Mi41LDEwOC42Vjc1LjRIMzYuOHYzNGgzNC40YzAuNS0wLjIsMS0wLjUsMS40LTAuN0g3Mi41eiIvPgoJCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMDkuOCw0djM0aDkuOGMwLjEtMC42LDAuMi0xLjIsMC4yLTEuOGMxLjItOS42LDEuNS0yMC4xLDAuNi0zMS43VjRIMTA5Ljh6Ii8+CgkJCQkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTM1LjEsMTExLjFIMS4ydjEzaDAuMmMzLDAsNiwwLDguOS0wLjJjOC40LTAuMywxNi43LTEuMiwyNC44LTIuN1YxMTEuMXoiLz4KCQkJCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNzQuMyw3NS40djMyLjNjMTAuMy01LjgsMTkuMy0xMy4zLDI2LjctMjIuOGMwLjUtMC43LDEuMS0xLjQsMS42LTIuMWMxLjctMi4zLDMuMy00LjgsNC44LTcuNEg3NC4zeiIvPgoJCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xMTAsMzkuN3YzMC44YzAuNy0xLjUsMS41LTMsMi4xLTQuNmMwLjgtMS44LDEuNS0zLjYsMi4xLTUuNWMyLjEtNS43LDMuNy0xMS45LDQuOC0xOC42CgkJCQkJCWMwLjEtMC43LDAuMi0xLjQsMC4zLTIuMUgxMTB6Ii8+CgkJCQkJPHJlY3QgeD0iMS4yIiB5PSI0IiBjbGFzcz0ic3QxIiB3aWR0aD0iMzMuOSIgaGVpZ2h0PSIzNCIvPgoJCQkJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zNi44LDEyMWMxMC45LTIuMSwyMS4zLTUuMywzMC45LTkuOUgzNi44VjEyMXoiLz4KCQkJCQk8cmVjdCB4PSI3NC4xIiB5PSIzOS43IiBjbGFzcz0ic3QxIiB3aWR0aD0iMzQiIGhlaWdodD0iMzQiLz4KCQkJCTwvZz4KCQkJPC9nPgoJCTwvZz4KCQk8cGF0aCBjbGFzcz0ic3QyIiBkPSJNMTA5LjgsMzhWNGgtMS43djM0aC0zNFY0aC0xLjd2MzRIMzYuOFY0aC0xLjd2MzRoLTM0djEuN2gzNHYzNGgtMzR2MS43aDM0djM0aC0zNHYxLjdoMzR2MTAuM2gxLjd2LTEwLjMKCQkJaDM0Ljd2LTEuN0gzNi44di0zNGgzNS43djMzLjJoMS43Vjc1LjRoMzUuMWwwLDBsMC42LTEuMlYzOS43aDExLjNWMzhMMTA5LjgsMzh6IE03Mi41LDczLjdIMzYuOHYtMzRoMzUuN1Y3My43eiBNMTA4LjIsNzMuNwoJCQlINzQuMXYtMzRoMzR2MzRIMTA4LjJ6Ii8+CgkJPGc+CgkJCTxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0xLjEsMTI1LjZjNy4xLTAuMSwxNC40LTAuMiwyMS4yLTAuOUM3OS43LDExOSwxMjguNyw4Ny4zLDEyMy4xLDQuNWwwLTAuNWgtMy4zbDAsMC41CgkJCQljNi43LDkxLjctNTQuNCwxMTguMS0xMTguNiwxMTcuOUwxLjEsMTI1LjZ6Ii8+CgkJPC9nPgoJPC9nPgo8L2c+Cjwvc3ZnPgo=" alt="SPEC Logo">
+          <p class="minimus-footer-base-text">© 1995 - 2025 Standard Performance Evaluation Corporation</p>
+        </div>
+        <div class="minimus-footer-base-legal">
+          <p class="minimus-footer-base-text">
+            <a class="minimus-footer-base-link" href="/spec/privacy_policy">Privacy</a>
+            |
+            <a class="minimus-footer-base-link" href="/spec/trademarks">Trademarks</a>
+            |
+            <a class="minimus-footer-base-link" href="/fairuse">Fair Use</a>
+          </p>
+        </div>
+        <div class="minimus-footer-base-icons">
+          <div class="minimus-footer-base-icon">
+            <a href="https://www.x.com/spec_perf" title="X page">
+              <img src="data:image/webp;base64,UklGRgQCAABXRUJQVlA4WAoAAAAYAAAAEwAAEwAAQUxQSPoAAAABkGvb2rFXO3ZlO6ncsbLtCzAq22ZnJ21S2bZt2zn2+Z7o+3ILETEBzfTWE+wSK1vSkmfTNvajT4osvN1PmoDtHwuofutgqWWMAaD0XhY+FP5OOrnireBGG1BNugACKBTvGzHhEN9bEIATZYM96r8+jCnD4G8juA6sCiKOPnfxcVL5Vgr0kRa4+5MDVD/VfwA1N7LwIf8P5FMLUPNdlVMElTFhEN/v5+JJychl9GFMkWymVAXwL64IIp6M3tP53MEDQJcpAYbWhd5IHy6K4W0EOUD1WykAoalzebzfeS8DV8YWaP2hC1bFT13m5rPnUgV/LcDRk+j/L6oDVlA4ICYAAADQAgCdASoUABQAPpFEnUqlo6KhqAgAsBIJaQAAPaOgAP74TQAAAEVYSUa2AAAASUkqAAgAAAAFABoBBQABAAAASgAAABsBBQABAAAAUgAAACgBAwABAAAAAgAAADEBAgAQAAAAWgAAAGmHBAABAAAAagAAAAAAAACQAAAAAQAAAJAAAAABAAAAUGFpbnQuTkVUIDUuMS4yAAMAAJAHAAQAAAAwMjMwAaADAAEAAAABAAAABaAEAAEAAACUAAAAAAAAAAIAAQACAAQAAABSOTgAAgAHAAQAAAAwMTAwAAAAAGHp8NY=" width="20" height="20" alt="X">
+            </a>
+          </div>
+          <div class="minimus-footer-base-icon">
+            <a href="https://www.linkedin.com/company/standard-performance-evaluation-corporation" title="LinkedIn page">
+              <img src="data:image/webp;base64,UklGRvoAAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSCUAAAABJyAQIHLEe2QjIuJwkAlY6KCCAiroX2uvO6L/EzBhTNW9po4CAFZQOCCuAAAA8AQAnQEqFAAUAD6RQptKpaOiIagIALASCWwArDM0MDeV70yAqxzdj7gmOkiSjokAAP7YoXihCX8+7RJvQ0n/lJXX+e/hxYI0W7Hsgrt/IKQvTDlBrsBH/5axnLUV0FxR7sCZkElMOpZVAXBtY+WO/+OY+6baa1Kt37P0f/kTPzHYOas7jEi3BF6IBlBeAGucTLe1KI/OkSR+GLEyLIzdCsv+Ldo+YLDDzoALyYAA" width="20" height="20" alt="LinkedIn">
+            </a>
+          </div>
+          <div class="minimus-footer-base-icon">
+            <a href="https://www.facebook.com/spec.org" title="Facebook page">
+              <img src="data:image/webp;base64,UklGRtIAAABXRUJQVlA4WAoAAAAQAAAAEwAAEwAAQUxQSCoAAAABL0CQbZNxnvw01YiI4BbUQpIErcMSHMJnsv44k14c0f8JOGFMpfea+ihWUDggggAAAFAEAJ0BKhQAFAA+kTqZSCWjIqEoDVCwEgljALsvjpV65wthaGSMHOAFRsAA/tiaPq4f+O7H3BtOIzOCNAQGiKMh4hSlQG1DanR+VgW3Tmjv9Gh8P9zW2Yvv/tTrucF2JgxQnyvCkqMGKg1nbQ5mSicGXZskAo4ks66j7su1QVoAAAA=" width="20" height="20" alt="Facebook">
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+<!-- minimus / partials / body-footer - END -->
+
+  
+
+<div id="summary" style="display: none;">SPEC VIRT_SC 2013是用于测量虚拟化平台性能的基准测试套件，针对硬件厂商、虚拟化软件厂商、数据中心管理者和学术研究人员设计。该基准测试评估数据中心服务器在虚拟化服务器整合场景中的性能表现，支持硬件虚拟化、操作系统虚拟化和硬件。它整合了多个SPEC工作负载，包括SPECweb 2005、SPECjAppServer 2004、SPECmail 2008和SPECint 2006的修改版本，通过运行称为'tiles'的虚拟机集合实现扩展，所有虚拟机必须满足服务质量标准。基准测试还包括测量功耗和性能/功耗关系的选项，最新版本为V1.1，包含安全协议更新和错误修复。</div></body></html>
