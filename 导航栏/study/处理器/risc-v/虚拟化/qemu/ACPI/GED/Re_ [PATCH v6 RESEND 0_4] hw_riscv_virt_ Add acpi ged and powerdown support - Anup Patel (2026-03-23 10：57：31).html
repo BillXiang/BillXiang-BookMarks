@@ -1,0 +1,142 @@
+<!-- Filename: 导航栏/study/处理器/risc-v/虚拟化/qemu/ACPI/GED/Re_ [PATCH v6 RESEND 0_4] hw_riscv_virt_ Add acpi ged and powerdown support - Anup Patel (2026-03-23 10：57：31).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-devel/CAAhSdy1YMw1qDP9VSpi2YpXoNURaJb8pTngNFcNCCqNRiXiezA@mail.gmail.com/
+ Summary: 该网页是QEMU开发邮件列表中的讨论，主题是为RISC-V virt平台添加ACPI GED和系统关机支持。Anup Patel指出，当前基于ACPI GED的方案仅适用于ACPI，不适用于设备树。他建议使用RPMI SystemMSI服务组来实现同时支持设备树和ACPI的系统关机命令，相关驱动已上游，QEMU RPMI支持尚待合并。
+-->
+<html><head><title>Re: [PATCH v6 RESEND 0/4] hw/riscv/virt: Add acpi ged and powerdown support - Anup Patel</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><style>pre{white-space:pre-wrap}*{font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?69124040" media="screen,print"><link type="text/css" rel="stylesheet" href="../216dark.css?69124040" media="screen and (prefers-color-scheme:dark)"><style>pre { white-space: pre-wrap; }* { font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260322154324"><b>qemu-devel.nongnu.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Anup Patel &lt;anup@brainfault.org&gt;
+To: liu.xuemei1@zte.com.cn
+Cc: mst@redhat.com, imammedo@redhat.com, anisinha@redhat.com,
+	 pbonzini@redhat.com, palmer@dabbelt.com,
+	alistair.francis@wdc.com,  liwei1518@gmail.com,
+	dbarboza@ventanamicro.com, zhiwei_liu@linux.alibaba.com,
+	 sunilvl@ventanamicro.com, <a href="../../qemu-riscv/?t=20260322154324">qemu-riscv@nongnu.org</a>,
+	<a href="../../qemu-devel/?t=20260322154324">qemu-devel@nongnu.org</a>
+Subject: <a href="#r" id="t">Re: [PATCH v6 RESEND 0/4] hw/riscv/virt: Add acpi ged and powerdown support</a>
+Date: Sun, 22 Mar 2026 21:12:03 +0530	<a href="#r">[thread overview]</a>
+Message-ID: &lt;CAAhSdy1YMw1qDP9VSpi2YpXoNURaJb8pTngNFcNCCqNRiXiezA@mail.gmail.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20260319110005712RbJuYoQlyLGr39EPL4uH4@zte.com.cn/">20260319110005712RbJuYoQlyLGr39EPL4uH4@zte.com.cn</a>&gt;
+
+Hi
+
+On Thu, Mar 19, 2026 at 8:30 AM &lt;liu.xuemei1@zte.com.cn&gt; wrote:
+<span class="q">&gt;
+&gt; From: Xuemei Liu &lt;liu.xuemei1@zte.com.cn&gt;
+&gt;
+&gt; Add acpi ged and powerdown support for riscv
+&gt;
+&gt; Changes in v6:
+&gt; - Removed unnecessary condition when build ged aml
+&gt; - Link to v5: <a href="https://lore.kernel.org/qemu-devel/20260204182041057hohVHgmaAJborE1DrghXH@zte.com.cn/">https://lore.kernel.org/qemu-devel/20260204182041057hohVHgmaAJborE1DrghXH@zte.com.cn/</a>
+&gt;
+&gt; Changes in v5:
+&gt; - Added a new patch to allow DSDT acpi table changes
+&gt; - Split a new patch to support ACPI GED
+&gt; - Introduced a condition for calling acpi_send_event
+&gt; - Link to v4: <a href="https://lore.kernel.org/qemu-devel/2025111309270952219AjKpVEnbJXB7fcGTE4g@zte.com.cn/">https://lore.kernel.org/qemu-devel/2025111309270952219AjKpVEnbJXB7fcGTE4g@zte.com.cn/</a>
+&gt;
+&gt; Changes in v4:
+&gt; - Added modifies of DSDT blob in another patch
+&gt; - Link to v3: <a href="https://lore.kernel.org/qemu-riscv/20250723113739751COZ5PkRzx6aXEuKzsHhm_@zte.com.cn/">https://lore.kernel.org/qemu-riscv/20250723113739751COZ5PkRzx6aXEuKzsHhm_@zte.com.cn/</a>
+&gt;
+&gt; Changes in v3:
+&gt; - Added missing param to virt_is_acpi_enabled
+&gt; - Fixed failure of bios-tables-test
+&gt; - Link to v2: <a href="https://lore.kernel.org/qemu-riscv/202506201130099861lTkD839Hh6oko8Jo2W2H@zte.com.cn/">https://lore.kernel.org/qemu-riscv/202506201130099861lTkD839Hh6oko8Jo2W2H@zte.com.cn/</a>
+&gt;
+&gt; Changes in v2:
+&gt; - Unwrappered acpi_dsdt_add_ged function
+&gt; - Modified base address of VIRT_ACPI_GED
+&gt; - Added conditions for function calls
+&gt; - Adjusted code formatting
+&gt; - Link to v1: <a href="https://lore.kernel.org/qemu-riscv/202506191556260735QxWC8sxRwFURYEvlD24y@zte.com.cn/">https://lore.kernel.org/qemu-riscv/202506191556260735QxWC8sxRwFURYEvlD24y@zte.com.cn/</a>
+&gt;
+&gt; Xuemei Liu (4):
+&gt;   tests/acpi: virt: allow DSDT acpi table changes
+&gt;   hw/riscv/virt: Add acpi ged support
+&gt;   hw/riscv/virt: add system_powerdown hmp command support
+&gt;   tests/acpi: Add acpi ged and power button in DSDT for RISC-V
+&gt;
+&gt;  hw/riscv/Kconfig                  |   1 +
+&gt;  hw/riscv/virt-acpi-build.c        |   8 +++++++
+&gt;  hw/riscv/virt.c                   |  37 ++++++++++++++++++++++++++++++
+&gt;  include/hw/riscv/virt.h           |   4 ++++
+&gt;  tests/data/acpi/riscv64/virt/DSDT | Bin 3538 -&gt; 3681 bytes
+&gt;  5 files changed, 50 insertions(+)
+&gt;
+</span>
+The problem with supporting system_powerdown HPM command
+using ARM-style VIRT_ACPI_GED MMIO device is that it only
+works with ACPI and does not work with DeviceTree.
+
+We have the system_powerdown HPM command support working
+for both DeviceTree and ACPI using RPMI SystemMSI service group.
+The corresponding OpenSBI and Linux drivers for RPMI SystemMSI
+service group are already available upstream. Only QEMU RPMI
+support is pending to be upstreamed.
+
+The RPMI v1.0 (ratified) specification defines System MSI service
+groups using which QEMU can send system events as MSIs. These
+system events include poweroff request, reboot request, CPU hotplug
+events and much more.
+
+For QEMU RPMI implementation using libRPMI, refer to
+the dev-upstream branch at <a href="https://github.com/ventanamicro/qemu.git">https://github.com/ventanamicro/qemu.git</a>
+
+Regards,
+Anup
+
+</pre><hr><pre><a href="../20260323093424896RwSN27DExqvdZg7fGf-Ry@zte.com.cn/" rel="next">next</a> <a href="../20260319110840842yQtSz2Z4vbFYNq1lVioQo@zte.com.cn/" rel="prev">prev</a> <a href="../20260319110005712RbJuYoQlyLGr39EPL4uH4@zte.com.cn/">parent</a> <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20260322154324">~2026-03-22 15:43 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>8+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2026-03-19  3:00 <a href="../20260319110005712RbJuYoQlyLGr39EPL4uH4@zte.com.cn/">[PATCH v6 RESEND 0/4] hw/riscv/virt: Add acpi ged and powerdown support</a> liu.xuemei1
+2026-03-19  3:02 ` <a href="../20260319110222608U-RD-9Y2xW60md7t4V8Dg@zte.com.cn/">[PATCH v6 RESEND 1/4] tests/acpi: virt: allow DSDT acpi table changes</a> liu.xuemei1
+2026-03-19  3:04 ` <a href="../202603191104284054mlaSkkPT2nt3ySzlOKBD@zte.com.cn/">[PATCH v6 RESEND 2/4] hw/riscv/virt: Add acpi ged support</a> liu.xuemei1
+2026-03-19  3:06 ` <a href="../20260319110646912lfH-Px_D4YbtX1Q7ZRSXc@zte.com.cn/">[PATCH v6 RESEND 3/4] hw/riscv/virt: add system_powerdown hmp command support</a> liu.xuemei1
+2026-03-19  7:26   ` <a href="../495B8049-E563-41C2-8B53-D965517C7284@redhat.com/">Ani Sinha</a>
+2026-03-19  3:08 ` <a href="../20260319110840842yQtSz2Z4vbFYNq1lVioQo@zte.com.cn/">[PATCH v6 RESEND 4/4] tests/acpi: Add acpi ged and power button in DSDT for RISC-V</a> liu.xuemei1
+<b>2026-03-22 15:42 ` <a id="r" href="#t">Anup Patel [this message]</a></b>
+2026-03-23  1:34   ` <a href="../20260323093424896RwSN27DExqvdZg7fGf-Ry@zte.com.cn/">[PATCH v6 RESEND 0/4] hw/riscv/virt: Add acpi ged and powerdown support</a> liu.xuemei1
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \
+    --in-reply-to=CAAhSdy1YMw1qDP9VSpi2YpXoNURaJb8pTngNFcNCCqNRiXiezA@mail.gmail.com \
+    --to=anup@brainfault.org \
+    --cc=alistair.francis@wdc.com \
+    --cc=anisinha@redhat.com \
+    --cc=dbarboza@ventanamicro.com \
+    --cc=imammedo@redhat.com \
+    --cc=liu.xuemei1@zte.com.cn \
+    --cc=liwei1518@gmail.com \
+    --cc=mst@redhat.com \
+    --cc=palmer@dabbelt.com \
+    --cc=pbonzini@redhat.com \
+    --cc=qemu-devel@nongnu.org \
+    --cc=qemu-riscv@nongnu.org \
+    --cc=sunilvl@ventanamicro.com \
+    --cc=zhiwei_liu@linux.alibaba.com \
+    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:anup@brainfault.org?In-Reply-To=%3CCAAhSdy1YMw1qDP9VSpi2YpXoNURaJb8pTngNFcNCCqNRiXiezA@mail.gmail.com%3E&amp;Cc=alistair.francis%40wdc.com%2Canisinha%40redhat.com%2Cdbarboza%40ventanamicro.com%2Cimammedo%40redhat.com%2Cliu.xuemei1%40zte.com.cn%2Cliwei1518%40gmail.com%2Cmst%40redhat.com%2Cpalmer%40dabbelt.com%2Cpbonzini%40redhat.com%2Cqemu-devel%40nongnu.org%2Cqemu-riscv%40nongnu.org%2Csunilvl%40ventanamicro.com%2Czhiwei_liu%40linux.alibaba.com&amp;Subject=Re%3A%20%5BPATCH%20v6%20RESEND%200%2F4%5D%20hw%2Friscv%2Fvirt%3A%20Add%20acpi%20ged%20and%20powerdown%20support">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre><div id="summary" style="display: none;">该网页是QEMU开发邮件列表中的讨论，主题是为RISC-V virt平台添加ACPI GED和系统关机支持。Anup Patel指出，当前基于ACPI GED的方案仅适用于ACPI，不适用于设备树。他建议使用RPMI SystemMSI服务组来实现同时支持设备树和ACPI的系统关机命令，相关驱动已上游，QEMU RPMI支持尚待合并。</div></body></html>
