@@ -1,0 +1,791 @@
+<!-- Filename: 书签工具栏/虚拟化/中断虚拟化/性能/vmexit/dpu (2026-03-31 14：07：59).html
+ Page saved with X-Webpage-Conserve 
+ url: https://billxiang.github.io/BillXiang-BookMarks/all_tags.html
+ Summary: 
+-->
+<html><head><style data-id="immersive-translate-input-injected-css">.immersive-translate-input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.immersive-translate-attach-loading::after {
+  content: " ";
+
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-2000%, -50%);
+  z-index: 100;
+}
+
+.immersive-translate-loading-spinner {
+  vertical-align: middle !important;
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  margin: 0 4px !important;
+  border: 2px rgba(221, 244, 255, 0.6) solid !important;
+  border-top: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-left: 2px rgba(0, 0, 0, 0.375) solid !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  -webkit-animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+  animation: immersive-translate-loading-animation 0.6s infinite linear !important;
+}
+
+@-webkit-keyframes immersive-translate-loading-animation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes immersive-translate-loading-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.immersive-translate-input-loading {
+  --loading-color: #f78fb6;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: block;
+  margin: 12px auto;
+  position: relative;
+  color: white;
+  left: -100px;
+  box-sizing: border-box;
+  animation: immersiveTranslateShadowRolling 1.5s linear infinite;
+}
+
+@keyframes immersiveTranslateShadowRolling {
+  0% {
+    box-shadow: 0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  12% {
+    box-shadow: 100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  25% {
+    box-shadow: 110px 0 var(--loading-color), 100px 0 var(--loading-color),
+      0px 0 rgba(255, 255, 255, 0), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  36% {
+    box-shadow: 120px 0 var(--loading-color), 110px 0 var(--loading-color),
+      100px 0 var(--loading-color), 0px 0 rgba(255, 255, 255, 0);
+  }
+
+  50% {
+    box-shadow: 130px 0 var(--loading-color), 120px 0 var(--loading-color),
+      110px 0 var(--loading-color), 100px 0 var(--loading-color);
+  }
+
+  62% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color),
+      120px 0 var(--loading-color), 110px 0 var(--loading-color);
+  }
+
+  75% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      130px 0 var(--loading-color), 120px 0 var(--loading-color);
+  }
+
+  87% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 130px 0 var(--loading-color);
+  }
+
+  100% {
+    box-shadow: 200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0),
+      200px 0 rgba(255, 255, 255, 0), 200px 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.immersive-translate-modal {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+}
+
+.immersive-translate-modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 40px 24px 24px;
+  border-radius: 12px;
+  width: 350px;
+  font-family: system-ui, -apple-system, "Segoe UI", "Roboto", "Ubuntu",
+    "Cantarell", "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-content {
+    margin: 25% auto !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .immersive-translate-modal-content {
+    width: 80vw !important;
+    margin: 20vh auto !important;
+    padding: 20px 12px 12px !important;
+  }
+
+  .immersive-translate-modal-title {
+    font-size: 14px !important;
+  }
+
+  .immersive-translate-modal-body {
+    font-size: 13px !important;
+    max-height: 60vh !important;
+  }
+
+  .immersive-translate-btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    margin: 0 4px !important;
+  }
+
+  .immersive-translate-modal-footer {
+    gap: 6px !important;
+    margin-top: 16px !important;
+  }
+}
+
+.immersive-translate-modal .immersive-translate-modal-content-in-input {
+  max-width: 500px;
+}
+.immersive-translate-modal-content-in-input .immersive-translate-modal-body {
+  text-align: left;
+  max-height: unset;
+}
+
+.immersive-translate-modal-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.immersive-translate-modal-body {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .immersive-translate-modal-body {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
+
+.immersive-translate-close {
+  color: #666666;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.immersive-translate-close:hover,
+.immersive-translate-close:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.immersive-translate-modal-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.immersive-translate-btn {
+  width: fit-content;
+  color: #fff;
+  background-color: #ea4c89;
+  border: none;
+  font-size: 14px;
+  margin: 0 8px;
+  padding: 9px 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.immersive-translate-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.immersive-translate-btn:hover {
+  background-color: #f082ac;
+}
+.immersive-translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.immersive-translate-btn:disabled:hover {
+  background-color: #ea4c89;
+}
+
+.immersive-translate-link-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+}
+
+.immersive-translate-cancel-btn {
+  /* gray color */
+  background-color: rgb(89, 107, 120);
+}
+
+.immersive-translate-cancel-btn:hover {
+  background-color: hsl(205, 20%, 32%);
+}
+
+.immersive-translate-action-btn {
+  background-color: transparent;
+  color: #ea4c89;
+  border: 1px solid #ea4c89;
+}
+
+.immersive-translate-btn svg {
+  margin-right: 5px;
+}
+
+.immersive-translate-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-primary-link {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  text-decoration: none;
+  color: #ea4c89;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+.immersive-translate-modal input[type="radio"] {
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.immersive-translate-modal label {
+  cursor: pointer;
+}
+
+.immersive-translate-close-action {
+  position: absolute;
+  top: 2px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.imt-image-status {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 16px !important;
+}
+.imt-image-status img,
+.imt-image-status svg,
+.imt-img-loading {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  position: relative !important;
+}
+.imt-img-loading {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAMAAACfWMssAAAAtFBMVEUAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////oK74hAAAAPHRSTlMABBMIDyQXHwyBfFdDMSw+OjXCb+5RG51IvV/k0rOqlGRM6KKMhdvNyZBz9MaupmxpWyj437iYd/yJVNZeuUC7AAACt0lEQVRIx53T2XKiUBCA4QYOiyCbiAsuuGBcYtxiYtT3f6/pbqoYHVFO5r+iivpo6DpAWYpqeoFfr9f90DsYAuRSWkFnPO50OgR9PwiCUFcl2GEcx+N/YBh6pvKaefHlUgZd1zVe0NbYcQjGBfzrPE8Xz8aF+71D8gG6DHFPpc4a7xFiCDuhaWgKgGIJQ3d5IMGDrpS4S5KgpIm+en9f6PlAhKby4JwEIxlYJV9h5k5nee9GoxHJ2IDSNB0dwdad1NAxDJ/uXDHYmebdk4PdbkS58CIVHdYSUHTYYRWOJblWSyu2lmy3KNFVJNBhxcuGW4YBVCbYGRZwIooipHsNqjM4FbgOQqQqSKQQU9V8xmi1QlgHqQQ6DDBvRUVCDirs+EzGDGOQTCATgtYTnbCVLgsVgRE0T1QE0qHCFAht2z6dLvJQs3Lo2FQoDxWNUiBhaP4eRgwNkI+dAjVOA/kUrIDwf3CG8NfNOE0eiFotSuo+rBiq8tD9oY4Qzc6YJw99hl1wzpQvD7ef2M8QgnOGJfJw+EltQc+oX2yn907QB22WZcvlUpd143dqQu+8pCJZuGE4xCuPXJqqcs5sNpsI93Rmzym1k4Npk+oD1SH3/a3LOK/JpUBpWfqNySxWzCfNCUITuDG5dtuphrUJ1myeIE9bIsPiKrfqTai5WZxbhtNphYx6GEIHihyGFTI69lje/rxajdh0s0msZ0zYxyPLhYCb1CyHm9Qsd2H37Y3lugVwL9kNh8Ot8cha6fUNQ8nuXi5z9/ExsAO4zQrb/ev1yrCB7lGyQzgYDGuxq1toDN/JGvN+HyWNHKB7zEoK+PX11e12G431erGYzwmytAWU56fkMHY5JJnDRR2eZji3AwtIcrEV8Cojat/BdQ7XOwGV1e1hDjGGjXbdArm8uJZtCH5MbcctVX8A1WpqumJHwckAAAAASUVORK5CYII=");
+  background-size: 28px 28px;
+  animation: image-loading-rotate 1s linear infinite !important;
+}
+
+.imt-image-status span {
+  color: var(--bg-2, #fff) !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
+  font-weight: 500 !important;
+  font-family: "PingFang SC", Arial, sans-serif !important;
+}
+
+.imt-primary-button {
+  display: flex;
+  padding: 12px 80px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: #ea4c89;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.imt-retry-text {
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.imt-action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imt-modal-content-text {
+  text-align: left;
+  color: #333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+@keyframes image-loading-rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.imt-linear-gradient-text {
+  background: linear-gradient(90deg, #00a6ff 0%, #c369ff 52.4%, #ff4590 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.imt-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imt-linear-black-btn {
+  border-radius: 50px;
+  background: linear-gradient(66deg, #222 19%, #696969 94.25%);
+  height: 48px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+</style></head><body><a href="./tags/处理器.html">处理器 </a>618篇<br>
+<a href="./tags/虚拟化.html">虚拟化 </a>581篇<br>
+<a href="./tags/risc-v.html">risc-v </a>434篇<br>
+<a href="./tags/操作系统.html">操作系统 </a>133篇<br>
+<a href="./tags/IO.html">IO </a>115篇<br>
+<a href="./tags/linux.html">linux </a>97篇<br>
+<a href="./tags/IOMMU.html">IOMMU </a>90篇<br>
+<a href="./tags/内存.html">内存 </a>80篇<br>
+<a href="./tags/qemu.html">qemu </a>75篇<br>
+<a href="./tags/中断.html">中断 </a>73篇<br>
+<a href="./tags/设备与驱动.html">设备与驱动 </a>64篇<br>
+<a href="./tags/Contribute.html">Contribute </a>59篇<br>
+<a href="./tags/GPU.html">GPU </a>52篇<br>
+<a href="./tags/ISA.html">ISA </a>49篇<br>
+<a href="./tags/DPU.html">DPU </a>43篇<br>
+<a href="./tags/网络.html">网络 </a>40篇<br>
+<a href="./tags/GPU虚拟化.html">GPU虚拟化 </a>40篇<br>
+<a href="./tags/性能.html">性能 </a>38篇<br>
+<a href="./tags/安全.html">安全 </a>36篇<br>
+<a href="./tags/调度.html">调度 </a>35篇<br>
+<a href="./tags/热插拔.html">热插拔 </a>30篇<br>
+<a href="./tags/PCIe.html">PCIe </a>30篇<br>
+<a href="./tags/PCI.html">PCI </a>30篇<br>
+<a href="./tags/中断虚拟化.html">中断虚拟化 </a>26篇<br>
+<a href="./tags/kvm.html">kvm </a>26篇<br>
+<a href="./tags/异构计算.html">异构计算 </a>24篇<br>
+<a href="./tags/机器学习.html">机器学习 </a>21篇<br>
+<a href="./tags/ACPI.html">ACPI </a>21篇<br>
+<a href="./tags/语言.html">语言 </a>20篇<br>
+<a href="./tags/热迁移.html">热迁移 </a>19篇<br>
+<a href="./tags/数据中心.html">数据中心 </a>19篇<br>
+<a href="./tags/企业.html">企业 </a>19篇<br>
+<a href="./tags/cache.html">cache </a>19篇<br>
+<a href="./tags/用户态中断.html">用户态中断 </a>18篇<br>
+<a href="./tags/测试.html">测试 </a>18篇<br>
+<a href="./tags/DPDK.html">DPDK </a>18篇<br>
+<a href="./tags/验证.html">验证 </a>17篇<br>
+<a href="./tags/代码管理.html">代码管理 </a>17篇<br>
+<a href="./tags/产品.html">产品 </a>17篇<br>
+<a href="./tags/cpu.html">cpu </a>17篇<br>
+<a href="./tags/UEFI.html">UEFI </a>17篇<br>
+<a href="./tags/高性能.html">高性能 </a>16篇<br>
+<a href="./tags/云.html">云 </a>16篇<br>
+<a href="./tags/Hypervisor-From-Scratch.html">Hypervisor-From-Scratch </a>16篇<br>
+<a href="./tags/综述.html">综述 </a>15篇<br>
+<a href="./tags/libvirt.html">libvirt </a>15篇<br>
+<a href="./tags/内存虚拟化.html">内存虚拟化 </a>14篇<br>
+<a href="./tags/介绍.html">介绍 </a>14篇<br>
+<a href="./tags/一致性.html">一致性 </a>14篇<br>
+<a href="./tags/virtio.html">virtio </a>14篇<br>
+<a href="./tags/SR-IOV.html">SR-IOV </a>14篇<br>
+<a href="./tags/RISC-V.html">RISC-V </a>14篇<br>
+<a href="./tags/AI应用.html">AI应用 </a>14篇<br>
+<a href="./tags/ebpf.html">ebpf </a>13篇<br>
+<a href="./tags/eBPF.html">eBPF </a>13篇<br>
+<a href="./tags/Software.html">Software </a>13篇<br>
+<a href="./tags/Ecosystem.html">Ecosystem </a>13篇<br>
+<a href="./tags/ARM.html">ARM </a>13篇<br>
+<a href="./tags/生态.html">生态 </a>12篇<br>
+<a href="./tags/嵌套虚拟化.html">嵌套虚拟化 </a>12篇<br>
+<a href="./tags/keystone.html">keystone </a>12篇<br>
+<a href="./tags/IPI.html">IPI </a>12篇<br>
+<a href="./tags/机密计算.html">机密计算 </a>11篇<br>
+<a href="./tags/vIOMMU.html">vIOMMU </a>11篇<br>
+<a href="./tags/VFIO.html">VFIO </a>11篇<br>
+<a href="./tags/Rust.html">Rust </a>11篇<br>
+<a href="./tags/虚拟机.html">虚拟机 </a>10篇<br>
+<a href="./tags/博客_论坛.html">博客_论坛 </a>10篇<br>
+<a href="./tags/git.html">git </a>10篇<br>
+<a href="./tags/bootup.html">bootup </a>10篇<br>
+<a href="./tags/PCI_PCIe.html">PCI_PCIe </a>10篇<br>
+<a href="./tags/博客.html">博客 </a>9篇<br>
+<a href="./tags/半导体.html">半导体 </a>9篇<br>
+<a href="./tags/云原生.html">云原生 </a>9篇<br>
+<a href="./tags/x86.html">x86 </a>9篇<br>
+<a href="./tags/company&amp;job.html">company&amp;job </a>9篇<br>
+<a href="./tags/Science.html">Science </a>9篇<br>
+<a href="./tags/Extension.html">Extension </a>9篇<br>
+<a href="./tags/Computer.html">Computer </a>9篇<br>
+<a href="./tags/大模型.html">大模型 </a>8篇<br>
+<a href="./tags/server.html">server </a>8篇<br>
+<a href="./tags/rust.html">rust </a>8篇<br>
+<a href="./tags/go.html">go </a>8篇<br>
+<a href="./tags/boot.html">boot </a>8篇<br>
+<a href="./tags/TLB.html">TLB </a>8篇<br>
+<a href="./tags/IOMMUFD.html">IOMMUFD </a>8篇<br>
+<a href="./tags/进程.html">进程 </a>7篇<br>
+<a href="./tags/论坛.html">论坛 </a>7篇<br>
+<a href="./tags/裸金属.html">裸金属 </a>7篇<br>
+<a href="./tags/生活.html">生活 </a>7篇<br>
+<a href="./tags/热升级.html">热升级 </a>7篇<br>
+<a href="./tags/处理器仿真.html">处理器仿真 </a>7篇<br>
+<a href="./tags/个人.html">个人 </a>7篇<br>
+<a href="./tags/worldguard.html">worldguard </a>7篇<br>
+<a href="./tags/tenstorrent.html">tenstorrent </a>7篇<br>
+<a href="./tags/SIOV.html">SIOV </a>7篇<br>
+<a href="./tags/GMEM-加速器设备统一内存管理.html">GMEM-加速器设备统一内存管理 </a>7篇<br>
+<a href="./tags/软件.html">软件 </a>6篇<br>
+<a href="./tags/调试.html">调试 </a>6篇<br>
+<a href="./tags/读书.html">读书 </a>6篇<br>
+<a href="./tags/计算机体系结构.html">计算机体系结构 </a>6篇<br>
+<a href="./tags/系统调用.html">系统调用 </a>6篇<br>
+<a href="./tags/书.html">书 </a>6篇<br>
+<a href="./tags/timer.html">timer </a>6篇<br>
+<a href="./tags/random.html">random </a>6篇<br>
+<a href="./tags/openstack.html">openstack </a>6篇<br>
+<a href="./tags/arm.html">arm </a>6篇<br>
+<a href="./tags/TCG.html">TCG </a>6篇<br>
+<a href="./tags/MMU.html">MMU </a>6篇<br>
+<a href="./tags/FENCE.html">FENCE </a>6篇<br>
+<a href="./tags/AI.html">AI </a>6篇<br>
+<a href="./tags/ACS.html">ACS </a>6篇<br>
+<a href="./tags/设备树.html">设备树 </a>5篇<br>
+<a href="./tags/容器.html">容器 </a>5篇<br>
+<a href="./tags/其他.html">其他 </a>5篇<br>
+<a href="./tags/会议.html">会议 </a>5篇<br>
+<a href="./tags/vfio.html">vfio </a>5篇<br>
+<a href="./tags/page.html">page </a>5篇<br>
+<a href="./tags/logging.html">logging </a>5篇<br>
+<a href="./tags/dirty.html">dirty </a>5篇<br>
+<a href="./tags/alternative.html">alternative </a>5篇<br>
+<a href="./tags/action.html">action </a>5篇<br>
+<a href="./tags/SVM.html">SVM </a>5篇<br>
+<a href="./tags/SBI.html">SBI </a>5篇<br>
+<a href="./tags/RVWMO.html">RVWMO </a>5篇<br>
+<a href="./tags/OpenEuler社区.html">OpenEuler社区 </a>5篇<br>
+<a href="./tags/J.html">J </a>5篇<br>
+<a href="./tags/GDB.html">GDB </a>5篇<br>
+<a href="./tags/驱动.html">驱动 </a>4篇<br>
+<a href="./tags/课程.html">课程 </a>4篇<br>
+<a href="./tags/设备.html">设备 </a>4篇<br>
+<a href="./tags/算法.html">算法 </a>4篇<br>
+<a href="./tags/白盒.html">白盒 </a>4篇<br>
+<a href="./tags/多任务.html">多任务 </a>4篇<br>
+<a href="./tags/人物.html">人物 </a>4篇<br>
+<a href="./tags/zkr.html">zkr </a>4篇<br>
+<a href="./tags/vhost.html">vhost </a>4篇<br>
+<a href="./tags/ksm.html">ksm </a>4篇<br>
+<a href="./tags/interrupt.html">interrupt </a>4篇<br>
+<a href="./tags/hotplug.html">hotplug </a>4篇<br>
+<a href="./tags/SMP.html">SMP </a>4篇<br>
+<a href="./tags/PRI.html">PRI </a>4篇<br>
+<a href="./tags/0规范中文译本.html">0规范中文译本 </a>tags篇<br>
+<a href="./tags/Oracle.html">Oracle </a>4篇<br>
+<a href="./tags/OPPO内核工匠.html">OPPO内核工匠 </a>4篇<br>
+<a href="./tags/Matrix.html">Matrix </a>4篇<br>
+<a href="./tags/H.html">H </a>4篇<br>
+<a href="./tags/EDA.html">EDA </a>4篇<br>
+<a href="./tags/CUDA.html">CUDA </a>4篇<br>
+<a href="./tags/ATS.html">ATS </a>4篇<br>
+<a href="./tags/AMD.html">AMD </a>4篇<br>
+<a href="./tags/随机数.html">随机数 </a>3篇<br>
+<a href="./tags/运维监控.html">运维监控 </a>3篇<br>
+<a href="./tags/论文.html">论文 </a>3篇<br>
+<a href="./tags/自动化测试.html">自动化测试 </a>3篇<br>
+<a href="./tags/编译.html">编译 </a>3篇<br>
+<a href="./tags/池化.html">池化 </a>3篇<br>
+<a href="./tags/总线.html">总线 </a>3篇<br>
+<a href="./tags/开源.html">开源 </a>3篇<br>
+<a href="./tags/嵌套.html">嵌套 </a>3篇<br>
+<a href="./tags/实时化.html">实时化 </a>3篇<br>
+<a href="./tags/实时.html">实时 </a>3篇<br>
+<a href="./tags/存储.html">存储 </a>3篇<br>
+<a href="./tags/字节.html">字节 </a>3篇<br>
+<a href="./tags/可信计算.html">可信计算 </a>3篇<br>
+<a href="./tags/前端.html">前端 </a>3篇<br>
+<a href="./tags/内存序.html">内存序 </a>3篇<br>
+<a href="./tags/二进制翻译.html">二进制翻译 </a>3篇<br>
+<a href="./tags/乱序.html">乱序 </a>3篇<br>
+<a href="./tags/test.html">test </a>3篇<br>
+<a href="./tags/sparc.html">sparc </a>3篇<br>
+<a href="./tags/posting.html">posting </a>3篇<br>
+<a href="./tags/overlap.html">overlap </a>3篇<br>
+<a href="./tags/nosnoop.html">nosnoop </a>3篇<br>
+<a href="./tags/injection.html">injection </a>3篇<br>
+<a href="./tags/hyper-v.html">hyper-v </a>3篇<br>
+<a href="./tags/direct.html">direct </a>3篇<br>
+<a href="./tags/bpfconf.html">bpfconf </a>3篇<br>
+<a href="./tags/book.html">book </a>3篇<br>
+<a href="./tags/TODO.html">TODO </a>3篇<br>
+<a href="./tags/TLP.html">TLP </a>3篇<br>
+<a href="./tags/Source.html">Source </a>3篇<br>
+<a href="./tags/Server.html">Server </a>3篇<br>
+<a href="./tags/RAS.html">RAS </a>3篇<br>
+<a href="./tags/Perf.html">Perf </a>3篇<br>
+<a href="./tags/Pages.html">Pages </a>3篇<br>
+<a href="./tags/PGO.html">PGO </a>3篇<br>
+<a href="./tags/P4.html">P4 </a>3篇<br>
+<a href="./tags/Open.html">Open </a>3篇<br>
+<a href="./tags/Hypervisor.html">Hypervisor </a>3篇<br>
+<a href="./tags/GED.html">GED </a>3篇<br>
+<a href="./tags/DTS.html">DTS </a>3篇<br>
+<a href="./tags/CNOC.html">CNOC </a>3篇<br>
+<a href="./tags/CHP.html">CHP </a>3篇<br>
+<a href="./tags/AD更新.html">AD更新 </a>3篇<br>
+<a href="./tags/龙芯.html">龙芯 </a>2篇<br>
+<a href="./tags/香山.html">香山 </a>2篇<br>
+<a href="./tags/自动化.html">自动化 </a>2篇<br>
+<a href="./tags/汇编.html">汇编 </a>2篇<br>
+<a href="./tags/服务器.html">服务器 </a>2篇<br>
+<a href="./tags/文件系统.html">文件系统 </a>2篇<br>
+<a href="./tags/数学.html">数学 </a>2篇<br>
+<a href="./tags/敏捷开发.html">敏捷开发 </a>2篇<br>
+<a href="./tags/扩展.html">扩展 </a>2篇<br>
+<a href="./tags/影视.html">影视 </a>2篇<br>
+<a href="./tags/建模.html">建模 </a>2篇<br>
+<a href="./tags/应用.html">应用 </a>2篇<br>
+<a href="./tags/工具.html">工具 </a>2篇<br>
+<a href="./tags/嵌入式.html">嵌入式 </a>2篇<br>
+<a href="./tags/多虚一.html">多虚一 </a>2篇<br>
+<a href="./tags/域名.html">域名 </a>2篇<br>
+<a href="./tags/城建.html">城建 </a>2篇<br>
+<a href="./tags/场景测试.html">场景测试 </a>2篇<br>
+<a href="./tags/创业.html">创业 </a>2篇<br>
+<a href="./tags/内存语义.html">内存语义 </a>2篇<br>
+<a href="./tags/仿真.html">仿真 </a>2篇<br>
+<a href="./tags/vmexit.html">vmexit </a>2篇<br>
+<a href="./tags/vDPA.html">vDPA </a>2篇<br>
+<a href="./tags/svnapot.html">svnapot </a>2篇<br>
+<a href="./tags/search.html">search </a>2篇<br>
+<a href="./tags/satp.html">satp </a>2篇<br>
+<a href="./tags/riscv-profiles.html">riscv-profiles </a>2篇<br>
+<a href="./tags/perf.html">perf </a>2篇<br>
+<a href="./tags/migration.html">migration </a>2篇<br>
+<a href="./tags/job.html">job </a>2篇<br>
+<a href="./tags/idle.html">idle </a>2篇<br>
+<a href="./tags/cubefs.html">cubefs </a>2篇<br>
+<a href="./tags/WebAssembly.html">WebAssembly </a>2篇<br>
+<a href="./tags/Vector.html">Vector </a>2篇<br>
+<a href="./tags/StratoVirt.html">StratoVirt </a>2篇<br>
+<a href="./tags/Serverless.html">Serverless </a>2篇<br>
+<a href="./tags/SVNAPOT.html">SVNAPOT </a>2篇<br>
+<a href="./tags/SSTC.html">SSTC </a>2篇<br>
+<a href="./tags/SIMD.html">SIMD </a>2篇<br>
+<a href="./tags/QEMU.html">QEMU </a>2篇<br>
+<a href="./tags/PM.html">PM </a>2篇<br>
+<a href="./tags/PASID.html">PASID </a>2篇<br>
+<a href="./tags/Multikernel.html">Multikernel </a>2篇<br>
+<a href="./tags/IOTLB.html">IOTLB </a>2篇<br>
+<a href="./tags/IOPMP.html">IOPMP </a>2篇<br>
+<a href="./tags/HugePage.html">HugePage </a>2篇<br>
+<a href="./tags/HotChips.html">HotChips </a>2篇<br>
+<a href="./tags/Docker.html">Docker </a>2篇<br>
+<a href="./tags/DMA.html">DMA </a>2篇<br>
+<a href="./tags/CXL.html">CXL </a>2篇<br>
+<a href="./tags/BUG.html">BUG </a>2篇<br>
+<a href="./tags/B.html">B </a>2篇<br>
+<a href="./tags/Apple.html">Apple </a>2篇<br>
+<a href="./tags/2024.html">2024 </a>2篇<br>
+<a href="./tags/音乐.html">音乐 </a>1篇<br>
+<a href="./tags/集成电路.html">集成电路 </a>1篇<br>
+<a href="./tags/运动.html">运动 </a>1篇<br>
+<a href="./tags/软硬协同.html">软硬协同 </a>1篇<br>
+<a href="./tags/车.html">车 </a>1篇<br>
+<a href="./tags/超线程.html">超线程 </a>1篇<br>
+<a href="./tags/语言虚拟机.html">语言虚拟机 </a>1篇<br>
+<a href="./tags/虚拟化扩展.html">虚拟化扩展 </a>1篇<br>
+<a href="./tags/网卡.html">网卡 </a>1篇<br>
+<a href="./tags/编译器.html">编译器 </a>1篇<br>
+<a href="./tags/编程.html">编程 </a>1篇<br>
+<a href="./tags/结构.html">结构 </a>1篇<br>
+<a href="./tags/精选.html">精选 </a>1篇<br>
+<a href="./tags/算力中心.html">算力中心 </a>1篇<br>
+<a href="./tags/硬件辅助虚拟化.html">硬件辅助虚拟化 </a>1篇<br>
+<a href="./tags/硬件仿真.html">硬件仿真 </a>1篇<br>
+<a href="./tags/瓜.html">瓜 </a>1篇<br>
+<a href="./tags/流控.html">流控 </a>1篇<br>
+<a href="./tags/昇腾.html">昇腾 </a>1篇<br>
+<a href="./tags/时钟.html">时钟 </a>1篇<br>
+<a href="./tags/数据库.html">数据库 </a>1篇<br>
+<a href="./tags/技术分享.html">技术分享 </a>1篇<br>
+<a href="./tags/房.html">房 </a>1篇<br>
+<a href="./tags/形式化验证.html">形式化验证 </a>1篇<br>
+<a href="./tags/异构融合.html">异构融合 </a>1篇<br>
+<a href="./tags/库操作系统.html">库操作系统 </a>1篇<br>
+<a href="./tags/容错.html">容错 </a>1篇<br>
+<a href="./tags/处理器间通信.html">处理器间通信 </a>1篇<br>
+<a href="./tags/基础.html">基础 </a>1篇<br>
+<a href="./tags/压测.html">压测 </a>1篇<br>
+<a href="./tags/内核动态追踪.html">内核动态追踪 </a>1篇<br>
+<a href="./tags/共享内存.html">共享内存 </a>1篇<br>
+<a href="./tags/使用eBPF进行半虚拟化调度.html">使用eBPF进行半虚拟化调度 </a>1篇<br>
+<a href="./tags/伪共享.html">伪共享 </a>1篇<br>
+<a href="./tags/众核.html">众核 </a>1篇<br>
+<a href="./tags/代码模型.html">代码模型 </a>1篇<br>
+<a href="./tags/代码格式.html">代码格式 </a>1篇<br>
+<a href="./tags/代工.html">代工 </a>1篇<br>
+<a href="./tags/上下文切换.html">上下文切换 </a>1篇<br>
+<a href="./tags/zig.html">zig </a>1篇<br>
+<a href="./tags/windows.html">windows </a>1篇<br>
+<a href="./tags/vcpu.html">vcpu </a>1篇<br>
+<a href="./tags/testpmd.html">testpmd </a>1篇<br>
+<a href="./tags/posted.html">posted </a>1篇<br>
+<a href="./tags/mmu.html">mmu </a>1篇<br>
+<a href="./tags/loongson.html">loongson </a>1篇<br>
+<a href="./tags/kvmtool.html">kvmtool </a>1篇<br>
+<a href="./tags/iommu.html">iommu </a>1篇<br>
+<a href="./tags/huangxianliang.html">huangxianliang </a>1篇<br>
+<a href="./tags/feature.html">feature </a>1篇<br>
+<a href="./tags/delegate.html">delegate </a>1篇<br>
+<a href="./tags/dayudpu.html">dayudpu </a>1篇<br>
+<a href="./tags/cloud-init.html">cloud-init </a>1篇<br>
+<a href="./tags/b4.html">b4 </a>1篇<br>
+<a href="./tags/Wine.html">Wine </a>1篇<br>
+<a href="./tags/VMX.html">VMX </a>1篇<br>
+<a href="./tags/UAPI.html">UAPI </a>1篇<br>
+<a href="./tags/TPH.html">TPH </a>1篇<br>
+<a href="./tags/TEE.html">TEE </a>1篇<br>
+<a href="./tags/Spike.html">Spike </a>1篇<br>
+<a href="./tags/SoC.html">SoC </a>1篇<br>
+<a href="./tags/ScaleUp.html">ScaleUp </a>1篇<br>
+<a href="./tags/SPEC.html">SPEC </a>1篇<br>
+<a href="./tags/SIG-Long.html">SIG-Long </a>1篇<br>
+<a href="./tags/RDMA.html">RDMA </a>1篇<br>
+<a href="./tags/Peterson软件实现互斥.html">Peterson软件实现互斥 </a>1篇<br>
+<a href="./tags/Passive.html">Passive </a>1篇<br>
+<a href="./tags/PPA.html">PPA </a>1篇<br>
+<a href="./tags/OpenFastPath.html">OpenFastPath </a>1篇<br>
+<a href="./tags/NAPI.html">NAPI </a>1篇<br>
+<a href="./tags/MRIF.html">MRIF </a>1篇<br>
+<a href="./tags/KVM.html">KVM </a>1篇<br>
+<a href="./tags/Interrupts.html">Interrupts </a>1篇<br>
+<a href="./tags/Intel.html">Intel </a>1篇<br>
+<a href="./tags/Install.html">Install </a>1篇<br>
+<a href="./tags/Indirection.html">Indirection </a>1篇<br>
+<a href="./tags/IOVA.html">IOVA </a>1篇<br>
+<a href="./tags/HLV.html">HLV </a>1篇<br>
+<a href="./tags/Forum.html">Forum </a>1篇<br>
+<a href="./tags/Folio.html">Folio </a>1篇<br>
+<a href="./tags/Fast.html">Fast </a>1篇<br>
+<a href="./tags/FLR.html">FLR </a>1篇<br>
+<a href="./tags/Enclave.html">Enclave </a>1篇<br>
+<a href="./tags/EDK2.html">EDK2 </a>1篇<br>
+<a href="./tags/Dragonball.html">Dragonball </a>1篇<br>
+<a href="./tags/DNS.html">DNS </a>1篇<br>
+<a href="./tags/Code.html">Code </a>1篇<br>
+<a href="./tags/BAR空间写阻塞.html">BAR空间写阻塞 </a>1篇<br>
+<a href="./tags/ARI.html">ARI </a>1篇<br>
+<a href="./tags/A.html">A </a>1篇<br>
+<a href="./tags/3D打印.html">3D打印 </a>1篇<br>
+</body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div><div id="immersive-translate-popup" style="all: initial"></div></html>
