@@ -1,0 +1,148 @@
+<!-- Filename: 导航栏/study/处理器/risc-v/性能/context switch/lmbench/[PATCH v2] riscv_ vector_ treat VS_INITIAL as discard - Andy Chiu (2026-04-02 14：43：02).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/linux-riscv/20260402043414.2421916-2-andybnac@gmail.com/
+ Summary: 该补丁优化了RISC-V架构中向量（vector）上下文的管理方式。通过将向量状态标记为INITIAL而非直接丢弃，减少了系统调用时的上下文保存开销，从而提升性能。测试显示上下文切换性能提升6.78%。
+-->
+<html><head><title>[PATCH v2] riscv: vector: treat VS_INITIAL as discard - Andy Chiu</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><meta name="viewport" content="width=device-width," initial-scale="1"><style>*{overflow-wrap:anywhere;font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?69124040" media="screen,print"><link type="text/css" rel="stylesheet" href="../216dark.css?69124040" media="screen and (prefers-color-scheme:dark)"><style>* { overflow-wrap: anywhere; font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260402043444"><b>linux-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Andy Chiu &lt;andybnac@gmail.com&gt;
+To: <a href="../../linux-riscv/?t=20260402043444">linux-riscv@lists.infradead.org</a>, palmer@dabbelt.com
+Cc: Andy Chiu &lt;andy.chiu@sifive.com&gt;, Andy Chiu &lt;andybnac@gmail.com&gt;,
+	<a href="../../lkml/?t=20260402043444">linux-kernel@vger.kernel.org</a>, Alexandre Ghiti &lt;alex@ghiti.fr&gt;,
+	bjorn@kernel.org, alexghiti@rivosinc.com,
+	paul.walmsley@sifive.com, greentime.hu@sifive.com,
+	nick.hu@sifive.com, nylon.chen@sifive.com, eric.lin@sifive.com,
+	vincent.chen@sifive.com, zong.li@sifive.com,
+	yongxuan.wang@sifive.com, samuel.holland@sifive.com
+Subject: <a href="#r" id="t">[PATCH v2] riscv: vector: treat VS_INITIAL as discard</a>
+Date: Wed,  1 Apr 2026 23:34:14 -0500	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20260402043414.2421916-2-andybnac@gmail.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../20260402043414.2421916-1-andybnac@gmail.com/">20260402043414.2421916-1-andybnac@gmail.com</a>&gt;
+
+From: Andy Chiu &lt;andy.chiu@sifive.com&gt;
+
+The purpose of riscv_v_vstate_discard() is to invalidate v context at
+entries of syscalls. So users happen to use v after a syscall without
+re-configuring would see a failure. It was achieved by setting vector
+registers and CSRs to -1 and marking the context busy. However, this
+results in redundant saving of v-context if the process is scheduled out
+in a syscall. Moreover, restoring the invalidated context from memory is
+a costly operation. In fact, all can be prevented if we can delay
+vstate_discard before returning back to the user space. To be more
+specific, the kernel can mark v-context as INITIAL and set the restore
+flag at syscall entries. This is the indication for the vstate_restore,
+so it awares that the vstate has to be invalidated before returning back
+to the user space.
+
+After applying this patch, the context switch performance has improved
+6.78% on vector enabled lmbench running on a FPGA with VLEN=512. The
+result was obtained by averaging the output from the following command.
+
+$ lat_ctx 2
+Before the patch: 599.8357692
+After the patch: 559.1748148
+
+Signed-off-by: Andy Chiu &lt;andy.chiu@sifive.com&gt;
+Signed-off-by: Andy Chiu &lt;andybnac@gmail.com&gt;
+---
+ <a id="iZ31arch:riscv:include:asm:vector.h" href="#Z31arch:riscv:include:asm:vector.h">arch/riscv/include/asm/vector.h</a> | 10 ++++++----
+ 1 file <a href="#related">changed</a>, 6 insertions(+), 4 deletions(-)
+
+<span class="head"><a href="#iZ31arch:riscv:include:asm:vector.h" id="Z31arch:riscv:include:asm:vector.h">diff</a> --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+index 00cb9c0982b1..90f77e511cad 100644
+--- a/arch/riscv/include/asm/vector.h
++++ b/arch/riscv/include/asm/vector.h
+</span><span class="hunk">@@ -298,8 +298,8 @@ static inline void __riscv_v_vstate_discard(void)
+</span> static inline void riscv_v_vstate_discard(struct pt_regs *regs)
+ {
+ 	if (riscv_v_vstate_query(regs)) {
+<span class="del">-		__riscv_v_vstate_discard();
+-		__riscv_v_vstate_dirty(regs);
+</span><span class="add">+		set_tsk_thread_flag(current, TIF_RISCV_V_DEFER_RESTORE);
++		riscv_v_vstate_on(regs);
+</span> 	}
+ }
+ 
+<span class="hunk">@@ -315,7 +315,9 @@ static inline void riscv_v_vstate_save(struct __riscv_v_ext_state *vstate,
+</span> static inline void riscv_v_vstate_restore(struct __riscv_v_ext_state *vstate,
+ 					  struct pt_regs *regs)
+ {
+<span class="del">-	if (riscv_v_vstate_query(regs)) {
+</span><span class="add">+	if (__riscv_v_vstate_check(regs-&gt;status, INITIAL)) {
++		__riscv_v_vstate_discard();
++	} else if (riscv_v_vstate_query(regs)) {
+</span> 		__riscv_v_vstate_restore(vstate, vstate-&gt;datap);
+ 		__riscv_v_vstate_clean(regs);
+ 	}
+<span class="hunk">@@ -326,7 +328,7 @@ static inline void riscv_v_vstate_set_restore(struct task_struct *task,
+</span> {
+ 	if (riscv_v_vstate_query(regs)) {
+ 		set_tsk_thread_flag(task, TIF_RISCV_V_DEFER_RESTORE);
+<span class="del">-		riscv_v_vstate_on(regs);
+</span><span class="add">+		__riscv_v_vstate_clean(regs);
+</span> 	}
+ }
+ 
+-- 
+2.53.0
+
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre>     <a href="../20260402043414.2421916-1-andybnac@gmail.com/" rel="prev">prev parent</a> <a href="#R">reply</a>	other threads:[<a href="../?t=20260402043444">~2026-04-02  4:34 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>2+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2026-04-02  4:34 <a href="../20260402043414.2421916-1-andybnac@gmail.com/">[PATCH v2 0/1] Optimize Vector context restore on syscall</a> Andy Chiu
+<b>2026-04-02  4:34 ` <a id="r" href="#t">Andy Chiu [this message]</a></b>
+</pre><form id="related" action="../"><pre>find likely ancestor, descendant, or conflicting patches for <a href="#t">this message</a>:
+<textarea name="q" cols="72" rows="3">( dfblob:00cb9c0982b dfblob:90f77e511ca )
+ OR (
+bs:"[PATCH v2] riscv: vector: treat VS_INITIAL as discard" )</textarea>
+<input type="submit" value="search">	(<a href="../_/text/help/#search">help</a>)</pre></form>
+<hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \
+    --in-reply-to=20260402043414.2421916-2-andybnac@gmail.com \
+    --to=andybnac@gmail.com \
+    --cc=alex@ghiti.fr \
+    --cc=alexghiti@rivosinc.com \
+    --cc=andy.chiu@sifive.com \
+    --cc=bjorn@kernel.org \
+    --cc=eric.lin@sifive.com \
+    --cc=greentime.hu@sifive.com \
+    --cc=linux-kernel@vger.kernel.org \
+    --cc=linux-riscv@lists.infradead.org \
+    --cc=nick.hu@sifive.com \
+    --cc=nylon.chen@sifive.com \
+    --cc=palmer@dabbelt.com \
+    --cc=paul.walmsley@sifive.com \
+    --cc=samuel.holland@sifive.com \
+    --cc=vincent.chen@sifive.com \
+    --cc=yongxuan.wang@sifive.com \
+    --cc=zong.li@sifive.com \
+    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:andybnac@gmail.com?In-Reply-To=%3C20260402043414.2421916-2-andybnac@gmail.com%3E&amp;Cc=alex%40ghiti.fr%2Calexghiti%40rivosinc.com%2Candy.chiu%40sifive.com%2Cbjorn%40kernel.org%2Ceric.lin%40sifive.com%2Cgreentime.hu%40sifive.com%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cnick.hu%40sifive.com%2Cnylon.chen%40sifive.com%2Cpalmer%40dabbelt.com%2Cpaul.walmsley%40sifive.com%2Csamuel.holland%40sifive.com%2Cvincent.chen%40sifive.com%2Cyongxuan.wang%40sifive.com%2Czong.li%40sifive.com&amp;Subject=Re%3A%20%5BPATCH%20v2%5D%20riscv%3A%20vector%3A%20treat%20VS_INITIAL%20as%20discard">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre><div id="summary" style="display: none;">该补丁优化了RISC-V架构中向量（vector）上下文的管理方式。通过将向量状态标记为INITIAL而非直接丢弃，减少了系统调用时的上下文保存开销，从而提升性能。测试显示上下文切换性能提升6.78%。</div></body></html>
