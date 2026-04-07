@@ -10,7 +10,7 @@ html_head="<!DOCTYPE html>
       <link rel="icon" href="./favicon.ico">
       <title>BillXiang</title>
       <link rel="stylesheet" type="text/css" href="./web_deploy/style.css">
-      <link rel="alternate" type="application/rss+xml" title="RSS" href="./web_deploy/rss.xml">
+      <link rel="alternate" type="application/rss+xml" title="RSS" href="./web_deploy/feed.xml">
       <script>
         var _hmt = _hmt || [];
         (function() {
