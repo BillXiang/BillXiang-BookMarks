@@ -45,7 +45,7 @@ html_head="<!DOCTYPE html>
               <tr><td><a href='./all.html'><b>All</b></a></td></tr>
               <tr><td><a href='./docs.html'><b>Docs</b></a></td></tr>
               <tr><td><a href='./tags/Contribute.html'><b>Contributions</b></a></td></tr>
-              <tr><td><img src="./web_deploy/rss.png" alt="rss" width="20" height="20"><a href="./web_deploy/feed.xml"><b>RSS</b></a></td></tr>
+              <tr><td><img src="./web_deploy/rss.jpg" alt="rss" width="20" height="20"><a href="./web_deploy/feed.xml"><b>RSS</b></a></td></tr>
               <tr><td>"
               
     html_mid="</td></tr>
