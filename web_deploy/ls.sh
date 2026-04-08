@@ -45,7 +45,7 @@ html_head="<!DOCTYPE html>
               <tr><td><a href='./all.html'><b>All</b></a></td></tr>
               <tr><td><a href='./docs.html'><b>Docs</b></a></td></tr>
               <tr><td><a href='./tags/Contribute.html'><b>Contributions</b></a></td></tr>
-              <tr><td><img src="./web_deploy/rss.png" alt="rss"><a href="./web_deploy/feed.xml"><b>RSS</b></a></td></tr>
+              <tr><td><img src="./web_deploy/rss.png" alt="rss" width="20" height="20"><a href="./web_deploy/feed.xml"><b>RSS</b></a></td></tr>
               <tr><td>"
               
     html_mid="</td></tr>
@@ -197,8 +197,6 @@ echo "
           </td>
         </tr>
         <tr><td><a href='https://addons.mozilla.org/zh-CN/firefox/addon/webpage-saver'><b>Saved by X-Webpage-Conserve</b></a></td></tr>
-        <tr><td><a href='https://addons.mozilla.org/zh-CN/firefox/addon/orbit-summarizer'><b>Summarized by Mozilla Orbit AI</b></a></td></tr>
-        <tr><td><a href='https://addons.mozilla.org/zh-CN/firefox/addon/immersive-translate'><b>Translated by 【沉浸式翻译】</b></a></td></tr>
         </tbody>
       </table>
       <div id='gitalk-container'></div>
