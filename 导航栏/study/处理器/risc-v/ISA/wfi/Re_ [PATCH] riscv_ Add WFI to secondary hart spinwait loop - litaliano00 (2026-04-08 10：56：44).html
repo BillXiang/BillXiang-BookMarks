@@ -1,0 +1,141 @@
+<!-- Filename: 导航栏/study/处理器/risc-v/ISA/wfi/Re_ [PATCH] riscv_ Add WFI to secondary hart spinwait loop - litaliano00 (2026-04-08 10：56：44).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/linux-riscv/CAK-CEVMvOCTPk=HM=XV8RTXMv3as-nn-YbS6hD_RpFLKME4qmQ@mail.gmail.com/
+ Summary: 该网页是Linux内核邮件列表讨论，关于为RISC-V辅助硬件线程启动循环添加WFI指令以省电的补丁。审阅者指出，对于依赖IPI中断唤醒的平台，WFI可行；但对于依赖HSM等无中断启动机制的平台，WFI无法被唤醒，将导致死锁。提交者基于此反馈已撤回补丁。
+-->
+<html><head><title>Re: [PATCH] riscv: Add WFI to secondary hart spinwait loop - litaliano00</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><meta name="viewport" content="width=device-width," initial-scale="1"><style>*{overflow-wrap:anywhere;font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?69124040" media="screen,print"><link type="text/css" rel="stylesheet" href="../216dark.css?69124040" media="screen and (prefers-color-scheme:dark)"><style>* { overflow-wrap: anywhere; font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260407122728"><b>linux-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: litaliano00 &lt;litaliano00.contact@gmail.com&gt;
+To: BillXiang &lt;xiangwencheng@lanxincomputing.com&gt;
+Cc: alex@ghiti.fr, <a href="../../linux-riscv/?t=20260407122728">linux-riscv@lists.infradead.org</a>,
+	 <a href="../../lkml/?t=20260407122728">linux-kernel@vger.kernel.org</a>
+Subject: <a href="#r" id="t">Re: [PATCH] riscv: Add WFI to secondary hart spinwait loop</a>
+Date: Tue, 7 Apr 2026 14:27:02 +0200	<a href="#r">[thread overview]</a>
+Message-ID: &lt;CAK-CEVMvOCTPk=HM=XV8RTXMv3as-nn-YbS6hD_RpFLKME4qmQ@mail.gmail.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../8c77810f-8198-46b5-9b6b-23095dbfee1a@lanxincomputing.com/">8c77810f-8198-46b5-9b6b-23095dbfee1a@lanxincomputing.com</a>&gt;
+
+Hi Bill,
+
+Thank you for reviewing the patch. You are completely right on both points.
+
+Nam Cao pointed out the missing wake-up interrupt earlier in the thread,
+and I realized that a bare WFI here would cause a deadlock, exactly as
+you described for HSM-capable platforms (or any setup lacking an explicit
+IPI after the pointers are written).
+
+Thank you also for clarifying the intent of `.Lsecondary_park`. It makes
+sense that an infinite sleep is acceptable there but fatal here in the
+boot path.
+
+I have already withdrawn this patch based on the earlier discussion with
+Nam. Fixing this FIXME properly would require a larger redesign to ensure
+a wake-up signal is guaranteed across all boot methods, rather than just
+a single-instruction change.
+
+Best regards,
+Adriano
+
+
+On Tue, Apr 7, 2026 at 1:57 PM BillXiang
+&lt;xiangwencheng@lanxincomputing.com&gt; wrote:
+<span class="q">&gt;
+&gt; Hi,
+&gt;
+&gt; On 4/7/2026 3:45 PM, Adriano Vero wrote:
+&gt;  &gt; The .Lwait_for_cpu_up loop in the RISCV_BOOT_SPINWAIT path busy-polls
+&gt;  &gt; __cpu_spinwait_stack_pointer and __cpu_spinwait_task_pointer, burning
+&gt;  &gt; power on all non-boot harts while they wait for the primary hart to
+&gt;  &gt; complete early boot setup.
+&gt;  &gt;
+&gt;  &gt; Add a WFI instruction before each polling iteration to allow the
+&gt;  &gt; hardware to enter a low-power state while waiting. Per the RISC-V
+&gt;  &gt; privileged specification, WFI wakes on any pending interrupt even
+&gt;  &gt; with global interrupts disabled (SIE=0), and implementations are
+&gt;  &gt; permitted to treat it as a NOP, so this is safe in all contexts.
+&gt;  &gt;
+&gt;  &gt; The same pattern is already used in .Lsecondary_park in the same
+&gt;  &gt; file.
+&gt;
+&gt; The secondary_park is just an infinite loop for debug and it may not be
+&gt; a good example to follow here.
+&gt;
+&gt;  &gt;
+&gt;  &gt; Signed-off-by: Adriano Vero &lt;litaliano00.contact@gmail.com&gt;
+&gt;  &gt; ---
+&gt;  &gt;   arch/riscv/kernel/head.S | 9 ++++++++-
+&gt;  &gt;   1 file changed, 8 insertions(+), 1 deletion(-)
+&gt;  &gt;
+&gt;  &gt; diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+&gt;  &gt; index 9c99c5ad6..ca208da7c 100644
+&gt;  &gt; --- a/arch/riscv/kernel/head.S
+&gt;  &gt; +++ b/arch/riscv/kernel/head.S
+&gt;  &gt; @@ -385,7 +385,14 @@ SYM_CODE_START(_start_kernel)
+&gt;  &gt;       * get far enough along the boot process that it should continue.
+&gt;  &gt;       */
+&gt;  &gt;   .Lwait_for_cpu_up:
+&gt;  &gt; -    /* FIXME: We should WFI to save some energy here. */
+&gt;  &gt; +    /*
+&gt;  &gt; +     * Wait for the boot hart to populate the stack and task pointers.
+&gt;  &gt; +     * Use WFI to avoid burning power in a busy-wait loop. Per the
+&gt;  &gt; +     * RISC-V privileged spec, WFI wakes on a pending interrupt even
+&gt;  &gt; +     * with global interrupts disabled (e.g. SIE=0), and implementations
+&gt;  &gt; +     * are permitted to treat it as a NOP, so this is always safe.
+&gt;  &gt; +     */
+&gt;  &gt; +    wfi
+&gt;
+&gt; I think this will work for implementations that rely on IPI to bring up
+&gt; secondary HARTs, since the IPI will break the WFI. However, for
+&gt; HSM-capable platforms that start secondary HARTs without IPI, there may
+&gt; be no pending interrupt to wake the WFI.
+&gt;
+&gt;  &gt;      REG_L sp, (a1)
+&gt;  &gt;      REG_L tp, (a2)
+&gt;  &gt;      beqz sp, .Lwait_for_cpu_up
+</span>
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre>     <a href="../87tstnuh2e.fsf@yellow.woof/" rel="prev">prev</a> <a href="../8c77810f-8198-46b5-9b6b-23095dbfee1a@lanxincomputing.com/">parent</a> <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20260407122728">~2026-04-07 12:27 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>5+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2026-04-07  7:45 <a href="../20260407074534.59179-1-litaliano00.contact@gmail.com/">[PATCH] riscv: Add WFI to secondary hart spinwait loop</a> Adriano Vero
+2026-04-07  8:40 ` <a href="../87pl4bw4cu.fsf@yellow.woof/">Nam Cao</a>
+2026-04-07  8:45 ` <a href="../20260407084514.syOsks4D@linutronix.de/">Nam Cao</a>
+     [not found]   ` &lt;<a href="../CAK-CEVO6h+v-2iRdsR6THbOvoTrxM7xnmsDyXfnP5sAgUdmhYQ@mail.gmail.com/">CAK-CEVO6h+v-2iRdsR6THbOvoTrxM7xnmsDyXfnP5sAgUdmhYQ@mail.gmail.com</a>&gt;
+2026-04-07 11:48     ` <a href="../87tstnuh2e.fsf@yellow.woof/">Nam Cao</a>
+     [not found] ` &lt;<a href="../8c77810f-8198-46b5-9b6b-23095dbfee1a@lanxincomputing.com/">8c77810f-8198-46b5-9b6b-23095dbfee1a@lanxincomputing.com</a>&gt;
+<b>2026-04-07 12:27   ` <a id="r" href="#t">litaliano00 [this message]</a></b>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \
+    --in-reply-to='CAK-CEVMvOCTPk=HM=XV8RTXMv3as-nn-YbS6hD_RpFLKME4qmQ@mail.gmail.com' \
+    --to=litaliano00.contact@gmail.com \
+    --cc=alex@ghiti.fr \
+    --cc=linux-kernel@vger.kernel.org \
+    --cc=linux-riscv@lists.infradead.org \
+    --cc=xiangwencheng@lanxincomputing.com \
+    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:litaliano00.contact@gmail.com?In-Reply-To=%3CCAK-CEVMvOCTPk=HM=XV8RTXMv3as-nn-YbS6hD_RpFLKME4qmQ@mail.gmail.com%3E&amp;Cc=alex%40ghiti.fr%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cxiangwencheng%40lanxincomputing.com&amp;Subject=Re%3A%20%5BPATCH%5D%20riscv%3A%20Add%20WFI%20to%20secondary%20hart%20spinwait%20loop">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre><div id="summary" style="display: none;">该网页是Linux内核邮件列表讨论，关于为RISC-V辅助硬件线程启动循环添加WFI指令以省电的补丁。审阅者指出，对于依赖IPI中断唤醒的平台，WFI可行；但对于依赖HSM等无中断启动机制的平台，WFI无法被唤醒，将导致死锁。提交者基于此反馈已撤回补丁。</div></body></html>
