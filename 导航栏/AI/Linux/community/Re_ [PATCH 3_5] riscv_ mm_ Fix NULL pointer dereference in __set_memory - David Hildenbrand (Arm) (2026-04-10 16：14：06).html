@@ -1,0 +1,134 @@
+<!-- Filename: 导航栏/AI/Linux/community/Re_ [PATCH 3_5] riscv_ mm_ Fix NULL pointer dereference in __set_memory - David Hildenbrand (Arm) (2026-04-10 16：14：06).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/linux-riscv/aff1c335-bd02-449e-8791-eb7050ec982d@kernel.org/
+ Summary: Linux内核邮件列表中，David Hildenbrand在回复Mike Rapoport的邮件中讨论了大语言模型（LLM）在生成内核代码补丁时的倾向。他指出，LLM倾向于生成防御性过强的代码，并提出一些理论性的问题，这可能不适用于实际的内核开发。他建议开发者在使用LLM生成代码后，务必仔细检查其输出，以免在维护者面前失去信誉。该讨论是关于RISC-V架构内存管理相关补丁的回复。
+-->
+<html><head><title>Re: [PATCH 3/5] riscv: mm: Fix NULL pointer dereference in __set_memory - David Hildenbrand (Arm)</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><meta name="viewport" content="width=device-width," initial-scale="1"><style>*{overflow-wrap:anywhere;font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" href="../216light.css?6914e0a5" media="screen,print"><link type="text/css" rel="stylesheet" href="../216dark.css?6914e0a5" media="screen and (prefers-color-scheme:dark)"><style>* { overflow-wrap: anywhere; font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260410075936"><b>linux-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: "David Hildenbrand (Arm)" &lt;david@kernel.org&gt;
+To: Mike Rapoport &lt;rppt@kernel.org&gt;
+Cc: "Michael Neuling" &lt;mikey@neuling.org&gt;,
+	"Björn Töpel" &lt;bjorn@rivosinc.com&gt;,
+	"Vishal Moola (Oracle)" &lt;vishal.moola@gmail.com&gt;,
+	"Albert Ou" &lt;aou@eecs.berkeley.edu&gt;,
+	"Aleksa Paunovic" &lt;aleksa.paunovic@htecgroup.com&gt;,
+	"Aleksandar Rikalo" &lt;arikalo@gmail.com&gt;,
+	"Alexandre Ghiti" &lt;alex@ghiti.fr&gt;,
+	"Andrew Jones" &lt;ajones@ventanamicro.com&gt;,
+	"Andrew Morton" &lt;akpm@linux-foundation.org&gt;,
+	"Arnd Bergmann" &lt;arnd@arndb.de&gt;,
+	"Djordje Todorovic" &lt;djordje.todorovic@htecgroup.com&gt;,
+	"Guo Ren" &lt;guoren@kernel.org&gt;,
+	"Junhui Liu" &lt;junhui.liu@pigmoral.tech&gt;,
+	"Kevin Brodsky" &lt;kevin.brodsky@arm.com&gt;,
+	"Lorenzo Stoakes" &lt;ljs@kernel.org&gt;,
+	"Nam Cao" &lt;namcao@linutronix.de&gt;,
+	"Oleg Nesterov" &lt;oleg@redhat.com&gt;,
+	"Oscar Salvador" &lt;osalvador@suse.de&gt;,
+	"Palmer Dabbelt" &lt;palmer@dabbelt.com&gt;,
+	"Paul Walmsley" &lt;pjw@kernel.org&gt;,
+	"Qinglin Pan" &lt;panqinglin2020@iscas.ac.cn&gt;,
+	"Raj Vishwanathan4" &lt;rvishwanathan@mips.com&gt;,
+	<a href="../../lkml/?t=20260410075936">linux-kernel@vger.kernel.org</a>, <a href="../../linux-riscv/?t=20260410075936">linux-riscv@lists.infradead.org</a>
+Subject: <a href="#r" id="t">Re: [PATCH 3/5] riscv: mm: Fix NULL pointer dereference in __set_memory</a>
+Date: Fri, 10 Apr 2026 09:59:18 +0200	<a href="#r">[thread overview]</a>
+Message-ID: &lt;aff1c335-bd02-449e-8791-eb7050ec982d@kernel.org&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../adislUQ_dddOZZlW@kernel.org/">adislUQ_dddOZZlW@kernel.org</a>&gt;
+
+On 4/10/26 09:53, Mike Rapoport wrote:
+<span class="q">&gt; On Fri, Apr 10, 2026 at 09:42:26AM +0200, David Hildenbrand (Arm) wrote:
+&gt;&gt; On 4/10/26 08:23, Michael Neuling wrote:
+&gt;&gt;&gt;
+&gt;&gt;&gt; It wouldn't. You're right on this and the other two. Sorry for the noise.
+&gt;&gt;
+&gt;&gt; Slopped-by: Cursor:claude-4.6-opus-high-thinking
+&gt;&gt;
+&gt;&gt; :)
+&gt; 
+&gt; It's a general tendency of LLMs to generate overly defensive code and raise
+&gt; concerns about theoretical issues.
+&gt; Maybe it's worth taking into account when writing prompts specific to
+&gt; kernel development.
+</span>
+Yes, and I can only urge people to actually check what the LLM spits
+out, so they won't lose their credibility with maintainers ;)
+
+-- 
+Cheers,
+
+David
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre><a href="../20260409091143.1348853-5-mikey@neuling.org/" rel="next">next</a> <a href="../adislUQ_dddOZZlW@kernel.org/" rel="prev">prev parent</a> <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20260410075936">~2026-04-10  7:59 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>13+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2026-04-09  9:11 <a href="../20260409091143.1348853-1-mikey@neuling.org/">[PATCH 0/5] riscv: Assorted bug fixes</a> Michael Neuling
+2026-04-09  9:11 ` <a href="../20260409091143.1348853-2-mikey@neuling.org/">[PATCH 1/5] riscv: errata: Fix bitwise vs logical AND in MIPS errata patching</a> Michael Neuling
+2026-04-09  9:11 ` <a href="../20260409091143.1348853-3-mikey@neuling.org/">[PATCH 2/5] riscv: ptrace: Fix register corruption in compat_riscv_gpr_set on error</a> Michael Neuling
+2026-04-09  9:11 ` <a href="../20260409091143.1348853-4-mikey@neuling.org/">[PATCH 3/5] riscv: mm: Fix NULL pointer dereference in __set_memory</a> Michael Neuling
+2026-04-09 12:37   ` <a href="../b3466f28-0d0f-4ff8-8542-e53216cf3667@kernel.org/">David Hildenbrand (Arm)</a>
+2026-04-10  6:23     ` <a href="../CAEjGV6yKKtN3kGeQ+tdz1xy-DDS2FD0C0X4qm-iZ3zq7LEyhHQ@mail.gmail.com/">Michael Neuling</a>
+2026-04-10  7:42       ` <a href="../c390be36-ac4a-4964-9072-7ccf074d2f7f@kernel.org/">David Hildenbrand (Arm)</a>
+2026-04-10  7:53         ` <a href="../adislUQ_dddOZZlW@kernel.org/">Mike Rapoport</a>
+<b>2026-04-10  7:59           ` <a id="r" href="#t">David Hildenbrand (Arm) [this message]</a></b>
+2026-04-09  9:11 ` <a href="../20260409091143.1348853-5-mikey@neuling.org/">[PATCH 4/5] riscv: mm: Fix NULL dereferences in napot hugetlb functions</a> Michael Neuling
+2026-04-09 12:36   ` <a href="../3bcd073e-f142-4e7c-8d5e-b0d1239ca9b9@kernel.org/">David Hildenbrand (Arm)</a>
+2026-04-09  9:11 ` <a href="../20260409091143.1348853-6-mikey@neuling.org/">[PATCH 5/5] riscv: mm: Fix TOCTOU race in remove_pte_mapping</a> Michael Neuling
+2026-04-09 12:32   ` <a href="../86820d0e-3d35-41af-98ef-d713d3e71c9e@kernel.org/">David Hildenbrand (Arm)</a>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \
+    --in-reply-to=aff1c335-bd02-449e-8791-eb7050ec982d@kernel.org \
+    --to=david@kernel.org \
+    --cc=ajones@ventanamicro.com \
+    --cc=akpm@linux-foundation.org \
+    --cc=aleksa.paunovic@htecgroup.com \
+    --cc=alex@ghiti.fr \
+    --cc=aou@eecs.berkeley.edu \
+    --cc=arikalo@gmail.com \
+    --cc=arnd@arndb.de \
+    --cc=bjorn@rivosinc.com \
+    --cc=djordje.todorovic@htecgroup.com \
+    --cc=guoren@kernel.org \
+    --cc=junhui.liu@pigmoral.tech \
+    --cc=kevin.brodsky@arm.com \
+    --cc=linux-kernel@vger.kernel.org \
+    --cc=linux-riscv@lists.infradead.org \
+    --cc=ljs@kernel.org \
+    --cc=mikey@neuling.org \
+    --cc=namcao@linutronix.de \
+    --cc=oleg@redhat.com \
+    --cc=osalvador@suse.de \
+    --cc=palmer@dabbelt.com \
+    --cc=panqinglin2020@iscas.ac.cn \
+    --cc=pjw@kernel.org \
+    --cc=rppt@kernel.org \
+    --cc=rvishwanathan@mips.com \
+    --cc=vishal.moola@gmail.com \
+    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:david@kernel.org?In-Reply-To=%3Caff1c335-bd02-449e-8791-eb7050ec982d@kernel.org%3E&amp;Cc=ajones%40ventanamicro.com%2Cakpm%40linux-foundation.org%2Caleksa.paunovic%40htecgroup.com%2Calex%40ghiti.fr%2Caou%40eecs.berkeley.edu%2Carikalo%40gmail.com%2Carnd%40arndb.de%2Cbjorn%40rivosinc.com%2Cdjordje.todorovic%40htecgroup.com%2Cguoren%40kernel.org%2Cjunhui.liu%40pigmoral.tech%2Ckevin.brodsky%40arm.com%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cljs%40kernel.org%2Cmikey%40neuling.org%2Cnamcao%40linutronix.de%2Coleg%40redhat.com%2Cosalvador%40suse.de%2Cpalmer%40dabbelt.com%2Cpanqinglin2020%40iscas.ac.cn%2Cpjw%40kernel.org%2Crppt%40kernel.org%2Crvishwanathan%40mips.com%2Cvishal.moola%40gmail.com&amp;Subject=Re%3A%20%5BPATCH%203%2F5%5D%20riscv%3A%20mm%3A%20Fix%20NULL%20pointer%20dereference%20in%20__set_memory">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre><div id="summary" style="display: none;">Linux内核邮件列表中，David Hildenbrand在回复Mike Rapoport的邮件中讨论了大语言模型（LLM）在生成内核代码补丁时的倾向。他指出，LLM倾向于生成防御性过强的代码，并提出一些理论性的问题，这可能不适用于实际的内核开发。他建议开发者在使用LLM生成代码后，务必仔细检查其输出，以免在维护者面前失去信誉。该讨论是关于RISC-V架构内存管理相关补丁的回复。</div></body></html>
