@@ -1,0 +1,231 @@
+<!-- Filename: 导航栏/study/处理器/risc-v/虚拟化/中断/Contribute/[PATCH] riscv_ KVM_ Add hart-to-vCPU mapping for faster MSI injection - BillXiang (2026-07-30 17：51：02).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/kvm-riscv/20260730093614.983508-1-xiangwencheng@lanxincomputing.com/
+ Summary: 该 patch 为 RISC-V KVM 的 AIA 新增 hart_index 到 vCPU 的直接映射表，替代 MSI 注入路径中遍历所有 vCPU 的线性搜索，将 O(n) 扫描降为 O(1) 查表，在 vCPU 数量较大时显著提升中断注入性能。同时修改了 kvm_riscv_aia_inject_msi_by_id() 和 kvm_riscv_aia_inject_msi() 两个函数，并在 kvm_aia 结构中新增 hart_to_vcpu 字段。
+-->
+<html><head><title>[PATCH] riscv: KVM: Add hart-to-vCPU mapping for faster MSI injection - BillXiang</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><meta name="viewport" content="width=device-width," initial-scale="1"><style>*{overflow-wrap:anywhere;font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?69f2051c"><link type="text/css" rel="stylesheet" media="screen and (prefers-color-scheme:dark)" href="../216dark.css?69f2051c"><style>* { overflow-wrap: anywhere; font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }input, textarea { background: rgb(204, 255, 204); }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }input, textarea { background: rgb(0, 51, 51); }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260730093641"><b>kvm-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: "BillXiang" &lt;xiangwencheng@lanxincomputing.com&gt;
+To: &lt;anup@brainfault.org&gt;
+Cc: &lt;atish.patra@linux.dev&gt;, &lt;pjw@kernel.org&gt;, &lt;palmer@dabbelt.com&gt;,
+	 &lt;aou@eecs.berkeley.edu&gt;, &lt;alex@ghiti.fr&gt;, &lt;<a href="../../kvm/?t=20260730093641">kvm@vger.kernel.org</a>&gt;,
+	 &lt;<a href="../../kvm-riscv/?t=20260730093641">kvm-riscv@lists.infradead.org</a>&gt;,
+	&lt;<a href="../../linux-riscv/?t=20260730093641">linux-riscv@lists.infradead.org</a>&gt;,
+	 &lt;<a href="../../lkml/?t=20260730093641">linux-kernel@vger.kernel.org</a>&gt;,
+	&lt;xiangwencheng@lanxincomputing.com&gt;
+Subject: <a href="#r" id="t">[PATCH] riscv: KVM: Add hart-to-vCPU mapping for faster MSI injection</a>
+Date: Thu, 30 Jul 2026 17:36:14 +0800	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20260730093614.983508-1-xiangwencheng@lanxincomputing.com&gt; (<a href="raw">raw</a>)
+
+Replace linear searches over all vCPUs in MSI injection paths with a
+direct hart_index -&gt; vCPU lookup table. This avoids O(n) scans on
+every injected interrupt and improves performance when the number of
+vCPUs is large.
+
+Both kvm_riscv_aia_inject_msi_by_id() and kvm_riscv_aia_inject_msi()
+now use the table instead of iterating over the vCPU list.
+
+Signed-off-by: BillXiang &lt;xiangwencheng@lanxincomputing.com&gt;
+---
+ <a id="iZ31arch:riscv:include:asm:kvm_aia.h" href="#Z31arch:riscv:include:asm:kvm_aia.h">arch/riscv/include/asm/kvm_aia.h</a> |  2 +
+ <a id="iZ31arch:riscv:kvm:aia_device.c" href="#Z31arch:riscv:kvm:aia_device.c">arch/riscv/kvm/aia_device.c</a>      | 67 +++++++++++++++++++++-----------
+ 2 files <a href="#related">changed</a>, 47 insertions(+), 22 deletions(-)
+
+<span class="head"><a href="#iZ31arch:riscv:include:asm:kvm_aia.h" id="Z31arch:riscv:include:asm:kvm_aia.h">diff</a> --git a/arch/riscv/include/asm/kvm_aia.h b/arch/riscv/include/asm/kvm_aia.h
+index c67ec5ac0..71240b0a2 100644
+--- a/arch/riscv/include/asm/kvm_aia.h
++++ b/arch/riscv/include/asm/kvm_aia.h
+</span><span class="hunk">@@ -47,6 +47,8 @@ struct kvm_aia {
+</span> 
+ 	/* Internal state of APLIC */
+ 	void		*aplic_state;
+<span class="add">+
++	struct kvm_vcpu **hart_to_vcpu;
+</span> };
+ 
+ struct kvm_vcpu_aia_csr {
+<span class="head"><a href="#iZ31arch:riscv:kvm:aia_device.c" id="Z31arch:riscv:kvm:aia_device.c">diff</a> --git a/arch/riscv/kvm/aia_device.c b/arch/riscv/kvm/aia_device.c
+index be83c2d5f..595553817 100644
+--- a/arch/riscv/kvm/aia_device.c
++++ b/arch/riscv/kvm/aia_device.c
+</span><span class="hunk">@@ -253,6 +253,14 @@ static int aia_init(struct kvm *kvm)
+</span> 	if (ret)
+ 		return ret;
+ 
+<span class="add">+	aia-&gt;hart_to_vcpu = kcalloc(kvm-&gt;created_vcpus,
++					sizeof(struct kvm_vcpu*),
++					GFP_KERNEL);
++	if (!aia-&gt;hart_to_vcpu) {
++		ret = -ENOMEM;
++		goto fail_cleanup_aplic;
++	}
++
+</span> 	/* Iterate over each VCPU */
+ 	kvm_for_each_vcpu(idx, vcpu, kvm) {
+ 		vaia = &amp;vcpu-&gt;arch.aia_context;
+<span class="hunk">@@ -274,6 +282,12 @@ static int aia_init(struct kvm *kvm)
+</span> 		/* Update HART index of the IMSIC based on IMSIC base */
+ 		vaia-&gt;hart_index = aia_imsic_hart_index(aia,
+ 							vaia-&gt;imsic_addr);
+<span class="add">+		
++		if (aia-&gt;hart_to_vcpu[vaia-&gt;hart_index]) {
++			ret = -EINVAL;
++			goto fail_cleanup_imsics;
++		}
++		aia-&gt;hart_to_vcpu[vaia-&gt;hart_index] = vcpu;
+</span> 
+ 		/* Initialize IMSIC for this VCPU */
+ 		ret = kvm_riscv_vcpu_aia_imsic_init(vcpu);
+<span class="hunk">@@ -293,6 +307,9 @@ static int aia_init(struct kvm *kvm)
+</span> 			continue;
+ 		kvm_riscv_vcpu_aia_imsic_cleanup(vcpu);
+ 	}
+<span class="add">+	kfree(aia-&gt;hart_to_vcpu);
++	aia-&gt;hart_to_vcpu = NULL;
++fail_cleanup_aplic:
+</span> 	kvm_riscv_aia_aplic_cleanup(kvm);
+ 	return ret;
+ }
+<span class="hunk">@@ -551,30 +568,28 @@ void kvm_riscv_vcpu_aia_deinit(struct kvm_vcpu *vcpu)
+</span> int kvm_riscv_aia_inject_msi_by_id(struct kvm *kvm, u32 hart_index,
+ 				   u32 guest_index, u32 iid)
+ {
+<span class="del">-	unsigned long idx;
+</span> 	struct kvm_vcpu *vcpu;
+<span class="add">+	struct kvm_aia *aia = &amp;kvm-&gt;arch.aia;
+</span> 
+ 	/* Proceed only if AIA was initialized successfully */
+ 	if (!kvm_riscv_aia_initialized(kvm))
+ 		return -EBUSY;
+ 
+<span class="del">-	/* Inject MSI to matching VCPU */
+-	kvm_for_each_vcpu(idx, vcpu, kvm) {
+-		if (vcpu-&gt;arch.aia_context.hart_index == hart_index)
+-			return kvm_riscv_vcpu_aia_imsic_inject(vcpu,
+-							       guest_index,
+-							       0, iid);
+-	}
+</span><span class="add">+	if (!aia-&gt;hart_to_vcpu || hart_index &gt;= kvm-&gt;created_vcpus)
++		return 0;
+</span> 
+<span class="del">-	return 0;
+</span><span class="add">+	vcpu = aia-&gt;hart_to_vcpu[hart_index];
++	if (!vcpu)
++		return 0;
++	
++	return kvm_riscv_vcpu_aia_imsic_inject(vcpu, guest_index, 0, iid);
+</span> }
+ 
+ int kvm_riscv_aia_inject_msi(struct kvm *kvm, struct kvm_msi *msi)
+ {
+ 	gpa_t tppn, ippn;
+<span class="del">-	unsigned long idx;
+</span> 	struct kvm_vcpu *vcpu;
+<span class="del">-	u32 g, toff, iid = msi-&gt;data;
+</span><span class="add">+	u32 g, toff, iid = msi-&gt;data, hart_index;
+</span> 	struct kvm_aia *aia = &amp;kvm-&gt;arch.aia;
+ 	gpa_t target = (((gpa_t)msi-&gt;address_hi) &lt;&lt; 32) | msi-&gt;address_lo;
+ 
+<span class="hunk">@@ -589,18 +604,22 @@ int kvm_riscv_aia_inject_msi(struct kvm *kvm, struct kvm_msi *msi)
+</span> 	g = tppn &amp; (BIT(aia-&gt;nr_guest_bits) - 1);
+ 	tppn &amp;= ~((gpa_t)(BIT(aia-&gt;nr_guest_bits) - 1));
+ 
+<span class="del">-	/* Inject MSI to matching VCPU */
+-	kvm_for_each_vcpu(idx, vcpu, kvm) {
+-		ippn = vcpu-&gt;arch.aia_context.imsic_addr &gt;&gt;
+-					IMSIC_MMIO_PAGE_SHIFT;
+-		if (ippn == tppn) {
+-			toff = target &amp; (IMSIC_MMIO_PAGE_SZ - 1);
+-			return kvm_riscv_vcpu_aia_imsic_inject(vcpu, g,
+-							       toff, iid);
+-		}
+-	}
+</span><span class="add">+	if (!aia-&gt;hart_to_vcpu)
++		return 0;
+</span> 
+<span class="del">-	return 0;
+</span><span class="add">+	hart_index = aia_imsic_hart_index(aia, target);
++	if(hart_index &gt;= kvm-&gt;created_vcpus)
++		return 0;
++	
++	vcpu = aia-&gt;hart_to_vcpu[hart_index];
++	if (!vcpu)
++		return 0;
++
++	ippn = vcpu-&gt;arch.aia_context.imsic_addr &gt;&gt; IMSIC_MMIO_PAGE_SHIFT;
++	if (ippn != tppn)
++		return 0;
++	toff = target &amp; (IMSIC_MMIO_PAGE_SZ - 1);
++	return kvm_riscv_vcpu_aia_imsic_inject(vcpu, g,	toff, iid);
+</span> }
+ 
+ int kvm_riscv_aia_inject_irq(struct kvm *kvm, unsigned int irq, bool level)
+<span class="hunk">@@ -641,10 +660,14 @@ void kvm_riscv_aia_init_vm(struct kvm *kvm)
+</span> 
+ void kvm_riscv_aia_destroy_vm(struct kvm *kvm)
+ {
+<span class="add">+	struct kvm_aia *aia = &amp;kvm-&gt;arch.aia;
+</span> 	/* Proceed only if AIA was initialized successfully */
+ 	if (!kvm_riscv_aia_initialized(kvm))
+ 		return;
+ 
+<span class="add">+	kfree(aia-&gt;hart_to_vcpu);
++	aia-&gt;hart_to_vcpu = NULL;
++
+</span> 	/* Cleanup APLIC context */
+ 	kvm_riscv_aia_aplic_cleanup(kvm);
+ }
+-- 
+2.53.0
+
+-- 
+kvm-riscv mailing list
+kvm-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/kvm-riscv">http://lists.infradead.org/mailman/listinfo/kvm-riscv</a>
+</pre><hr><pre>                 <a href="#R">reply</a>	other threads:[<a href="../?t=20260730093641">~2026-07-30  9:36 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b><a id="r">[no followups]</a> expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>
+</pre><form id="related" action="../"><pre>find likely ancestor, descendant, or conflicting patches for <a href="#t">this message</a>:
+<textarea name="q" cols="72" rows="3">( dfblob:c67ec5ac dfblob:71240b0a dfblob:be83c2d5 dfblob:59555381 )
+ OR (
+bs:"[PATCH] riscv: KVM: Add hart-to-vCPU mapping for faster MSI injection" )</textarea>
+<input type="submit" value="search">	(<a href="../_/text/help/#search">help</a>)</pre></form>
+<hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \
+    --in-reply-to=20260730093614.983508-1-xiangwencheng@lanxincomputing.com \
+    --to=xiangwencheng@lanxincomputing.com \
+    --cc=alex@ghiti.fr \
+    --cc=anup@brainfault.org \
+    --cc=aou@eecs.berkeley.edu \
+    --cc=atish.patra@linux.dev \
+    --cc=kvm-riscv@lists.infradead.org \
+    --cc=kvm@vger.kernel.org \
+    --cc=linux-kernel@vger.kernel.org \
+    --cc=linux-riscv@lists.infradead.org \
+    --cc=palmer@dabbelt.com \
+    --cc=pjw@kernel.org \
+    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:xiangwencheng@lanxincomputing.com?In-Reply-To=%3C20260730093614.983508-1-xiangwencheng@lanxincomputing.com%3E&amp;Cc=alex%40ghiti.fr%2Canup%40brainfault.org%2Caou%40eecs.berkeley.edu%2Catish.patra%40linux.dev%2Ckvm-riscv%40lists.infradead.org%2Ckvm%40vger.kernel.org%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cpalmer%40dabbelt.com%2Cpjw%40kernel.org&amp;Subject=Re%3A%20%5BPATCH%5D%20riscv%3A%20KVM%3A%20Add%20hart-to-vCPU%20mapping%20for%20faster%20MSI%20injection">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre><div id="my-memory-translator-container" style="position: absolute; z-index: 999999; background: white; border: 1px solid rgb(221, 221, 221); border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px; padding: 12px; max-width: 300px; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif; font-size: 14px; line-height: 1.5; display: none; transition: opacity 0.2s; opacity: 0;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgb(238, 238, 238);"><span style="font-weight: 600; color: rgb(51, 51, 51);">翻译结果</span><button style="background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; font-size: 20px; cursor: pointer; color: rgb(153, 153, 153); padding: 0px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">×</button></div><div id="my-memory-translation-content" style="color: rgb(51, 51, 51); word-break: break-word;"></div><div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgb(238, 238, 238); font-size: 12px; color: rgb(102, 102, 102); display: flex; justify-content: space-between;"><span id="my-memory-source-text" style="max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span><span style="color: rgb(153, 153, 153);">MyMemory</span></div></div><div id="summary" style="display: none;">该 patch 为 RISC-V KVM 的 AIA 新增 hart_index 到 vCPU 的直接映射表，替代 MSI 注入路径中遍历所有 vCPU 的线性搜索，将 O(n) 扫描降为 O(1) 查表，在 vCPU 数量较大时显著提升中断注入性能。同时修改了 kvm_riscv_aia_inject_msi_by_id() 和 kvm_riscv_aia_inject_msi() 两个函数，并在 kvm_aia 结构中新增 hart_to_vcpu 字段。</div></body></html>
