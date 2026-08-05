@@ -1,0 +1,250 @@
+<!-- Filename: 导航栏/study/处理器/risc-v/虚拟化/内存/Re_ [RFC] RISC-V KVM_ guest local sfence.vma may miss stale VS-stage TLB after vCPU migration - Guo Ren (2026-08-05 11：07：20).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/kvm-riscv/anDVCJftl9Ag%2FuvD@gmail.com/
+ Summary: Yaxing Guo报告RISC-V KVM中guest local sfence.vma在vCPU迁移后可能遗漏陈旧VS-stage TLB条目，在XiangShan系统上触发段错误。Guo Ren引用规范指出HFENCE.GVMA在双缓存设计中可能不清除VS-stage TLB。Anup Patel认为现有vCPU迁移清理机制已能处理，可能是硬件问题。
+-->
+<html><head><title>Re: [RFC] RISC-V KVM: guest local sfence.vma may miss stale VS-stage TLB after vCPU migration - Guo Ren</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><meta name="viewport" content="width=device-width," initial-scale="1"><style>*{overflow-wrap:anywhere;font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?69f2051c"><link type="text/css" rel="stylesheet" media="screen and (prefers-color-scheme:dark)" href="../216dark.css?69f2051c"><style>* { overflow-wrap: anywhere; font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }input, textarea { background: rgb(204, 255, 204); }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }input, textarea { background: rgb(0, 51, 51); }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260803175116"><b>kvm-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Guo Ren &lt;guoren@kernel.org&gt;
+To: Anup Patel &lt;anup@brainfault.org&gt;
+Cc: Yaxing Guo &lt;guoyaxing@bosc.ac.cn&gt;,
+	Atish Patra &lt;atish.patra@linux.dev&gt;,
+	<a href="../../kvm-riscv/?t=20260803175116">kvm-riscv@lists.infradead.org</a>, <a href="../../kvm/?t=20260803175116">kvm@vger.kernel.org</a>,
+	<a href="../../linux-riscv/?t=20260803175116">linux-riscv@lists.infradead.org</a>, Paul Walmsley &lt;pjw@kernel.org&gt;,
+	Palmer Dabbelt &lt;palmer@dabbelt.com&gt;,
+	Albert Ou &lt;aou@eecs.berkeley.edu&gt;,
+	Alexandre Ghiti &lt;alex@ghiti.fr&gt;,
+	Hui Min Mina Chou &lt;minachou@andestech.com&gt;,
+	majiuyue@bosc.ac.cn, <a href="../../lkml/?t=20260803175116">linux-kernel@vger.kernel.org</a>
+Subject: <a href="#r" id="t">Re: [RFC] RISC-V KVM: guest local sfence.vma may miss stale VS-stage TLB after vCPU migration</a>
+Date: Mon, 3 Aug 2026 13:51:04 -0400	<a href="#r">[thread overview]</a>
+Message-ID: &lt;anDVCJftl9Ag/uvD@gmail.com&gt; (<a href="raw">raw</a>)
+In-Reply-To: &lt;<a href="../anDNs9KCzz3DTXdu@gmail.com/">anDNs9KCzz3DTXdu@gmail.com</a>&gt;
+
+On Mon, Aug 03, 2026 at 01:19:47PM -0400, Guo Ren wrote:
+<span class="q">&gt; On Mon, Aug 03, 2026 at 07:52:14PM +0530, Anup Patel wrote:
+&gt; &gt; On Sun, Aug 2, 2026 at 10:30 AM Yaxing Guo &lt;guoyaxing@bosc.ac.cn&gt; wrote:
+&gt; &gt; &gt;
+&gt; &gt; &gt; Hi all,
+&gt; &gt; &gt;
+&gt; &gt; &gt; I would like to ask whether RISC-V KVM has a gap around guest sfence.vma
+&gt; &gt; &gt; and VS-stage TLB invalidation when a vCPU migrates across host CPUs.
+&gt; &gt; &gt;
+&gt; &gt; &gt; On bare metal, Linux uses mm_cpumask in __flush_tlb_range() to decide
+&gt; &gt; &gt; whether to send a local or remote sfence.vma. That works because the cpumask
+&gt; &gt; &gt; reflects physical CPUs. In a guest, however, the kernel only sees vCPUs, so
+&gt; &gt; &gt; from the guest point of view a task may never "migrate" even though the
+&gt; &gt; &gt; underlying vCPU moved to a different host CPU. In other words, guest
+&gt; &gt; &gt; mm_cpumask is effectively a vCPU mask, not a host CPU mask.
+&gt; &gt; &gt;
+&gt; &gt; &gt; There is also a related switch_mm()/set_mm_asid() aspect. With the ASID
+&gt; &gt; &gt; allocator enabled, RISC-V Linux does not flush on every context switch. A
+&gt; &gt; &gt; local_flush_tlb_all() is only done when a deferred ASID rollover flush is
+&gt; &gt; &gt; pending for the current CPU. That is fine on bare metal, because previous
+&gt; &gt; &gt; shootdowns are also based on physical CPUs. In a guest, however, the earlier
+&gt; &gt; &gt; shootdown may have been only a guest-local sfence.vma and may have missed an
+&gt; &gt; &gt; old host CPU where the same vCPU ran previously.
+&gt; &gt; &gt;
+&gt; &gt; &gt; A simplified sequence is:
+&gt; &gt; &gt;
+&gt; &gt; &gt; 1. A guest task with mm A runs on vcpu0 while vcpu0 is scheduled on host
+&gt; &gt; &gt;    CPU1. CPU1 fills a VS-stage TLB entry for that mm/ASID.
+&gt; &gt; &gt; 2. vcpu0 migrates to host CPU0. KVM's vCPU migration sanitization is local
+&gt; &gt; &gt;    to the current host CPU, so it does not invalidate the VS-stage TLB entry
+&gt; &gt; &gt;    that was left on host CPU1.
+&gt; &gt; 
+&gt; &gt; When vcpu0 migrates to host CPU0, the host CPU0 may or may not have
+&gt; &gt; VS-stage TLB entry so VCPU migration sanitization does the right thing.
+&gt; &gt; 
+&gt; &gt; In the future, vcpu0 may again move back to host CPU1 containing stale
+&gt; &gt; VS-stage TLB entries left in step1 above so the VCPU migration sanitization
+&gt; &gt; will cleanup these stale TLB enteries.
+&gt; &gt; 
+&gt; &gt; &gt; 3. The guest later updates mm A's page table from vcpu0, for example due to
+&gt; &gt; &gt;    COW. Since the guest still sees mm A as having run only on guest CPU0,
+&gt; &gt; &gt;    __flush_tlb_range() can choose a local sfence.vma. That local sfence.vma
+&gt; &gt; &gt;    only affects host CPU0, where vcpu0 is currently running, so the stale
+&gt; &gt; &gt;    VS-stage entry on host CPU1 remains.
+&gt; &gt; 
+&gt; &gt; No need to worry about stale VS-stage entry on host CPU1 because these
+&gt; &gt; will age-out or same guest may again move to host CPU1 resulting in
+&gt; &gt; VCPU migration sanitization.
+&gt; 
+&gt; void kvm_riscv_local_tlb_sanitize(struct kvm_vcpu *vcpu)
+&gt; {
+&gt;         unsigned long vmid;
+&gt; 
+&gt;         if (!kvm_riscv_gstage_vmid_bits() ||
+&gt;             vcpu-&gt;arch.last_exit_cpu == vcpu-&gt;cpu)
+&gt;                 return;
+&gt; 
+&gt; You're right that kvm_riscv_local_tlb_sanitize() can correctly detect a
+&gt; CPU migration via the above check. This check runs before
+&gt; kvm_riscv_vcpu_enter_exit(), so last_exit_cpu still holds the previous
+&gt; CPU and the migration case is properly handled.
+&gt; 
+&gt;         vmid = READ_ONCE(vcpu-&gt;kvm-&gt;arch.vmid.vmid);
+&gt;         kvm_riscv_local_hfence_gvma_vmid_all(vmid);
+&gt; 
+&gt; The XiangShan team seems to read the specification as not requiring
+&gt; HFENCE.GVMA to invalidate VS-stage TLB entries. Could you please point
+&gt; me to the exact wording in the RISC-V Privileged Specification that
+&gt; indicates otherwise? I would really appreciate the reference.
+</span>Oh, I found this in the specification:
+
+Conceptually, an implementation might contain two address-translation
+caches: one that maps guest virtual addresses to guest physical addresses,
+and another that maps guest physical addresses to supervisor physical
+addresses. HFENCE.GVMA need not flush the former cache, but it must flush
+                                          ^^^^^^ ^^^^^
+entries from the latter cache that match the HFENCE.GVMA’s address and
+                 ^^^^^^ ^^^^^
+VMID arguments.
+
+This non-normative text describes two possible hardware designs, which
+cause HFENCE.GVMA to behave differently:
+ - In a two-cache design, stale VS-stage entries can remain after
+HFENCE.GVMA.
+ - In a single-cache design (GVA → SPA), HFENCE.GVMA will also clean up the
+corresponding stale VS-stage entries.
+
+<span class="q">&gt; 
+&gt; &gt; 
+&gt; &gt; &gt; 4. Later, the task is scheduled again while vcpu0 is running on host CPU1.
+&gt; &gt; &gt;    If the ASID is still valid and no deferred ASID rollover flush is pending,
+&gt; &gt; &gt;    set_mm_asid() may not issue any flush. The access on host CPU1 can then
+&gt; &gt; &gt;    hit the old VS-stage TLB entry.
+&gt; &gt; 
+&gt; &gt; See above comments.
+&gt; &gt; 
+&gt; &gt; &gt;
+&gt; &gt; &gt; We hit this on a XiangShan RISC-V system. A bash task in the guest was
+&gt; &gt; &gt; scheduled on vcpu0 while that vCPU was running on host CPU1. A read-only
+&gt; &gt; &gt; page was prefetched and cached in CPU1's VS-stage TLB. Later the same vCPU
+&gt; &gt; &gt; migrated to host CPU0, the guest triggered COW and updated the mapping, and
+&gt; &gt; &gt; the guest still issued only a local sfence.vma. The stale VS-stage entry on
+&gt; &gt; &gt; CPU1 was not invalidated. After running for some time, the task later
+&gt; &gt; &gt; accessed that mapping while running on host CPU1 again and hit the stale
+&gt; &gt; &gt; translation. The data in that page was a pointer from the GOT, so it
+&gt; &gt; &gt; dereferenced to NULL and eventually caused a segmentation fault.
+&gt; &gt; 
+&gt; &gt; The above example is already taken care by TLB flushes in KVM RISC-V.
+&gt; &gt; This smells like some HW errata to me.
+&gt; &gt; 
+&gt; &gt; &gt;
+&gt; &gt; &gt; I checked current upstream RISC-V KVM (v7.0.2) and I do not see HSTATUS.VTVM
+&gt; &gt; &gt; being enabled, so guest sfence.vma is not trapped. I found
+&gt; &gt; &gt; kvm_riscv_local_tlb_sanitize() on host CPU migration, which handles G-stage
+&gt; &gt; &gt; VMID entries on the current host CPU, but I do not think it generally solves
+&gt; &gt; &gt; the stale VS-stage TLB case described above.
+&gt; &gt; &gt;
+&gt; &gt; &gt; I also noticed the vendor-specific kvm_riscv_vsstage_tlb_no_gpa path in
+&gt; &gt; &gt; current upstream. It looks like a workaround for a particular implementation
+&gt; &gt; &gt; issue on Andes AX66, where the VS-stage TLB does not cache guest physical
+&gt; &gt; &gt; address and VMID, so the normal VMID/GPA-based invalidation model is
+&gt; &gt; &gt; insufficient. In that sense, it does not seem to be a generic solution for
+&gt; &gt; &gt; guest sfence.vma coherence across vCPU migration.
+&gt; &gt; &gt;
+&gt; &gt; &gt; I am wondering what the right direction should be. Enabling HSTATUS.VTVM and
+&gt; &gt; &gt; trapping guest sfence.vma would allow KVM to translate guest local sfence.vma
+&gt; &gt; &gt; into the required host-side hfence.vvma, but that may be too heavy for the
+&gt; &gt; &gt; common case. Another possible direction may be to make the current
+&gt; &gt; &gt; Andes-specific vCPU migration flush logic more generic, so implementations
+&gt; &gt; &gt; that need VS-stage TLB sanitization on vCPU migration can opt in through a
+&gt; &gt; &gt; common mechanism. A third possibility may be to define a lightweight SBI
+&gt; &gt; &gt; interface for guest local sfence.vma, so Linux could use it in
+&gt; &gt; &gt; __flush_tlb_range() for the local case when running under KVM, and KVM could
+&gt; &gt; &gt; then decide whether a local sfence.vma is sufficient or whether host-side
+&gt; &gt; &gt; hfence.vvma is also needed.
+&gt; &gt; 
+&gt; &gt; Enabling HSTATUS.VTVM has a big impact on performance so certainly
+&gt; &gt; NACK from myside.
+&gt; &gt; 
+&gt; &gt; &gt;
+&gt; &gt; &gt; My questions are:
+&gt; &gt; &gt; 1. Is the behavior above expected on current RISC-V KVM?
+&gt; &gt; 
+&gt; &gt; Yes, it should work fine unless there is some HW bug.
+&gt; &gt; 
+&gt; &gt; &gt; 2. If not, what would be the preferred fix direction?
+&gt; &gt; &gt; 3. Should this be handled by trapping guest sfence.vma with VTVM, by
+&gt; &gt; &gt;    generalizing the existing vCPU-migration VS-stage TLB flush logic, or by
+&gt; &gt; &gt;    adding a lighter SBI-mediated path for guest local sfence.vma?
+&gt; &gt; &gt; 4. Or is there another intended mechanism to keep VS-stage TLB state coherent
+&gt; &gt; &gt;    across vCPU migration?
+&gt; &gt; &gt;
+&gt; &gt; &gt; If needed, I can send a reproducer and the exact hardware/kernel details.
+&gt; &gt; &gt;
+&gt; &gt; 
+&gt; &gt; Even if you share some reporducing code sequence, we still have don't
+&gt; &gt; have access to your HW so it won't help much.
+&gt; &gt; 
+&gt; &gt; Regards,
+&gt; &gt; Anup
+&gt; &gt; 
+&gt; &gt; _______________________________________________
+&gt; &gt; linux-riscv mailing list
+&gt; &gt; linux-riscv@lists.infradead.org
+&gt; &gt; <a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+&gt; 
+&gt; _______________________________________________
+&gt; linux-riscv mailing list
+&gt; linux-riscv@lists.infradead.org
+&gt; <a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</span>
+-- 
+kvm-riscv mailing list
+kvm-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/kvm-riscv">http://lists.infradead.org/mailman/listinfo/kvm-riscv</a>
+</pre><hr><pre><a href="../0d15b098-b8f7-4080-9f33-e8c49c2331e1@bosc.ac.cn/" rel="next">next</a> <a href="../anDNs9KCzz3DTXdu@gmail.com/" rel="prev">prev parent</a> <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20260803175116">~2026-08-03 17:51 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>7+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+2026-08-02  5:00 <a href="../20260802050015.104795-1-guoyaxing@bosc.ac.cn/">[RFC] RISC-V KVM: guest local sfence.vma may miss stale VS-stage TLB after vCPU migration</a> Yaxing Guo
+2026-08-03 13:54 ` <a href="../20260803135454.2726112-1-guoren@kernel.org/">[PATCH] riscv: KVM: Flush VS-stage stale entries</a> Guo Ren
+2026-08-03 14:22 ` <a href="../CAAhSdy3QE6Fe_fanKOLHLjDCb+vsVax=wy18UxzR23XN7ggJGw@mail.gmail.com/">[RFC] RISC-V KVM: guest local sfence.vma may miss stale VS-stage TLB after vCPU migration</a> Anup Patel
+2026-08-03 17:19   ` <a href="../anDNs9KCzz3DTXdu@gmail.com/">Guo Ren</a>
+<b>2026-08-03 17:51     ` <a id="r" href="#t">Guo Ren [this message]</a></b>
+2026-08-04  2:32   ` <a href="../0d15b098-b8f7-4080-9f33-e8c49c2331e1@bosc.ac.cn/">guoyaxing</a>
+2026-08-04  2:56     ` <a href="../55c0150b-6e1b-4b20-a74e-8be1c2982531@bosc.ac.cn/">guoyaxing</a>
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \
+    --in-reply-to=anDVCJftl9Ag/uvD@gmail.com \
+    --to=guoren@kernel.org \
+    --cc=alex@ghiti.fr \
+    --cc=anup@brainfault.org \
+    --cc=aou@eecs.berkeley.edu \
+    --cc=atish.patra@linux.dev \
+    --cc=guoyaxing@bosc.ac.cn \
+    --cc=kvm-riscv@lists.infradead.org \
+    --cc=kvm@vger.kernel.org \
+    --cc=linux-kernel@vger.kernel.org \
+    --cc=linux-riscv@lists.infradead.org \
+    --cc=majiuyue@bosc.ac.cn \
+    --cc=minachou@andestech.com \
+    --cc=palmer@dabbelt.com \
+    --cc=pjw@kernel.org \
+    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:guoren@kernel.org?In-Reply-To=%3CanDVCJftl9Ag%2FuvD@gmail.com%3E&amp;Cc=alex%40ghiti.fr%2Canup%40brainfault.org%2Caou%40eecs.berkeley.edu%2Catish.patra%40linux.dev%2Cguoyaxing%40bosc.ac.cn%2Ckvm-riscv%40lists.infradead.org%2Ckvm%40vger.kernel.org%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cmajiuyue%40bosc.ac.cn%2Cminachou%40andestech.com%2Cpalmer%40dabbelt.com%2Cpjw%40kernel.org&amp;Subject=Re%3A%20%5BRFC%5D%20RISC-V%20KVM%3A%20guest%20local%20sfence.vma%20may%20miss%20stale%20VS-stage%20TLB%20after%20vCPU%20migration">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre><div id="my-memory-translator-container" style="position: absolute; z-index: 999999; background: white; border: 1px solid rgb(221, 221, 221); border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px; padding: 12px; max-width: 300px; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif; font-size: 14px; line-height: 1.5; display: none; transition: opacity 0.2s; opacity: 0;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgb(238, 238, 238);"><span style="font-weight: 600; color: rgb(51, 51, 51);">翻译结果</span><button style="background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; font-size: 20px; cursor: pointer; color: rgb(153, 153, 153); padding: 0px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">×</button></div><div id="my-memory-translation-content" style="color: rgb(51, 51, 51); word-break: break-word;"></div><div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgb(238, 238, 238); font-size: 12px; color: rgb(102, 102, 102); display: flex; justify-content: space-between;"><span id="my-memory-source-text" style="max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span><span style="color: rgb(153, 153, 153);">MyMemory</span></div></div><div id="summary" style="display: none;">Yaxing Guo报告RISC-V KVM中guest local sfence.vma在vCPU迁移后可能遗漏陈旧VS-stage TLB条目，在XiangShan系统上触发段错误。Guo Ren引用规范指出HFENCE.GVMA在双缓存设计中可能不清除VS-stage TLB。Anup Patel认为现有vCPU迁移清理机制已能处理，可能是硬件问题。</div></body></html>
