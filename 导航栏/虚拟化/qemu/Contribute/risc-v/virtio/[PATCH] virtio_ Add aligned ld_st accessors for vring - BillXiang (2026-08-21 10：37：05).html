@@ -1,0 +1,314 @@
+<!-- Filename: 导航栏/虚拟化/qemu/Contribute/risc-v/virtio/[PATCH] virtio_ Add aligned ld_st accessors for vring - BillXiang (2026-08-21 10：37：05).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/qemu-devel/20260820094611.1767100-1-xiangwencheng@lanxincomputing.com/
+ Summary: 补丁为virtio vring新增对齐ld/st访问器。通用指针访问在RISC-V上被编译器拆分为多次字节读写，导致guest并发更新avail->idx时出现撕裂读（日志中索引从49417误读到49919）。通过__builtin_assume_aligned使快速路径发出单次对齐加载指令，消除撕裂窗口并提升性能，涉及virtio.c、bswap.h及新增头文件。
+-->
+<html><head><title>[PATCH] virtio: Add aligned ld/st accessors for vring - BillXiang</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><meta name="viewport" content="width=device-width," initial-scale="1"><style>*{overflow-wrap:anywhere;font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?69f2051c"><link type="text/css" rel="stylesheet" media="screen and (prefers-color-scheme:dark)" href="../216dark.css?69f2051c"><style>* { overflow-wrap: anywhere; font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }input, textarea { background: rgb(204, 255, 204); }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }input, textarea { background: rgb(0, 51, 51); }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260820094749"><b>qemu-devel.nongnu.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: "BillXiang" &lt;xiangwencheng@lanxincomputing.com&gt;
+To: &lt;mst@redhat.com&gt;
+Cc: &lt;pbonzini@redhat.com&gt;, &lt;peterx@redhat.com&gt;, &lt;philmd@mailo.com&gt;,
+	 &lt;<a href="../../qemu-devel/?t=20260820094749">qemu-devel@nongnu.org</a>&gt;, &lt;xiangwencheng@lanxincomputing.com&gt;
+Subject: <a href="#r" id="t">[PATCH] virtio: Add aligned ld/st accessors for vring</a>
+Date: Thu, 20 Aug 2026 17:46:11 +0800	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20260820094611.1767100-1-xiangwencheng@lanxincomputing.com&gt; (<a href="raw">raw</a>)
+
+The generic ld/st*_p() pointer helpers lower to __builtin_memcpy,
+which on RISC-V will be expanded to multiple byte-access instructions
+rather than a single aligned access by the compiler because it
+cannot prove alignment at the call site.
+
+Each cached 16-bit access of a vring field therefore performs several
+distinct byte ld/st, which is a memory-tearing hazard for fields that
+the guest may access concurrently — most notably avail-&gt;idx, where we
+find the guest can write a new value between the individual byte loads
+and produce a torn read that never existed in memory, as seen in logs
+like:
+  "Guest moved used index from 49417 to 49919"
+Here, 49919 (binary 1100 0010-1111 1111) is incorrectly assembled from
+the lower byte of 49663 (1100 0001-1111 1111) and the upper byte of
+49664 (1100 0010-0000 0000).
+
+Add a parallel set of _aligned cached accessors so the fast (RAM) path
+emits a single aligned load instruction, eliminating the tearing window.
+
+Callers MUST ensure @addr is naturally aligned to the access size before
+invoking the _aligned helpers; the virtio vring layout guarantees this
+for avail-&gt;idx and other naturally-aligned fields.
+
+This patch fixes the memory-tearing hazard while also improves performance.
+
+Signed-off-by: BillXiang &lt;xiangwencheng@lanxincomputing.com&gt;
+---
+ <a id="iZ31hw:virtio:virtio.c" href="#Z31hw:virtio:virtio.c">hw/virtio/virtio.c</a>                            |  8 +-
+ <a id="iZ31include:qemu:bswap.h" href="#Z31include:qemu:bswap.h">include/qemu/bswap.h</a>                          | 41 ++++++++++
+ <a id="iZ31include:system:memory_cached.h" href="#Z31include:system:memory_cached.h">include/system/memory_cached.h</a>                | 16 ++++
+ <a id="iZ31system:memory_ldst_cached_aligned.h.inc" href="#Z31system:memory_ldst_cached_aligned.h.inc">.../system/memory_ldst_cached_aligned.h.inc</a>   | 76 +++++++++++++++++++
+ 4 files <a href="#related">changed</a>, 137 insertions(+), 4 deletions(-)
+ create mode 100644 include/system/memory_ldst_cached_aligned.h.inc
+
+<span class="head"><a href="#iZ31hw:virtio:virtio.c" id="Z31hw:virtio:virtio.c">diff</a> --git a/hw/virtio/virtio.c b/hw/virtio/virtio.c
+index daa5607..f796bdd 100644
+--- a/hw/virtio/virtio.c
++++ b/hw/virtio/virtio.c
+</span><span class="hunk">@@ -223,9 +223,9 @@ static inline uint16_t virtio_lduw_phys_cached(VirtIODevice *vdev,
+</span>                                                hwaddr pa)
+ {
+     if (virtio_vdev_is_big_endian(vdev)) {
+<span class="del">-        return lduw_be_phys_cached(cache, pa);
+</span><span class="add">+        return lduw_be_phys_cached_aligned(cache, pa);
+</span>     }
+<span class="del">-    return lduw_le_phys_cached(cache, pa);
+</span><span class="add">+    return lduw_le_phys_cached_aligned(cache, pa);
+</span> }
+ 
+ static inline void virtio_stw_phys_cached(VirtIODevice *vdev,
+<span class="hunk">@@ -233,9 +233,9 @@ static inline void virtio_stw_phys_cached(VirtIODevice *vdev,
+</span>                                           hwaddr pa, uint16_t value)
+ {
+     if (virtio_vdev_is_big_endian(vdev)) {
+<span class="del">-        stw_be_phys_cached(cache, pa, value);
+</span><span class="add">+        stw_be_phys_cached_aligned(cache, pa, value);
+</span>     } else {
+<span class="del">-        stw_le_phys_cached(cache, pa, value);
+</span><span class="add">+        stw_le_phys_cached_aligned(cache, pa, value);
+</span>     }
+ }
+ 
+<span class="head"><a href="#iZ31include:qemu:bswap.h" id="Z31include:qemu:bswap.h">diff</a> --git a/include/qemu/bswap.h b/include/qemu/bswap.h
+index 387d65c..c23f5a2 100644
+--- a/include/qemu/bswap.h
++++ b/include/qemu/bswap.h
+</span><span class="hunk">@@ -255,6 +255,20 @@ static inline int lduw_he_p(const void *ptr)
+</span>     return r;
+ }
+ 
+<span class="add">+static inline int lduw_he_p_aligned(const void *ptr)
++{
++    uint16_t r;
++    __builtin_memcpy(&amp;r, __builtin_assume_aligned(ptr, sizeof(r)), sizeof(r));
++    return r;
++}
++
+</span> static inline int ldsw_he_p(const void *ptr)
+ {
+     int16_t r;
+<span class="hunk">@@ -267,6 +281,11 @@ static inline void stw_he_p(void *ptr, uint16_t v)
+</span>     __builtin_memcpy(ptr, &amp;v, sizeof(v));
+ }
+ 
+<span class="add">+static inline void stw_he_p_aligned(void *ptr, uint16_t v)
++{
++    __builtin_memcpy(__builtin_assume_aligned(ptr, sizeof(v)), &amp;v, sizeof(v));
++}
++
+</span> static inline void st24_he_p(void *ptr, uint32_t v)
+ {
+     __builtin_memcpy(ptr, &amp;v, 3);
+<span class="hunk">@@ -301,6 +320,12 @@ static inline int lduw_le_p(const void *ptr)
+</span>     return (uint16_t)le_bswap(lduw_he_p(ptr), 16);
+ }
+ 
+<span class="add">+static inline int lduw_le_p_aligned(const void *ptr)
++{
++    return (uint16_t)le_bswap(lduw_he_p_aligned(ptr), 16);
++}
++
+</span> static inline int ldsw_le_p(const void *ptr)
+ {
+     return (int16_t)le_bswap(lduw_he_p(ptr), 16);
+<span class="hunk">@@ -321,6 +346,11 @@ static inline void stw_le_p(void *ptr, uint16_t v)
+</span>     stw_he_p(ptr, le_bswap(v, 16));
+ }
+ 
+<span class="add">+static inline void stw_le_p_aligned(void *ptr, uint16_t v)
++{
++    stw_he_p_aligned(ptr, le_bswap(v, 16));
++}
++
+</span> static inline void st24_le_p(void *ptr, uint32_t v)
+ {
+     st24_he_p(ptr, le_bswap24(v));
+<span class="hunk">@@ -341,6 +371,12 @@ static inline int lduw_be_p(const void *ptr)
+</span>     return (uint16_t)be_bswap(lduw_he_p(ptr), 16);
+ }
+ 
+<span class="add">+static inline int lduw_be_p_aligned(const void *ptr)
++{
++    return (uint16_t)be_bswap(lduw_he_p_aligned(ptr), 16);
++}
++
+</span> static inline int ldsw_be_p(const void *ptr)
+ {
+     return (int16_t)be_bswap(lduw_he_p(ptr), 16);
+<span class="hunk">@@ -361,6 +397,11 @@ static inline void stw_be_p(void *ptr, uint16_t v)
+</span>     stw_he_p(ptr, be_bswap(v, 16));
+ }
+ 
+<span class="add">+static inline void stw_be_p_aligned(void *ptr, uint16_t v)
++{
++    stw_he_p_aligned(ptr, be_bswap(v, 16));
++}
++
+</span> static inline void st24_be_p(void *ptr, uint32_t v)
+ {
+     st24_he_p(ptr, be_bswap24(v));
+<span class="head"><a href="#iZ31include:system:memory_cached.h" id="Z31include:system:memory_cached.h">diff</a> --git a/include/system/memory_cached.h b/include/system/memory_cached.h
+index 09d4682..cfa7a26 100644
+--- a/include/system/memory_cached.h
++++ b/include/system/memory_cached.h
+</span><span class="hunk">@@ -96,6 +96,22 @@ void address_space_stb_cached(const MemoryRegionCache *cache,
+</span> #define ARG1_DECL    const MemoryRegionCache *cache
+ #include "system/memory_ldst_phys.h.inc"
+ 
+<span class="add">+/*
++ * Aligned counterparts of the cached load accessors.
++ *
++ * The fast path (direct RAM access) uses the ld*_p_aligned() pointer helpers,
++ * which assume the host pointer is naturally aligned to the access size and
++ * therefore let the compiler emit an aligned load instruction.
++ *
++ * Callers MUST ensure @addr is aligned to the access size before invoking
++ * these helpers; otherwise the behavior is undefined.
++ */
++#define ENDIANNESS   _le
++#include "system/memory_ldst_cached_aligned.h.inc"
++
++#define ENDIANNESS   _be
++#include "system/memory_ldst_cached_aligned.h.inc"
++
+</span> /**
+  * address_space_cache_init: prepare for repeated access to a physical
+  *                           memory region
+<span class="head"><a href="#iZ31system:memory_ldst_cached_aligned.h.inc" id="Z31system:memory_ldst_cached_aligned.h.inc">diff</a> --git a/include/system/memory_ldst_cached_aligned.h.inc b/include/system/memory_ldst_cached_aligned.h.inc
+new file mode 100644
+index 0000000..c21c135
+--- /dev/null
++++ b/include/system/memory_ldst_cached_aligned.h.inc
+</span><span class="hunk">@@ -0,0 +1,76 @@
+</span><span class="add">+/*
++ *  Aligned Memory access templates for MemoryRegionCache
++ *
++ *  Callers MUST ensure @addr is aligned to the access size before invoking
++ *  these helpers; otherwise the behavior is undefined.
++ *
++ *  Copyright (c) 2018 Red Hat, Inc.
++ *  Copyright (c) 2018 LanxinComputing, Ltd.
++ *
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ */
++
++#define ADDRESS_SPACE_LD_CACHED_ALIGNED(size) \
++    glue(glue(address_space_ld, size), glue(ENDIANNESS, _cached_aligned))
++#define ADDRESS_SPACE_LD_CACHED_SLOW(size) \
++    glue(glue(address_space_ld, size), glue(ENDIANNESS, _cached_slow))
++#define LD_P_ALIGNED(size) \
++    glue(glue(ld, size), glue(ENDIANNESS, _p_aligned))
++#define LD_PHYS_CACHED_ALIGNED(size) \
++    glue(glue(ld, size), glue(ENDIANNESS, glue(_phys, _cached_aligned)))
++
++static inline uint16_t ADDRESS_SPACE_LD_CACHED_ALIGNED(uw)(MemoryRegionCache *cache,
++    hwaddr addr, MemTxAttrs attrs, MemTxResult *result)
++{
++    assert(addr &lt; cache-&gt;len &amp;&amp; 2 &lt;= cache-&gt;len - addr);
++    fuzz_dma_read_cb(cache-&gt;xlat + addr, 2, cache-&gt;mrs.mr);
++    if (likely(cache-&gt;ptr)) {
++        return LD_P_ALIGNED(uw)(cache-&gt;ptr + addr);
++    } else {
++        return ADDRESS_SPACE_LD_CACHED_SLOW(uw)(cache, addr, attrs, result);
++    }
++}
++
++static inline uint16_t LD_PHYS_CACHED_ALIGNED(uw)(MemoryRegionCache *cache,
++                                                  hwaddr addr)
++{
++    return ADDRESS_SPACE_LD_CACHED_ALIGNED(uw)(cache, addr,
++                                              MEMTXATTRS_UNSPECIFIED, NULL);
++}
++
++#undef ADDRESS_SPACE_LD_CACHED_ALIGNED
++#undef ADDRESS_SPACE_LD_CACHED_SLOW
++#undef LD_P_ALIGNED
++#undef LD_PHYS_CACHED_ALIGNED
++
++#define ADDRESS_SPACE_ST_CACHED_ALIGNED(size) \
++    glue(glue(address_space_st, size), glue(ENDIANNESS, _cached_aligned))
++#define ADDRESS_SPACE_ST_CACHED_SLOW(size) \
++    glue(glue(address_space_st, size), glue(ENDIANNESS, _cached_slow))
++#define ST_P_ALIGNED(size) \
++    glue(glue(st, size), glue(ENDIANNESS, _p_aligned))
++#define ST_PHYS_CACHED_ALIGNED(size) \
++    glue(glue(st, size), glue(ENDIANNESS, glue(_phys, _cached_aligned)))
++
++static inline void ADDRESS_SPACE_ST_CACHED_ALIGNED(w)(const MemoryRegionCache *cache,
++    hwaddr addr, uint16_t val, MemTxAttrs attrs, MemTxResult *result)
++{
++    assert(addr &lt; cache-&gt;len &amp;&amp; 2 &lt;= cache-&gt;len - addr);
++    if (likely(cache-&gt;ptr)) {
++        ST_P_ALIGNED(w)(cache-&gt;ptr + addr, val);
++    } else {
++        ADDRESS_SPACE_ST_CACHED_SLOW(w)(cache, addr, val, attrs, result);
++    }
++}
++
++static inline void ST_PHYS_CACHED_ALIGNED(w)(MemoryRegionCache *cache,
++    hwaddr addr, uint16_t val)
++{
++    ADDRESS_SPACE_ST_CACHED_ALIGNED(w)(cache, addr, val, MEMTXATTRS_UNSPECIFIED, NULL);
++}
++
++#undef ADDRESS_SPACE_ST_CACHED_ALIGNED
++#undef ADDRESS_SPACE_ST_CACHED_SLOW
++#undef ST_P_ALIGNED
++#undef ST_PHYS_CACHED_ALIGNED
++
++#undef ENDIANNESS
+</span>-- 
+2.53.0
+
+</pre><hr><pre><a href="../0ab52741-c059-4b3b-b1cd-fcf289bf820f@linaro.org/" rel="next">next</a>             <a href="#R">reply</a>	other threads:[<a href="../?t=20260820094749">~2026-08-20  9:47 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>3+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2026-08-20  9:46 <a id="r" href="#t">BillXiang [this message]</a></b>
+2026-08-20 14:59 ` <a href="../0ab52741-c059-4b3b-b1cd-fcf289bf820f@linaro.org/">[PATCH] virtio: Add aligned ld/st accessors for vring</a> Richard Henderson
+2026-08-21  2:20   ` <a href="../6e417ca3-ec49-498c-8bfa-e29be60c6551@lanxincomputing.com/">BillXiang</a>
+</pre><form id="related" action="../"><pre>find likely ancestor, descendant, or conflicting patches for <a href="#t">this message</a>:
+<textarea name="q" cols="72" rows="4">( dfblob:daa5607 dfblob:f796bdd dfblob:387d65c dfblob:c23f5a2
+dfblob:09d4682 dfblob:cfa7a26 dfblob:c21c135 )
+ OR (
+bs:"[PATCH] virtio: Add aligned ld/st accessors for vring" )</textarea>
+<input type="submit" value="search">	(<a href="../_/text/help/#search">help</a>)</pre></form>
+<hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \
+    --in-reply-to=20260820094611.1767100-1-xiangwencheng@lanxincomputing.com \
+    --to=xiangwencheng@lanxincomputing.com \
+    --cc=mst@redhat.com \
+    --cc=pbonzini@redhat.com \
+    --cc=peterx@redhat.com \
+    --cc=philmd@mailo.com \
+    --cc=qemu-devel@nongnu.org \
+    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:xiangwencheng@lanxincomputing.com?In-Reply-To=%3C20260820094611.1767100-1-xiangwencheng@lanxincomputing.com%3E&amp;Cc=mst%40redhat.com%2Cpbonzini%40redhat.com%2Cpeterx%40redhat.com%2Cphilmd%40mailo.com%2Cqemu-devel%40nongnu.org&amp;Subject=Re%3A%20%5BPATCH%5D%20virtio%3A%20Add%20aligned%20ld%2Fst%20accessors%20for%20vring">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre><div id="my-memory-translator-container" style="position: absolute; z-index: 999999; background: white; border: 1px solid rgb(221, 221, 221); border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px; padding: 12px; max-width: 300px; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif; font-size: 14px; line-height: 1.5; display: none; transition: opacity 0.2s;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgb(238, 238, 238);"><span style="font-weight: 600; color: rgb(51, 51, 51);">翻译结果</span><button style="background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; font-size: 20px; cursor: pointer; color: rgb(153, 153, 153); padding: 0px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">×</button></div><div id="my-memory-translation-content" style="color: rgb(51, 51, 51); word-break: break-word;"></div><div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgb(238, 238, 238); font-size: 12px; color: rgb(102, 102, 102); display: flex; justify-content: space-between;"><span id="my-memory-source-text" style="max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span><span style="color: rgb(153, 153, 153);">MyMemory</span></div></div><div id="summary" style="display: none;">补丁为virtio vring新增对齐ld/st访问器。通用指针访问在RISC-V上被编译器拆分为多次字节读写，导致guest并发更新avail-&gt;idx时出现撕裂读（日志中索引从49417误读到49919）。通过__builtin_assume_aligned使快速路径发出单次对齐加载指令，消除撕裂窗口并提升性能，涉及virtio.c、bswap.h及新增头文件。</div></body></html>
