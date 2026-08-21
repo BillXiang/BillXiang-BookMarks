@@ -1,0 +1,223 @@
+<!-- Filename: 导航栏/study/处理器/risc-v/IOMMU/[PATCH v4 00_21] iommu_riscv_ Enable MSI remapping, IOMMU_DMA and VFIO - Andrew Jones (2026-08-21 10：35：23).html
+ Page saved with X-Webpage-Conserve 
+ url: https://lore.kernel.org/linux-riscv/20260820214150.545737-1-andrew.jones@oss.qualcomm.com/
+ Summary: 该补丁系列为RISC-V架构添加IMSIC MSI重映射功能，使设备MSI目标能像DMA一样被翻译，从而默认启用IOMMU_DMA和分页域。方案通过引入IOMMU IRQ域、将MSI目标映射到设备DMA地址空间并重写组合消息来实现，同时包含VFIO/KVM设备直通所需的剩余机制。
+-->
+<html><head><title>[PATCH v4 00/21] iommu/riscv: Enable MSI remapping, IOMMU_DMA and VFIO - Andrew Jones</title><link rel="alternate" title="Atom feed" href="../new.atom" type="application/atom+xml"><meta name="viewport" content="width=device-width," initial-scale="1"><style>*{overflow-wrap:anywhere;font-size:100%;font-family:monospace}</style><link type="text/css" rel="stylesheet" media="screen,print" href="../216light.css?69f2051c"><link type="text/css" rel="stylesheet" media="screen and (prefers-color-scheme:dark)" href="../216dark.css?69f2051c"><style>* { overflow-wrap: anywhere; font-size: 100%; font-family: monospace; }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(255, 255, 255); color: rgb(0, 0, 51); }pre { white-space: pre-wrap; }input, textarea { background: rgb(204, 255, 204); }a:link { color: rgb(0, 0, 255); text-decoration: none; }a:visited { color: rgb(136, 0, 136); }.q { color: rgb(0, 0, 102); }.add { color: rgb(0, 102, 0); }.del { color: rgb(153, 0, 0); }.head { color: rgb(0, 0, 0); }.hunk { color: rgb(153, 102, 0); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(204, 51, 204); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 153); }.hl.com { color: rgb(0, 153, 153); }.hl.kwa { color: rgb(255, 153, 0); }.hl.kwb { color: rgb(0, 102, 0); }.hl.kwc { color: rgb(255, 153, 0); }</style><style>* { font-size: 100%; font-family: monospace; background: rgb(0, 0, 0); color: rgb(204, 204, 204); }pre { white-space: pre-wrap; }input, textarea { background: rgb(0, 51, 51); }a:link { color: rgb(102, 153, 255); text-decoration: none; }a:visited { color: rgb(153, 102, 255); }.q { color: rgb(0, 153, 255); }.add { color: rgb(0, 255, 255); }.del { color: rgb(255, 0, 255); }.head { color: rgb(255, 255, 255); }.hunk { color: rgb(204, 153, 51); }.hl.num { color: rgb(255, 51, 0); }.hl.esc { color: rgb(255, 0, 255); }.hl.str { color: rgb(255, 51, 0); }.hl.ppc { color: rgb(255, 0, 255); }.hl.pps { color: rgb(255, 51, 0); }.hl.slc { color: rgb(0, 153, 255); }.hl.com { color: rgb(0, 153, 255); }.hl.kwa { color: rgb(255, 255, 0); }.hl.kwb { color: rgb(0, 255, 0); }.hl.kwc { color: rgb(255, 255, 0); }</style></head><body><form action="../"><pre><a href="../?t=20260820214215"><b>linux-riscv.lists.infradead.org archive mirror</b></a>
+<input name="q" type="text"><input type="submit" value="search"> <a href="../_/text/help/">help</a> / <a href="../_/text/color/">color</a> / <a id="mirror" href="../_/text/mirror/">mirror</a> / <a href="../new.atom">Atom feed</a></pre></form><pre id="b">From: Andrew Jones &lt;andrew.jones@oss.qualcomm.com&gt;
+To: <a href="../../linux-riscv/?t=20260820214215">linux-riscv@lists.infradead.org</a>, iommu@lists.linux.dev
+Cc: <a href="../../lkml/?t=20260820214215">linux-kernel@vger.kernel.org</a>, tomasz.jeznach@linux.dev,
+	tjeznach@rivosinc.com, jgg@ziepe.ca, jgg@nvidia.com,
+	joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
+	pjw@kernel.org, palmer@dabbelt.com, anup@brainfault.org,
+	tglx@kernel.org, kevin.tian@intel.com,
+	fangyu.yu@linux.alibaba.com
+Subject: <a href="#r" id="t">[PATCH v4 00/21] iommu/riscv: Enable MSI remapping, IOMMU_DMA and VFIO</a>
+Date: Thu, 20 Aug 2026 23:41:29 +0200	<a href="#r">[thread overview]</a>
+Message-ID: &lt;20260820214150.545737-1-andrew.jones@oss.qualcomm.com&gt; (<a href="raw">raw</a>)
+
+This series adds MSI remapping for IMSIC so a device's MSI target gets
+translated the same way its DMA does, allowing RISC-V to enable IOMMU_DMA
+and paging domains by default.
+
+v1[1] used get_resv_regions() with IOMMU_RESV_DIRECT_RELAXABLE to identity
+map IMSIC pages, but that was rejected as only a workaround, and the
+proposal for v2 was to follow ARM's approach. This series does that at a
+high level by introducing an IOMMU IRQ domain, mapping MSI targets into
+the device's DMA address space, and rewriting composed messages with
+msi_msg_set_addr(). A new iommu_dma_map_msi() supports both DMA-IOMMU and
+iommufd domains and returns each mapping to the interrupt-remapping
+driver rather than caching it on an MSI descriptor.
+
+ARM can map a fixed doorbell PA per ITS and cache its IOVA on the
+descriptor because affinity changes only hardware routing, not the
+composed address. An IMSIC target PA changes with affinity, and MSI
+composition may run in atomic context, so mapping the selected target on
+demand is not an option. This series pre-maps the supervisor IMSIC page
+for every possible CPU into a domain-local PA-to-IOVA table when remapped
+IRQs are first allocated, allowing composition to select the target with
+an O(1) lookup. If iommufd replaces a paging domain while IRQs remain
+allocated, the incoming domain's table is rebuilt before it is attached.
+
+The series also carries the remaining plumbing needed for RISC-V PCIe
+device assignment through VFIO/KVM: the RISC-V IOMMU reports DMA
+cache-coherency capability for coherent devices, VFIO type1 and KVM_VFIO
+are enabled for RISC-V, defconfig enables IOMMUFD/VFIO as modules with
+cdev support, and the generic VFIO/iommufd selftests can be built for
+RISC-V. The RISC-V IOMMU specification does not provide MSI data
+validation, so the interrupt-remapping domain cannot provide isolated
+MSI. VFIO device assignment therefore requires the applicable
+allow_unsafe_interrupts=1 module parameter. Direct MSI routing to guest
+interrupt files (irqbypass) is not yet supported by this series and will
+be posted separately on top.
+
+LLM-based coding assistants were used during development for code
+exploration ("super grep" as one of my colleagues calls it), patch review,
+test execution, and drafting and editing commit messages and this cover
+letter. I reviewed and finalized all resulting code and text. Per-patch
+Assisted-by tags are omitted in light of the ongoing discussion about
+simplifying coding-assistant attribution[2].
+
+Thanks,
+drew
+
+[1] <a href="https://lore.kernel.org/all/20260508212339.381933-1-andrew.jones@oss.qualcomm.com/">https://lore.kernel.org/all/20260508212339.381933-1-andrew.jones@oss.qualcomm.com/</a>
+[2] <a href="https://lore.kernel.org/all/20260701-work-coding-assistants-v1-1-a20a94d1d606@kernel.org/">https://lore.kernel.org/all/20260701-work-coding-assistants-v1-1-a20a94d1d606@kernel.org/</a>
+
+v4:
+- Rebased onto linux-iommu/next
+- Addressed Thomas's v3 review comments[3]
+- Added documentation for mapping MSIs while replacing an IOMMU domain
+- Reworked domain replacement to rebuild MSI IOVAs through each domain's
+  backend rather than copying iommufd tables
+- Rejected passthrough MSI mapping results when preparing an incoming
+  paging domain, preventing a first iommufd attach with live MSIs from
+  caching an unusable address-zero table [PatchWise]
+- Deferred interrupt-remapping domain publication until probe_finalize(),
+  after the IOMMU core assigns the device group [PatchWise]
+- Refreshed stale OF and ACPI platform MSI domains before setting up
+  interrupt remapping [PatchWise]
+- Used vcalloc() for the sparse IMSIC PA-to-IOVA table [Sashiko]
+- Reported IOMMU_CAP_CACHE_COHERENCY only for DMA-coherent devices [Sashiko]
+- Clarified that only direct identity &lt;-&gt; paging domain transitions are
+  rejected while IRQs are allocated [Sashiko]
+- Used the old-domain argument to avoid unnecessary RCU lookups in attach
+  callbacks [Sashiko]
+- Fixed the VFIO selftest architecture check to use riscv64 [Sashiko]
+- Reworked commit messages throughout
+
+[3] <a href="https://lore.kernel.org/all/20260807181713.228535-1-andrew.jones@oss.qualcomm.com/">https://lore.kernel.org/all/20260807181713.228535-1-andrew.jones@oss.qualcomm.com/</a>
+
+
+Andrew Jones (18):
+  iommufd: Convert struct iommufd_sw_msi_maps to a growable bitmap
+  iommufd: Add iommufd_sw_map_msi()
+  iommu/dma: Add iommu_dma_sw_map_msi()
+  iommu/dma: Add iommu_dma_map_msi()
+  iommu: Document MSI mapping during domain replacement
+  genirq/msi: Provide DOMAIN_BUS_MSI_REMAP
+  irqchip/riscv-imsic: Compose MSI updates through the hierarchy
+  iommu/riscv: Add IRQ domain for interrupt remapping
+  iommu/riscv: Refresh platform MSI domain before IR setup
+  iommu/riscv: Prepare info-&gt;domain for concurrent RCU read access
+  iommu/riscv: Reserve an MSI IOVA window for iommufd
+  iommu/riscv: Pre-map IMSIC MSI targets
+  iommu/riscv: Preserve MSI IOVA state across domain replacement
+  iommu/riscv: Gate direct identity boundary switches with live MSIs
+  iommu/riscv: Remap IMSIC targets during MSI composition
+  iommu/riscv: Report cache coherency capability
+  riscv: defconfig: Enable IOMMUFD and VFIO
+  selftests/vfio: Allow building on RISC-V
+
+Tomasz Jeznach (3):
+  iommu/dma: Enable IOMMU_DMA for 64-bit RISC-V
+  vfio: enable IOMMU_TYPE1 for RISC-V
+  RISC-V: KVM: Enable KVM_VFIO interfaces on RISC-V arch
+
+ arch/riscv/configs/defconfig               |   4 +
+ arch/riscv/kvm/Kconfig                     |   1 +
+ drivers/iommu/Kconfig                      |   2 +-
+ drivers/iommu/dma-iommu.c                  |  33 +-
+ drivers/iommu/dma-iommu.h                  |  12 +-
+ drivers/iommu/iommu-priv.h                 |  11 +-
+ drivers/iommu/iommu.c                      | 109 +++++-
+ drivers/iommu/iommufd/device.c             |   3 +-
+ drivers/iommu/iommufd/driver.c             |  87 +++--
+ drivers/iommu/iommufd/hw_pagetable.c       |   1 +
+ drivers/iommu/iommufd/iommufd_private.h    |  41 ++-
+ drivers/iommu/riscv/Kconfig                |   1 +
+ drivers/iommu/riscv/Makefile               |   2 +-
+ drivers/iommu/riscv/iommu-ir.c             | 397 +++++++++++++++++++++
+ drivers/iommu/riscv/iommu.c                | 111 ++++--
+ drivers/iommu/riscv/iommu.h                |  48 +++
+ drivers/irqchip/irq-msi-lib.c              |   8 +-
+ drivers/irqchip/irq-riscv-imsic-platform.c |  27 +-
+ drivers/vfio/Kconfig                       |   2 +-
+ include/linux/iommu.h                      |  31 ++
+ include/linux/irqchip/riscv-imsic.h        |   7 +
+ include/linux/irqdomain_defs.h             |   1 +
+ tools/testing/selftests/vfio/Makefile      |   2 +-
+ 23 files changed, 819 insertions(+), 122 deletions(-)
+ create mode 100644 drivers/iommu/riscv/iommu-ir.c
+
+-- 
+2.43.0
+
+_______________________________________________
+linux-riscv mailing list
+linux-riscv@lists.infradead.org
+<a href="http://lists.infradead.org/mailman/listinfo/linux-riscv">http://lists.infradead.org/mailman/listinfo/linux-riscv</a>
+</pre><hr><pre><a href="../20260820214150.545737-2-andrew.jones@oss.qualcomm.com/" rel="next">next</a>             <a href="#R">reply</a><a id="related">	</a>other threads:[<a href="../?t=20260820214215">~2026-08-20 21:42 UTC</a>|<a href="../">newest</a>]
+
+<b>Thread overview: </b>25+ messages / expand[<a href="T/#u">flat</a>|<a href="t/#u">nested</a>]  <a href="t.mbox.gz">mbox.gz</a>  <a href="t.atom">Atom feed</a>  <a href="#b">top</a>
+<b>2026-08-20 21:41 <a id="r" href="#t">Andrew Jones [this message]</a></b>
+2026-08-20 21:41 ` <a href="../20260820214150.545737-2-andrew.jones@oss.qualcomm.com/">[PATCH v4 01/21] iommufd: Convert struct iommufd_sw_msi_maps to a growable bitmap</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-3-andrew.jones@oss.qualcomm.com/">[PATCH v4 02/21] iommufd: Add iommufd_sw_map_msi()</a> Andrew Jones
+2026-08-20 22:09   ` <a href="../20260820220908.GE244917@nvidia.com/">Jason Gunthorpe</a>
+2026-08-20 21:41 ` <a href="../20260820214150.545737-4-andrew.jones@oss.qualcomm.com/">[PATCH v4 03/21] iommu/dma: Add iommu_dma_sw_map_msi()</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-5-andrew.jones@oss.qualcomm.com/">[PATCH v4 04/21] iommu/dma: Add iommu_dma_map_msi()</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-6-andrew.jones@oss.qualcomm.com/">[PATCH v4 05/21] iommu: Document MSI mapping during domain replacement</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-7-andrew.jones@oss.qualcomm.com/">[PATCH v4 06/21] genirq/msi: Provide DOMAIN_BUS_MSI_REMAP</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-8-andrew.jones@oss.qualcomm.com/">[PATCH v4 07/21] irqchip/riscv-imsic: Compose MSI updates through the hierarchy</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-9-andrew.jones@oss.qualcomm.com/">[PATCH v4 08/21] iommu/riscv: Add IRQ domain for interrupt remapping</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-10-andrew.jones@oss.qualcomm.com/">[PATCH v4 09/21] iommu/riscv: Refresh platform MSI domain before IR setup</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-11-andrew.jones@oss.qualcomm.com/">[PATCH v4 10/21] iommu/riscv: Prepare info-&gt;domain for concurrent RCU read access</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-12-andrew.jones@oss.qualcomm.com/">[PATCH v4 11/21] iommu/riscv: Reserve an MSI IOVA window for iommufd</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-13-andrew.jones@oss.qualcomm.com/">[PATCH v4 12/21] iommu/riscv: Pre-map IMSIC MSI targets</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-14-andrew.jones@oss.qualcomm.com/">[PATCH v4 13/21] iommu/riscv: Preserve MSI IOVA state across domain replacement</a> Andrew Jones
+2026-08-20 21:52   ` <a href="../20260820215204.GD244917@nvidia.com/">Jason Gunthorpe</a>
+2026-08-20 21:41 ` <a href="../20260820214150.545737-15-andrew.jones@oss.qualcomm.com/">[PATCH v4 14/21] iommu/riscv: Gate direct identity boundary switches with live MSIs</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-16-andrew.jones@oss.qualcomm.com/">[PATCH v4 15/21] iommu/riscv: Remap IMSIC targets during MSI composition</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-17-andrew.jones@oss.qualcomm.com/">[PATCH v4 16/21] iommu/dma: Enable IOMMU_DMA for 64-bit RISC-V</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-18-andrew.jones@oss.qualcomm.com/">[PATCH v4 17/21] iommu/riscv: Report cache coherency capability</a> Andrew Jones
+2026-08-20 21:47   ` <a href="../20260820214730.GC244917@nvidia.com/">Jason Gunthorpe</a>
+2026-08-20 21:41 ` <a href="../20260820214150.545737-19-andrew.jones@oss.qualcomm.com/">[PATCH v4 18/21] vfio: enable IOMMU_TYPE1 for RISC-V</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-20-andrew.jones@oss.qualcomm.com/">[PATCH v4 19/21] RISC-V: KVM: Enable KVM_VFIO interfaces on RISC-V arch</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-21-andrew.jones@oss.qualcomm.com/">[PATCH v4 20/21] riscv: defconfig: Enable IOMMUFD and VFIO</a> Andrew Jones
+2026-08-20 21:41 ` <a href="../20260820214150.545737-22-andrew.jones@oss.qualcomm.com/">[PATCH v4 21/21] selftests/vfio: Allow building on RISC-V</a> Andrew Jones
+</pre><hr><pre id="R"><b>Reply instructions:</b>
+
+You may reply publicly to <a href="#t">this message</a> via plain-text email
+using any one of the following methods:
+
+* Save the following mbox file, import it into your mail client,
+  and reply-to-all from there: <a href="raw">mbox</a>
+
+  Avoid top-posting and favor interleaved quoting:
+  <a href="https://en.wikipedia.org/wiki/Posting_style#Interleaved_style">https://en.wikipedia.org/wiki/Posting_style#Interleaved_style</a>
+
+* Reply using the <b>--to</b>, <b>--cc</b>, and <b>--in-reply-to</b>
+  switches of git-send-email(1):
+
+  git send-email \
+    --in-reply-to=20260820214150.545737-1-andrew.jones@oss.qualcomm.com \
+    --to=andrew.jones@oss.qualcomm.com \
+    --cc=anup@brainfault.org \
+    --cc=fangyu.yu@linux.alibaba.com \
+    --cc=iommu@lists.linux.dev \
+    --cc=jgg@nvidia.com \
+    --cc=jgg@ziepe.ca \
+    --cc=joro@8bytes.org \
+    --cc=kevin.tian@intel.com \
+    --cc=linux-kernel@vger.kernel.org \
+    --cc=linux-riscv@lists.infradead.org \
+    --cc=palmer@dabbelt.com \
+    --cc=pjw@kernel.org \
+    --cc=robin.murphy@arm.com \
+    --cc=tglx@kernel.org \
+    --cc=tjeznach@rivosinc.com \
+    --cc=tomasz.jeznach@linux.dev \
+    --cc=will@kernel.org \
+    /path/to/YOUR_REPLY
+
+  <a href="https://kernel.org/pub/software/scm/git/docs/git-send-email.html">https://kernel.org/pub/software/scm/git/docs/git-send-email.html</a>
+
+* If your mail client supports setting the <b>In-Reply-To</b> header
+  via mailto: links, try the <a href="mailto:andrew.jones@oss.qualcomm.com?In-Reply-To=%3C20260820214150.545737-1-andrew.jones@oss.qualcomm.com%3E&amp;Cc=anup%40brainfault.org%2Cfangyu.yu%40linux.alibaba.com%2Ciommu%40lists.linux.dev%2Cjgg%40nvidia.com%2Cjgg%40ziepe.ca%2Cjoro%408bytes.org%2Ckevin.tian%40intel.com%2Clinux-kernel%40vger.kernel.org%2Clinux-riscv%40lists.infradead.org%2Cpalmer%40dabbelt.com%2Cpjw%40kernel.org%2Crobin.murphy%40arm.com%2Ctglx%40kernel.org%2Ctjeznach%40rivosinc.com%2Ctomasz.jeznach%40linux.dev%2Cwill%40kernel.org&amp;Subject=Re%3A%20%5BPATCH%20v4%2000%2F21%5D%20iommu%2Friscv%3A%20Enable%20MSI%20remapping%2C%20IOMMU_DMA%20and%20VFIO">mailto: link</a>
+</pre>
+
+  Be sure your reply has a <b>Subject:</b> header at the top and a blank line
+  before the message body.
+<hr><pre>This is a public inbox, see <a href="../_/text/mirror/">mirroring instructions</a>
+for how to clone and mirror all data and code used for this inbox;
+as well as URLs for NNTP newsgroup(s).</pre><div id="my-memory-translator-container" style="position: absolute; z-index: 999999; background: white; border: 1px solid rgb(221, 221, 221); border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px; padding: 12px; max-width: 300px; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif; font-size: 14px; line-height: 1.5; display: none; transition: opacity 0.2s;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgb(238, 238, 238);"><span style="font-weight: 600; color: rgb(51, 51, 51);">翻译结果</span><button style="background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; font-size: 20px; cursor: pointer; color: rgb(153, 153, 153); padding: 0px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px;">×</button></div><div id="my-memory-translation-content" style="color: rgb(51, 51, 51); word-break: break-word;"></div><div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgb(238, 238, 238); font-size: 12px; color: rgb(102, 102, 102); display: flex; justify-content: space-between;"><span id="my-memory-source-text" style="max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span><span style="color: rgb(153, 153, 153);">MyMemory</span></div></div><div id="summary" style="display: none;">该补丁系列为RISC-V架构添加IMSIC MSI重映射功能，使设备MSI目标能像DMA一样被翻译，从而默认启用IOMMU_DMA和分页域。方案通过引入IOMMU IRQ域、将MSI目标映射到设备DMA地址空间并重写组合消息来实现，同时包含VFIO/KVM设备直通所需的剩余机制。</div></body></html>
